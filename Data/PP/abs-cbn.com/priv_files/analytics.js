@@ -1,0 +1,1 @@
+(function(){while(_innity.nw.length){__i3=_innity.nw.pop();(new Image()).src="//optimize.innity.com/?pubid="+__i3.pub+"&zoneid="+__i3.zone+"&cb="+new Date().getTime();}})();

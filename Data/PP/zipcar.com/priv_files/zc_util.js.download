@@ -1,0 +1,360 @@
+function zc_namespace( scope ) {
+    var parts = scope.split(".");
+    var parts_len = parts.length;
+    var ctx = this;
+
+    for( var i=0; i<parts_len; i++ ) {
+        if (ctx[parts[i]] == null) {
+            ctx[parts[i]] = {};
+        }
+        ctx = ctx[parts[i]];
+    }
+}
+
+if (typeof(window.zc) != "object") {
+    window.zc = {};
+}
+
+zc_namespace( "zc.Utils" );
+
+zc.Utils.getLocale = function(locale) {
+    if( ! zc.Utils.getLocalized.locale ) {
+        zc.Utils.getLocalized.locale = $("meta[name='locale']").attr('content');
+    }
+
+    return locale ? locale : ( zc.Utils.getLocalized.locale ? zc.Utils.getLocalized.locale : zc.Utils.getLocalized.defaultLocale );
+};
+
+/**
+ * Perform lookup for a localized version of a string
+ * @param root {Object} the localized object
+ * @param key {String} the string to look up
+ * @param locale {String} (optional) the locale if not using the global locale.
+ *
+ * Example:
+ *    var o = {
+ *              null : { // null can be used as a fallback locale.
+ *                  "msg" : "This is the message."
+ *              },
+ *              "en" : { // language can be used for non-locale specific things or default locale for a language
+ *                   "beer" : "I love the flavor of this draft beer.",
+ *                   "weekdays" : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+ *              },
+ *              "en-GB" : { // locale-specific things
+ *                   "beer" : "I love the flavour of this draught beer."
+ *              },
+ *              "es" : { // another language
+ *                   "beer" : "Me encanta el sabor de esta cerveza de barril."
+ *              }
+ *          }
+ */
+zc.Utils.getLocalized = function( root, key, locale ) {
+    locale = zc.Utils.getLocale(locale);
+
+    // reverse order is faster
+    var lookup = [
+            zc.Utils.getLocalized.defaultLocale.substr(0,2),
+            zc.Utils.getLocalized.defaultLocale,
+            " ",
+            locale.substr(0,2),
+            locale
+        ];
+
+    for( var i=4; i>-1; i-- ) {
+        if( root[lookup[i]] && root[lookup[i]][key] )
+            return root[lookup[i]][key];
+    }
+    return null;
+}
+
+
+/**
+ * Perform lookup for a localized version of a string
+ * @param root {Object} the localized object
+ * @param key {String} the string to look up
+ * @param locale {String} (optional) the locale if not using the global locale.
+ *
+ * This will look for content in the desired locale and if it is not found, it will then search based on locale priorities.
+ * This means that it will search for content in other locales that share a language before it will fall back to a default locale.
+**/
+zc.Utils.getLocalizedTranslation = function( root, key, locale ) {
+    if (!zc.Utils.getLocalized.localePriorities) {
+        // load locale priority fallbacks if we haven't already
+        $.ajax( {
+            url: "/js/zc_util-locale-priorities.js",
+            async: false,
+            success: function ( data ) {
+                zc.Utils.getLocalized.localePriorities = data;
+            },
+            error: function (jqXHR, textStatus, errorThrown ) {
+                // default locale priorities to be the same as the default locale
+                zc.Utils.getLocalized.localePriorities = $.parseJSON('{"en-US" : ["en-US"]}');
+            }
+        });
+    }
+
+    locale = zc.Utils.getLocale(locale);
+
+    // fallback order of locales the default locale
+    var locale_lookups = [
+        zc.Utils.getLocalized.defaultLocale,
+        locale
+    ];
+
+    var lookup;
+    for( var i=1; i>-1; i-- ) {
+        // either use the priority list for this locale or this locale (e.g. failure to load priority list)
+        if (zc.Utils.getLocalized.localePriorities[locale_lookups[i]]) {
+            lookup = zc.Utils.getLocalized.localePriorities[locale_lookups[i]];
+            lookup_len = lookup.length;
+            for( var j=0; j<lookup_len; j++ ) {
+                if( root[lookup[j]] && root[lookup[j]][key] ) 
+                    return root[lookup[j]][key];
+            }
+        } else {
+            if (root[locale_lookups[i]] && root[locale_lookups[i]][key] )
+                return root[locale_lookups[i]][key];
+        }
+    }
+    return null;
+}
+
+zc.Utils.getLocalized.defaultLocale = "en-US";
+zc.Utils.getLocalized.localePriorities = null;
+
+// parseDateWithTimezone, apiDateFormat, and apiRelativeMinutes taken from shared-js/utils.js
+// TODO: integrate shared-js with admin?
+zc.Utils.parseDateWithTimezone = function(relativeDate, relativeMinutes, fleetTzOffset) {
+    var dateFm = relativeDate.replace(/^(\d{4})-(\d\d)-(\d\d)/, "$2/$3/$1"),
+        dateWithTimezone = new DateWithTimezone(dateFm);
+
+    dateWithTimezone.setMinutes(relativeMinutes);
+    dateWithTimezone.setTimezoneOffset(fleetTzOffset);
+
+    return dateWithTimezone;
+};
+
+zc.Utils.apiDateFormat = function(dateTime) {
+    // this is the expected date format for the ZAPI.
+    // if relative minutes are also pased in; the time portion of this is ignored.
+    return dateTime.toLocaleFormat("%Y-%m-%d %H:%M:%S");
+};
+
+zc.Utils.apiRelativeMinutes = function(dateTime) {
+    // figure out how many minutes into a day this datetime is
+    return dateTime.getHours() * 60 + dateTime.getMinutes() + "";
+};
+
+zc.Utils.catalog = (function() {
+    var strings = {}; // strings dictionary, see getLocalized
+    var queued = {}; // queued messages, true for queued, false for loading
+    var loaded = {}; // loaded messages
+    
+    // for now, expect namespaces to be loaded sync. async calls will still work, but the
+    // queueing/loading flags are harder to manage when you don't know before kicking off
+    // the request which keys you're going to get back.
+    var queued_namespaces = [];
+    
+    return {
+        register: function( opts, sync ) {
+            var keys = opts.keys,
+                namespaces = opts.namespaces;
+                
+            if (keys) {
+                for( var i=0; i<keys.length; i++ ) {
+                    var k = keys[i];
+    
+                    // queue any new keys
+                    if( !loaded[k] && queued[k] == null ) {
+                        queued[k] = true;
+                    }
+                }
+            }
+            
+            if (namespaces) {
+                for( var i=0; i<namespaces.length; i++) {
+                    var ns = namespaces[i];
+                    queued_namespaces.push(ns);
+                }
+                
+                // if we're loading namespaces, then we're always going to be doing it
+                // ahead of time.  as we don't have a way to track the 'loading' state
+                // of entire namespaces, this will prevent us from accidentally kicking
+                // off multiple requests for the same namespace (which could be expensive
+                // both for the client and, possibly, our proxy server)
+                sync = true;
+            }
+
+            this.load( sync );
+        },
+        load: function( sync ) {
+            var url = "/js/jsmsgcat?";
+
+            for( var k in queued ) {
+                // if the message has not been loaded and is either not in-progress or we're sync
+                if( !loaded[k] && ( queued[k] || sync ) ) {
+                    url += "k=" + encodeURIComponent( k ) + "&";
+                    // mark all keys as loading
+                    queued[k] = false;
+                }
+            }
+            
+            // currently we don't track the loading state of namespaces, so assume any
+            // queued should be requested
+            for( var i = 0; i < queued_namespaces.length; ++i ) {
+                var ns = queued_namespaces[i];
+                url += "ns=" + encodeURIComponent( ns ) + "&";
+            }
+            
+            queued_namespaces.length = 0;
+
+            // TODO: note that async is stupidly deprecated (do those folks write real code?)
+            $.ajax( {
+                url: url.substring( 0, url.length-1 ),
+                async: !sync,
+                success: function( data ) {
+                    zc.Utils.catalog.add( data );
+                },
+                error: function( jqXHR, textStatus, errorThrown ) {
+                    // throwing this inside of this function doesn't track it back to load, so this is "fine"
+                    throw new Error( "Unable to load messages: " + textStatus );
+                }
+            });
+        },
+        add: function( messages ) {
+            // mix in all messages under the correct language
+            for( var lang in messages ) {
+                if( !strings[lang] ) strings[lang] = {};
+                for( var k in messages[lang] ) {
+                    strings[lang][k] = messages[lang][k];
+                    delete queued[k];
+                    loaded[k] = true;
+                }
+            }
+        },
+        translate: function( messageKey, params, locale ) {
+            // TODO: can we log an error on the server here for all places we're just returning the key?
+
+            if( !loaded[messageKey] ) {
+                if( queued[messageKey] == null ) {
+                    this.register({ keys: [messageKey] }, true );
+                    if( window.console && console.warn ) console.warn( messageKey + " loaded but not registered" );
+                } else {
+                    // Should this try to cancel any pending request?
+                    this.load( true );
+                }
+            }
+
+            var format = zc.Utils.getLocalizedTranslation( strings, messageKey, locale );
+            if( !format ) {
+                if( window.console && console.error ) console.error( messageKey + " failed to load." );
+                return messageKey;
+            }
+
+            
+             var product;
+             if( ( product = /.*%\(([-a-zA-Z0-9_:\.]+)\)s.*/.exec( format ) ) !== null ) {
+            	product_key = product[1];
+            	if( !params || params.length == 0 ) params = {};
+            	
+            	//TODO: this assumes all product keys are under zipsite, which is true at time of authorship
+            	params[product_key] = zc.Utils.catalog.translate( "zipsite." + product_key, null, locale );
+             }
+            
+            // this won't really catch all of these but at least those that require params
+            // and they weren't passed in
+            if( format.search(/(^|[^%])%($|[^%])/) >= 0 && (!params || params.length == 0) ) {
+                if( window.console && console.error ) console.error( messageKey + " requires parameters but none were supplied (" + format + ")" );
+            }
+
+            try {
+                return vsprintf( format, params );
+            } catch( e ) {
+                if( window.console && console.error ) console.error( messageKey + " (" + format + ") threw an error: " + e );
+                return messageKey;
+            }
+        }
+    }
+})();
+
+zc.Utils.getCsrfToken = function() {
+    return $("meta[name='csrf_token']").attr('content');
+}
+
+// dumb IE
+if( !((new Array())["push"]) ) {
+    Array.prototype.push = function() {
+        for( var i=0; i<arguments.length; i++ ) {
+            this[this.length] = arguments[i];
+        }
+    }
+}
+
+// String.trim method
+if( !("test"["trim"]) ) {
+    String.prototype.trim = function() {
+        return this.replace(/^\s*/,"").replace(/\s*$/,"");
+    }
+}
+
+
+/* 
+    draw a circle & set the zoom to include that circle
+    how-to from: http://seewah.blogspot.com/2009/10/circle-overlay-on-google-map.html 
+*/
+
+function drawCircle(map, lat, long, accuracy_in_meters) {
+    // the most we'll zoom in by default
+    var maxZoom = 18;
+
+    var accuracy_in_kilometers = accuracy_in_meters / 1000;
+
+    var boundaries = getBoundaries(latlng(lat, long), accuracy_in_kilometers);
+    var oldmap = new google.maps.GroundOverlay("/images/purple_circle.png", boundaries, {map: map});
+
+    map.setCenter(latlng(lat, long));
+
+    var bounds = new google.maps.LatLngBounds();
+    bounds.extend(boundaries.getSouthWest());
+    bounds.extend(boundaries.getNorthEast());
+
+    map.fitBounds(bounds);
+
+}
+
+// boundaries expects a radius in kilometers
+function getBoundaries(centrePt, radius) {
+    var hypotenuse = Math.sqrt(2 * radius * radius);
+    var sw = getDestLatLng(centrePt, 225, hypotenuse);
+    var ne = getDestLatLng(centrePt, 45, hypotenuse);
+
+    return new google.maps.LatLngBounds(sw, ne);
+}
+
+function getDestLatLng(latLng, bearing, distance) {
+    // this is an avg since the earth isn't a perfect sphere.
+    var earth_radius = 6371; //in kilometres. 
+
+    var lat1 = latLng.lat()*Math.PI/180;
+    var lng1 = latLng.lng()*Math.PI/180;
+    var brng = bearing*Math.PI/180;
+    var dDivR = distance/earth_radius;
+    var lat2 = Math.asin( Math.sin(lat1)*Math.cos(dDivR) + Math.cos(lat1)*Math.sin(dDivR)*Math.cos(brng) );
+    var lng2 = lng1 + Math.atan2(Math.sin(brng)*Math.sin(dDivR)*Math.cos(lat1), Math.cos(dDivR)-Math.sin(lat1)*Math.sin(lat2));
+    return latlng(lat2/ Math.PI * 180, lng2/ Math.PI * 180);
+}
+
+zc.Utils.toRad = function(x) {
+    return x * Math.PI / 180;
+};
+
+zc.Utils.distanceBetweenPoints = function(p1, p2) {
+    var R = 6371; // Earth’s mean radius in kilometers
+    var dLat = zc.Utils.toRad(p2.lat() - p1.lat());
+    var dLong = zc.Utils.toRad(p2.lng() - p1.lng());
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(zc.Utils.toRad(p1.lat())) * Math.cos(zc.Utils.toRad(p2.lat())) *
+        Math.sin(dLong / 2) * Math.sin(dLong / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // returns the distance in kilometers
+};

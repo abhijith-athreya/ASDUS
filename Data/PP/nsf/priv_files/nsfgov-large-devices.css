@@ -1,0 +1,50 @@
+/* =====================================================================
+ * $Id: nsfgov-large-devices.css 24321 2016-06-30 20:05:17Z tpalanis $
+ * SVN Path: /www/branches/responsive/doc/redesign/ui/css/nsfgov-large-devices.css
+ * ===================================================================== */
+ 
+ .navbar-default li a {
+    white-space: nowrap;
+}
+.dropdown.menu-large ul.right.docs {
+	width: 300px;
+	right: 323px;
+    right: 367px\9;  /*IE */
+}
+.dropdown.menu-large ul.news {
+    right: 184px;
+    right: 186px\9; /* IE */
+}
+#carousel-funding .carousel-control.left {
+  left: 1070px;
+}
+
+@media screen and (max-width: 1199px) and (min-width: 768px) {
+    .div-carousel .carousel-caption {
+        width: 84% !important;
+    }
+    .div-carousel .carousel-caption button {
+        margin-left: 380px;
+    }
+}
+
+@supports (-webkit-appearance:none) {
+	.dropdown.menu-large ul.news {
+    right: 184px;
+	}
+}
+
+/* IE-EDGE */
+_:-ms-lang(x),
+.dropdown.menu-large ul.right.docs  {
+    right: 367px;
+}
+_:-ms-lang(x),
+.dropdown.menu-large ul.news {
+    right: 184px;
+}
+@media screen and (min-width:0\0) {
+    /.dropdown.menu-large ul.news {
+    right: 184px;
+	}
+}

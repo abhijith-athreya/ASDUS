@@ -1,0 +1,23 @@
+(function(){
+	var globals = document.createElement('script');
+	globals.src = 'https://galleryuseastprod.blob.core.windows.net/velaroscripts/20050/globals.js';
+
+	var inline = document.createElement('script');
+	inline.src = 'https://eastprodcdn.azureedge.net/bundles/velaro.inline.js';
+
+	var scriptNode = document.getElementsByTagName('script')[0];
+	scriptNode.parentNode.insertBefore(globals, scriptNode);
+
+	globals.onload = function() {
+		scriptNode.parentNode.insertBefore(inline, scriptNode);
+	}
+
+	inline.onload = function() {
+		Velaro.Globals.ActiveSite = 20050;
+		Velaro.Globals.ActiveGroup = 0;
+		Velaro.Globals.InlineEnabled = false;
+		Velaro.Globals.VisitorMonitoringEnabled = true;
+		Velaro.Globals.InlinePosition = 0;
+	}
+	
+}())

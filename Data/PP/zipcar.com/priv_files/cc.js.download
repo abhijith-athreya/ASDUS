@@ -1,0 +1,195 @@
+// NOTE: this file is currently not cache-busted.  It is included in the
+// dependencies of widgets.js, but since we want to cache that file, we
+// cannot cache bust this one.  This problem will be resolved when we
+// serve member facing javascript as a concatenated file.
+
+zc = typeof zc !== 'undefined' ? zc : {};
+
+//credit card related Javascript
+define(function() {
+    zc.cc = (function() {
+       return {
+           verisign_checksum : function( num ) {
+            
+            
+            //clean whitespace
+            num = num.replace( "\s", "" );
+            
+            var first = num.slice(0,1);
+            var first2 = num.slice(0,2);
+            var first3 = num.slice(0,3);
+            var first4 = num.slice(0,4);
+            var first6 = num.slice(0,6);
+            var len = num.length;
+            var type = "unknown";
+            
+            if( first == "4" && ( len == 13 || len == 16 ) )
+                type = "VISA"
+            
+            switch( first2 )
+            {
+                case "65": 
+                    if( len == 16)
+                        type = "Discover";
+                    break;
+                case "36": 
+                case "38": 
+                    if( len == 14 )
+                        type ="Diner's Club / Carte Blanche";
+                    break;
+                case "34": 
+                case "37": 
+                    if( len == 15 )
+                        type = "American Express";
+                    break;
+                case "51": 
+                case "52": 
+                case "53": 
+                case "54": 
+                case "55":
+                case "22":
+                case "23":
+                case "24":
+                case "25":
+                case "26":
+                case "27":
+                    if( len == 16 )
+                        type = "MasterCard";
+                    break;
+
+            }
+
+            switch( first3 )
+            {
+                case "300": 
+                case "301": 
+                case "302": 
+                case "303": 
+                case "304": 
+                case "305": 
+                    if( len == 14 )
+                        type ="Diner's Club / Carte Blanche";
+                    break;
+            }
+            
+            var first4num = parseInt( first4 );
+            if( first4num >= 3528 && first4num <= 3589 && len == 16 )
+            {
+                type = "JCB"
+            }
+
+            switch( first4 )
+            {
+                case "5020": 
+                case "5038": 
+                case "6759": 
+                case "4903": 
+                case "4905": 
+                case "4911": 
+                case "4936": 
+                case "6333": 
+                case "6759": 
+                    if( len == 16 || len == 18 || len == 19 )
+                        type = "Maestro";
+                    break;
+                case "6334": 
+                case "6767": 
+                    if( len == 16 || len == 18 || len == 19 )
+                        type = "Solo";
+                    break;
+                case "4508": 
+                case "4917": 
+                case "4844": 
+                    if( len == 16 )
+                        type ="Visa Electron";
+                    break;
+                case "6011": 
+                    if( len == 16)
+                        type = "Discover";
+                    break;
+                case "2014": 
+                case "2149": 
+                    if( len == 15 ) {
+                        type = "enRoute";
+                        
+                        //early exit for enRoute
+                        return type;
+                    }
+                    break;
+                case "5610":
+                    if( len == 16 )
+                        type = "Australian BankCard";
+                    break;
+            }   
+            
+            switch( first6 )
+            {
+                case "564182": 
+                case "633110": 
+                case "676770":  // note: These 2 overlap Solo cards (6767??) - valid maestro as of 03/31/11
+                case "676774":
+                    if( len == 16 || len == 18 || len == 19 )
+                        type = "Maestro";
+                    break;
+                case "417500": 
+                    if( len == 16 )
+                        type = "Visa Electron";
+                    break;
+                case "450846":
+                    if( len == 16 )
+                        type = "VISA";
+                    break;
+                case "560221":
+                case "560222":
+                case "560223":
+                case "560224":
+                case "560225":
+                    if( len == 16 )
+                        type = "Australian BankCard";
+                    break;
+            }
+            
+            //make sure the number is all digits, between 13 and 19 characters
+            var cardRegex = /^[0-9]{13,19}$/
+            if( !cardRegex.test( num ) )
+                type = "unknown";
+            
+            if( type == "unknown" )
+                return type;
+            
+            // mod10 check
+            // sum every  digit starting with the RIGHT-MOST digit
+            //         on alternate digits (starting with the NEXT-TO-THE-RIGHT-MOST digit)
+            //         sum all digits in the result of TWO TIMES the alternate digit
+            //         RATHER than the original digit itself
+            var sum = 0;
+            var i = len-1;
+            
+            var multiply = 1;
+            
+            for( i; i >= 0; i--) {
+                
+                var calc = Number(num.charAt(i)) * multiply;
+               
+                
+                if (calc > 9) {
+                    sum += 1;
+                    calc = calc - 10;
+                }
+                
+                 sum += calc;
+                 
+                 if( multiply == 1 )
+                    multiply = 2;
+                 else
+                    multiply = 1;
+            }
+            
+            if( sum % 10 != 0 )
+                type = "unknown";
+                
+            return type;
+        }
+        }
+    })();
+});

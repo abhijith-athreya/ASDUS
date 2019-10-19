@@ -1,0 +1,106 @@
+window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+  t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+
+  return t;
+}(document, "script", "twitter-wjs"));
+
+var shortURL = "";
+if (typeof BitlyCB !== 'undefined') {
+  BitlyCB.alertResponse = function(data) {
+    var s = '';
+    var first_result;
+    // Results are keyed by longUrl, so we need to grab the first one.
+    for (var r in data.results) {
+      first_result = data.results[r];
+      break;
+    }
+    for (var key in first_result) {
+      //s += key + ":" + first_result[key].toString();
+      if (key == "shortUrl") {
+        shortURL = first_result[key].toString();
+        break;
+      }
+    }
+    PostTwitter(shortURL);
+  }
+}
+
+function ShortenURL(longURL) {
+  //Bit.ly function call to shorten url
+  BitlyClient.call('shorten', {
+    'longUrl': longURL
+  }, 'BitlyCB.alertResponse');
+}
+
+define(['jquery'], function($) {
+  var releaseTweet = $('.btn-twitter');
+  // var assetTweet = $('.lightbox-item');
+  if (releaseTweet.length > 0) {
+    $.each(releaseTweet, function(i,v){
+      $(v).on('click', function() {
+        initTwitter($(releaseTweet[0]));
+      });
+    });
+  }
+
+  // $.each(assetTweet, function(i,v) {
+  //   var btn = $(v);
+  //   initTwitter(btn);
+  // });
+
+  function initTwitter(self) {
+    var t = self.data('tweet-text')
+    , url = self.data('twitter-share-url')
+    , urlClean = ((url.indexOf('?') > -1) ? url.substring(0, url.indexOf('?')) : url)
+    , urlShort = ''
+    , domain = 'prn.to'
+    , templateUrl = '/templates/get-bitly-url.txt'
+    , req = {
+      longURL: urlClean,
+      domain: domain
+    };
+
+    $.post(templateUrl, req, function(res){
+      urlShort = res;
+    }).done(function(){
+
+      // Trim url+headline length to 140 chars
+
+      var max = 140 - (urlShort.length + 1);
+      if (t.length > max) {
+        t = t.substr(0, (max - 3)) + '...';
+      }
+      if (t.indexOf("&#39;") > -1) {
+        t = t.replace(new RegExp("&#39;", "g"), "'");
+      }
+      if (t.indexOf("&#34;") > -1) {
+        t = t.replace(new RegExp("&#34;", "g"), '"');
+      }
+
+      if(self.hasClass('lightbox-item')) {
+        self.attr('data-tweet-text', t);
+        self.attr('data-twitter-share-url', urlShort);
+      } else {
+        var popupURL = 'http://twitter.com/intent/tweet?text=' + encodeURIComponent(t + ' ' + urlShort);
+        window.open(popupURL, "Twitter", "width=550, height=420, location=1, status=1", '_blank');
+      }
+    });
+
+  }
+
+});
+
+
+
+

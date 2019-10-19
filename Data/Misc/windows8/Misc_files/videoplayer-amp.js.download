@@ -1,0 +1,473 @@
+var pc = new Object();
+pc.currentPos = 0;
+pc._isIE11 = !!navigator.userAgent.match(/Trident.*rv[ :]*11\./);
+
+pc.playNextVideo = function(p) {
+	var currentVideo = amp.evaluateBinding("#{media.guid}");
+	amp.setAutoplay(true);
+	if(window.abcn_playlist['conEdkeys'].length == 1){
+        amp.feed.setURL(window.abcn_playlist['feed-'+currentVideo])
+	} else {
+	for (var i=0; i<window.abcn_playlist['conEdkeys'].length; i++) {
+            if (window.abcn_playlist['conEdkeys'][i] == currentVideo) {
+                if (i<window.abcn_playlist['conEdkeys'].length-1) {
+                    var nextVideo = window.abcn_playlist['conEdkeys'][i+1];
+                    pc.currentPos = i+1;
+                } else {
+                    if(typeof p!='undefined'){
+                        if (p.loop != undefined && p.loop == true) {
+                            var nextVideo = window.abcn_playlist['conEdkeys'][0];
+                            pc.currentPos = 0;
+                        }
+                    }
+                }
+                if (typeof p!='undefined' && p.action != undefined && p.action == "refresh") {
+                    window.location = window.abcn_playlist[nextVideo];
+                } else {
+                    pc.fwUpdateKeyValues("show",window.abcn_playlist["adContext-"+nextVideo]);
+                    amp.feed.setURL(window.abcn_playlist['feed-'+nextVideo])
+                }
+                break;
+            }
+        }
+	}
+}
+
+pc.shareIt = function(p, target){
+
+    amp.exitFullScreen();
+    if($("#video-share")){
+        var embedStr = $("#video-share #embed").val();
+        if(embedStr.indexOf("iframe")==-1){
+            $("#video-share #embed").val("<iframe src='" + p.data.embed.url + "?id="  + amp.evaluateBinding('#{media.guid}') + "' width='"+p.data.embed.width+"' height='"+p.data.embed.height+"' scrolling='no' style='border:none;'></iframe>" + $("#video-share #embed").val())
+        }else{
+            $("#video-share #embed").val(embedStr)
+        }
+
+        //attach handler for each button
+        $("#video-share .sharelink").each(function(){
+            //$(this).click(function(){
+            $(this).on("click", function(){
+				var shareUrl = p.data.link;
+				switch (this.id){
+					case "facebook" :
+						shareUrl = (shareUrl.indexOf("?") == -1) ? shareUrl + "?cid=share_facebook_widget" : shareUrl + "&cid=share_facebook_widget";
+						break;
+					case "twitter" :
+						shareUrl = (shareUrl.indexOf("?") == -1) ? shareUrl + "?cid=share_twitter_widget" : shareUrl + "&cid=share_twitter_widget";
+						break;
+					case "email" :
+						shareUrl = (shareUrl.indexOf("?") == -1) ? shareUrl + "?cid=share_addthis_widget" : shareUrl + "&cid=share_addthis_widget";
+						break;
+					default:
+						break;
+				}
+				var url = "http://api.addthis.com/oexchange/0.8/forward/"+this.id+"/offer?url="+shareUrl;
+                window.open(url);
+                return false;
+            });
+        });
+
+        $.blockUI.defaults.css = {};
+        $('div#'+target).block({
+            message: $("#video-share"),
+            onOverlayClick: $.unblockUI,
+            onBlock: function(){
+                amp.pause();
+                if(pc._isIE11){
+                      $(".akamai-video-layer").css("top", "-99999px")
+                      //$("#"+amp.getVideo().id).css("visibility", "hidden");
+                }
+                //initialize clipboard
+                if(typeof pc.zclip_initialized == "undefined"){
+                    pc.initClipBoard();
+                }
+
+                //add event listener for close
+                $("a#closepanel").click(function(){
+                    pc.closeShare(target);
+                });
+            }
+        });
+
+    }
+}
+
+pc.closeShare = function(target){
+    $('#'+target).unblock({
+           onUnblock: function(){
+               if(pc._isIE11){
+                   $(".akamai-video-layer").css("top", "0");
+               }
+               amp.play();
+           }
+    });
+    //detach click
+    $("#video-share .sharelink").each(function(){
+        $(this).off("click");
+    });
+}
+
+pc.initClipBoard = function(){
+    pc.zclip_initialized = true;
+    $("#copy-button").zclip({
+        path: "/assets/flash/ZeroClipboard.swf",
+        copy: function(){
+            return $(this).prev().val();
+        },
+        afterCopy:function(){
+            alert("Copied to clipboard")
+        }
+    });
+}
+
+pc.advanceHandler = function(){
+    var ob_vids = amp.recommendations.getData();
+    if(ob_vids.length>0){
+        var ob_url = ob_vids[0].metadata.url;
+        //ob_url = ob_url.replace("abcnews.go.com", location.host);
+        window.location = ob_url
+    }else{
+        if(typeof OB_FALLBACK != undefined){
+            if(typeof nextLoc != "undefined"){
+                window.location = nextLoc;
+            }else{
+                 window.location = "http://"+location.host+"/video/playerIndex";
+            }
+        }
+    }
+}
+
+pc.recSelectedHandler = function(p){
+    if(p!=null){
+        //var ob_url = p.data.metadata.url.replace("abcnews.go.com", location.host);
+        window.location = p.data.metadata.url;
+    }
+}
+
+//TODO: Deprecate in favor of displayEndcard()
+pc.seedPlayer = function(){
+    amp.setAutoplay(false);
+    var feedUrl = amp.feed.getURL();
+    if(feedUrl.indexOf("https://") > -1){
+        amp.feed.setData(amp.feed.getData());
+    }else{
+        amp.feed.setURL(feedUrl);
+    }
+}
+
+pc.displayEndcard = function(){
+    amp.setAutoplay(false);
+    var feedUrl = amp.feed.getURL();
+    if(feedUrl.indexOf("https://") > -1){
+        amp.feed.setData(amp.feed.getData());
+    }else{
+        amp.feed.setURL(feedUrl);
+    }
+}
+
+pc.playVideoByCID = function(p) {
+	var currentVideo = p.id;
+    amp.setAutoplay("true");
+	for (var i=0; i<window.abcn_playlist['conEdkeys'].length; i++) {
+		if (window.abcn_playlist['conEdkeys'][i] == currentVideo) {
+			pc.currentPos = i;
+			if (typeof p != "undefined" && p.action != undefined && p.action == "refresh") {
+				window.location = window.abcn_playlist[currentVideo];
+			} else {
+				//kdp.sendNotification("changeMedia",{entryId: window.abcn_playlist['keys'][i]});
+				//console.log(' ******************** change media = ' + window.abcn_playlist['feed-'+window.abcn_playlist['conEdkeys'][i]] + ' ******************** ');
+				var targetVideo = window.abcn_playlist['conEdkeys'][i];
+				var targetVideoUrl = window.abcn_playlist['feed-'+targetVideo];
+				if(targetVideoUrl.indexOf("http") == -1){
+                    targetVideoUrl = window.location.protocol + "//" + window.location.host + targetVideoUrl;
+				}
+                amp.feed.setURL(targetVideoUrl);
+			}
+			break;
+		}
+	}
+}
+
+pc.playVideoByFeed = function(p) {
+	var feed = p.feed;
+    amp.feed.setURL(feed);
+}
+
+pc.setClipAtts =  function(p) {
+}
+
+pc.setupShareBtn =  function() {
+	if(typeof amp != "undefined"){
+		if(window.abcn_playlist["share-"+window.abcn_playlist['conEdkeys'][0]] == "false"){
+			amp.getMediaElement().setPlayerProperty("shareBtn", {"visible":false});
+		}else{
+			amp.getMediaElement().setPlayerProperty("shareBtn", {"visible":true});
+		}
+	}
+}
+
+pc.getSWID = function() {
+	swidCookie = readCookie('SWID');
+	if (abcnws_fw_params != undefined) {
+		abcnws_fw_params.customVisitor = swidCookie;
+	}
+	//pc.fwAppendKeyValues('customVisitor='+swidCookie);
+}
+
+function segScores(i) {
+	var o = {};
+	if (!i.indexOf("CBLM-001:")) {
+		i = i.substring(9);
+		var id, sc, e = 0,f = 0,h = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+		for (var b = 0,a = i.length,l = a - (a % 4); b < l;) {
+			var m = h.indexOf(i.charAt(b++));
+			var k = h.indexOf(i.charAt(b++));
+			f |= (m << 2 | k >> 4) << (e++ ? 0 : 8);
+			f *= (e %= 6) && e - 2 ? 1 : 0;
+			var j = h.indexOf(i.charAt(b++));
+			if (j != 64) {
+				f |= ((k & 15) << 4 | j >> 2) << (e++ ? 0 : 8);
+				if (!(e - 2)) {
+					id = f;
+				}
+				f *= (e %= 6) && e - 2 ? 1 : 0
+			}
+			var g = h.indexOf(i.charAt(b++));
+			if (g != 64) {
+				f |= ((j & 3) << 6 | g) << (e++ ? 0 : 8);
+				if (!(e - 6)) {
+					o[id] = f;
+				}
+				f *= (e %= 6) && e - 2 ? 1 : 0
+			}
+		}
+	}
+	return o;
+}
+
+pc.affiliateCookie = function() {
+	adNumCookie = readCookie('adnum');
+	if((!adNumCookie)||(adNumCookie=='4undefined')){
+		adNum=1;
+	}else{	
+		adNum=parseInt(adNumCookie.charAt(0));
+		adNum++;
+	}
+	createCookie('adnum',adNum);
+		affilCookie = readCookie('affilcookie');
+		affil = (affilCookie)?affilCookie:'none';
+		if (affil != 'none') {
+			pc.fwAppendKeyValues('affiliate='+affil);
+		}
+}
+
+pc.fwSeg = function() {
+ 	fwCookie = readCookie('CRBLM');
+ 	//fwCookie = segScores("CBLM-001:AAAAAAAB");
+ 	if (fwCookie != null) {
+ 		fwCookie = segScores(fwCookie);
+ 		fwCookieStr = "seg=";
+ 		for (var i in fwCookie) {
+ 			if (fwCookie[i] > 0) {
+ 				fwCookieStr = fwCookieStr + i +  "&seg=";
+ 			}
+ 		}
+ 		if(fwCookieStr.charAt(fwCookieStr.length-1)=='='){//remove trailing seg key
+ 			fwCookieStr = fwCookieStr.substring(0, fwCookieStr.length-5);
+ 		}
+ 		pc.fwAppendKeyValues(fwCookieStr);
+ 	}
+ }
+
+pc.fwAppendKeyValues = function(fwKV) {
+	if (abcnws_fw_params.keyValues != "") {
+		abcnws_fw_params.keyValues += "&" + fwKV;
+	} else {
+		abcnws_fw_params.keyValues = fwKV;
+	}
+}
+
+pc.fwGetSegValues = function (){
+    fwAdCookie = readCookie('CRBLM');
+    if (fwAdCookie != null) {
+        fwAdCookie = segScores(fwAdCookie);
+        fwAdCookieStr = "";
+        for (var i in fwAdCookie) {
+            if (fwAdCookie[i] > 0) {
+                fwAdCookieStr = fwAdCookieStr + "&seg=" + i;
+            }
+        }
+        return fwAdCookieStr;
+    } else {
+        return '';
+    }
+}
+
+pc.fwGetKeyValues = function(fwKV) {
+    var fwKeyValueObj = new Object();
+	if (fwKV != "") {
+	    var keyValuesArr = fwKV.split("&");
+        for(var i in keyValuesArr){
+            var keyval = keyValuesArr[i];
+            if(typeof keyval == "string"){
+                if(keyval.indexOf("=")>-1){
+                     var keyvals = keyval.split("=");
+                     fwKeyValueObj[keyvals[0]] = keyvals[1];
+                }
+            }
+        }
+	}
+	return fwKeyValueObj;
+}
+
+pc.fwUpdateKeyValues = function(key,value) {
+	if (abcnws_fw_params.keyValues != "") {
+		var temp = abcnws_fw_params.keyValues;
+		var start = temp.indexOf(key+"=");
+		var tempString = temp.substring(start, abcnws_fw_params.keyValues.length);
+		var end = tempString.indexOf("&");
+		if (end == -1) {
+			end = temp.length;
+		}
+		var removeString = abcnws_fw_params.keyValues.substring(start,end);
+		if (removeString.indexOf('&') == -1) {
+			removeString = abcnws_fw_params.keyValues.substring(start-1,end);
+		}
+		abcnws_fw_params.keyValues = temp.replace(removeString,"");
+		if (abcnws_fw_params.keyValues.charAt(0) == '&') {
+			abcnws_fw_params.keyValues = abcnws_fw_params.keyValues.substring(1,abcnws_fw_params.keyValues.length);
+		}
+		pc.fwAppendKeyValues(key+"="+value);
+	} else {
+		abcnws_fw_params.keyValues = key+"="+value;
+	}
+	//alert(abcnws_fw_params.keyValues);
+}
+
+pc.subsectionOverride = function() {
+	//console.log(' ***************** fw before = ' + abcnws_fw_params.keyValues + ' ************************ ');
+	//console.log(' ***************** tq = ' + tq.aoStr + ' ************************ ');
+	if(typeof tq != "undefined"){
+        if(tq.aoStr) {
+            tq.aoArr = tq.aoStr.split('~');
+            if(tq.aoArr.length > 2){
+                pc.fwUpdateKeyValues('subsection', 'override-'+tq.aoArr[2].toLowerCase());
+            }
+        } else if (tq.override) {
+            pc.fwUpdateKeyValues('subsection', 'override-'+tq.subsection);
+        }
+    }
+	//console.log(' ***************** fw after = ' + abcnws_fw_params.keyValues + ' ************************ ');
+}
+
+pc.fireBkTag = function(){
+   // bluekai
+   var s_omni_override = {
+	   prop4 : 'video',
+	   prop5 : '',
+	   prop15 : '',
+	   eVar2 : (typeof amp != "undefined") ? amp.evaluateBinding("#{media.metadata.omniture.eVar2}") : "",
+	   eVar20 : (typeof amp != "undefined") ? amp.evaluateBinding("#{media.metadata.omniture.eVar20}") : "",
+	   channel : (typeof amp != "undefined") ? amp.evaluateBinding("#{media.metadata.omniture.channel}") : ""
+   }
+   if(typeof bkInit != "undefined"){
+   		window.bkInit(s_omni_override);
+   }
+}
+
+if(typeof gSafeOnload == "undefined"){
+	var gSafeOnload = new Array(0);
+	var gSafeOnunload = new Array(0);
+	var gSafeResize = new Array(0);
+	var isWindowLoaded = false;
+
+	function SafeOnload()
+	{	var func;
+		isWindowLoaded = true;
+		while(gSafeOnload.length>0){
+			try{
+				func = gSafeOnload.shift();
+				func();
+			}
+			catch(e){}
+		}
+	}
+
+	function SafeOnunload()
+	{	var func;
+		while(gSafeOnunload.length>0){
+			try{
+				func = gSafeOnunload.shift();
+				func();
+			}
+			catch(e){}
+		}
+	}
+
+	if (window.onload != SafeOnload){
+		if  ((typeof window.onload) == "function"){
+			gSafeOnload.push(window.onload);
+		}
+		window.onload = SafeOnload;
+	}
+	if (window.onunload != SafeOnunload){
+		if  ((typeof window.onunload) == "function"){
+			gSafeOnunload.push(window.onunload);
+		}
+		window.onunload = SafeOnunload;
+	}
+	function addOnload(f){
+		if(!isWindowLoaded){
+			gSafeOnload.push(f);
+		}
+		else{
+			f();
+		}
+	}
+
+	function addOnunload(f){
+		gSafeOnunload.push(f);
+	}
+
+    function createCookie(name,value,days,domain) {
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime()+(days*24*60*60*1000));
+			var expires = "; expires="+date.toGMTString();
+		}
+		else var expires = "";
+
+    		if(domain !=null && typeof domain != 'undefined'){
+    			domain = "; domain=" + domain;
+    		}
+
+		document.cookie = name+"="+value+expires+domain+"; path=/";
+	}
+
+	function readCookie(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	}
+
+
+	function eraseCookie( name, path, domain ) {
+
+		if ( readCookie( name ) ) {
+			document.cookie = name + '=' +
+				( ( path ) ? ';path=' + path : '') +
+				( ( domain ) ? ';domain=' + domain : '' ) +
+				';expires=Thu, 01-Jan-1970 00:00:01 GMT';
+		}
+	}
+
+}
+
+
+

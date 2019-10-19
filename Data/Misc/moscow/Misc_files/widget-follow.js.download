@@ -1,0 +1,135 @@
+(function () {
+  var sdk = window.blSdk;
+
+  if (!sdk) { return; }
+
+  var type = 'follow',
+    // Globals
+    util = sdk.util,
+    getProperty = util.getProperty,
+    createWidget = util.createWidget,
+    find = util.find,
+    widgets = sdk.widgets,
+    callbacks = widgets.callbacks,
+    types = widgets.types,
+    embeds = widgets.embeds,
+    blogHrefPattern = new RegExp('^https?\\://(?:\\w+\\.)?bloglovin\\.com/blogs/(?:[A-Za-z0-9-]+\\-)?(\\d+)$');
+
+  if (typeof types[type] === 'function') { return; }
+
+  /**
+   * @summary Bloglovin E-mail Follow Widgets
+   *
+   * @description Creates widget of type "follow" for each supplied DOM element and replaces those elements with those widgets.
+   *
+   * @function blSdk.widgets.types.follow
+   * @param {Array.<HTMLElement>} embeds - the DOM elements to initialize widgets for and replace with
+   * @param {blSdk.widgets~loadCallback} [callback] - a callback to call once the widgets has been initialized
+   * @see blSdk.widgets.types~typeFollowInitiate
+   */
+  var typeFollow = types[type] = function (embeds, callback) {
+      find(embeds || [], typeFollowInitiate);
+      if (callback) {
+        callback(type);
+      }
+    },
+    typeFollowInitiate;
+
+  var isDevlovinDomain = function (href) {
+    return href.indexOf('.devlovin.com') !== -1;
+  };
+
+  var buildDevlovinHrefPattern = function (href) {
+    var parser = document.createElement('a');
+    parser.href = href;
+    return new RegExp('^https?\\://(?:\\w+)?-' + parser.hostname.split('-')[1].split('.')[0] +
+          '\.devlovin\\.com/blogs/(?:[A-Za-z0-9-]+\\-)?(\\d+)$');
+  };
+
+  /**
+   * @summary Creates an E-mail Follow Widget for the specified DOM element and replaces it with that
+   *
+   * @description Uses either the "href" property, see {@link blSdk.util.getProperty}, or the "href" attribute
+   * of the DOM element and matches that to a Bloglovin blog permalink to find which blog to create the widget for.
+   * If the specified "href" doesn't match the permalink pattern the DOM element won't be replaced.
+   * Creates a widget with the class name of {@link blSdk.widgetPrefix} + "follow" that's of fluid width and a fixed height.
+   *
+   * @function blSdk.widgets.types~typeFollowInitiate
+   * @param {HTMLElement} target - the DOM element to read configuration from and to replace
+   */
+  typeFollowInitiate = function (target) {
+    var href = getProperty(target, 'href') || target.href;
+
+    if (isDevlovinDomain(href)) {
+      blogHrefPattern = buildDevlovinHrefPattern(href);
+    }
+
+    if (!href || !blogHrefPattern.test(href)) { return; }
+
+    var blogId = parseInt(href.trim().replace(blogHrefPattern, '$1'), 10);
+
+    var widgetOptions;
+
+    var queryParams = {
+      id: blogId
+    };
+
+    var loggedOut = (getProperty(target, 'logged-out') || 'false').trim();
+    if (loggedOut === 'true') {
+      queryParams.loggedOut = loggedOut;
+    }
+
+    var trimmedType = (getProperty(target, 'type') || '').trim();
+    var counter;
+    if (trimmedType === 'button') {
+      counter = (getProperty(target, 'counter') || 'true').trim();
+      if (counter === 'false') {
+        queryParams.counter = counter;
+      }
+
+      widgetOptions = {
+        s: 'follow-btn',
+        q: queryParams,
+        t: 'follow-btn',
+        w: queryParams.counter === 'false' ? '110px' : '148px',
+        h: '20px'
+      };
+    } else if (trimmedType === 'raffle') {
+      counter = (getProperty(target, 'counter') || 'true').trim();
+      if (counter === 'false') {
+        queryParams.counter = counter;
+      }
+
+      widgetOptions = {
+        s: 'rafflecopter-btn',
+        q: queryParams,
+        t: 'rafflecopter-btn',
+        w: queryParams.counter === 'false' ? '110px' : '148px',
+        h: '20px'
+      };
+    } else {
+      widgetOptions = {
+        s: 'follow',
+        q: queryParams,
+        t: 'follow',
+        w: '100%',
+        h: '254px'
+      };
+    }
+
+    createWidget(target, widgetOptions);
+  };
+
+  // On load methods
+  if (embeds[type]) {
+    typeFollow(embeds[type]);
+    delete embeds[type];
+  }
+
+  if (callbacks[type]) {
+    find(callbacks[type], function (callback) {
+      callback(type);
+    });
+    delete callbacks[type];
+  }
+}());

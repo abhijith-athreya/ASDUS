@@ -1,0 +1,52 @@
+/*
+
+    LoadGigya
+    `````````````````
+
+    This object async loads the gigya api library and send a callack when it finish also if it already loaded, only send the callback.
+
+
+*/
+/*globals define, $, Modernizr, LazyLoad */
+define('loadGigya',[], function () {
+    return {
+        init: function (apiKey, callback) {
+            var cidToBePassed;
+
+            if ($('.vertically-centered a').next('a').length){
+                cidToBePassed = 'coca-cola-unbottled';
+            }
+            else {
+                cidToBePassed = 'journey';
+            }
+            window.__gigyaConf = {lang: tccc.global.lang};
+            apiKey = apiKey + "&cid=" + cidToBePassed;
+            // var params = {
+            //     cid:'testtesttest'
+            // };
+
+            // var gigyaUrl = 'http://cdn.gigya.com/js/gigya.js?apiKey=';
+            // CJISSUES-1275 - Changing Gigya URL if page is secure per Gigya documentation to use different subdomain
+/*            if (window.location.protocol === "https:"){
+            	gigyaUrl = '//cdns.gigya.com/js/gigya.js?apiKey=';
+            }*/
+
+            var gigyaUrl = 'https://cdns.gigya.com/js/gigya.js?apiKey=';
+
+            if (typeof CQ === 'undefined') {
+                LazyLoad.js(gigyaUrl + apiKey, function () {
+                    if (apiKey !== undefined && !tccc.global.gigya_available) {
+                        tccc.global.gigya_available = true;
+                        tccc.global.disable_sharebar = false;
+                        // notify subscribers that the Gigya API is available
+                        $(tccc.global).trigger(tccc.global.events.ON_GIGYA_READY);
+                    }
+                    callback();
+                });
+            }
+            else {
+                callback();
+            }
+        }
+    };
+});

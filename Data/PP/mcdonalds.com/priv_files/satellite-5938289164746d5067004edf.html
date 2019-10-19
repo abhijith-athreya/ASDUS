@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!-- saved from url=(0116)https://assets.adobedtm.com/b1e0f2f1c887c13d5a8d850fc709d9f680d2011c/scripts/satellite-5938289164746d5067004edf.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"></head><body>
+    <script>
+      (function(){
+        function escapeForHtml(str){
+          if (!str) return str
+          return str
+            .replace(/\&/g, '&amp;')
+            .replace(/\</g, '&lt;')
+            .replace(/\>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#x27;')
+            .replace(/\//g, '&#x2F;')
+        }
+
+        var regexChars = /[.*+?^${}()|[\]\\]/g;
+        function escapeForRegex(str) {
+          return str.replace(regexChars, "\\$&");
+        }
+
+        function parseQueryString(){
+          var ret = {}, parts = location.search.substring(1).split('&');
+          for (var i = parts.length; i--;) {
+            var vardef = parts[i].split('='), varname = vardef[0], value = vardef[1];
+            ret[varname] = unescape(value);
+          }
+          return ret;
+        }
+
+        var queryParams = parseQueryString();
+
+        var markup = "<!-- AK Ad Server Conversion Tag (Iframe) -->\n<iframe width=\"1\" height=\"1\" frameborder=\"0\" src=\"https://d.agkn.com/iframe/2669/?che=[cachebuster]&type=EALP\"></iframe>\n<!-- DSP Conversion Tag (Iframe) -->\n<iframe width=\"1\" height=\"1\" frameborder=\"0\" src=\"https://d.agkn.com/iframe/5279/?che=[cachebuster]&type=EALP\"></iframe>\n<!-- Retargeting Pixel -->\n<img src=https://secure.leadback.advertising.com/adcedge/lb?site=695501&srvc=1&betr=51519=1319622[720] width = 1 height = 1 border = 0>\n<!-- Conversion Pixel -->\n<img src=https://secure.ace-tag.advertising.com/action/type=126233/bins=1/rich=0/Mnum=1516/ width = 1 height= 1 border = 0>";
+
+        for (var name in queryParams){
+          var regex = new RegExp('%' + escapeForRegex(name) + '%', 'ig');
+          markup = markup.replace(regex, 
+            escapeForHtml(queryParams[name]));
+        }
+
+        document.write(markup)
+      })();
+    </script><!-- AK Ad Server Conversion Tag (Iframe) -->
+<iframe width="1" height="1" frameborder="0" src="./saved_resource.html"></iframe>
+<!-- DSP Conversion Tag (Iframe) -->
+<iframe width="1" height="1" frameborder="0" src="./saved_resource(1).html"></iframe>
+<!-- Retargeting Pixel -->
+<img src="https://secure.leadback.advertising.com/adcedge/lb?site=695501&amp;srvc=1&amp;betr=51519=1319622[720]" width="1" height="1" border="0" style="display: none !important;">
+<!-- Conversion Pixel -->
+<img src="https://secure.ace-tag.advertising.com/action/type=126233/bins=1/rich=0/Mnum=1516/" width="1" height="1" border="0" style="display: none !important;">
+  
+
+</body></html>

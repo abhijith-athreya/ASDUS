@@ -1,0 +1,331 @@
+	define([], function() {
+	    checkEnter = function(e, resultPage, isModal, sticky) {
+	        var characterCode;
+	        isModal = typeof(isModal) !== 'undefined' ? isModal : false;
+	        sticky = typeof(sticky) !== 'undefined' ? sticky : false;
+	        resultPage = typeof(resultPage) !== 'undefined' ? resultPage : false;
+	        if (e && e.which) {
+	            e = e;
+	            characterCode = e.which;
+	        } else {
+	            e = event;
+	            characterCode = e.keyCode;
+	        }
+
+	        if (resultPage == "news-releases" || resultPage == "news") {
+	            searchTxt = document.getElementById("searchNews").value;
+	        } else if (resultPage == "multimedia") {
+	            searchTxt = document.getElementById("searchMultimedia").value;
+	        } else if (resultPage == "solutions") {
+	            searchTxt = document.getElementById("searchSolutions").value;
+	        } else if (resultPage == "resources") {
+	            searchTxt = document.getElementById("searchResources").value;
+	        } else if (resultPage == "all") {
+	            searchTxt = document.getElementById("searchAll").value;
+			} else if (resultPage == "organizations") {
+	            searchTxt = document.getElementById("searchOrg").value;
+	        } else {
+	            searchTxt = document.getElementById("searchtxt").value;
+	        }
+	        if (characterCode == 13) {
+	            return validateChangeSearchURL(resultPage, isModal, sticky);
+	        } else {
+	            return true;
+	        }
+	    };
+
+	    srchValidate = function(resultPage, isModal, sticky) {
+	        isModal = typeof(isModal) !== 'undefined' ? isModal : false;
+	        sticky = typeof(sticky) !== 'undefined' ? sticky : false;
+	        resultPage = typeof(resultPage) !== 'undefined' ? resultPage : false;
+	        if (isModal && !sticky) {
+
+	            var txt = document.getElementById("searchModaltxt").value;
+	            //document.getElementById("searchModaltxt").value = txt.replace(/[^a-zA-Z0-9\@\#\%\/\$\!\&\-\"\.\,\'\s]/g, ''); //Remove any special characters
+	            var searchTxt = document.getElementById("searchModaltxt");
+	            var dvError = document.getElementById("dvModalError");
+	        } else if (sticky && !resultPage) {
+
+	            txt = document.getElementById("searchtxtSticky").value;
+	            //document.getElementById("searchtxtSticky").value = txt.replace(/[^a-zA-Z0-9\@\#\%\/\$\!\&\-\"\.\,\'\s]/g, '');        
+	            searchTxt = document.getElementById("searchtxtSticky");
+	            dvError = document.getElementById("dvErrorSticky");
+	        } else if (resultPage == "news-releases" || resultPage == "news") {
+
+	            var txt = document.getElementById("searchNews").value;
+	            //document.getElementById("searchNews").value = txt.replace(/[^a-zA-Z0-9\@\#\%\/\$\!\&\-\"\.\,\'\s]/g, ''); //Remove any special characters
+	            var searchTxt = document.getElementById("searchNews");
+	            var dvError = document.getElementsByClassName("qs-error");
+	        } else if (resultPage == "multimedia") {
+
+	            var txt = document.getElementById("searchMultimedia").value;
+	            //document.getElementById("searchMultimedia").value = txt.replace(/[^a-zA-Z0-9\@\#\%\/\$\!\&\-\"\.\,\'\s]/g, ''); //Remove any special characters
+	            var searchTxt = document.getElementById("searchNews");
+	            var dvError = document.getElementsByClassName("qs-error");
+	        } else if (resultPage == "solutions") {
+
+	            var txt = document.getElementById("searchSolutions").value;
+	            //document.getElementById("searchSolutions").value = txt.replace(/[^a-zA-Z0-9\@\#\%\/\$\!\&\-\"\.\,\'\s]/g, ''); //Remove any special characters
+	            var searchTxt = document.getElementById("searchSolutions");
+	            var dvError = document.getElementsByClassName("qs-error");
+	        } else if (resultPage == "resources") {
+
+	            var txt = document.getElementById("searchResources").value;
+	            //document.getElementById("searchResources").value = txt.replace(/[^a-zA-Z0-9\@\#\%\/\$\!\&\-\"\.\,\'\s]/g, ''); //Remove any special characters
+	            var searchTxt = document.getElementById("searchResources");
+	            var dvError = document.getElementsByClassName("qs-error");
+	        } else if (resultPage == "all") {
+
+	            var txt = document.getElementById("searchAll").value;
+	            //document.getElementById("searchAll").value = txt.replace(/[^a-zA-Z0-9\@\#\%\/\$\!\&\-\"\.\,\'\s]/g, ''); //Remove any special characters
+	            var searchTxt = document.getElementById("searchAll");
+	            var dvError = document.getElementsByClassName("qs-error");
+			} else if (resultPage == "organizations") {
+
+	            var txt = document.getElementById("searchOrg").value;
+	            //document.getElementById("searchOrg").value = txt.replace(/[^a-zA-Z0-9\@\#\%\/\$\!\&\-\"\.\,\'\s]/g, ''); //Remove any special characters
+	            var searchTxt = document.getElementById("searchOrg");
+	            var dvError = document.getElementsByClassName("qs-error");
+	        } else {
+
+	            var txt = document.getElementById("searchtxt").value;
+	            //document.getElementById("searchtxt").value = txt.replace(/[^a-zA-Z0-9\@\#\%\/\$\!\&\-\"\.\,\'\s]/g, ''); //Remove any special characters
+	            var searchTxt = document.getElementById("searchtxt");
+	            var dvError = document.getElementById("dvError");
+
+	        }
+	        if (txt.trim() == "" || txt.trim().length < 2) {
+	            var errorHTML = "<div class='alert alert-warning'>Please enter search terms.</div>";
+	            if (resultPage && resultPage !== "all-main") {
+	                dvError[0].innerHTML = errorHTML;
+	            } else {
+	                dvError.innerHTML = errorHTML;
+	            }
+	            document.getElementById("searchModaltxt").value = "";
+	            if (resultPage == "news-releases" || resultPage == "news") {
+	                document.getElementById("searchNews").value = "";
+	            } else if (resultPage == "multimedia") {
+	                document.getElementById("searchMultimedia").value = "";
+	            } else if (resultPage == "solutions") {
+	                document.getElementById("searchSolutions").value = "";
+	            } else if (resultPage == "resources") {
+	                document.getElementById("searchResources").value = "";
+	            } else if (resultPage == "all") {
+	                document.getElementById("searchAll").value = "";
+				} else if (resultPage == "organizations") {
+	                document.getElementById("searchOrg").value = "";	
+	            } else {
+	                document.getElementById("searchtxt").value = "";
+	                //document.getElementById("searchtxtSticky").value = "";
+	            }
+	            searchTxt.focus();
+	            return false;
+	        } else {
+	            if (txt.length > 255) {
+	                var errorHTML = "<div class='alert alert-warning'>Search terms cannot exceed 255 characters.</div>"
+	                dvError.innerHTML = errorHTML;
+	                searchTxt.focus();
+	                return false;
+	            } else {
+	                return true;
+	            }
+	        }
+	    };
+
+	    CloseError = function() {
+	        document.getElementById("dvError").style.display = "none";
+	    };
+
+	    signUpValidate = function() {
+	        var email = document.getElementById("Email").value;
+	        if (email == "") {
+	            document.getElementById("dvSignUpError").style.display = "inline";
+	            document.getElementById("lblSignUpError").innerHTML = "Please enter email address";
+	            document.getElementById("Email").focus();
+	            return false;
+	        } else {
+	            var emailValid = /^[a-zA-Z0-9_!&=`~#%'\/\$\^\|\+\?\{\}-]+(\.[a-zA-Z0-9_!&=`~#%'\/\$\^\|\+\?\{\}-]+)*@[a-zA-Z0-9]([a-zA-Z0-9_-])*(\.[a-zA-Z0-9][a-zA-Z0-9_-]*)+$/;
+	            if (!emailValid.test(email)) {
+	                document.getElementById("dvSignUpError").style.display = "inline";
+	                document.getElementById("lblSignUpError").innerHTML = "Please enter valid email address";
+	                document.getElementById("Email").focus();
+	                return false;
+	            }
+	        }
+	        return true;
+	    };
+
+	    CloseSignUpError = function() {
+	        document.getElementById("dvSignUpError").style.display = "none";
+	    };
+
+
+
+
+	    var currentSelectedState = "-1";
+	    SelectRegion = function(regionList) {
+	        document.getElementById("stateList_" + currentSelectedState).style.display = "none";
+	        currentSelectedState = regionList.options[regionList.selectedIndex].value;
+	        document.getElementById("stateList_" + currentSelectedState).style.display = "inline";
+	    };
+
+
+	    ToggleSearchCategories = function(parentFld, childCtrl) {
+	        if (parentFld.src.indexOf("open_PRN.gif") != "-1") {
+	            parentFld.src = "http://content.prnewswire.com/designimages/closed_PRN.gif";
+	            /* PRN-964 */
+	            document.getElementById(childCtrl).style.display = "block";
+	        } else {
+	            parentFld.src = "http://content.prnewswire.com/designimages/open_PRN.gif";
+	            document.getElementById(childCtrl).style.display = "none";
+	        }
+	    };
+
+	    ToggleAllSelection = function(parentSelection, childCtrl) {
+	        var childUl = document.getElementById(childCtrl);
+	        for (var i = 0; i < childUl.childNodes.length; i++) {
+	            var node = childUl.childNodes[i];
+
+	            if (node.nodeName == "LI") {
+	                for (var j = 0; j < node.childNodes.length; j++) {
+	                    var subNode = node.childNodes[j];
+	                    if (subNode.nodeName == "INPUT") {
+	                        subNode.checked = parentSelection;
+	                    }
+	                }
+	            }
+	        }
+	    };
+
+	    ResetAdvancedSearchFields = function() {
+	        document.getElementById("txtSearch").value = "";
+	        document.getElementById("ddldatePublished").selectedIndex = 0;
+
+	        //industries
+	        var counter = 0;
+	        for (var i = 0; i < document.forms[1].elements.length; i++) {
+	            if (document.forms[1].elements[i].nodeName == "INPUT")
+	                document.forms[1].elements[i].checked = false;
+	        }
+
+	    };
+
+	    // Commented the below function related to organization search to ignore this from Cat's Eye live.
+	    ValidateOrgSearch = function() {
+	        if (document.getElementById("txtOrgSearch").value == "") {
+	            document.getElementById("lblOrgError").style.display = "inline";
+	            document.getElementById("txtOrgSearch").focus();
+	            return false;
+	        } else {
+	            document.getElementById("lblOrgError").style.display = "none";
+	            document.orgSearch.submit();
+	        }
+	    };
+
+
+	    OnAdvSearchLoad = function() {
+	        var catArr = new Array();
+	        catArr[0] = "Industry";
+	        catArr[1] = "Subject";
+	        catArr[2] = "Geography";
+
+	        for (var catIndex = 0; catIndex < catArr.length; catIndex++) {
+
+
+	            var indCount = document.getElementById("hdn" + catArr[catIndex] + "Count").value;
+
+	            for (var indCounter = 1; indCounter <= indCount; indCounter++) {
+	                var chkCat = document.getElementById("chk" + catArr[catIndex] + indCounter);
+	                var ulCat = document.getElementById("ul" + catArr[catIndex] + indCounter);
+	                var chlCount = document.getElementById("hdn" + catArr[catIndex] + "Count" + indCounter).value;
+
+	                if (chkCat.checked == false) {
+	                    var isChildChecked = false;
+	                    for (var chlCounter = 1; chlCounter <= chlCount; chlCounter++) {
+	                        if (document.getElementById("chk" + catArr[catIndex] + indCounter + "chld" + chlCounter).checked == true) {
+	                            isChildChecked = true;
+	                            ToggleSearchCategories(document.getElementById("img" + catArr[catIndex] + indCounter), "ul" + catArr[catIndex] + indCounter);
+	                            break;
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	        window.scroll(0, 0);
+	    };
+
+	    // Added for SEO friendly search ULRs
+	    validateChangeSearchURL = function(resultPage, isModal, sticky) {
+	        isModal = typeof(isModal) !== 'undefined' ? isModal : false;
+	        sticky = typeof(sticky) !== 'undefined' ? sticky : false;
+	        resultPage = typeof(resultPage) !== 'undefined' ? resultPage : false;
+	        // Do validation, if validation fails then return immediately
+	        var validation = srchValidate(resultPage, isModal, sticky);
+	        if (!validation) {
+	            return false;
+	        }
+
+	        var searchForm = document.forms.searchOne;
+	        var redirectionUrl = '/search-results/';
+	        var searchTxt = "";
+	        if (isModal && !sticky) {
+	            searchTxt = document.getElementById("searchModaltxt").value;
+	        } else if (sticky && !resultPage) {
+	            searchTxt = document.getElementById("searchtxtSticky").value;
+	        } else if (resultPage == "news-releases" || resultPage == "news") {
+	            searchTxt = document.getElementById("searchNews").value;
+	        } else if (resultPage == "multimedia") {
+	            searchTxt = document.getElementById("searchMultimedia").value;
+	        } else if (resultPage == "solutions") {
+	            searchTxt = document.getElementById("searchSolutions").value;
+	        } else if (resultPage == "resources") {
+	            searchTxt = document.getElementById("searchResources").value;
+	        } else if (resultPage == "all") {
+	            searchTxt = document.getElementById("searchAll").value;
+			} else if (resultPage == "organizations") {
+	            searchTxt = document.getElementById("searchOrg").value;
+	        } else {
+	            searchTxt = document.getElementById("searchtxt").value;
+	        }
+	        if (resultPage == "all-main") {
+	            resultPage = "all";
+	        }
+	        //searchTxt = searchTxt.replace(/\s+/g, '+');
+	        searchTxt = encodeURIComponent(searchTxt);
+			if(resultPage == "country-news-section"){
+				var map = new Object(); // or var map = {};
+				map["/cs/"] = "czech";
+				map["/da/"] = "denmark";
+				map["/fi/"] = "finland";
+				map["/fr/"] = "france";
+				map["/de/"] = "germany";
+				map["/it/"] = "italy";
+				map["/nl/"] = "netherlands";
+				map["/no/"] = "norway";
+				map["/pl/"] = "poland";
+				map["/pt/"] = "portugal";
+				map["/ru/"] = "russia";
+				map["/sk/"] = "slovakia";
+				map["/es/"] = "spain";
+				map["/sv/"] = "sweden";
+				
+				var section = window.location.pathname;
+				var section = section.substring(0,4);
+				var lang = map[section];
+				if (typeof lang != 'undefined'){
+					redirectionUrl += 'news/' + encodeURI(searchTxt) + '-dateScore-all-Show All-page-1-pagesize-25-site-'+lang;
+					location.href = redirectionUrl;
+				}
+			}else {
+				redirectionUrl += resultPage + '/' + encodeURI(searchTxt) + '-dateScore-all-Show All-page-1-pagesize-25';
+				location.href = redirectionUrl;
+			}
+	        return false;
+
+	    };
+
+	    OpenPopup = function(url, name) {
+	        window.open(url, name, 'width=925,height=480,resizable=yes,scrollbars=yes');
+	    };
+	});
+

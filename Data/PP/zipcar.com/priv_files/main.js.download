@@ -1,0 +1,860 @@
+
+require(
+{
+    baseUrl: "https://media.zipcar.com/js"
+},
+[
+    "order!https://media.zipcar.com/js/third-party/jquery-ui-1.8.2/js/jquery-ui-1.8.2.custom.min.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery-ui-1.8.2/js/jquery-ui-1.8.2.extend.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/modules/widgets.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery-validate/jquery.validate.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/lodash.min.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery.datePicker.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/date.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery.ba-bbq.min.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jqModal.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery.placeheld.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery.jcarousel.custom.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery.swfobject.1-1-1.min.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/sprintf/sprintf.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/zc_util.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/global.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/zc-marketing.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery.textareaCounter.plugin.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/pure.js?v=1517931603&locale=en-US",
+    
+        "order!https://media.zipcar.com/registration/js/registration.js?v=1517931602&locale=en-US",
+    
+    "order!https://media.zipcar.com/js/citychooser.js?v=1517931603&locale=en-US",
+    //"styles/template/citychoosergeocoder"
+    // "zipsite/includes/map-js" this one needs to be converted a bit.
+    "order!https://media.zipcar.com/js/third-party/jquery.cookie.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/json.min.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery.ad-gallery.1.2.4/jquery.ad-gallery.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery-lightbox-0.5/js/jquery.lightbox-0.5.js?v=1517931603&locale=en-US",
+    "order!https://media.zipcar.com/js/third-party/jquery.maskedinput.min.js?v=1517931603&locale=en-US"
+], function() {
+    $(function() {
+        // plugins are now loaded
+        zc.Utils.catalog.register({
+                keys: [
+                   "zipsite.validation_errors_required",
+                   "zipsite.validation_errors_remote",
+                   "zipsite.validation_errors_email",
+                   "zipsite.validation_errors_phone",
+                   "zipsite.validation_errors_url",
+                   "zipsite.validation_errors_date",
+                   "zipsite.validation_errors_dateISO",
+                   "zipsite.validation_errors_number",
+                   "zipsite.validation_errors_digits",
+                   "zipsite.validation_errors_creditcard",
+                   "zipsite.validation_errors_csc",
+                   "zipsite.validation_errors_equalTo",
+                   "zipsite.validation_errors_accept",
+                   "zipsite.validation_errors_maxlength",
+                   "zipsite.validation_errors_minlength",
+                   "zipsite.validation_errors_rangelength",
+                   "zipsite.validation_errors_max",
+                   "zipsite.validation_errors_min",
+                   "zipsite.validation_errors_range"
+                ]
+        }, true);
+    });
+
+        // called then the DOM is loaded and ready
+    require.ready(function() {
+        // our document.ready blocks should move here, or be switched to be require.ready instead of document.ready
+
+        //apply automatic input clearing to the search input - add as needed
+        $("#searchform input, #birthdate-year, #license_expiration_year").inputClear();
+
+        // alternate version of the above plugin that pulls the label, sets as the input's default value and hides it.  so clever.
+        $("#searchform input, #notify-new-locations input, #gmaps-search input, #location-search, #company-search, #univ-search, .company-search").inputSetter();
+
+        // add class to replicate :hover for non a elements.  For drop downs and buttons for IE<=6.  Silly IE6.
+        if(document.all && !window.XMLHttpRequest){
+            $("#nav li, button, .nav-page li").hover(
+                    function() {
+                        $(this).addClass("over");
+                    },
+                    function() {
+                        $(this).removeClass("over");
+                    }
+            );
+            $(".png-btn").hover(
+                    function() {
+                        $(this).addClass("png-btn-over");
+                    },
+                    function() {
+                        $(this).removeClass("png-btn-over");
+                    }
+            );
+        }// if document.all
+
+        //locations toggle.  Note: Hide this sorta stuff with js, not css, in case js is disabled.
+        // note too, we're adding the class "js-on" to the revealed boxes so we can style and position the js version differently
+        // There is a bug with IE6/7 that forces the content in the footer down when this is revealed.  We're using js to move it up in the source order.
+        $("#where_are_cars").hide().addClass("js-on").prepend("<a href='#' class='close jqmClose'>close</a>");
+
+        $("#where_are_cars a.close").click(function () {
+            $('#where_are_cars_wrapper').jqmHide();
+        });
+
+        $("#where_are_cars h3.nojsfriendly").hide();
+        $("#locations-toggle").click(function(){
+            // $("#where_are_cars").slideToggle(300)
+            var wacw = $('#where_are_cars_wrapper');
+            // having this overlay set to something > 0 seems to prevent firefox
+            // rendering bug where background image appears to smear during slide down
+            if (overlay > 1) {
+                overlay = 1;
+                wacw.jqmShow();
+            } else {
+                wacw.jqmHide();
+            }
+            return false;
+        });
+
+
+    //      // inner univerities listing show/hide.  we're setting the text of the span via js so that when there's no js present,
+    //      // we don''t have meaningless text on the page about toggling.  instead we just have a heading for the list.
+    //      // same with the little arrow - added via class="open/closed" here in the js.
+    //          $("#where_are_cars h3 span").show().addClass("open").text("expand to see");
+    //      $("#where_are_cars .universities").hide();
+    //      $("#where_are_cars h3.toggle-uni").toggle(
+    //          function () {
+    //              $("#where_are_cars .universities").slideDown(200);
+    //              $(this).find("span").addClass("closed").removeClass("open").text("collapse to hide");
+    //
+    //          },
+    //          function () {
+    //              $("#where_are_cars .universities").slideUp(200);
+    //              $(this).find("span").addClass("open").removeClass("closed").text("expand to see");
+    //          });
+
+
+        // sign up form for notify inside of locations drop down
+        $("#notify-new-locations").addClass("click-me").hide();
+        $("#notify-new-locations").prev().addClass("click-me").click(function(){
+            $("#notify-new-locations").toggle();
+        });
+
+        try {
+            //Did you know? content flipper
+            $("#did-you-know .container ").jCarouselLite({
+                btnNext: "#did-you-know .prev",
+                btnPrev: "#did-you-know .next",
+                visible: "1",
+                speed:   425
+            });
+        } catch (e) {};
+
+        // add class "last" to the last li in any list.  Used as a styling hook since :last-child isn't widely supported via css.  thank you jquery.
+        $("ul li:last-child").addClass("last");
+        $("tr > td:first-child, tr > th:first-child").addClass("first");
+        $("tr > td:last-child, tr > th:last-child").addClass("last");
+        $("table > tbody > tr:first-child").addClass("first");
+        $("table > tbody > tr:last-child").addClass("last");
+
+        /*
+        add <a>s with class "vertical-more"  to your page, give each one an id
+        then on the hidden "more" element add the class "vertical-more-info" and the id of the <a>
+        */
+        $(".vertical-more").click(function () {
+            var toggleId = $(this).attr("id");
+            //console.log("toggleId: " + toggleId + " IcanhazClass: " + $(this).hasClass("vertical-more-on"));
+            var pseudoId = "." + toggleId;
+
+            if ($(this).hasClass("close-others")) {
+
+                $(".vertical-more-info").hide(300);
+
+                if ($(this).hasClass("vertical-more-on")) {
+                    $(this).removeClass("vertical-more-on");
+                    $(pseudoId).slideUp(300);
+                } else {
+                    $(pseudoId).slideDown(300);
+                    $("a.vertical-more").removeClass("vertical-more-on");
+                    $(this).addClass("vertical-more-on");
+                }
+
+            } else {
+                $(this).toggleClass("vertical-more-on");
+                $(pseudoId).slideToggle(300);
+            }
+
+            return false;
+
+        });
+
+        // tooltips
+        // we can't use .hover shorthand because it isn't a live handler.
+        $(".hovertip").live('mouseenter', function(e) {
+            // move the title attribute out of place so that the client doesnt make tooltips too
+            var t;
+            if ($(this).attr('title')) {
+                t = $(this).attr('title');
+                $(this).attr('data-title', t).attr('title', '');
+            } else {
+                t = $(this).attr('data-title');
+            }
+
+            if (t) {
+                var tipHtml = "<div class='tooltipoverlay s-grey-border'><p class='no-margin'>"+t+"</p></div>";
+                // position this tooltip near your cursor. we should probably have a max width to this thing too.
+
+                // TODO: NOTE: jquery bug: IE7 returns the wrong value for the offset when
+                // the page has scrolled, so we have to compensate here.
+                var scrollpos;
+                if ($.browser.msie && parseInt($.browser.version, 10) == 7) {
+                    scrollpos = document.documentElement.scrollTop;
+                } else {
+                    scrollpos = 0;
+                }
+
+                var o = $(this).offset();
+                $('body').append(tipHtml);
+                $('.tooltipoverlay')
+                    .offset({ top: o.top + scrollpos + $(this).height() + 10, left: o.left - 10})
+                    .append("<div class='up-triangle'><div class='up-triangle-inner'></div></div>");
+
+                // position the triangular pointer thing in the right place now too
+                $('.up-triangle').css('left', Math.min(Math.max($(this).width()/2 + 2,5), 25));
+            }
+        });
+        $(".hovertip").live('mouseleave', function(e) {
+            $('.tooltipoverlay').hide().remove();
+        });
+
+
+        // togglesets -- hopefully this is similar to the admin side implementation
+        $(".toggler").live('click', function() {
+            // find my parent that is a toggleset, then find its ancestor that is a togglee.
+            // closest can start with yourself
+            $(this).closest(".toggleset").find(".togglee:first").slideToggle();
+
+            // flip classes on toggling elements
+            $(this).find(".icn-toggle, .icn-toggled").each(function() {
+                if ($(this).hasClass("icn-toggle")) {
+                    $(this).addClass("icn-toggled").removeClass("icn-toggle");
+                } else {
+                    $(this).addClass("icn-toggle").removeClass("icn-toggled");
+                }
+            });
+
+            return false;
+        });
+
+        // sometimes we want to toggle all togglees within a container.
+        // this doesn't simulate clicks on other elements in case there is more than one
+        // toggler for a togglee
+        $(".toggleall").live('click', function() {
+            // find out if this link should be toggling up or down
+            if ($(this).attr('data-toggle-mode') == "show") {
+                $(this).closest(".togglesetall").find(".togglee").slideDown().end()
+                    .find(".icn-toggle").addClass("icn-toggled").removeClass("icn-toggle").end()
+                    .find(".toggleall[data-toggle-mode=show]").hide().end()
+                    .find(".toggleall[data-toggle-mode=hide]").show();
+            } else if ($(this).attr('data-toggle-mode') == "hide") {
+                // should hiding be the default or should we do nothing?
+                $(this).closest(".togglesetall").find(".togglee").slideUp().end()
+                    .find(".icn-toggled").addClass("icn-toggle").removeClass("icn-toggled").end()
+                    .find(".toggleall[data-toggle-mode=hide]").hide().end()
+                    .find(".toggleall[data-toggle-mode=show]").show();
+            } else {
+                // toggle all the togglees in the toggleset
+                // we adjust the scroll of the document in case the page got really
+                // short during our toggle.
+                var t = $(document).scrollTop();
+                $(this).closest(".togglesetall").find(".togglee").toggle();
+                $(document).scrollTop(t);
+            }
+
+            return false;
+        });
+
+        // togglees that are inside togglers we don't want clicking them to toggle themselves
+        $(".toggler .togglee").live('click', function(event) {
+            event.stopPropagation();
+        });
+
+        // ajax loading links.. can these be similar to toggling links?
+        // find a parent and then find an ancestor?
+        $("a.ajax-content").live('click', function() {
+            // find the container that we should load in, then make a request to the url and fill it in.
+            var s = $(this).closest(".ajax-content-set");
+            var ajax_options;
+            var append = false;
+            var data_options, href;
+
+            // this gives us the option of having the set also be the container.
+            if (!s.hasClass("ajax-content-container")) {
+                var s = s.find(".ajax-content-container");
+            }
+
+            // this should look at data-options and parse some json to get an option value
+            ajax_options = $.parseJSON($(this).attr('data-options'));
+            if (ajax_options) {
+                append = ajax_options.append;
+            }
+
+            if (append) {
+                // TODO: if we are appending, then we will want to make sure that this isn't firing multiple times before we get a result back..
+                // check to see if anything that has been appended has a new place for us to load from
+                data_options = s.find("[data-options]").last().attr("data-options");
+                if (data_options) {
+                    href = $.parseJSON(data_options).href;
+                }
+
+                if (!href) {
+                    href = $(this).attr("href");
+                }
+
+                $.ajax({
+                    url: href,
+                    success: function(data) {
+                        s.append(data);
+                        // check to see if we are all done with this ajax appender
+                        data_options = s.find("[data-options]").last().attr("data-options");
+                        if (data_options && $.parseJSON(data_options).complete) {
+                            $(this).hide();
+                        }
+                    },
+                    error: function(xhr, status, errmsg) {
+                        $(this).hide();
+                    }
+                });
+            } else {
+                s.load($(this).attr('href'));
+            }
+
+            return false;
+        });
+
+        // same concept for dropdowns
+        $("select.ajax-content").live('change', function() {
+            // find the container that we should load in, then make a request to the url and fill it in.
+            var s = $(this).closest(".ajax-content-set");
+
+            // this gives us the option of having the set also be the container.
+            if (!s.hasClass("ajax-content-container")) {
+                var s = s.find(".ajax-content-container");
+            }
+
+            s.load($(this).val());
+        });
+
+
+        var $modalObject = $(".modal-ajax");
+
+        //check if we autopopup the modal
+        if($modalObject.attr('data-auto-popup') == "1") {
+        	modalajaxclick($modalObject);
+        };
+
+        // member side equivalent for ajax links
+        $modalObject.live('click', function(){
+        	modalajaxclick($(this));
+        	return false;
+       });
+
+
+        // easily hook up maps to divs.
+        // 'click'
+        $("[data-role=map]").each( function(index) {
+            var lat = $(this).attr("data-map-lat");
+            var lng = $(this).attr("data-map-lng");
+
+            var latlng = new google.maps.LatLng( $(this).attr("data-map-lat"), lng );
+
+            var myOptions = {
+                zoom: 15,
+                center: latlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                disableDefaultUI: true,
+                draggable: true,
+                scrollwheel: true
+            };
+
+            var the_map = new google.maps.Map(this, myOptions);
+
+            var loc_marker = new google.maps.Marker({
+                        position: latlng,
+                        map: the_map,
+                        icon: "/images/zipmarker.png"
+            });
+
+            g_map_elements[this.id] = the_map;
+        });
+
+        // TODO: should be .live when we aren't using 1.2.6
+        $(".expand[data-expand],.expanded[data-expand]").bind('click', function () {
+            // only flip the class on this element if it has childtren it will be showing/hiding
+            if ($(".expand-details[data-expand="+$(this).attr("data-expand")+"]").length > 0) {
+                if ($(this).hasClass("expanded")) {
+                    $(this).removeClass("expanded").addClass("expand");
+                } else {
+                    $(this).removeClass("expand").addClass("expanded");
+                }
+                $(".expand-details[data-expand="+$(this).attr("data-expand")+"]").slideToggle('slow');
+                // this could be converted into expanding a sibling of the expand-details class.
+                // which would remove the use for having data-expand attributes (yay less attributes)
+            }
+        });
+
+        // TODO: should be .live when we aren't using 1.2.6
+        $("[data-role=toggle]").bind('click', function() {
+            var toggle_text = $(this).attr("data-toggle-text");
+            if (toggle_text) {
+                $(this).attr("data-toggle-text",$(this).html());
+                $(this).html(toggle_text);
+            }
+
+            var group = $(this).attr("data-group");
+            var el = $(this).attr("data-expand");
+
+            if (group) {
+                $("[data-role=toggled][data-group="+group+"][data-expand!="+el+"]:visible").each( function() {
+                    // if we are toggling something, make sure its toggler gets its text toggled too
+                    var my_el = $(this).attr("data-expand");
+                    $("[data-role=toggle][data-group="+group+"][data-expand="+my_el+"]").each( function () {
+                        var toggle_text = $(this).attr("data-toggle-text");
+                        if (toggle_text) {
+                            $(this).attr("data-toggle-text",$(this).html());
+                            $(this).html(toggle_text);
+                        }
+                    });
+
+                    $(this).hide();
+                });
+            }
+
+            $("[data-role=toggled][data-expand="+el+"]")
+                .toggle()
+                .find("[data-role=map]").each( function() {
+                    // this recenters the map and make sure it's the size it's supposed to be
+                    // it's lame to have this tied in here.
+                    var lat = $(this).attr("data-map-lat");
+                    var lng = $(this).attr("data-map-lng");
+
+                    var latlng = new google.maps.LatLng( lat, lng );
+                    var the_map = g_map_elements[this.id];
+                    google.maps.event.trigger(the_map, 'resize');
+                    the_map.setCenter(latlng);
+                });
+
+            return false;
+        });
+
+        // TODO: should be .live when we aren't using 1.2.6
+        $("[data-role=ajax]").bind('click', function() {
+            // make an ajax request to the href of this element.. TODO what happens if we have params?
+            // keep "this" handy for callbacks. since the callback's "this" will be a different "this"
+            var driver = this;
+
+            // hide the results and potentially show an 'in-process' item
+            $(driver).siblings("[data-role=ajax-success],[data-role=ajax-failure]").hide();
+            $(driver).siblings("[data-role=ajax-running]").show();
+
+            $.ajax({
+                url: $(this).attr("href"),
+                type: "get",
+                complete: function (xhr, textStatus) {
+                    $(driver).siblings("[data-role=ajax-running]").hide();
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    $(driver).siblings("[data-role=ajax-failure]").fadeIn("slow");
+                },
+                success: function (data, textStatus, xhr) {
+                    $(driver).siblings("[data-role=ajax-success]").fadeIn("slow");
+                }
+            });
+
+            return false;
+        });
+
+        $("[data-role=toggled],[data-role=ajax-success],[data-role=ajax-failure],[data-role=ajax-running]").hide();
+
+        // things that should be the same height
+        // thirds-list is a convenience; it might be worth it to switch that
+        // to just use height_set_keys
+        $(".thirds-list").each(function () {
+            // first figure out which one of the children is the tallest
+            // then set the other children to be the same height
+            var height = 0;
+            $(this).children("li").each( function () {
+               if ($(this).height() > height) {
+                    height = $(this).height();
+                }
+            });
+
+            if (height > 0) {
+                $(this).children("li").height(height);
+                $(this).children("li.bordered").children("div").height(height);
+            }
+        });
+
+        // make things in the same height set the same height
+        // some designs like having columns that are the same height but aren't tabular data.
+        // this is the compromise.
+        var height_set_keys = new Array();
+        $("[data-height-set]").each(function () {
+            //build a set of different sets so that we can then go through and adjust them once instead of n times.
+            // if this key isn't already here, add it.
+            var this_key = $(this).attr("data-height-set");
+            var existing_key = 0;
+            for (var i=0;i<height_set_keys.length;i++) {
+                if (height_set_keys[i] == this_key) {
+                    existing_key = 1;
+                }
+            }
+
+            if (!existing_key) {
+                height_set_keys.push(this_key);
+            }
+        });
+
+        for (var i=0; i<height_set_keys.length; i++) {
+            var height = 0;
+            $("[data-height-set="+height_set_keys[i]+"]").each( function () {
+                if ($(this).height() > height) {
+                    height = $(this).height();
+                }
+            });
+
+            if (height > 0) {
+                $("[data-height-set="+height_set_keys[i]+"]").height(height);
+            }
+        }
+
+
+        // see if we need to adjust some links
+        // NOTE: this is just on the meantime links because more is a generic class..
+        // this takes these links, which we know have a background image
+        // and moves the class to the last word in the content of the link
+        // TODO: how can we feature detect this limitation and make this only happen
+        // for browsers that misplace the background when a link wraps...?
+        if ($.browser.msie) {
+            $(".meantime a.more").each(function () {
+                var contents = jQuery.trim($(this).html());
+                var a = contents.split(/\s/);
+                a[a.length - 1] = "<span>" + a[a.length - 1] + "</span>";
+                $(this).html(a.join(" "));
+
+                $(this).removeClass("more");
+                $(this).find("span:last-child").addClass("more");
+            });
+        }
+
+
+        // load flash videos
+        if ($.flash.hasVersion(8)) {
+            $(".flash-content").each(function() {
+                $(this).flash({
+                    swf: $(this).attr("data-swf"),
+                    height: $(this).attr("data-height"),
+                    width: $(this).attr("data-width"),
+                    name: $(this).attr("data-swf"),
+
+                    allowScriptAccess: "always",
+                    allowFullScreen: "false",
+                    quality: "high",
+                    bgcolor: "#ffffff",
+                    wmode: "transparent",
+
+                    flashvars: $.parseJSON($(this).attr("data-flashvars"))
+                });
+            });
+        } else {
+            // we dont have new enough flash, show the no flash versions
+            $(".flash-content").each(function() {
+                $(this).hide().nextAll(".no-flash-content").first().show();
+            });
+        }
+
+        // initiate printing on print pages. make this be delayed for a second
+        // to let other require.readys fire in time
+        if($("body").hasClass("print")) {
+            setTimeout("window.print()", 750);
+        }
+
+        var myMap = null;
+        var galleries = $('.ad-gallery').adGallery({
+            width: 912,
+            height: 684,
+            display_next_and_prev: false,
+            display_back_and_forward: false,
+            callbacks : {
+                afterImageVisible: function(new_image, old_image) {
+                   if( this.current_index == 0 ) {
+                       if( this.current_image )
+                            this.current_image.hide();
+                       if( zipmap )
+                            myMap = zipmap;
+                        var map = $("#sbl_map").detach();
+                        $(".ad-image-wrapper").append( map );
+                        $("#mapContainer").show();
+                        $(".ad-image-wrapper").data( "map", true );
+                        if( myMap )
+                            google.maps.event.trigger( myMap, 'resize');
+
+                   } else {
+                         $("#mapContainer").hide();
+                         $(".ad-image-wrapper").data( "map", false );
+                   }
+                }
+            }
+        });
+
+        //create a show more link
+        $('.show-more-link').click(function(event) {
+            var showMoreClass = '.' + $(this).attr('data-show-class');
+            $(showMoreClass).fadeIn();
+            $(this).hide();
+            return false;
+        });
+
+            //if there is a clickid query param, set that as a cookie
+            if (getQueryParam('clickid')) {
+                var cookieName = "google_affiliate_click_id";
+                var host = window.location.hostname.replace(/^www\./, '');
+                $.cookie(cookieName, getQueryParam('clickid'), { secure: true, domain: '.'+host, path: '/' });
+            }
+
+        $('.add-more').click(function(event) {
+            var template = $('#' + $(this).attr('data-template')).html();
+            var $container = $('#' + $(this).attr('data-container'));
+
+            //add the content from the template to the container
+            $container.append($(template));
+
+            return false;
+        });
+
+        $('.ajax_form').submit(function(event) {
+            var $form = $(this);
+            var formData = {};
+
+            jQuery.map($form.serializeArray(), function(n, i){
+                if (n['value'])
+               {
+                    //if input is a number, convert it to an int
+                   if (n['value'].match(/^[0-9]+$/)) {
+                       n['value'] = parseInt(n['value']);
+                    }
+
+                   //this code checks if there is a value stored in for the form element we are
+                    //iterating over
+                    if (!formData[n['name']]) {
+                        formData[n['name']] = n['value'];
+                    } else {
+                        if (typeof(formData[n['name']])=='object'&&(formData[n['name']] instanceof Array))
+                        {
+                            //the formData entry is an array, push the new data to the array
+                            formData[n['name']].push(n['value']);
+                        } else {
+                            //there is only one item in the formData entry, create a new array
+                            var newArray = new Array(n['value'], formData[n['name']]);
+                            formData[n['name']] = newArray;
+                        }
+                    }
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: $form.attr('action'),
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                beforeSend: function(xhr) {
+                    //unload events in IE don't set the global options
+                    //for ajaxSend correctly to specify here
+                    //xhr.setRequestHeader("Content-Type", "application/json");
+                    xhr.setRequestHeader("X-Zc-Use-Site-Cookies", "true");
+
+                    //hide the success and failure containers
+                    $('#' + $form.attr('data-success-container')).hide();
+                    $('#' + $form.attr('data-errors-container')).html('');
+                    $('#' + $form.attr('data-errors-container')).hide();
+
+                    return true;
+                },
+                success: function(response, status, jqXHR) {
+                    if (response.success) {
+                        var successContainer = '#' + $form.attr('data-success-container');
+                        $(successContainer).fadeIn();
+
+                        //clear the form
+                        $form.find(':input').each(function(item) {
+                            var $this = $(this);
+                            if ($this.attr('type') != 'hidden')
+                            {
+                                if ($this.attr('data-default-message')) {
+                                    $this.val($this.attr('data-default-message'));
+                                } else {
+                                    $this.val('');
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        var errorsContainer = '#' + $form.attr('data-errors-container');
+                        $.each(response.errors, function(error)
+                        {
+                            $(errorsContainer).append('<li>'+this+'</li>');
+                        });
+                        $(errorsContainer).show();
+                    }
+                },
+                dataType: "json"
+            });
+
+            return false;
+        });
+
+    });
+});
+
+
+function postload(load_id, load_type, load_url, load_data, run_next) {
+    // this is an async call so that we can have timeouts
+    $.ajax({
+        type: "GET",
+        url: load_url,
+        data: load_data,
+        dataType: load_type,
+        timeout: 2000,
+        success: function(data, textStatus) {
+            if(data && load_id != null) {
+                $('#'+load_id).html(data);
+            }
+
+            // if the caller provided a subsequent function to run do it
+            if (run_next) {
+                run_next(data);
+            }
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            // see if there is error content to replace the async content
+            if (load_id != null) {
+                $('#'+load_id+'-nojs').show();
+            }
+        }
+    });
+
+}
+
+
+function modalajaxclick(pDoc) {
+    // NOTE: this height here is what enforces the 'min-height' for the popoverlay
+    // it also 'knows' about the margins on the h2 magically
+    var minHeight = 150;
+    var curheight;
+    var windowOffset;
+    var data_width = pDoc.attr('data-width');
+    // some browsers work with html, some with body, some with window. none of these three work consistently across all browsers.
+    // unsupported ones return 0, so we can just get the max of a few different lookups.
+    var scrollpos = Math.max($("html").scrollTop(),$("body").scrollTop());
+
+    // keep track of the element clicked so we can refer to it during our load
+    var el = pDoc;
+    var loadingHtml = "<div><h2 class='loading'>Loading...</h2></div>";
+
+    if ($("#popoverlay").length == 0) {
+        // create and initialize the overlay
+        // ie7 seems to not do so well when this is rounded by dd_roundies.. and is thus not having the s-grey-border class.
+        // the s-grey-border-no-dd class will be round in browsers that support it, but not in IE
+        $('body').append('<div id="popoverlay" class="m-padding s-grey-border-no-dd" style="width:'+data_width+';"><a class="jqmclose close" href="#">close</a><div></div></div>');
+        // adjust the top offset so that it always starts near the top of the page
+        $("#popoverlay").css('left', ($(window).width() - $("#popoverlay").outerWidth(true))/2);
+        $("#popoverlay").css('top', $(window).height() * .15 + scrollpos).jqm({
+            overlay: 50,
+            toTop: true,
+            width: data_width,
+            closeClass: 'jqmclose',
+            onShow: function(h) {
+                h.w.fadeIn(500);
+            },
+            onHide: function(h) {
+                h.o.remove();
+                h.w.fadeOut(500);
+            }
+        }).jqmShow();
+        $("#popoverlay > div").html(loadingHtml).find(".loading").parent().height(minHeight);
+    } else {
+        // reset the position of the overlay (in case you scrolled around after expanding line items,
+        // we don't want this overlay to start off the screen)
+        $("#popoverlay").css('left', ($(window).width() - $("#popoverlay").outerWidth(true))/2);
+        $("#popoverlay").css('top', Math.min($(window).height() * .15 + scrollpos, $("body").height() - $(window).height() * .85));
+        if ($("#popoverlay:visible").length > 0) {
+            // if the overlay is visible, don't change its height
+            curheight = $("#popoverlay > div").height() - 125;
+            $("#popoverlay > div").html(loadingHtml).find(".loading").parent().height(curheight);
+        } else {
+            // if the overlay isn't visible, use the default minimum height
+            $("#popoverlay > div").html(loadingHtml).find(".loading").parent().height(minHeight);
+            $("#popoverlay").jqmShow();
+        }
+    }
+
+    // we load this manually instead of using the jqm load functionality
+    // so that we can have consistent features added here instead of all the
+    // individual pages (e.g. close link in the upper right)
+    // NOTE: this means that they will not have pages be browersercached at all.
+    // double Note: this delay here is so that we don't have a jarring flash
+    // but actually see the loading indicator for a short time. this unfortunately
+    // is outright adding load times to these popups... might be better to perform
+    // a get and figure out the duration of time spent waiting and then only
+    // wait longer if it wasn't up to a minimum time..
+    $("#popoverlay > div").delay(300).queue(function() {
+        $(this).load(el.attr('href'), function(response, status, xhr) {
+            if (status == "error") {
+                // error loading -- feedback to user?
+            } else {
+                $(this).hide().fadeIn('slow').dequeue();
+            }
+
+            // this should be done with .live instead somehow.
+            // we don't want all these manipulations to be copied to every ajax call
+            $("ul li:last-child").addClass("last");
+            $("tr > td:first-child, tr > th:first-child").addClass("first");
+            $("tr > td:last-child, tr > th:last-child").addClass("last");
+            $("table > tbody > tr:first-child").addClass("first");
+            $("table > tbody > tr:last-child").addClass("last");
+        });
+    });
+
+    return false;
+};
+
+function toggle_login_form() {
+    //show hide the login form
+    //this needs to be done after postloading so that the sign in form actually exists.
+    $("#sign-in").addClass("js-on").hide();
+    $("#sign-in").prepend("<a href='#' class='close'>close</a>");
+    $("#sign-in a.close").click(function() {
+        $("#sign-in").slideToggle(200);
+        $("#signin-trigger").toggleClass("active")
+        return false;
+    });
+    $("#signin-trigger").click(function() {
+        $("#sign-in").slideToggle(200, function() {
+            $("#sign-in #user_name").focus();
+        });
+        $(this).toggleClass("active")
+        return false;
+    });
+
+    // city chooser needs to be labeled after the city is figured out
+    $("#location-search").inputSetter();
+}
+
+function getQueryParam(name) {
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+    var results = regex.exec(window.location.search);
+    if (results == null) {
+        return "";
+    } else {
+        return results[1];
+    }
+}

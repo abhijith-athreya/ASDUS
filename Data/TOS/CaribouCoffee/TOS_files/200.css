@@ -1,0 +1,1626 @@
+/*******************************************************/
+/*                  GLOBAL STYLES                       /
+********************************************************/
+
+@font-face {
+  font-family: 'NeutraText-Demi';
+  src: url('/media/document/1/neutratextdemieot.eot'); /* IE9 Compat Modes */
+  /* .eot?iefix - IE6-IE8 , .woff - Modern Browsers, .ttf - Safari, Android, iOS, .otf - OpenType!, .svg# - Legacy iOS */
+  src: url('/media/document/1/neutratextdemieot.eot?#iefix') format('embedded-opentype'),
+    url('/media/document/1/neutratextdemiwoff.woff') format('woff'),
+    url('/media/document/1/neutratextdemittf.ttf')  format('truetype'),
+    url("/media/document/1/neutratextdemiotf.otf")  format('opentype');
+}
+
+
+/* CSS NORMALIZE ------ begin */
+
+/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
+
+/**
+ * 1. Change the default font family in all browsers (opinionated).
+ * 2. Correct the line height in all browsers.
+ * 3. Prevent adjustments of font size after orientation changes in
+ *    IE on Windows Phone and in iOS.
+ */
+
+/* Document
+   ========================================================================== */
+
+html {
+  font-family: sans-serif; /* 1 */
+  line-height: 1.15; /* 2 */
+  -ms-text-size-adjust: 100%; /* 3 */
+  -webkit-text-size-adjust: 100%; /* 3 */
+}
+
+/* Sections
+   ========================================================================== */
+
+/**
+ * Remove the margin in all browsers (opinionated).
+ */
+
+body {
+  margin: 0;
+}
+
+/**
+ * Add the correct display in IE 9-.
+ */
+
+article,
+aside,
+footer,
+header,
+nav,
+section {
+  display: block;
+}
+
+/**
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
+ */
+
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+/* Grouping content
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 9-.
+ * 1. Add the correct display in IE.
+ */
+
+figcaption,
+figure,
+main { /* 1 */
+  display: block;
+}
+
+/**
+ * Add the correct margin in IE 8.
+ */
+
+figure {
+  margin: 1em 40px;
+}
+
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+
+hr {
+  box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+pre {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/* Text-level semantics
+   ========================================================================== */
+
+/**
+ * 1. Remove the gray background on active links in IE 10.
+ * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
+ */
+
+a {
+  background-color: transparent; /* 1 */
+  -webkit-text-decoration-skip: objects; /* 2 */
+}
+
+/**
+ * Remove the outline on focused links when they are also active or hovered
+ * in all browsers (opinionated).
+ */
+
+a:active,
+a:hover {
+  outline-width: 0;
+}
+
+/**
+ * 1. Remove the bottom border in Firefox 39-.
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+
+abbr[title] {
+  border-bottom: none; /* 1 */
+  text-decoration: underline; /* 2 */
+  text-decoration: underline dotted; /* 2 */
+}
+
+/**
+ * Prevent the duplicate application of `bolder` by the next rule in Safari 6.
+ */
+
+b,
+strong {
+  font-weight: inherit;
+}
+
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+code,
+kbd,
+samp {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/**
+ * Add the correct font style in Android 4.3-.
+ */
+
+dfn {
+  font-style: italic;
+}
+
+/**
+ * Add the correct background and color in IE 9-.
+ */
+
+mark {
+  background-color: #ff0;
+  color: #000;
+}
+
+/**
+ * Add the correct font size in all browsers.
+ */
+
+small {
+  font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/* Embedded content
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 9-.
+ */
+
+audio,
+video {
+  display: inline-block;
+}
+
+/**
+ * Add the correct display in iOS 4-7.
+ */
+
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+/**
+ * Remove the border on images inside links in IE 10-.
+ */
+
+img {
+  border-style: none;
+}
+
+/**
+ * Hide the overflow in IE.
+ */
+
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/* Forms
+   ========================================================================== */
+
+/**
+ * 1. Change the font styles in all browsers (opinionated).
+ * 2. Remove the margin in Firefox and Safari.
+ */
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: sans-serif; /* 1 */
+  font-size: 100%; /* 1 */
+  line-height: 1.15; /* 1 */
+  margin: 0; /* 2 */
+}
+
+/**
+ * Show the overflow in IE.
+ * 1. Show the overflow in Edge.
+ */
+
+button,
+input { /* 1 */
+  overflow: visible;
+}
+
+/**
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
+ */
+
+button,
+select { /* 1 */
+  text-transform: none;
+}
+
+/**
+ * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`
+ *    controls in Android 4.
+ * 2. Correct the inability to style clickable types in iOS and Safari.
+ */
+
+button,
+html [type="button"], /* 1 */
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button; /* 2 */
+}
+
+/**
+ * Remove the inner border and padding in Firefox.
+ */
+
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+/**
+ * Restore the focus styles unset by the previous rule.
+ */
+
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+/**
+ * Change the border, margin, and padding in all browsers (opinionated).
+ */
+
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
+ */
+
+legend {
+  box-sizing: border-box; /* 1 */
+  color: inherit; /* 2 */
+  display: table; /* 1 */
+  max-width: 100%; /* 1 */
+  padding: 0; /* 3 */
+  white-space: normal; /* 1 */
+}
+
+/**
+ * 1. Add the correct display in IE 9-.
+ * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.
+ */
+
+progress {
+  display: inline-block; /* 1 */
+  vertical-align: baseline; /* 2 */
+}
+
+/**
+ * Remove the default vertical scrollbar in IE.
+ */
+
+textarea {
+  overflow: auto;
+}
+
+/**
+ * 1. Add the correct box sizing in IE 10-.
+ * 2. Remove the padding in IE 10-.
+ */
+
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+
+/**
+ * Correct the cursor style of increment and decrement buttons in Chrome.
+ */
+
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/**
+ * 1. Correct the odd appearance in Chrome and Safari.
+ * 2. Correct the outline style in Safari.
+ */
+
+[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/**
+ * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.
+ */
+
+[type="search"]::-webkit-search-cancel-button,
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/**
+ * 1. Correct the inability to style clickable types in iOS and Safari.
+ * 2. Change font properties to `inherit` in Safari.
+ */
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/* Interactive
+   ========================================================================== */
+
+/*
+ * Add the correct display in IE 9-.
+ * 1. Add the correct display in Edge, IE, and Firefox.
+ */
+
+details, /* 1 */
+menu {
+  display: block;
+}
+
+/*
+ * Add the correct display in all browsers.
+ */
+
+summary {
+  display: list-item;
+}
+
+/* Scripting
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 9-.
+ */
+
+canvas {
+  display: inline-block;
+}
+
+/**
+ * Add the correct display in IE.
+ */
+
+template {
+  display: none;
+}
+
+/* Hidden
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 10-.
+ */
+
+[hidden] {
+  display: none;
+}
+
+/* CSS NORMALIZE ------ end */
+
+
+
+/* NOTES  This file contains styles that are common to many pages
+  throughout the Caribou site.
+********************************************************/
+/* GLOBAL STYLES
+********************************************************/
+* { margin: 0;  padding: 0; }
+img, fieldset, abbr, acronym { border: 0; }
+.hidden {display: none;  }
+table { border-collapse: collapse; border-spacing: 0; }
+a { text-decoration: none; color: #402a1c; }
+a:visited { color: #402a1c; }
+a:hover { color: #402a1c; text-decoration: none;  }
+html, body { padding: 0; height: 100%;  }
+body {
+/*   font-size: 90%; */
+  font-family: Arial, Helvetica, sans-serif;
+  color: #2f1d0e;
+  /*background: #efe7dc url(http://cache.cariboucoffee.com/bg_whiteBurlap.jpg);*/
+  margin: 0 auto;
+}
+hr {
+  clear: left;
+  height: 1px;
+  border: 0;
+  margin: 7px 0 6px 0;
+  font-size: 0;
+  line-height: 0;
+  color: #bcb5a3;
+  background-color: #bcb5a3;
+}
+
+/* CONTAINER
+This container has four children: lantern, wrap,
+bookends, and footer.
+********************************************************/
+div#container { position: relative; min-height: 100%; min-width: 970px; }
+
+/* WRAP
+The container has three children: header, main,  and bizFooter.
+********************************************************/
+div#wrap {
+  position: relative;
+  overflow: hidden;
+  width: 970px;
+  z-index: 200;
+  padding-bottom: 117px;
+  margin: 0 auto;
+}
+div#container.home div#wrap {
+  padding-bottom:75px;
+  width: 1000px;
+}
+
+/* HEADER
+Header has three possible children: persNav,
+persNavCorporate, and shoppingCart.
+********************************************************/
+div#header {
+  position: relative;
+  display: inline;
+  float: left;
+  min-height: 70px;
+  width: 930px;
+  margin: 30px 0 0 20px;
+}
+div#header a { color: #fff; text-decoration:none; }
+
+/* LOGO AND TAGLINE
+********************************************************/
+div#header a#logo {
+  float: left;
+  display: block;
+  width: 368px;
+  height: 54px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+div#header p.primeTagLine {
+  float: right;
+  display: block;
+  width: 380px;
+  height: 32px;
+  margin: 15px 25px 0 0;
+  text-indent: -9999em;
+  background: url(http://cache.cariboucoffee.com/redesign/tagline_stayawake.png) no-repeat;
+}
+
+/* PERSISTENT NAVIGATION
+   This is the top-most navigation that includes Sign In,  Find a Location, Customer Service, etc.
+********************************************************/
+ul#persNav {
+  float: left;
+  display: inline;
+  width: 100%;
+  margin: 10px 0 .5em 0;
+  list-style: none;
+  font-size: 77%;
+  padding-bottom: 5px;
+}
+
+ul#persNav li { float: left; padding: 0 11px 0 0; }
+ul#persNav li.selected a { color: #2f1d0e; }
+ul#persNav li.current a { color: #2f1d0e; }
+ul#persNav a {
+  padding: 0 0 0 8px;
+  color: #2f1d0e;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+ul#persNav li#shoppingCart { padding: 0; }
+ul#persNav li#shoppingCart span.items { color: #75b1be; font-weight: bold; padding: 5px; }
+ul#persNav li#shoppingCart span.full {
+  color: #FFF;
+  background-color: #75b1be;
+  margin-left: 5px;
+  border: 1px solid #456064;
+  border-left-width: 0px;
+  border-top-width: 0px;
+}
+
+/* CORPORATE PERSISTENT NAVIGATION
+This is the top-most navigation on corporate pages. It  contains the Shop Cariboucoffee.com link.
+********************************************************/
+ul#persNavCorporate {
+  float: left;
+  display: inline;
+  width: 100%;
+  margin: 10px 0 .5em 0;
+  list-style: none;
+  font-size: 77%;
+}
+ul#persNavCorporate li {float: left; padding: 0 11px 0 0; }
+ul#persNavCorporate li.current a {color: #2f1d0e;}
+ul#persNavCorporate a { padding: 0 0 0 8px; color: #2f1d0e; }
+
+/* MAIN
+   This is a container for the "main" page content. There
+   are four color themes that you can specify using the  class: newyorkTheme, arizonaTheme, montanaTheme, and  oregonTheme. Main has five possible children: primNav,
+   categoryHeader, leftbar, content, and rightbar.
+********************************************************/
+div#main {
+  display: inline;
+  float: left;
+  width: 930px;
+  padding-bottom: 20px;
+  margin: 5px 0 0 20px;
+}
+
+/* Main HOME
+   This is the Main content column on the home page.
+********************************************************/
+div#mainHome {
+  display:inline;
+  float:left;
+  margin:5px 0 0 25px;
+  padding-bottom: 20px;
+  margin: 5px 0 0 20px;
+  width: 970px;
+}
+
+/* PRIMARY NAVIGATION
+   This is the main page navigation. It includes Home,
+   Shop Online, About Our Coffee, Menu & Nutrution, etc.
+********************************************************/
+div#navWrap {
+  float: left;
+  background: url(http://cache.cariboucoffee.com/redesign/bg_nav_rightcap.gif) no-repeat right top;
+  position: relative;
+  left: -20px;
+}
+
+div#mainHome div#navWrap { background: none; }
+
+ul#primNav {
+  float: left;
+  display: inline;
+  height: 34px;
+  width: 917px;
+  padding-left: 18px;
+  list-style: none;
+  background: url(http://cache.cariboucoffee.com/redesign/bg_nav.gif) no-repeat;
+}
+div#mainHome ul#primNav {width: 744px;}
+div#mainHome div#navWrap { padding-right: 29px; width: 744px;}
+ul#primNav li { float: left; height: 34px; padding: 0 8px; }
+ul#primNav li a {
+  display: block;
+  height: 34px;
+  text-indent: -9999em;
+  overflow: hidden;
+  background-repeat: no-repeat;
+}
+div#mainHome ul#primNav li.current,
+div#mainHome ul#primNav li:hover,
+div#main ul#primNav li.current,
+div#main ul#primNav li:hover { background: url(http://cache.cariboucoffee.com/redesign/hover.jpg) repeat-x; }
+
+ul#primNav li#navHome a { width: 44px; background: url(http://cache.cariboucoffee.com/redesign/nav_home.png); }
+ul#primNav li#navShop a { width: 98px; background: url(http://cache.cariboucoffee.com/redesign/nav_shop.png); }
+ul#primNav li#navAbout a { width: 143px; background: url(http://cache.cariboucoffee.com/redesign/nav_about.png); }
+ul#primNav li#navMenu a { width: 135px; background: url(http://cache.cariboucoffee.com/redesign/nav_menu.png); }
+ul#primNav li#navLocations a { width: 82px; background: url(http://cache.cariboucoffee.com/redesign/nav_locations.png); }
+ul#primNav li#navGiftcard a { width: 117px; background: url(http://cache.cariboucoffee.com/redesign/nav_giftcards.png); }
+ul#primNav li#navCaribrew a { display: none; width: 120px; background: url(http://cache.cariboucoffee.com/redesign/nav_caribrew.png);  }
+
+
+/* CORPORATE PRIMARY NAVIGATION
+  This is the main navigation on the corporate pages. It
+  includes Our Company, Wholesale, Franchising, etc.
+********************************************************/
+ul#primNavCorporate {
+  float: left;
+  display: inline;
+  height: 34px;
+  width: 908px;
+  padding-left: 27px;
+  list-style: none;
+  background: url(http://cache.cariboucoffee.com/redesign/bg_nav.gif) no-repeat;
+}
+ul#primNavCorporate li a {
+  display: block;
+  height: 34px;
+  text-indent: -9999em;
+  overflow: hidden;
+  background-repeat: no-repeat;
+}
+ul#primNavCorporate li { float: left; height: 34px; padding: 0 8px;  }
+
+div#main ul#primNavCorporate li.current,
+div#main ul#primNavCorporate li:hover { background: url(http://cache.cariboucoffee.com/redesign/hover.jpg) repeat-x; }
+ul#primNavCorporate li#navCorpIdent,
+div#main ul#primNavCorporate li#navCorpIdent:hover {
+  background: url(http://cache.cariboucoffee.com/redesign/nav_corp_identity.png) no-repeat;
+  width: 232px;
+  text-indent: -9999em;
+}
+
+ul#primNavCorporate li#navOurCompany a { width: 109px; background: url(http://cache.cariboucoffee.com/redesign/nav_company.png); }
+ul#primNavCorporate li#navWholesale a { width: 90px; background: url(http://cache.cariboucoffee.com/redesign/nav_wholesale.png); }
+ul#primNavCorporate li#navFranchising a { width: 97px; background: url(http://cache.cariboucoffee.com/redesign/nav_franchising.png); }
+ul#primNavCorporate li#navLicensing a { width: 76px; background: url(http://cache.cariboucoffee.com/redesign/nav_licensing.png); }
+ul#primNavCorporate li#navCareers a { width: 65px; background: url(http://cache.cariboucoffee.com/redesign/nav_careers.png); }
+ul#primNavCorporate li#navInvestors a { width: 84px; background: url(http://cache.cariboucoffee.com/redesign/nav_investors.png); }
+
+/* SUB NAV
+   This is the blackboard menu that appears on some pages.
+   It has one parent: leftbar.
+********************************************************/
+div#subNav {
+  position: relative;
+  float: left;
+  width: 233px;
+  margin-top: 12px;
+  background: url(http://cache.cariboucoffee.com/redesign/bg_subnav.gif) repeat-y;
+}
+
+div#subNav ul {
+  float: left;
+  width: 233px;
+  padding: 8px 0 5px;
+  list-style: none;
+  font-size: 100%;
+  margin: 0;
+}
+
+div#subNav ul li {
+  float: left;
+  width: 233px;
+  font-size: 77%;
+  line-height: 100%;
+  padding: 3px 0 5px;
+  text-transform: uppercase;
+  background: url(http://cache.cariboucoffee.com/redesign/div_subnavline.gif) no-repeat left bottom;
+}
+div#subNav ul li a {
+  position: relative;
+  float: left;
+  display: block;
+  padding: 5px 5px 5px 30px;
+  color: #2f1d0e;
+  font-weight: bold;
+}
+
+div#subNav ul li a:hover,
+div#subNav ul li.current a {
+  color: #FFF;
+  background: url(http://cache.cariboucoffee.com/redesign/icon_navbean.png) no-repeat;
+  text-decoration: none;
+}
+
+div#subNav ul li.back a {
+  background: url(http://cache.cariboucoffee.com/redesign/bg_navbean_back.png) no-repeat;
+  padding-left: 60px;
+}
+
+/* CATEGORY HEADER
+   This is the optional banner section that appears on some
+   pages. It has three possible children: accentTop, banner,  and subNav.
+********************************************************/
+div#categoryHeader { position: relative; float: left; padding-top: 10px;  }
+
+/* BANNER
+   This is a container for the banner image and text that
+   appear near the top of some category pages. It is always
+   nested inside categoryHeader.
+********************************************************/
+div#banner { position: relative; float: left; }
+div#banner.big{ width: 910px; margin-bottom:13px; }
+div#banner div#heading { position: absolute; bottom: 42px; right: 47px; }
+div#banner div#heading.left { left: 47px; }
+div#banner div#heading h1 {
+  text-align: right;
+  font-size: 167%;
+  line-height: 100%;
+  text-transform: uppercase;
+  color: #fff;
+}
+div#banner div#heading.left h1 { text-align: left; }
+div#banner div#heading p {
+  text-align: right;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #fff;
+}
+div#banner div#heading.left p { text-align: left; }
+div#banner div#actionItem { position: absolute; width: 14em; bottom: 62px; right: 32px; }
+div#banner div#actionItem h4 {
+  font-size: 83%;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #c0750b;
+}
+div#banner div#actionItem p {padding-bottom: 10px; font-size: 85%; color: #fff; }
+
+/* LEFT BAR
+   The leftbar has several possible children: subNav, note,
+   video, hr, h2, h3, h4, p, ul, and ol.
+********************************************************/
+div#leftContainer { width: 234px; float: left; }
+div#leftbar {
+  position: relative;
+  float: left;
+  width: 191px;
+  padding: 12px 0 0 15px;
+}
+
+div#leftbar.aboutStyle { float: right; width: 241px; padding-left: 0;}
+
+div#leftbar h2 {
+  padding-bottom: 13px;
+  font-size: 100%;
+  text-transform: uppercase;
+  color: #2f1d0e;
+}
+div#leftbar h3 {
+  padding-bottom: 13px;
+  font-size: 100%;
+  color: #2f1d0e;
+}
+div#leftbar h4 {
+  font-size: 77%;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #2f1d0e;
+}
+div#leftbar p,
+div#leftbar address {
+  padding-bottom: 10px;
+  font-size: 85%;
+  font-style: normal;
+}
+div#leftbar p.tiny { font-size: 77%; }
+div#leftbar b a,
+div#leftbar strong a {
+  padding-right: 7px;
+  font-size: 91%;
+  font-weight: bold;
+}
+div#leftbar ul { padding: 0 0 10px 15px; font-size: 85%; }
+div#leftbar ol { padding: 0 0 10px 20px; font-size: 85%;  }
+
+/* CONTENT
+   This is the center content column. For two-column
+   layouts, set class="wide". Content has several possible
+   children: h1, h2, h3, p, ul, featureRow, featureRowLeft,  and featureColumn.
+********************************************************/
+div#content {
+  float: left;
+  width: 458px;
+  padding: 20px 20px 0 20px;
+  overflow: hidden;
+  font-size: 90%;
+}
+/*
+div#content * {
+    margin: 0;
+}
+*/
+div#content.wide { width: 634px; }
+div#content h1 {
+  padding-bottom: 4px;
+  font-size: 167%;
+  text-transform: uppercase;
+  color: #36332f;
+}
+div#content h1 span {
+  padding-left: 10px;
+  font-size: 90%;
+  text-transform: none;
+  color: #74644b;
+}
+
+/*Added by Ben Seymour 1/17/08*/
+div#content h1 span.secondLine { padding-left: 0px; }
+div#content h2 {
+  clear: left;
+  padding: 0 0 10px 0;
+  font-size: 116%;
+  color: #36332f;
+}
+div#content h3 {
+  padding-top: 10px;
+  font-size: 93%;
+  text-transform: uppercase;
+  color: #36332f;
+}
+div#content h3.top { padding-top: 0; }
+div#content h3.uLine
+/* Added by Ben Seymour, 1/23/08*/
+{
+  border-bottom: solid 1px #bcb5a3;
+  padding-bottom: 5px;
+}
+div#content h3.uLinePlusSpaceBelow
+/* Added by Ben Seymour, 1/23/08*/
+{
+  border-bottom: solid 1px #bcb5a3;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+div#content p {
+  max-width: 620px;
+  padding-bottom: 10px;
+  font-size: 93%;
+}
+
+div#content p a {
+  color: #208d9e;
+}
+
+div#content b a,
+div#content strong a {
+  display: block;
+  padding: 15px 0 0 0;
+  font-weight: bold;
+}
+div#content p.leftArrow b a,
+div#content p.leftArrow strong a { padding-left: 7px; }
+div#content ul,  div#content ol { padding: 0 0 10px 15px; font-size: 93%; }
+
+/* RIGHT BAR
+   The rightbar has several possible children: note,
+   video, hr, h2, h3, h4, p, ul, and ol. Set class="middle"
+   to accommodate unbalanced layouts like the one on the
+   Beverage Detail page.
+********************************************************/
+div#rightbar {
+  float: right;
+  width: 191px;
+  padding: 12px 0 0 0;
+  overflow: hidden;
+}
+div#rightbar.middle { float: left; padding: 12px 0 0 5px; width: 193px; }
+div#rightbar h2 {
+  padding-bottom: 13px;
+  font-size: 108%;
+  text-transform: uppercase;
+  color: #2f1d0e;
+}
+div#rightbar h3 {
+  padding-bottom: 13px;
+  font-size: 100%;
+  color: #2f1d0e;
+}
+
+div#rightbar.middle h3 { padding: 10px 0 5px 0; }
+div#rightbar h4 {
+  font-size: 77%;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #2f1d0e;
+}
+
+div#rightbar p,
+div#rightbar address {
+  padding-bottom: 10px;
+  font-size: 85%;
+  font-style: normal;
+}
+div#rightbar p.tiny { font-size: 77%; }
+div#rightbar b a,
+div#rightbar strong a {
+  padding-right: 7px;
+  font-size: 91%;
+  font-weight: bold;
+}
+div#rightbar ul { padding: 0 0 10px 15px; font-size: 85%; float: left;}
+div#rightbar ol { padding: 0 0 10px 20px; font-size: 85%; }
+
+/* FOOTER
+   This is a container for the bottom navigation. It
+   includes Your Privancy, Terms of Use, and copyright
+   information.
+********************************************************/
+div#footer {
+  float: left;
+  height: 117px;
+  width: 100%;
+  color: #FFF;
+  position:absolute;
+  bottom: 0;
+  background: #312014 url(http://cache.cariboucoffee.com/redesign/bg_mainfooter.jpg) repeat-x;
+  z-index: 500;
+}
+div#container.home div#footer { height: 75px; }
+div#container div.homeFooter { background: none; }
+div#container div.homeFooter div#footerWrap { background: none;}
+div#container div.homeFooter ul#bizFooter a { padding-top: 5px; color:#2e1d0f; border-bottom: 0; }
+div#container div.homeFooter ul#legal a {color:#2e1d0f;}
+div#container div.homeFooter ul li { color:#2e1d0f; background: url(http://cache.cariboucoffee.com/redesign/divider_homefooter.gif) 100% 60% no-repeat; }
+div#container div.homeFooter ul li.first { background: none; }
+
+div#footer div#footerWrap {
+  margin: 20px auto 0;
+  width: 1000px;
+  height: 97px;
+  background: url(http://cache.cariboucoffee.com/redesign/bg_footerbeans.png) no-repeat;
+  overflow: hidden;
+}
+div#container.home div#footer div#footerWrap { height: 55px; }
+div#footer ul {
+  float: left;
+  display: inline;
+  width: 900px;
+  padding-left: 100px;
+  list-style: none;
+}
+
+div.home div#footer ul {
+  padding-left: 36px;
+}
+
+div#footer ul li {
+  float: left;
+  padding: 0 6px;
+  font-size: 77%;
+  color: #FFF;
+  background: url(http://cache.cariboucoffee.com/redesign/bg_footer_pipe.gif) 100% 50% no-repeat;
+}
+
+div#footer ul li.first { padding-left: 0; }
+div#footer ul li.last, 
+div#container div.homeFooter ul li.last { background: none; }
+div#container div.homeFooter ul li.mobile a { 
+background: url(http://cboucache.s3.amazonaws.com/icon_mobile.png) no-repeat;
+}
+div#footer ul li.mobile a { 
+  background: url(http://cboucache.s3.amazonaws.com/icon_mobile-white.png) no-repeat;
+  height: 23px;
+  display: block;
+  padding-left: 20px;
+  border-bottom: 0;
+}
+div#footer li a {
+  position: relative;
+  color: #FFF; z-index: 900;
+  border-bottom: 2px solid #8b837c;
+  display: block;
+}
+ul#bizFooter {
+  float: left;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 10px 0;
+}
+ul#bizFooter li {
+  float: left;
+  text-transform: uppercase;
+  font-size: 73%;
+  font-weight: bold;
+}
+ul#bizFooter li a { padding-top: 5px; }
+div#footer ul#socialMedia li,  div#footer ul#legal li { background: none; }
+ul#socialMedia {padding-top: 20px;}
+ul#socialMedia li { padding: 0; }
+ul#socialMedia li a { border: 0; padding: 0 4px;}
+ul#socialMedia li span { padding-top: 3px; display: block;}
+
+/*******************************************************/
+/*                      WIDGETS                         /
+********************************************************/
+/* VIDEO
+   This is a container for flash video widget. It has two
+   possible parents: leftbar and rightbar.
+********************************************************/
+div.video { float: left; padding: 0 4px 20px 4px; }
+div.video h5 {
+  padding-top: 10px;
+  color: #402A1C;
+}
+div.video div.videoContent {
+  float: left;
+  padding: 10px 10px 7px 10px;
+  background: #f5f1ea;
+}
+div.videoContent h4 { padding: 2px 0 0 0; }
+div#rightbar div.videoContent p,
+div#leftbar div.videoContent p { padding: 0; }
+
+
+/* FEATURE
+   This is a container for the feature widget. It has
+   several possible parents. It may appear alone in the
+   leftbar or rightbar. It may also appear in the content
+   container, but only if nested within featureRow,
+   featureRowLeft, or featureColumn.
+********************************************************/
+div#content div.featureRow { float: left; width: 458px; }
+div#content div.faq div.featureRow { float: left; width: 650px; }
+div#content div.faq div.featureRow div.feature { padding: 0 0 10px 14px; }
+div#content div.featureRow h2 { text-transform: uppercase; padding: 0 14px 16px 14px; }
+div#content div.featureRow div.feature { padding: 0 14px 10px 14px; }
+div#content div.featureRow div.feature p { font-size: 85%; }
+div#content div.featureRowLeft { float: left; width: 692px; }
+div#content div.featureRowLeft h2 { text-transform: uppercase; }
+div#content div.featureRowLeft div.feature { padding: 0 30px 10px 0; }
+div#content div.featureRowLeft div.feature p { font-size: 85%; width: 196px; }
+div#content div.featureColumn { float: left; width: 228px; }
+div#content div.featureColumn h2 { font-size: 93%; text-transform: uppercase; padding: 0 14px 16px 14px; }
+div#content div.featureColumn div.feature { width: 200px; padding: 0 14px 10px 14px; }
+div#content div.featureColumn div.feature p { font-size: 85%; }
+div.feature { float: left; width: 200px; padding-bottom: 10px; }
+div#leftbar div.feature, div#rightbar div.feature { width: 180px; overflow: hidden; }
+div.feature h4 {
+  display: inline;
+  font-size: 77%;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #36332f;
+}
+div.feature p { padding-bottom: 10px; font-size: 85%; }
+div.feature b a,  div.feature strong a { padding-right: 7px; font-weight: bold; }
+div.feature img { padding-bottom: 5px; }
+
+/* 2010 Redesign square features */
+div#content div.featureRow div.square { width: 275px; padding-right: 25px; }
+div.square h4 {color: #402a1c; font-size: 90%; padding-top: 5px; text-transform: none; padding-bottom: 10px; display: block; padding-left: 5px;}
+div#content div.featureRow div.square p {font-size: 85%; line-height: 1.5; padding-left: 5px;}
+
+/* STICKY NOTE
+   This is a container for the sticky note widget. It has
+   two possible parents: leftbar and rightbar.
+********************************************************/
+div.note {
+  position: relative;
+  float: left;
+  padding-bottom: 20px;
+  width: 190px;
+}
+div#main div.note a { color: #75b1be; font-size: 100%;}
+div#leftbar div.note h3,
+div#rightbar div.note h3,
+div#main div.location div.note h3 {
+  float: left;
+  width: 116px;
+  height: 22px;
+  padding: 14px 16px 10px 58px;
+  font-size: 85%;
+  line-height: 100%;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #FFF;
+  background: #f5f1ea url(http://cache.cariboucoffee.com/redesign/bg_sidecolheader.gif) no-repeat;
+}
+
+div.note div.noteContent {
+  font-size: 95%;
+  line-height: 1.5;
+  float: left;
+  width: 162px;
+  padding: 28px 14px 30px 14px;
+  background:transparent url(http://cache.cariboucoffee.com/redesign/bg_groceryboxbody.gif) no-repeat scroll right bottom;
+}
+div#rightbar div.note div.noteContent ol {
+  list-style: none outside;
+  margin: 0 0 4px 0;
+  padding: 4px 0 0 0;
+  border-top: 1px dotted #36332f;
+  display: block;
+  float: left;
+  width: 100%;
+}
+div#rightbar div.note div.noteContent ol li.byline {
+  float: right;
+  display: block;
+  color: #36332f;
+  padding-bottom: 4px;
+}
+div#rightbar div.note div.noteContent p {
+  float: left;
+  display: block;
+  width: 162px;
+}
+div.note span.div {
+  background: url(http://cache.cariboucoffee.com/redesign/divider_sidecol.gif) no-repeat;
+  width: 198px;
+  height: 5px;
+  display: block;
+}
+div.note p, div.note address { color: #36332f; }
+div#rightbar div.note p.stock,
+div#leftbar div.note p.stock {
+  padding: 15px 0 5px 0;
+  font-size: 116%;
+  font-weight: bold;
+  font-family: Arial;
+  color: #75b1be;
+  width: 162px;
+}
+div.note p.stock em { font-style: normal; }
+div.note p.stock span.down em { font-style: normal; }
+div.note label { font-weight: bold; }
+div.note label span { font-weight: normal; }
+div.note input.text {
+  border: 0;
+  padding: 3px;
+  margin-top: 5px;
+  font-size: 85%;
+}
+div.note input.checkbox { margin-top: 10px; }
+div.note input#city { width: 108px; margin-right: 5px; }
+div.note input#state { width: 20px; }
+div.note input#zip { width: 35px; }
+div.note table { margin-bottom: 10px; width: 162px; float: left; }
+div.note table tr td {
+  padding-left: 20px;
+  text-align: left;
+  font-size: 85%;
+  font-weight: normal;
+}
+div.note table tr th { text-align: left; font-size: 85%; font-weight: normal; }
+
+/* UTILITIES
+   This is the utility navigation found on some pages such
+   as News Release. It includes PDF, Print, and Email. It
+   has one parent: content.
+********************************************************/
+ul#utilities {
+  position: absolute;
+  right: 60px;
+  margin-top: -30px;
+  list-style: none;
+}
+ul#utilities li {
+  float: left;
+  width: 25px;
+  height: 31px;
+  margin-left: 20px;
+  text-indent: -9999em;
+}
+ul#utilities li a {
+  display: block;
+  width: 25px;
+  height: 31px;
+  overflow: hidden;
+}
+ul#utilities li.pdf { background: url(http://cache.cariboucoffee.com/redesign/icon_pdf.png) no-repeat; }
+ul#utilities li.print { background: url(http://cache.cariboucoffee.com/redesign/icon_print.png) no-repeat; }
+ul#utilities li.email { background: url(http://cache.cariboucoffee.com/redesign/icon_email.png) no-repeat; }      
+
+/* FORM
+   Styling for forms. It has one parent: content.
+********************************************************/
+div#form {
+  float: left;
+  width: 410px;
+  padding: 20px 20px 50px 20px;
+  margin-bottom: 10px;
+  background: #e0d6bb;
+}
+div#content.wide div#form { width: 621px; }
+div#form ol { padding: 0; }
+div#form ol li { padding-bottom: 15px; list-style: none; }    /* Added by Ben Seymour, 1/12/08*/
+div#form ul { margin: 0 0 10px 15px; }    /* Added by Ben Seymour, 1/12/08*/
+div#form ul li { margin: 2px 0 0 0; padding: 0; }    /* Added by Ben Seymour, 1/12/08*/
+div#form ol li ul { margin: 0 0 0 15px; }    /* Added by Ben Seymour, 1/12/08*/
+div#form ol li ul li { margin: 2px 0 0 0; padding: 0; list-style-type: disc; }    /* Added by Ben Seymour, 1/12/08*/
+div#form ol li ul li.first { margin-top: 10px; }
+div#form label { line-height: 146.5%; font-weight: bold; color: #36332f; }
+div#form label.small { font-size: 77%; font-weight: normal; }
+div#form label.light { font-weight: normal; }
+div#form input.text { width: 300px; padding: 2px; }
+div#form input.short { width: 150px; }
+div#form input.button { margin-top: 10px; }
+div#form select { width: 308px; padding: 2px; }
+div#form option { padding-left: 2px; }
+div#form textarea { width: 400px; height: 100px; padding: 2px; }
+div#form fieldset label { font-weight: normal; }
+div#form legend { color: #36332f; font-weight: bold; padding-bottom: 2px; }
+div#form input.checkbox,
+div#form input.radio { margin-left: 5px; }    /* Added by Ben Seymour, 1/12/08*/
+div#form input.checkboxOnLeft, div#form input.radioOnLeft { margin-right: 5px; }
+div#form span.instructions { font-size: 77%; }
+div#form li.error label {
+  color: #c6211d;
+  padding-right: 22px;
+  background: url(http://cache.cariboucoffee.com/redesign/icon_error.gif) 100% 50% no-repeat;
+}
+div#form fieldset.error legend {
+  color: #c6211d;
+  padding-right: 22px;
+  background: url(http://cache.cariboucoffee.com/redesign/icon_error.gif) 100% 50% no-repeat;
+}
+div#errors {
+  border: 1px solid red;
+  padding: 10px;
+  margin: 10px 0 20px 0;
+}
+div#errors p {
+  color: #c6211d;
+  padding-right: 22px;
+  background: url(http://cache.cariboucoffee.com/redesign/icon_error.gif) 100% 50% no-repeat;
+  font-weight: bold;
+}
+div#errors li { line-height: 146.5%; color: #c6211d;}
+span.error {color: #c6211d;}
+
+/************* Admin Console Table ****************/
+table.admin {
+  border-collapse: collapse;
+  width: 500px;
+  margin-top: 20px;
+}
+
+table.admin td { padding: 4px 0; background: url(http://cache.cariboucoffee.com/redesign/divider_table.gif) no-repeat bottom; }
+table.admin td.active { width: 30px; padding-left: 20px; }
+td.delete a {
+  background: url(http://cache.cariboucoffee.com/redesign/icon_delete.png) no-repeat center top;
+  display: block;
+  text-indent: -9999em;
+  height: 16px;
+  width: 16px;
+}
+
+form#adminPagination { float:right;  padding-right:20px;}
+form#adminPagination span { padding:0 10px; }
+form#adminPagination label { padding-left:10px; }
+form#adminPagination a { text-decoration: underline; }
+
+/********** Embedded Table Style *************/
+table.embedded { width: 458px; }
+table.embedded tr td { padding-bottom: 4px;}
+
+
+/* SPECIAL 2017 UPDATE STYLES - begin ------------------------------------- */
+body {
+	background: transparent;
+}
+
+ /* --------------- Heading ----------------------------------------------- */
+.header-menu { 
+	 left: 0px; 
+	 top: 0px; 
+	 position: relative; 
+	 margin-left: auto; 
+	 margin-right: auto; 
+	 height: 171px; 
+	 width: 1024px;
+	 overflow: hidden;
+	 text-align: center;
+	} 
+
+.logoWrap {
+	position: relative;
+    top: 0;
+    width: 100%;
+}
+.header-logo { 
+	 top: 19px; 
+	 left: 80px;
+	 position: absolute; 
+	 width: 368px;
+	 height: 89px;
+} 
+.header-cart {
+	top: 45px;
+    right: 70px;
+    position: absolute;
+}
+.header-logo { 
+	height: 70px;
+}
+.header-cart ul {
+	list-style: none;
+    text-transform: uppercase;
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 0;
+}
+.header-cart ul li {
+	display: inline-block;
+	margin-left: 40px;
+}
+.header-cart ul li a {
+	color: #356d79;
+	font-size: 20px;
+	font-family: vinyl, sans-serif;
+	font-style: normal;
+	font-weight: 400;
+	text-decoration: none;
+}
+.navWrap {
+	position: absolute;
+    bottom: 0;
+    margin-left: 25px;
+    width: 100%;
+}
+.navWrap ul {
+    list-style: none;
+    text-transform: uppercase;
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 0;
+}
+.navWrap ul li {
+	display: inline-block;
+    height: 34px;
+    padding-right: 30px;
+}
+.navWrap ul li a {
+	text-decoration: none;
+	color: #473729;
+	font-size: 18px;
+	font-family: NeutraText-Demi, sans-serif;
+	font-style: normal;
+	font-weight: 400;
+}
+
+.welcome_text li {
+  display: list-item !important;
+  text-transform: none;
+  font-family: NeutraText-Demi, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* --------------- Footer ------------------------------------------------ */ 
+.footer { 
+ 	background-color: #f4f3f2;
+	 left: 0px; 
+	 top: 0px; 
+	 position: relative; 
+	 margin-left: auto; 
+	 margin-right: auto; 
+	 overflow: hidden;
+	 border-top: 1px solid #ccc;
+   min-width: 1024px;
+} 
+
+.fWrap {
+	left: 0px;
+    top: 0px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    height: 400px;
+    width: 1024px;
+    overflow: hidden;
+}
+
+.AppleApp { 
+	 top: 155px; 
+	 position: absolute; 
+	 width: 117px;
+	 height: 36px;
+} 
+
+.GoogleApp { 
+	 top: 200px; 
+	 position: absolute; 
+	 width: 115px;
+	 height: 34px;
+} 
+
+.getAppText { 
+	 top: 130px; 
+	 position: absolute; 
+	 font-family: vinyl, sans-serif;
+	font-style: normal;
+	font-weight: 400;
+} 
+
+.stayConnected { 
+	color: #72b0bd;
+	font-size: 20px;
+	font-family: oswald, sans-serif;
+	font-style: bold;
+	font-weight: 400;
+  margin-bottom: .75em;
+} 
+.fNavlinks {
+	display: inline-block;
+	vertical-align: top;
+}
+.fNavlinks ul li {
+	margin-bottom: 5px;
+	color: #473729;
+	font-family: NeutraText-Demi, sans-serif;
+	font-style: normal;
+	font-weight: 400;
+}
+.fNavlinks ul li:first-child {
+	margin-bottom: 10px;
+}
+.fNavlinks a {
+	text-decoration: none;
+	color: #473729;
+	font-family: NeutraText-Demi, sans-serif;
+	font-style: bold;
+	font-weight: 400;
+}
+.socialMedia {
+	text-align: center;
+    position: relative;
+    top: 70px;
+}
+.socialMediaSites ul {
+	padding: 0 14px 0 0;
+    list-style: none;
+}
+.socialMediaSites ul li {
+	display: inline-block;
+}
+
+.footerLinks {
+	color: #473729;
+	text-align: center;
+	position: relative;
+  top: 40px;
+}
+.footerLinks ul {
+	list-style: none;
+	text-align: left;
+	margin: 16px 0;
+  padding: 0 0 0 40px;
+}
+.footerLinks li:first-child {
+	color: #72b0bd;
+	font-family: vinyl, sans-serif;
+	font-style: normal;
+	font-weight: 400;
+}
+.footerLinks li {
+	display: list-item;
+}
+.footerBottom {
+	height: 50px;
+	background-color: #72b0bd;
+	position: relative;
+    bottom: 0;
+}
+.footerBottomText {
+	width: 1024px;
+    height: 100%;
+    text-align: center;
+    margin: 0 auto;
+    position: relative;
+}
+.YourPrivacyTermsofUs { 
+	 position: absolute;
+	 top: 20px; 
+         left: 100px;
+	 color: #356d79;
+	 font-family: arial;
+	 font-size: 12px;
+} 
+.YourPrivacyTermsofUs span {  
+	 margin-left: 50px;
+} 
+.YourPrivacyTermsofUs span a {  
+	 color: #fff;
+	 text-decoration: none;
+} 
+.ViewMobileSite a {  
+	 position: absolute;
+	 right: 85px;
+	 top: 5px;
+	 font-size: 12px;
+	 color: #FFF;
+	 font-family: arial;
+	 text-decoration: none;
+} 
+.ViewMobileSite span {  
+	top: -10px;
+    position: relative;
+    width: 100px;
+}
+
+/* HEADER & FOOTER -- end */
+
+
+/* HIDE & DIVIDE -- start */
+/* Elements hidden (display: none) should be addressed via templates etc for release */
+
+body {
+	background: #fdfdfd;
+}
+
+#header, #navWrap, #persNav, #footer {
+	display: none !important;
+}
+
+div#wrap {
+	padding-bottom: 1em;
+}
+
+header-menu {
+	background: #fff !important;
+}
+
+
+/* HIDE & DIVIDE -- end */
+
+
+
+
+/* SPECIAL 2017 UPDATE STYLES - end --------------------------------------  */

@@ -1,0 +1,8 @@
+
+<!-- saved from url=(0070)https://a8109351330.cdn.optimizely.com/client_storage/a8109351330.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><script>
+
+var allowedOrigins = [["prweb\\.com", ""], ["vocusdr\\.com", ""]];
+
+!function(){"use strict";function e(e){return!n||0!==e.indexOf(n.origin)}function i(i){n&&e(i.key)&&n.source.postMessage(JSON.stringify({type:"SYNC",response:{key:i.key,value:i.newValue}}),n.origin)}var n,t=window.localStorage,r="_",s=function(i){for(var s,o,a,g=!1,d=0;d<allowedOrigins.length;d++)if(new RegExp(allowedOrigins[d][0],allowedOrigins[d][1]).test(i.origin)){g=!0;break}if(g){n=i;try{s=JSON.parse(i.data)}catch(f){return}if(a=i.origin+r+s.key,"GET"===s.type)o=t.getItem(a);else if("PUT"===s.type)o=t.setItem(a,s.value);else{if("GETALL"!==s.type)return;o={};for(var l in t)e(l)&&(o[l]=t.getItem(l))}if("undefined"!=typeof s.id){var u={id:s.id,response:o};i.source.postMessage(JSON.stringify(u),i.origin)}}};window.addEventListener("message",s,!0),window.addEventListener("storage",i,!0)}();
+</script></head><body></body></html>

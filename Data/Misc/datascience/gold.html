@@ -1,0 +1,269 @@
+<html>
+
+<head>
+    <title> datascience</title>
+</head>
+
+<body style=’background-color:#ccc’>
+    <h1>
+        <center><u>datascience</u></center>
+    </h1>
+    <h3>Uncategorized</h3>
+   <p>In this article, we discuss a general framework to drastically reduce the influence of outliers in most contexts. It applies to problems such as clustering (finding centroids,) regression, measuring correlation or R-Squared, and many more. We will focus on the centroid problem here, as it is very similar and generalizes easily to solving a linear regression. The correlation / R-Squared issue was discussed in an earlier article and involves only a change of formula. Clustering and regression are more complex problems involving iterative algorithms.  
+
+This article also features interesting material for future data scientists, such as 
+
+Several outlier detection techniques 
+How to display contour maps and images corresponding to an intensity function or heatmap, in R (in just a few lines of code, and very easy to understand) -- see section 5 below
+How to produce data sets that simulate clustering structures or other patterns 
+Distribution of arrival times for successive records in a time series.</p>
+    </hr>
+    <h2>1. General Framework</h2>
+    <p> We discuss replacing techniques used by statisticians, based on optimizing traditional L^2 metrics such as variance, by techniques based on L^ metrics, which are more robust when 1
+        < < 2. The case=2 corresponds to the traditional framework, Throughout the article, is referred to as the power. The regression and centroid problems being equivalent, we focus here on finding a centroid using the L^ criterion (denoted as H), and we show how to modify it for regression problems. Illustrations are in a 2-dimensional space (=2 ) but easily generalize to any dimension, especially as we are not using any matrix inversions to solve the problem.</p>
+            </hr>
+            <h2>Finding a robust centroid</h2>
+            <p> The focus here is on finding the point that minimizes the sum of the "distances" to points in a -dimensional space, called centroid or center, .</p>
+            </hr>
+            <h2>especially in the presence of outliers</h2>
+            <p> The sum of "distances" between an arbitrary point (, ) and a set S = { (x(1), y(1)) ... (x(), y()) } of points is defined as follows:</p>
+            <p> H((,), S; ) = SUM{ ( + |x(k) - )^ + ( + |y(k) - v|^ } /</p>
+            <p> where is a very small positive quantity, equal to zero unless is negative; the sum is over = 1,...,.</p>
+            <p> The function H has one parameter called , and when = 2, we are facing the traditional problem of finding the centroid of a cloud of points: in this case, the solution is the classic average of the points. This solution is notoriously sensitive to outliers. When 1
+                < < 2, we get get a more stable solution, less sensitive to outliers, yet when is large (> 20) and the proportion of outliers is small (by definition it is always small!), the solution is pretty much the same regardless of (assuming 1
+                    < < 3).</p>
+                        <p> In short, what we are trying to accomplish here is to build a robust measure of centrality in any dimension, just like the median is a robust measure of centrality in dimension = 1.</p>
+                        </hr>
+                        <h2>Generalization to linear regression problems</h2>
+                        <p> The same methodology can be used for regression. With 2 parameters and as in Y = X + , the function H becomes</p>
+                        <p> + |y(k) - x(k) -</p>
+                        <p> again with e = 0 if > 0. It generalizes easily to more than 2 parameters , .</p>
+                        </hr>
+                        <h2>General outlier detection techniques</h2>
+                        <p> Our proposed method smooths out the impact of outliers rather than detecting them. For outlier detection and removal, you can use one of these methods:</p>
+                        <p> Using traditional centrality measures and eliminating the points farthest away from the center, then re-computing the center and proceeding iteratively with eliminating newly found outliers until stability is reached.</p>
+                        <p> Using the median both for the x- and y-coordinates, rather than the average.</p>
+                        <p> The technique consists of computing the convex hull of your data set S, then removing one point at a time, and re-computing the convex hull after removing the point in question. The point resulting in the largest loss of volume in the convex hull, when removed, corresponds to the strongest outlier.</p>
+                        <p> leaving-one-out</p>
+                        <p> Identifying points of lowest density using .</p>
+                        <p> density estimation techniques</p>
+                        <p> Nearest neighbor distances: a point far away from its nearest neighbors is potentially an outlier. Compute all nearest neighbor distances and look for the most extremes.</p>
+                        <p> Another way to attenuate the impact of outliers is to use a weighted sum for H, that is (in the case of the regression problem) to use the formula</p>
+                        <p> ) = SUM{ q() * (</p>
+                        <p> + |y(k) - x(k) -</p>
+                        <p> where q() is the weight attached to point , with SUM{ q() } = 1. In this case, a point with low density is assigned a smaller weight.</p>
+                        <p> To read more about outlier detection, .</p>
+                        </hr>
+                        <h2>A related physics problem</h2>
+                        <p> When
+                            < 0, and especially when=- 2, maximizing or minimizing H becomes an interesting physics problem of optimizing a potential H. The centroid problem is now equivalent to finding the point of maximum or minimum light, sound, radioactivity, or heat intensity, in the presence of an energy field produced by energy source points. Both problems are closely related and use the same algorithm to find solutions.</p>
+                                <p> However, the case
+                                    < 0 has no practical value to data scientists or statisticians (as far as I know) and it presents the following challenges:</p>
+                                        <p> If (, ) is a point of S and
+                                            < 0, then H((,), S; ) is infinite: we have singularities. This is dealt with by introducing the very small constant> 0 in the definition of H. This quantity is used to address the fact that in the real world, no source of energy is a point with an area of zero and positive (but finite) intensity. This artifact of physics models .</p>
+                                        <p> is discussed here</p>
+                                        <p> If you want to minimize H, there will be an infinite number of solutions, all located far outside the cloud of points S. Think about finding the point in the universe that receives the least amount of light from the solar system. So typically one is interested in finding a maximum, not a minimum (unless you put constraints on the solution, such as being located inside the convex hull of S.)</p>
+                                        <p> Even if searching for a maximum of H, the convergence may be slow and chaotic, as you can end up with several maxima (H is no longer a nice, smooth curve when
+                                            < 0.)</p>
+                                                </hr>
+                                                <h2>2. Algorithm to find centroid when > 1</h2>
+                                                <p> There are many algorithms available to solve this type of mathematical optimization problem. A popular class of algorithms is based on . Here however, we use what is possibly the simplest algorithm. Why? For two reasons. First it is very easy to understand, still leads to some interesting research, is easy to replicate, and keep the focus on the concepts and the results associated with the centroids, rather than on a specific implementation. Second, with modern computers (even on my 10 years old laptop) the computing power is big enough that naive algorithms perform well. If you are OK with getting results accurate to two or three digits -- and in real life, many data sets, even web analytics measured using two different sources, do not have higher accuracy -- then a rudimentary algorithm is enough.</p>
+                                                <p> gradient descent and boosting</p>
+                                                <p> So here I used rudimentary Monte-Carlo to find the centroids. However, in higher dimensions ( > 3) be careful about the . Note that when
+                                                    < 0, Monte Carlo is not that bad, as it allows you to visit and circle around several local minima. It is also easy to deploy in a Map-Reduce environment (Hadoop.) The algorithm is actually so simple that there is no need to describe it: the short, easy-to-read source code below (Perl) speaks for itself.</p>
+                                                        <p> curse of dimensionality</p>
+                                                        </hr>
+                                                        <h2>Source code to generate points and compute centroid, using Monte Carlo</h2>
+                                                        <p> Notes about the source code:</p>
+                                                        <p> The first points in the output file are the simulated sample points (random deviates on [0, 1] x [0, 1]. The last point is the centroid computed on the sample points.</p>
+                                                        <p> centroid.txt</p>
+                                                        <p> Note that (first line of code) is used to initiate the random generator and for reproducibility purposes. Also, I noticed that a value of $seed lower than 1,000 causes the first random deviate generated to be biased (unusually small.)</p>
+                                                        <p> The variable stores, at each iteration , the value of the function H that we try to minimize.</p>
+                                                        <p> Below is the source code.</p>
+                                                        <p> $seed=1000;</p>
+                                                        <p> srand($seed);</p>
+                                                        <p> open(OUT,">centroid.txt");</p>
+                                                        <p> for ($k=0; $k
+                                                            <$n; $k++) {</p>
+                                                                <p> $x[$k]=rand();</p>
+                                                                <p> $y[$k]=rand();</p>
+                                                                <p> print OUT "$x[$k]\t$y[$k]\n"; # one of the n simulated points</p>
+                                                                <p> $power = 1.25; # corresponds to p (the power) in the article</p>
+                                                                <p> $niter = 200000;</p>
+                                                                <p> $eps = 0.00001; # the "e" in the H function (see article)</p>
+                                                                <p> $min=99999999;</p>
+                                                                <p> for ($iter=0; $iter
+                                                                    <$niter; $iter++) {</p>
+                                                                        <p> for ($k=0; $k
+                                                                            <$n; $k++) {</p>
+                                                                                <p> $dist=exp($power*log($eps+abs($x[$k]-$u)))+exp($power*log($eps+abs($y[$k]-$v)));</p>
+                                                                                <p> $sum+=$dist;</p>
+                                                                                <p> $sum = $sum/$n;</p>
+                                                                                <p> if ($sum
+                                                                                    < $min) {</p>
+                                                                                        <p> $x_centroid=$u;</p>
+                                                                                        <p> $y_centroid=$v;</p>
+                                                                                        <p> print OUT "$x_centroid\t$y_centroid\n";</p>
+                                                                                        <p> close(OUT);</p>
+                                                                                        </hr>
+                                                                                        <h2>Generating point clouds with simulation</h2>
+                                                                                        <p> In the few lines of the source code (above), we generated points randomly distributed in the unit square [0, 1] x [0, 1] . In order to simulate outliers or more complicated distributions that represent real-life problems, one has to use more sophisticated techniques. to get the source code to easily generate a cluster structure (illustrated in figure 1 below).</p>
+                                                                                        <p> : example of simulated clustered point cloud</p>
+                                                                                        </hr>
+                                                                                        <h2>Figure 1</h2>
+                                                                                        <p> More complex simulations (random clusters evolving over time) . Some simple stochastic processes can be simulated by first simulating random points (called centers) uniformly distributed in a rectangle, then, around each center, simulating a random number of points radially distributed around each center. Other techniques involve thinning, that is, removing some points afver over-si,ulating a large number of points.</p>
+                                                                                        <p> can be found here</p>
+                                                                                        </hr>
+                                                                                        <h2>3. Examples and results</h2>
+                                                                                        <p> A few examples are provided in the next section to validate the methodology. In this section, rather than validation, we focus on showing its usefulness when 0 em>p
+                                                                                            < 2, compared to the traditional solution consisting of using=2 , found in all statistical packages. Note that the traditional solution (=2 ) was designed not out of practical considerations such as robustness, but because of its ease of computation at a time when computers did not exist, and data sets were manually built.</p>
+                                                                                                <p> To test the methodology, we created various data sets, introduced outliers, and computed the centroid using different values of . The example shown in Figure 2, consisting of five points (bottom left) plus an outlier (top right) illustrates the performance. The six data points are in blue. The centroids, computed for = 0.75, 1.00, 1.25, 1.50, 1.75 and 2.00, are in red. The rightmost centroid corresponds to = 2: this is the classic centroid. Due to the outlier, it is located outside the convex hull of the five remaining points, which is awkward. The leftmost centroid corresponds to = 0.75 and is very close to the traditional centroid obtained after removing the outlier. I also tried the values = 0.25 and = 0.50, but failed to obtain convergence to a unique solution after 200,000 iterations.</p>
+                                                                                                <p> : the blue dots represent the data points, the red + the centroid (computed for 6 values of p)</p>
+                                                                                                </hr>
+                                                                                                <h2>Figure 2</h2>
+                                                                                                <p> Note that the scale does not matter. Finally, using
+                                                                                                    < 2 does not fully get rid of the influence of the outlier, but instead, it reduces its impact when computing the centroid. To completely get rid of the outliers, a methodology using medians computed for the x- and y-axis, is more efficient.</p>
+                                                                                                        <p> If you are wondering how to produce a scatter plot in Excel with two data sets (points and centroids) as in Figure 2, for instructions: it is easier than you think.</p>
+                                                                                                        </hr>
+                                                                                                        <h2>4. Convergence of the algorithm</h2>
+                                                                                                        <p> Figure 3 shows the speed of convergence of the algorithm, using the same source code as in section 2 with = 1.4. So you can replicate these results. In this case, the data set S consists of = 100 points randomly (uniformly) distributed on [0, 1] x [0, 1].</p>
+                                                                                                        <p> About 10,000 iterations in the outer loop are needed to reach two digits of accuracy, and this requires a tiny fraction of a second to compute. This "10,000 iterations" is actually a rule of thumb for any Monte-Carlo algorithm used to find an optimum with two correct digits. Note that in Figure 3, only iterations providing an improvement over the current approximation of the centroid -- that is, iterations where the value of H is smaller than those computed in all previous iterations -- are displayed. A potential research topic is to investigate the asymptotic behavior of these "records", in the example below occurring at iterations 0, 4, 12, 44, 109, 156, and so on.</p>
+                                                                                                        <p> : convergence of the algorithm (p = 1.4)</p>
+                                                                                                        </hr>
+                                                                                                        <h2>Figure 3</h2>
+                                                                                                        <p> Since the = 100 simulated points were randomly (uniformly) distributed in [0, 1] x [0, 1] it is no surprise that the centroid found by the algorithm, after convergence, is very close to (0.5, 0.5).</p>
+                                                                                                        <p> Indeed, we tried values of equally spaced between 1.25 and 3.50, and in each case, the centroid found was also very close to (0.5, 0.5), see Figure 4. That includes the special case = 2 (it is located somewhere on the chart below) corresponding to the classic average of the points. Note that here, no outliers were introduced in the simulations.</p>
+                                                                                                        <p> : x- and y-coordinates of centroid, obtained with various values of p</p>
+                                                                                                        </hr>
+                                                                                                        <h2>Figure 4</h2>
+                                                                                                        </hr>
+                                                                                                        <h2>5. Interesting Contour Maps</h2>
+                                                                                                        <p> The following contour maps in Figure 5, produced with the in R, show that as gets closer to 0, the function H becomes more chaotic, exhibiting local minima. These charts were produced using a data set S consisting of = 20 points randomly (uniformly) distributed on [0, 1] x [0, 1]. It is interesting to notice that, despite the random distribution of the points, strong patterns emerge when
+                                                                                                            < 1 (the statistical significance of these patterns is weak though.).</p>
+                                                                                                                <p> contour function</p>
+                                                                                                                <p> : Contour map for H, with n = 20 and p =2</p>
+                                                                                                                </hr>
+                                                                                                                <h2>Figure 5A</h2>
+                                                                                                                <p> : Contour map for H, with n = 20 and p = 0.50</p>
+                                                                                                                </hr>
+                                                                                                                <h2>Figure 5B</h2>
+                                                                                                                <p> : Contour map for H, with n = 20 and p = 0.15</p>
+                                                                                                                </hr>
+                                                                                                                <h2>Figure 5C</h2>
+                                                                                                                <p> You can also plot images of H, using the in R with a gray palette with 300 levels of grey, using the command where z is an x matrix (in R) representing values of H computed at x locations (here = 100 and = 20.)</p>
+                                                                                                                <p> function image</p>
+                                                                                                                <p> image(z, col = gray.colors(300))</p>
+                                                                                                                <p> The source code (in R) looks like this:</p>
+                                                                                                                <p> data
+                                                                                                                    <-read.table( "c:/vincentg/math2r.txt",header=TRUE)</p>
+                                                                                                                        <p> z
+                                                                                                                            <- matrix(w, nrow=1 00, ncol=1 00, byrow=T RUE)</p>
+                                                                                                                                <p> image(z, col = gray.colors(300))</p>
+                                                                                                                                <p> Here the file stores the x values of H sequentially in a one-column text file, row after row. The first row is the header (equal to H.) Note that in order to produce Figure 5, we used rather than . In Figure 6 we actually used the function to display H values for = 0.5: low values of H (corresponding to proximity to centroid) are in a darker color, and unlike the case = 2, you can notice multiple local minima. Figure 6 is based on the same data as Figure 5B. The source code to produce the input file ..</p>
+                                                                                                                                <p> image(z, col = gray.colors(300))</p>
+                                                                                                                                <p> can be found here</p>
+                                                                                                                                <p> : H values displayed in an image using R (n = 20 and p = 0.5)</p>
+                                                                                                                                </hr>
+                                                                                                                                <h2>Figure 6</h2>
+                                                                                                                                <p> As a bonus, below is Figure 7 corresponding to = -2, which interestingly is very similar to = 0.5 (see Figure 5B.) This value of has tremendous applications in physics, as it corresponds to the .</p>
+                                                                                                                                <p> inverse-square law</p>
+                                                                                                                                <p> : this time with p=-2</p>
+                                                                                                                                </hr>
+                                                                                                                                <h2>Figure 7</h2>
+                                                                                                                                <p> Top DSC Resources</p>
+                                                                                                                                <p> Difference between Machine Learning, Data Science, AI, Deep Learnin...</p>
+                                                                                                                                <p> What is Data Science? 24 Fundamental Articles Answering This Question</p>
+                                                                                                                                <p> Hitchhiker's Guide to Data Science, Machine Learning, R, Python</p>
+                                                                                                                                <p> Data Science Cheat Sheet</p>
+                                                                                                                                <p> How to Become a Data Scientist - On Your Own</p>
+                                                                                                                                <p> Categories: - - - -</p>
+                                                                                                                                <p> Data Science</p>
+                                                                                                                                <p> Machine Learning</p>
+                                                                                                                                <p> Deep Learning</p>
+                                                                                                                                <p> Tools: - - - - -</p>
+                                                                                                                                <p> Techniques: - - - - -</p>
+                                                                                                                                <p> Neural Nets</p>
+                                                                                                                                <p> Decision Trees</p>
+                                                                                                                                <p> Links: - - - - - - -</p>
+                                                                                                                                <p> Cheat Sheets</p>
+                                                                                                                                <p> Links: - - - - -</p>
+                                                                                                                                <p> Announcements</p>
+                                                                                                                                <p> Salary Surveys</p>
+                                                                                                                                <p> Certification</p>
+                                                                                                                                <p> Newsletter: - - - -</p>
+                                                                                                                                <p> Past Editions</p>
+                                                                                                                                <p> Members-Only Section</p>
+                                                                                                                                <p> Content Search</p>
+                                                                                                                                <p> For Bloggers</p>
+                                                                                                                                <p> DSC on: - - - -</p>
+                                                                                                                                <p> Follow us on Twitter:</p>
+                                                                                                                                <p> @DataScienceCtrl</p>
+                                                                                                                                <p> @AnalyticBridge</p>
+                                                                                                                                <p> 4 members like this</p>
+                                                                                                                                <p>
+                                                                                                                                    < Previous Post</p>
+                                                                                                                                        <p> Next Post ></p>
+                                                                                                                                        <p> You need to be a member of Data Science Central to add comments!</p>
+                                                                                                                                        <p> Join Data Science Central</p>
+                                                                                                                                        <p> Welcome to Data Science Central</p>
+                                                                                                                                        <p> Or sign in with:</p>
+                                                                                                                                        <p> @DataScienceCtrl</p>
+                                                                                                                                        <p> Top Content</p>
+                                                                                                                                        <p> Two Questions to Ask to a PhD Candidate for a Leadership Role</p>
+                                                                                                                                        <p> Data Engineer and Business Analyst Might be the Best Data Science Opportunities</p>
+                                                                                                                                        <p> Useful R Packages that Aligns with The CRISP DM Methodology</p>
+                                                                                                                                        <p> Time series comparison</p>
+                                                                                                                                        <p> Creativity Is Crucial In Data Science</p>
+                                                                                                                                        <p> What Does GDPR Mean For Your Business?</p>
+                                                                                                                                        <p> Announcements</p>
+                                                                                                                                        <p> Anaconda Data Science Certification</p>
+                                                                                                                                        <p> Unlock the Mysteries of Data Science</p>
+                                                                                                                                        <p> Master’s in Applied Statistics Online</p>
+                                                                                                                                        <p> A new way to prep your data</p>
+                                                                                                                                        <p> Train AI 2018 Keynote: Garry Kasparov</p>
+                                                                                                                                        <p> 10 Steps to Machine Learning</p>
+                                                                                                                                        <p> DL frameworks: purpose-built deskside platform</p>
+                                                                                                                                        <p> Pivot into a Data Analytics Career</p>
+                                                                                                                                        <p> [eBook] Solve Data Science Challenges</p>
+                                                                                                                                        <p> 7 Tracks, 5 Events & a Deep Discount-PAW Las Vegas</p>
+                                                                                                                                        <p> DSC Webinar Series: Self-Service Analytics: Fostering a Data-Enabled Culture</p>
+                                                                                                                                        <p> Tim Matteson</p>
+                                                                                                                                        <p> DSC Webinar Series: The State of Data Preparation in 2018</p>
+                                                                                                                                        <p> Tim Matteson</p>
+                                                                                                                                        <p> DSC Webinar Series: Data Contributions to a Conversational AI Platform</p>
+                                                                                                                                        <p> Tim Matteson</p>
+                                                                                                                                        <p> Migrating an Excel Spreadsheet to MySQL and to Spark 2.0.1 (Part 1)</p>
+                                                                                                                                        <p> Introduction to Programming in Stata</p>
+                                                                                                                                        <p> Benchmarking 20 Machine Learning Models Accuracy and Speed</p>
+                                                                                                                                        <p> Stata Cheat Sheet</p>
+                                                                                                                                        <p> Selection of best articles from our past weekly digests</p>
+                                                                                                                                        <p> Statistical Analysis Advisor Chart</p>
+                                                                                                                                        <p> Selection of best articles from our past weekly digests</p>
+                                                                                                                                        <p> Free Online Book: Forecasting, Principles and Practice</p>
+                                                                                                                                        <p> 38 Seminal Articles Every Data Scientist Should Read</p>
+                                                                                                                                        <p> Black-box Confidence Intervals: Excel and Perl Implementation</p>
+                                                                                                                                        <p> Top Categories</p>
+                                                                                                                                        <p> Machine Learning</p>
+                                                                                                                                        <p> R Programming</p>
+                                                                                                                                        <p> Python for Data Science</p>
+                                                                                                                                        <p> Visualization, Dashboards</p>
+                                                                                                                                        <p> NoSQL and NewSQL</p>
+                                                                                                                                        <p> Cheat Sheets</p>
+                                                                                                                                        <p> Internet of Things</p>
+                                                                                                                                        <p> © 2018 Data Science Central Powered by</p>
+                                                                                                                                        <p> Report an Issue</p>
+                                                                                                                                        <p> Privacy Policy</p>
+                                                                                                                                        <p> Terms of Service</p>
+                                                                                                                                        <p>
+                                                                                                                                            <style type="text/css" media="screen">
+                                                                                                                                                #xg { position:relative;top:120px; } #xn_bar { top:120px; }
+                                                                                                                                            </style>
+                                                                                                                                            <div class="errordesc noscript">
+                                                                                                                                                <div>
+                                                                                                                                                    <h3><strong>Hello, you need to enable JavaScript to use Data Science Central.</strong></h3>
+                                                                                                                                                    <p>Please check your browser settings or contact your system administrator.</p> <img src="/xn_resources/widgets/index/gfx/jstrk_off.gif" alt="" height="1" width="1" /> </div>
+                                                                                                                                            </div>
+                                                                                                                                        </p>
+                                                                                                                                        <p> <img src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=QpAKm1aMp4Z352" style="display:none" height="1" width="1" alt="" /></p>
+                                                                                                                                        <p> Revolutionize Your Data Analysis - 5/22</p>
+                                                                                                                                        <p> Join this latest Data Science Central Webinar to learn how a re-envisioned tech stack can help you bring together IT and Business Analysts and allow them to use the right data at the right time.</p>

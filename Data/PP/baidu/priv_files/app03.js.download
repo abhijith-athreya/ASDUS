@@ -1,0 +1,325 @@
+Date.now || (Date.now = function(){return +new Date});
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+
+// requestAnimationFrame polyfill by Erik Möller
+// fixes from Paul Irish and Tino Zijdel
+
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+ 
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+ 
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
+
+/**
+ * Created with JetBrains WebStorm.
+ * User: lixin12
+ * Date: 13-3-28
+ * Time: 下午10:11
+ * To change this template use File | Settings | File Templates.
+ */
+;(function ($){
+    if( !$ ){
+        return;
+    }
+    var overHandler = function ( e ){
+            if( $.contains( this, e.relatedTarget ) ){
+                return;
+            }
+            $(this).removeClass('hide-selection');
+        },
+
+        outHandler = function ( e ){
+            if( $.contains( this, e.relatedTarget ) ){
+                return;
+            }
+            $(this).addClass('hide-selection');
+        };
+
+    $('#language_select').hover( overHandler, outHandler );
+})(jQuery);
+/*
+$(function(){
+    var overHandler = function ( e ){
+            var $currentTarget = $( e.currentTarget );
+            if( $.contains( $currentTarget, e.target ) ){
+                return;
+            }
+            $currentTarget.removeClass('hide-selection');
+        },
+
+        outHandler = function ( e ){
+            var $currentTarget = $( e.currentTarget );
+            if( $.contains( $currentTarget, e.target ) ){
+                return;
+            }
+            $currentTarget.addClass('hide-selection');
+            //alert (e.currentTarget.id);
+            //alert (e.target.href);
+        };
+
+    $('#language_select').hover( overHandler, outHandler );
+});
+*/
+
+$(function(){
+    $("#dl-menu-item").hover(function(){
+        $(this).css('border','1px solid #edeff2')
+            .find('#dl-menu-link').addClass('active').end()
+            .find('.dl-list').show();
+    },function(){
+        $(this).removeAttr('style')
+            .find('#dl-menu-link').removeClass('active').end()
+            .find('.dl-list').hide();
+    });
+});
+
+/*$(function(){
+    if( !window.TWEEN) return;
+
+    var animate = function() {
+        requestAnimationFrame( animate );
+        TWEEN.update();
+    };
+
+    var $heros = $('#hero .item'),
+        $indicators = $('#hero .carousel-indicators .needfix'),
+        heroLen = $heros.length,
+        currentIndex = 0,
+        $currentHero = $heros.eq( currentIndex ),
+        $currentIndicator = $indicators.eq( currentIndex ),
+        interval = 5000,
+        timer;
+
+    var onUpdate = function (){
+        $currentHero.css({opacity: this.opacity});
+    };
+
+    var createTween = function (){
+        return new TWEEN.Tween({opacity:0}).to({opacity:1}, 2000 )
+            .easing( TWEEN.Easing.Sinusoidal.Out )
+            .onUpdate( onUpdate );
+    };
+
+    var showHero = function ( index ){
+        if( $currentHero ){
+            $currentHero.removeClass('active');
+        }
+
+        $currentHero = $heros.eq( index );
+        $currentHero.addClass('active').css({opacity:0});
+        createTween().start();
+
+        if( $currentIndicator ){
+            $currentIndicator.removeClass('active');
+        }
+
+        $currentIndicator = $indicators.eq( index );
+        $currentIndicator.addClass('active');
+    };
+
+    var play = function (){
+        timer = window.setTimeout( autoPlay, interval );
+    };
+
+    var autoPlay = function (){
+        currentIndex++;
+        if( currentIndex >= heroLen ){
+            currentIndex = 0;
+        }
+        showHero( currentIndex );
+        timer = window.setTimeout( autoPlay, interval );
+    };
+
+    var pause = function (){
+        window.clearTimeout( timer );
+    };
+
+    var bindEvents = function (){
+        $('.dl-button').hover(function (e){
+            pause();
+        }, function (e){
+            play();
+        });
+
+        $('#hero .carousel-indicators').delegate('.needfix', 'mouseover', function (e){
+            var $target = $(e.target);
+            currentIndex = $target.parent().index();
+            if( !$target.is('.active') ){
+                showHero( currentIndex );
+            }
+            pause();
+        }).delegate('.needfix', 'mouseout', function (e){
+            play();
+        });
+    };
+
+    bindEvents();
+    play();
+    animate();
+});*/
+
+//resize
+/*$(function(){
+    var setSize = function(width){
+        var wrap = $('.container,.top-nav-wrap .inner'),
+            min_wrap = $('.top-nav-wrap,#hero,.heroLi .h-item'),
+            feature_nav = $('#feature-nav li:not(.last)'),
+            prodDrawing = $('.prodDrawing'),
+            feature_desc = $('.feature-desc'),
+            prodDescBox = $('.prodDescBox'),
+            prodDescBox_2 = $('.hero-2 .prodDescBox'),
+            prodDescBox_3 = $('.hero-3 .prodDescBox'),
+            feature_nav_ul = $('#feature-nav ul'),
+            feature_list = $('.feature-list');
+        if(width < 1180){
+          wrap.css('width',1000);
+          min_wrap.css('min-width',1000);
+          feature_nav.css('padding-right',32);
+          prodDrawing.css('padding-left',11);
+          feature_desc.css('width',390);
+          prodDescBox.css('width',350);
+          feature_nav_ul.css('padding','0 80px');
+          feature_list.css('padding','28px 25px 0');
+        }else{
+          wrap.css('width',1180);
+          min_wrap.css('min-width',1180);
+          feature_nav.css('padding-right',67);
+          prodDrawing.css('padding-left',100);
+          feature_desc.css('width',580);
+          prodDescBox.css('width',420);
+          feature_nav_ul.css('padding','0 104px');
+          feature_list.css('padding','28px 70px 0');
+        }
+    };
+    $(window).resize(function(){
+        setSize($(this).width());
+    });
+    setSize($(window).width());
+});*/
+
+//back to top
+(function($){
+    var W = window,
+        D = document;
+    $.fn.backToTop = function(options){
+        return this.each(function(){
+            new $.BackToTop($(this),options);
+        });
+    }
+    $.BackToTop = function(obj,options){
+        var defaults = {
+            showLength : 300
+        };
+        this.opts = $.extend(defaults,options);
+        this.obj = obj;
+        this._init();
+    }
+    $.BackToTop.prototype = {
+        _init : function(){
+            var self = this,
+                $W = $(W);
+            $W.scroll(function(){
+                if($W.scrollTop() >= self.opts.showLength && self.obj.css('display') == 'none'){
+                    self.obj.fadeIn();
+                }else if($W.scrollTop() < self.opts.showLength && self.obj.css('opacity') == 1){
+                    self.obj.fadeOut();
+                }
+            });
+            this.obj.click(function(){
+                $('html,body').animate({
+                    'scrollTop' : 0
+                });
+                return false;
+            });
+        }
+    }
+})(jQuery);
+$(function(){
+    $(".toTop").backToTop();
+});
+
+
+//features
+$(function(){
+    var W = window,
+        feature = $('#feature-nav'),
+        osTop = feature.offset()?feature.offset().top:0,
+        bodyHeight = $('body').height(),
+        ftOffsets = [];
+    $('#features li').each(function(){
+        ftOffsets.push($(this).offset().top);
+    });
+    if(W.XMLHttpRequest){//not ie6
+        var scrollFtPos = function(){
+            var self = $(this),
+                scTop = self.scrollTop();
+            if(scTop >= osTop){
+                feature.css({'position':'fixed','top':0});
+            }else{
+                feature.css({'position':'absolute','top':osTop});
+            }
+        },scrollFtNav = function(){
+            var self = $(this),
+                scTop = self.scrollTop();
+            for(var i=0,len=ftOffsets.length;i<len;i++){
+                if(scTop+bodyHeight/2 > ftOffsets[i] && scTop < ftOffsets[i]){
+                    $('#feature-nav li:nth-child('+(i+1)+')').addClass('on').siblings().removeClass('on');
+                    break;
+                }
+            }
+        };
+        $(W).on('scroll.ftpos',scrollFtPos);
+        $(W).on('scroll.ftnav',scrollFtNav);
+        $("#feature-nav a").click(function(e){
+            e.preventDefault();
+            var self = $(this);
+            $(W).off('scroll.ftnav');
+            $("html,body").animate({
+                "scrollTop" : Math.round($(self.attr("href")).offset().top)
+            },400,function(){
+                self.parent().addClass('on').siblings().removeClass('on');
+                setTimeout(function(){$(W).on('scroll.ftnav',scrollFtNav);},100);
+            });
+        });
+    }
+    if(!W.XMLHttpRequest){//ie6
+        $("#feature-nav a").hover(function(){
+            $(this).find('b').toggle();
+        }).click(function(e){
+            e.preventDefault();
+            var self = $(this);
+            $("html,body").animate({
+                "scrollTop" : Math.round($(self.attr("href")).offset().top)
+            },400);
+        });
+    }
+});
+
+//faq
+$(function(){
+    $(".q").click(function(e){
+        e.preventDefault();
+        $(this).parent().toggleClass("active");
+    });
+});
+

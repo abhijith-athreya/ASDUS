@@ -1,0 +1,67 @@
+Cookie_Defaults={path:"/",secure:false};
+function getOptions(a){return{path:a&&a.path||Cookie_Defaults.path,domain:a&&a.domain||Cookie_Defaults.domain,expires:a&&a.expires||Cookie_Defaults.expires,secure:a&&a.secure!==undefined?a.secure:Cookie_Defaults.secure}
+}function getExpiry(a){var b=new Date();
+if(typeof a==="number"){a=new Date(b.getTime()+(a*1000))
+}else{a=0
+}return a===0?null:a.toGMTString()
+}function generateCookieString(b,d,a){a=a||{};
+var c=b+"="+d;
+c+=a.path?";path="+a.path:"";
+c+=a.domain?";domain="+a.domain:"";
+c+=a.expires?";expires="+a.expires:"";
+c+=a.secure?";secure":"";
+return c
+}function setCookie(b,c,a){a=getOptions(a);
+a.expires=getExpiry(a.expires);
+document.cookie=generateCookieString(b,c,a)
+}function getQueryVariable(b,a){var d=a.split("?")[1];
+var e=d.split("&");
+for(var c=0;
+c<e.length;
+c++){var f=e[c].split("=");
+if(f[0]==b){return f[1]
+}}return(false)
+}var headContainer={openInModal:function(b,c){if(c==true){$(b).click(function(){if(window!=undefined){if($(window).width()<768){this.target="_blank"
+}else{this.target="_self"
+}}})
+}}};
+$(function(){$.ajax({url:"/bin/symantec/displaystatus?fname=Y",method:"GET",async:false,success:function(a){var b=JSON.parse(JSON.stringify(a));
+$("#fn").text(b.firstName)
+}})
+});
+$(function(){var b=document.createElement("a");
+b.href=$(".menu-wrapper .btn-search").closest("form").attr("action");
+var c=b.origin;
+$(".menu-wrapper #search-field").keypress(function(a){if(a.which===13){a.preventDefault();
+$(".menu-wrapper .btn-search").click()
+}});
+$(".menu-wrapper .btn-search").click(function(f){f.preventDefault();
+var d=$('input[name="search-field"]').val();
+var a=$(this).closest("form").attr("action")+"?q="+encodeURIComponent(d);
+location.href=a
+})
+});
+var signoutContainer={ClientContext:function(d,b){try{function f(){var e=ClientContext.get("profile").getInitProperty("isPartner");
+if(e){b=partnerLogoutUrl
+}else{b=customeLogoutUrl
+}signoutContainer.samlLogout(".logout",d,b)
+}function a(){var e=CQ_Analytics.ClientContextMgr.getRegisteredStore("profile");
+if(e.initProperty){f()
+}else{e.addListener("update",f)
+}}CQ_Analytics.ClientContextUtils.onStoreRegistered("profile",a)
+}catch(c){console.log("Error in client Context ::"+c);
+signoutContainer.samlLogout(".logout",d,b)
+}},samlLogout:function(e,c,a){var b=c;
+var d=a;
+console.log("sURL ::"+b);
+$(e).click(function(h){h.preventDefault();
+eraseCookie("UIPM_DATA");
+var g="/system/sling/logout.html";
+$.ajax({url:g,async:false,success:function(i,j,k){},error:function(k,i,j){},cache:false});
+var f=this.href;
+if(d!=""){window.open(d)
+}else{eraseCookie("SymcLogin");
+window.open(f)
+}window.open(b,"_self")
+})
+}};

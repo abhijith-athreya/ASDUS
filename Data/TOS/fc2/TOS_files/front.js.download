@@ -1,0 +1,88 @@
+//------------------------------------------------------------------------------------------------------------------------------
+//  アコーディオンリスト開閉
+//------------------------------------------------------------------------------------------------------------------------------
+
+$(function() {
+	$(".toggle").click(function () {
+		$(this).next("ul,dd").slideToggle(200);
+		$(this).toggleClass("is-open");
+	});
+});
+
+//------------------------------------------------------------------------------------------------------------------------------
+//  タブ切り替え
+//------------------------------------------------------------------------------------------------------------------------------
+
+$(function(){
+	$('.tab-default .tab-item').click(function(){
+		$('.tab-default .tab-item').removeClass('is-selected');
+		$(this).addClass('is-selected');
+		$('.side-tab-list').addClass('sidebar-subList').removeClass('sidebar-list');
+		var target = $(this).attr('for');
+		$("#"+target).addClass('sidebar-list').removeClass('sidebar-subList');
+
+	});
+});
+
+$(function(){
+	$('.tab-underline .tab-item').click(function(){
+		$('.tab-underline .tab-item').removeClass('is-selected');
+		$(this).addClass('is-selected');
+		$('.manual_list').addClass('hide');
+		var target = $(this).attr('for');
+		$("#"+target).removeClass('hide');
+	});
+});
+
+//------------------------------------------------------------------------------------------------------------------------------
+//  モーダルウィンドウ
+//------------------------------------------------------------------------------------------------------------------------------
+
+$(function(){
+	$('.modal-open').click(function(){
+		$('body').append('<div class="modal-overlay"></div>');
+		$('.modal-overlay').fadeIn('slow');
+
+		var modal = '#' + $(this).attr('data-target');
+		modalResize();
+		$(modal).fadeIn('slow');
+
+		$('.modal-overlay, .modal-close').off().click(function(){
+			$(modal).fadeOut('slow');
+			$('.modal-overlay').fadeOut('slow',function(){
+				$('.modal-overlay').remove();
+			});
+		});
+
+		// リサイズしたら表示位置を再取得
+		$(window).on('resize', function(){
+			modalResize();
+		});
+
+		// モーダルコンテンツの表示位置を設定
+		function modalResize(){
+			var w = $(window).width();
+			var h = $(window).height();
+
+			var x = (w - $(modal).outerWidth(true)) / 2;
+			var y = (h - $(modal).outerHeight(true)) / 2;
+
+			$(modal).css({'left': x + 'px','top': y + 'px'});
+		}
+	});
+});
+
+//------------------------------------------------------------------------------------------------------------------------------
+//  マニュアル詳細画面　PC版・SP版切り替えバルーン
+//------------------------------------------------------------------------------------------------------------------------------
+
+$(function(){
+	$('.manual-drop').on({
+		'mouseenter': function() {
+			$('.l-manual-drop').fadeToggle('10');
+		},
+		'mouseleave': function() {
+			$('.l-manual-drop').hide();
+		}
+	});
+});

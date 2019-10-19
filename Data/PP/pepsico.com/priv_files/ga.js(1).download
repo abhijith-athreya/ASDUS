@@ -1,0 +1,37 @@
+﻿var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-21916759-1']);
+_gaq.push(['_setDomainName', 'pepsico.com']);
+_gaq.push(['_addIgnoredRef', 'pepsico.com']);
+_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_setLocalRemoteServerMode'])
+_gaq.push(['_trackPageview']);
+
+(function () {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    //ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+
+  function gaTrackEvent(category, action, label) {
+      //alert(category + '---' + action + '---' + action);
+      _gaq.push(['_trackEvent', category, action, label]);
+  }
+
+  function gaTrackSocial(item, action) {
+      _gaq.push(['_trackSocial', item, action, document.location.href, location.pathname]);
+  }
+
+ function addGA(Category, Action, Label) {
+      _gaq.push(['_trackEvent', Category, Action, Label]);
+  }
+  //VML implementation - Trigger Tags for watch video.
+  $(document).ready(function () {
+      $('.play').click(function () {
+          var name = $(this).attr('href').replace('#', '');
+
+          addGA('video-plays', name, document.URL);
+
+      });
+  });

@@ -1,0 +1,363 @@
+// JavaScript Document
+var viewWidth = jQuery(window).width();
+var viewHeight = jQuery(window).height();
+var isMobileCQ = 'false';
+if (viewWidth <= '767') {
+    isMobileCQ = 'true';
+}
+
+jQuery(document).ready(function($) {
+
+    // OFF-CANVAS GLOBAL NAV
+    $('html').addClass('js-ready');
+    $('#menuButton button').click(function(e) {
+        e.preventDefault();
+        $('html').toggleClass('js-nav');
+    });
+    $('#menuCloseButton button').click(function(e) {
+        e.preventDefault();
+        $('#mobile-heading').focus();
+        if($('html').hasClass('js-nav')){
+          $('html').removeClass('js-nav');
+        }
+    });
+
+    if (isMobileCQ == 'true') {
+    // OFF-CANVAS MEDIA GALLERY NAV
+    if ($('#media-gallery').length > 0) {
+        $('html').addClass('js-ready2');
+        $('#mobile-media-nav .menuButton button').click(function(e) {
+            e.preventDefault();
+            $('html').toggleClass('js-nav2');
+                return false;
+        });
+        $('#tab-nav a').click(function(){
+            $('html').removeClass('js-nav2');
+        });
+        }
+    }
+
+    $(window).resize(function() {
+        var viewWidth = $(window).width();
+        var viewHeight = $(window).height();
+        var isMobileCQ = 'false';
+        if (viewWidth <= '767') {
+            var isMobileCQ = 'true';
+        }
+    });
+
+    /*===============================
+        GLOBAL NAV HIGHLIGHTING:
+    ===============================*/
+    // nav highlighting for cq landing pages, media kits, microsites
+    var $body = $('body');
+
+    // function for nav highlighting
+    function highlightNav(bodyClass, navId) {
+        if ($body.hasClass(bodyClass)) {
+            $('#' + navId + '').parent().addClass('selected');
+        }
+    }
+    // highlight Innovation secondary nav
+    if (pid == 'innovation') {
+        highlightNav('nav-pipeline', 'inov_pipeline');
+        highlightNav('nav-foundry', 'inov_foundry');
+        highlightNav('nav-labs', 'inov_labs');
+        highlightNav('nav-showcase', 'inov_showcase');
+        highlightNav('nav-network', 'inov_network');
+        highlightNav('nav-prop', 'inov_prop');
+        highlightNav('blog', 'inov_blog');
+    }
+
+    // highlight Entertainment secondary nav
+    if (pid == 'entertainment') {
+        highlightNav('nav-vision', 'en_vision');
+        highlightNav('nav-tv-video', 'en_tv_video');
+        highlightNav('nav-internet', 'en_internet');
+        highlightNav('nav-business', 'en_business');
+        highlightNav('nav-awards', 'en_awards');
+        highlightNav('nav-blog', 'en_blog');
+    }
+
+    // highlight Citizenship & Sustainability secondary nav
+    if (pid == 'csr') {
+        highlightNav('home-2015', 'csr_home');
+        highlightNav('people', 'csr_people');
+        highlightNav('planet', 'csr_planet');
+        highlightNav('possibilities', 'csr_possibilities');
+        highlightNav('aspire', 'csr_aspire');
+        highlightNav('sustainability-reporting', 'csr_reporting');
+        highlightNav('csrblog', 'csr_blog');
+        //highlightNav('multimedia', 'csr_multimedia');
+        highlightNav('goals', 'csr_2025');
+    }
+    // highlight Diversity secondary nav
+    if (pid == 'about') {
+        highlightNav('diversity', 'au_diversity');
+    }
+    // highlight Your Inside Connections Blog secondary nav
+    if (pid == 'inside_connections_blog') {
+        highlightNav('blog', 'au_inside_connections');
+    }
+});
+
+var site = 'http://www.att.com';
+var pid = '';
+thomson = location.href;
+thomson = thomson.indexOf('phoenix');
+if (thomson != '-1') {
+    pid = 'thomson';
+    site = 'http://www.att.com';
+}
+if (location.href.indexOf('historic_att_stock') == '27') {
+    pid = 'historicattstock';
+    site = 'http://www.att.com';
+}
+rss = location.href;
+rss = rss.indexOf('rss');
+if (rss != '-1') {
+    pid = 'rss';
+    site = 'http://www.att.com';
+}
+
+function renderGNTop() {
+    document.write('<div id="wrapper"><div id="inner-wrapper"><div>' + '<ul id="universalNav" role="menu">' + '<li class="accessibility"><a role="menuitem" href="#content" title="Skip To Content">Skip To Content</a></li>' + '</ul>' + '</div>' + '<div id="container">' + '<div id="page">');
+    renderTopLeftTabs();
+    renderPrimaryNav();
+    document.write('<div id="content-container">' + '<div id="content">');
+}
+
+function renderTopLeftTabs() {
+    document.write('<div id="header">' + '<ul class="topLeftTabs" role="menu">' + '<li id="per" class="first"><a role="menuitem" href="http://www.att.com/gen/landing-pages?pid=3308" title="Personal">Personal</a></li>' + '<li id="biz"><a role="menuitem" href="http://www.att.com/gen/landing-pages?pid=9213" title="Business">Business</a>' + '<ul>' + '<li><a role="menuitem" href="http://www.att.com/gen/landing-pages?pid=9213" title="Small Business">Small Business</a></li>' + '<li><a role="menuitem" href="http://www.att.com/gen/landing-pages?pid=9214" title="Enterprise Business">Enterprise Business</a></li>' + '<li><a role="menuitem" href="http://www.att.com/gen/general?pid=11624" title="Wholesale">Wholesale</a></li>' + '<li><a role="menuitem" href="http://www.att.com/gen/general?pid=11625" title="Government">Government</a></li>' + '</ul>' + '</li>' + '<li id="abt" class="selected"><a role="menuitem" href="http://about.att.com" title="About AT&amp;T">About AT&amp;T</a></li>' + '<li id="last"><span> </span></li>' + '</ul>' + '</div>');
+}
+
+
+function renderPrimaryNav() {
+    document.write('<div id="mainNavigation">');
+    if (thomson != '-1') {
+        pid = 'thomson';
+        site = 'http://www.att.com';
+        var thomsonID = location.href;
+        checkURL = thomsonID.indexOf('p=');
+        if (checkURL != '-1') {
+            thomsonID = thomsonID.substr(checkURL + 2);
+            checkAnd = thomsonID.indexOf('&');
+            if (checkAnd != '-1') {
+                thomsonID = thomsonID.split('&');
+                thomsonID = thomsonID[0];
+            }
+            checkAnc = thomsonID.indexOf('#');
+            if (checkAnc != '-1') {
+                thomsonID = thomsonID.split('#');
+                thomsonID = thomsonID[0];
+            }
+            pid = thomsonID;
+        }
+        pid = pid.toLowerCase();
+    } else
+    if (location.href.indexOf('historic_att_stock') != '-1') {
+        pid = 'historicattstock';
+        site = 'http://www.att.com';
+    } else
+    if (location.href.indexOf('CSRBrochure10') != '-1') {
+        pid = 'CSRBrochure10';
+        site = 'http://www.att.com';
+    } else
+    if (location.href.indexOf('consumernews') != '-1' || location.href.indexOf('consumerblog') != '-1') {
+        pid = 'consumerblog';
+        site = 'http://www.att.com';
+    } else
+    // MOBILITY LANDING PAGE
+    if (location.href.indexOf('/news/mobility.html') != '-1') {
+        pid = 'entertainment';
+        site = 'http://www.att.com';
+    } else
+    // BUSINESS LANDING PAGE
+    if (location.href.indexOf('/news/business-news.html') != '-1') {
+        pid = '21436';
+        site = 'http://www.att.com';
+    } else
+    // ENTERTAINMENT LANDING PAGE
+    if (location.href.indexOf('/sites/entertainment') != '-1') {
+        pid = 'entertainment';
+        site = 'http://www.att.com';
+    } else
+    // NETWORK LANDING PAGE
+    if (location.href.indexOf('/news/wireless-network.html') != '-1') {
+        pid = '2943';
+        site = 'http://www.att.com';
+    } else
+    // INNOVATION LANDING PAGE
+    if (location.href.indexOf('/innovation') != '-1') {
+        pid = 'innovation';
+        site = 'http://www.att.com';
+    } else
+    // INTERNATIONAL LANDING PAGE
+    if (location.href.indexOf('/news/international.html') != '-1') {
+        pid = 'international';
+        site = 'http://www.att.com';
+    } else
+    // YOUR INSIDE CONNECTIONS BLOG
+    if (location.href.indexOf('/inside_connections_blog') != '-1') {
+        pid = 'inside_connections_blog';
+        site = 'http://www.att.com';
+    } else
+    // CITIZENSHIP & SUSTAINABILITY LANDING PAGE
+    if (location.href.indexOf('/csr') != '-1' && location.href.indexOf('/csr/privacy') == '-1' && location.href.indexOf('/csr/home/privacy') == '-1') {
+        pid = 'csr';
+        site = 'http://www.att.com';
+    } else {
+        pid = 'about';
+        site = 'http://www.att.com';
+    }
+
+    /*===============================
+        WRITING OUT PRIMARY NAV:
+    ===============================*/
+
+    /* Begin Black Nav Header Bar */
+    document.write('<div id="headerNav"><div id="menuButton"><button href="#PrimaryNav" title="Toggle Navigation"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div>');
+
+    /* Begin Primary Navigation List */
+    document.write('<div id="PrimaryNav-container"><ul role="menubar" id="PrimaryNav">'
+                 + '<li role="none" class="logo hidden-phone"><a role="menuitem" aria-label="AT&T" href="http://www.att.com/"><img src="//att.com/Common/global/images/about_us/att_logo.png" alt="AT&T logo" /> <div id="headerTitle"> <span> About AT&amp;T </span> </div></a></li>');
+
+
+  /* ABOUT US - PRIMARY */
+  document.write('<li role="none" class="first-mobile');
+  if (pid == 'about' || pid == '3309' || pid == 'rss' || pid == 'CSRBrochure10' || pid == 'consumerblog' || pid == 'inside_connections_blog') {
+    document.write(' selected');
+  }
+  document.write('"><a role="menuitem" aria-haspopup="true" href="http://about.att.com/category/all_news.html" aria-label="About Us" id="pn-compinfo">About Us</a>');
+  /* ABOUT US - SECONDARY */
+  document.write('<ul role="menu" class="secondaryNav" id="about_us_nav">'
+    + '<li role="none"><a role="menuitem" href="https://about.att.com/sites/company_profile" aria-label="AT&T Corporate Profile" id="au_corporate_profile_link">AT&amp;T Corporate Profile</a></li>'
+    + '</ul>');
+
+
+  /* INVESTORS - PRIMARY */
+  document.write('<li role="none"');
+  if (pid == '5718' || pid == 'historicattstock' || pid == 'thomson' || thomson != '-1') {
+    document.write(' class="selected"');
+  }
+  document.write('> <a role="menuitem" aria-haspopup="true" id="pn-investor" aria-label="Investors" href="https://investors.att.com/">Investors</a>');
+  /* INVESTORS - SECONDARY */
+  document.write('<ul role="menu" class="secondaryNav" id="investor_relations_nav">'
+    + '<li role="none"><a role="menuitem" href="https://investors.att.com/investor-profile" id="ir_investor_profile_link" aria-label="Investor Profile">Investor Profile</a></li>'
+    + '<li role="none"><a role="menuitem" href="https://investors.att.com/news-and-events/events-and-presentations" id="ir_investor_news_link" aria-label="New & Events">News &amp; Events</a></li>'
+    + '<li role="none"><a role="menuitem" href="https://investors.att.com/financial-reports/quarterly-earnings" id="ir_financial_reporting_link" aria-label="Financial Reports">Financial Reports</a></li>'
+    + '<li role="none"><a role="menuitem" href="https://investors.att.com/stock-information/stock-quote-and-chart" id="ir_stock_info_link" aria-label="Stock Information">Stock Information</a></li>'
+    + '<li role="none"><a role="menuitem" href="https://investors.att.com/stockholder-services/cost-basis-guide" id="ir_stockholder_services_link" aria-label="Stockholder Services">Stockholder Services</a></li>'
+    + '<li role="none"><a role="menuitem" href="https://investors.att.com/corporate-governance/leadership" id="ir_corporate_governance_link" aria-label="Corporate Governance">Corporate Governance</a></li>'
+    + '<li role="none"><a role="menuitem" href="https://investors.att.com/resources/contacts" id="ir_resources_link" aria-label="Resources">Resources</a></li>'
+    + '</ul>'
+    + '</li>');
+
+
+  /* AT&T COMMUNICATIONS - PRIMARY */
+  document.write('<li role="none"');
+    if (pid == '21436') {
+        document.write(' class="selected"');
+    }
+  document.write('><a role="menuitem" aria-haspopup="true" href="http://about.att.com/category/att_communications_news" aria-label="AT&T Communications" id="pn-business">AT&amp;T <br>Communications</a>');
+  /* AT&T COMMUNICATIONS - SECONDARY */
+    document.write('<ul role="menu" class="secondaryNav" id="business_nav">'
+    + '<li role="none"><a role="menuitem" id="bn_business_insights_link" href="http://about.att.com/sites/company_profile_communications" aria-label="AT&T Communications Profile">AT&amp;T Communications Profile</a></li>'
+    + '<li role="none"><a role="menuitem" id="bn_network_blog_link" href="http://about.att.com/sites/consumer" aria-label="Consumer">Consumer</a></li>'
+    + '<li role="none"><a role="menuitem" id="bn_small_business_hub_link" href="http://about.att.com/sites/business" aria-label="Business">Business</a></li>'
+    + '<li role="none"><a role="menuitem" id="bn_enterprise_solutions_link" href="http://about.att.com/innovation" aria-label="Technology & Innovation">Technology &amp; Innovation</a></li>'
+    + '<li role="none"><a role="menuitem" id="bn_small_business_link" href="http://about.att.com/csr" aria-label="Social Responsibility">Social Responsibility</a></li>'
+    + '<li role="none"><a role="menuitem" id="bn_wireless" href="http://att.jobs/" aria-label="Careers">Careers</a></li>'
+    + '<li role="none"><a role="menuitem" id="bn_iot" href="http://espanol.att.com/" aria-label="AT&amp;T En Espa&ntilde;ol">AT&amp;T En Espa&ntilde;ol</a></li>'
+    + '<li role="none"><a role="menuitem" id="bn_safety" href="http://world.att.com/english/home.html" aria-label="AT&amp;T World">AT&T World</a></li>'
+    + '</ul>'
+    + '</li>');
+
+
+  /* AT&T INTERNATIONAL - PRIMARY */
+  document.write('<li role="none"');
+    if (pid == 'entertainment') {
+        document.write(' class="selected"');
+    }
+  document.write('><a role="menuitem" aria-haspopup="true" href="http://about.att.com/category/att_international_news" aria-label="AT&T International" id="pn-international">AT&T <br>International</a>');
+  /* AT&T INTERNATIONAL - SECONDARY */
+    document.write('<ul role="menu" class="secondaryNav" id="international_nav">'
+    + '<li role="none"><a role="menuitem" id="intl_services" href="http://about.att.com/sites/company_profile_international" aria-label="AT&T International Profile">AT&amp;T International Profile</a></li>'
+    + '<li role="none"><a role="menuitem" id="intl_mexico" href="https://www.att.com.mx/newsroom/" aria-label="Mexico">Mexico</a></li>'
+    + '<li role="none"><a role="menuitem" id="intl_solutions" href="http://www.directvla.com/" aria-label="Latin America & Caribbean">Latin America &amp; Caribbean</a></li>'
+    + '</ul>'
+    + '</li>');
+
+
+  /* AT&T AD & ANALYTICS - PRIMARY */
+  document.write('<li role="none"');
+    if (pid == 'innovation' || pid == '14209') {
+        document.write(' class="selected"');
+    }
+  document.write('><a role="menuitem" aria-haspopup="true" href="http://about.att.com/category/att_ad_analytics_news" aria-label="AT&T advertising & analytics" id="pn-innovation">AT&amp;T <br>advertising & analytics</a>');
+  /* AT&T AD & ANALYTICS - SECONDARY */
+  // document.write('<ul role="menu" class="secondaryNav" id="innovation_nav">'
+  //  + '<li role="none"><a role="menuitem" id="inov_blog" href="http://about.att.com/innovationblog" aria-label="Blog">Blog</a></li>'
+  //  + '</ul>');
+  document.write('<ul role="menu" class="secondaryNav"></ul>');
+  document.write('</li>');
+
+
+  /* SOCIAL RESPONSIBILITY - PRIMARY */
+  document.write('<li role="none"');
+    if (pid == 'csr') {
+        document.write(' class="selected"');
+    }
+  document.write('><a role="menuitem" aria-haspopup="true" href="http://about.att.com/category/social_responsibility_news" aria-label="Social Responsibility" id="pn-csr">Social Responsibility</a>');
+  /* SOCIAL RESPONSIBILITY - SECONDARY */
+    document.write('<ul role="menu" class="secondaryNav" id="csr_nav">'
+    + '<li role="none"><a role="menuitem" id="csr_home" href="http://about.att.com/csr" aria-label="AT&T Communications">AT&amp;T Communications</a></li>'
+    + '<li role="none"><a role="menuitem" id="csr_people" href="https://www.att.com/gen/press-room?pid=2964" aria-label="It Can Wait">It Can Wait</a></li>'
+    + '<li role="none"><a role="menuitem" id="csr_planet" href="http://about.att.com/content/csr/home/possibilities/at-t-aspire.html" aria-label="Aspire">Aspire</a></li>'
+    + '<li role="none"><a role="menuitem" id="csr_possibilities" href="https://www.att.com.mx/acerca-de-att/responsabilidad-social.html" aria-label="AT&T Mexico">AT&amp;T Mexico</a></li>'
+    + '<li role="none"><a role="menuitem" id="csr_aspire" href="http://www.directvla.com/index_en.aspx" aria-label="DIRECTV Latin America & Caribbean">DIRECTV Latin America &amp; Caribbean</a></li>'
+    + '<li role="none"><a role="menuitem" id="csr_icw" href="http://about.att.com/csr/reporting" aria-label="Sustainability Reporting">Sustainability Reporting</a></li>'
+    + '</ul>'
+    + '</li>');
+
+
+  /* CAREERS - PRIMARY */
+  document.write('<li role="none">');
+  document.write('<a role="menuitem" aria-haspopup="true" href="http://about.att.com/sites/careers" aria-label="Careers" id="pn-careers">Careers</a>'
+    + '<ul role="menu" class="secondaryNav"></ul>'
+    + '</li>');
+
+   // Fusion Mobile Nav:
+   document.write('<li role="none" class="visible-phone"><a role="menuitem" href="http://m.att.com/shopmobile/globalnav/morefromatt.html?referer=aboutUsWeb" id="sm_more_link" aria-label="More from AT&T">More from AT&amp;T</a></li>'
+   + '<li id="menuCloseButton" class="visible-phone"><button href="javascript:void(0);" id="sm_close_link" aria-label="Close navigation">X</button></li>'
+   + '</ul></div>'
+   /* End Primary Navigation List */
+
+   + '<h1 id="mobile-heading" class="visible-phone">About AT&amp;T</h1></div>'
+   + '</div>');}
+
+   /* End Black Nav Header Bar */
+
+
+function renderGNBottom() {
+    renderMobileFooter();
+    document.write('</div>' + '</div>' + '</div>' + '</div>');// </#content></#content-container></#page></#container>
+    renderFooter();
+    document.write('</div></div>');// </#inner-wrapper></#wrapper>
+}
+
+function renderMobileFooter() {
+    document.write('<section id="mobile-footer" class="clearfix">' + '<div class="connect-social clearfix">' + '<p><a href="//www.att.com/gen/press-room?pid=5000" title="AT&amp;T Social Media">Connect with us</a></p>' + '<ul>' + '<li><a href="https://twitter.com/ATT/" target="_blank" title="Twitter"><img src="/etc/designs/snr/clientlibs/images/icon_twitter.png" alt="" /></a></li>' + '<li><a href="http://www.facebook.com/ATT/" target="_blank" title="Facebook"><img src="/etc/designs/snr/clientlibs/images/icon_facebook.png" alt="" /></a></li>' + '<li><a href="http://www.linkedin.com/company/at&t/" target="_blank" title="LinkedIn"><img src="/etc/designs/snr/clientlibs/images/icon_linkedin.png" alt="" /></a></li>' + '<li><a href="https://plus.google.com/+ATT/" target="_blank" title="Google+"><img src="/etc/designs/snr/clientlibs/images/icon_googleplus.png" alt="" /></a></li>' + '</ul>' + '</div>' + '<ul>' + '<li><a href="http://about.att.com/sites/web_policy">Privacy Policy</a></li>' + '<li><a href="https://www.att.com/legal/terms.attWebsiteTermsOfUse.html">Terms of Use</a></li>' + '<li><a href="https://www.att.com/features/accessibility.html">Accessibility</a></li>' + '<li><a href="https://www.att.com/contactus/" class="end">Contact Us</a></li>' + '</ul>'+ '<p class="copyright"><a href="http://www.att.com/gen/privacy-policy?pid=2587">&#169; ' + new Date().getFullYear() +' AT&amp;T Intellectual Property.</a> All rights reserved.</p>' + '<div class="clear"></div></section>');
+}
+
+function renderFooter() {
+    document.write('<div id="footer">' + '<div class="left">' + '<p class="separator"><a href="http://about.att.com/sites/web_policy">Privacy Policy</a> <a href="https://www.att.com/legal/terms.attWebsiteTermsOfUse.html">Terms of Use</a> <a href="https://www.att.com/features/accessibility.html">Accessibility</a> <a href="https://www.att.com/contactus/" class="end">Contact Us</a></p>' + '<p class="copyright"><a href="http://www.att.com/gen/privacy-policy?pid=2587">&#169; ' + new Date().getFullYear() +' AT&amp;T Intellectual Property.</a> All rights reserved.</p>' + '</div>' + '<div class="clear"></div></div>');
+}
+
+function renderThomsonTop() {
+    renderGNTop();
+}
+
+function renderThomsonBottom() {
+    renderGNBottom();
+}

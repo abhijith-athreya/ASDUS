@@ -1,0 +1,13 @@
+/**
+ * @file
+ * Alter report problem form to return current URL.
+ */
+
+(function ($) {
+  Drupal.behaviors.europaeu_report_problem = {
+    attach: function (context, settings) {
+      $('#form_tools_url_from').attr('value', window.location.href);
+      $("input[name=form_tools_redirect_url]").val('http://europa.eu/european-union/survey-thanks');
+    }
+  }
+})(jQuery);

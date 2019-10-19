@@ -1,0 +1,89 @@
+//Project: AliveTracker v4.0
+//Filename: tracking_ini_tmpl.js
+//Author: Dustin Yu
+//Date: 9/30/2016
+//Description: Template file with variables to be replaced via Node.
+
+var global_trackingConfigJSON 	= '{"triggers":[{"proactive_id":0,"url_patterns":"","user_agent_string":"","pageid":0,"delay":30,"pagesvisited":1,"proactive_router_type":"ringall","proactive_type":"chatwindow","proactive_window_websiteid":0,"proactive_app":"alivechat","proactive_department_id_select":7745}],"customization":{"embed_alivechat_enabled":1,"embed_alivedial_enabled":0,"embed_image":"https://images.websitealive.com/images/hosted/upload/2016-11-10_1478811404147_ybwwlzdzzu.png","embed_image_alert":"https://images.websitealive.com/images/hosted/upload/2016-11-10_1478811418627_jtldwbnmyo.png","embed_image_close_window":"https://images.websitealive.com/images/hosted/default/tab_bar_close_350.png","visitor_timeout":1800,"enable_tracking":"Y","embed_appearance":"X","embed_dockoropen":"tab","embed_position":"left","embed_icon_position_top":0,"embed_icon_position_leftright":10,"embed_department_id":7745,"window_top":0,"window_leftright":10,"window_width":348,"window_height":400,"window_border_size":1,"window_border_color":"214,214,214","window_shadow":"N","window_slideout":"Y","window_icon_close_top":0,"window_icon_close_leftright":0,"window_transparent":"N"}}';
+
+//Local and Parameter Variables 
+
+var objectref = 'c1';
+var groupid   = '6330';
+var websiteid = '0';
+
+
+var visitor_window_url = 'https://c1.websitealive.com/';
+
+var wsa_custom_str		    = '^^^^';
+var survey_ids			    = '';
+var survey_values		    = '';
+
+//Pass in variables
+
+//var loginname		        = '';
+var loginname		        = '';
+var loginemail		        = '';
+var loginphone		        = '';
+var loginquestion	        = '';
+
+//var global_login_variables = '&loginname=&loginemail=&loginphone=&loginquestion=&survey_ids=&survey_values='; 
+var global_login_variables = '&loginname=&loginemail=&loginphone=&loginquestion=&survey_ids=&survey_values='; 
+
+
+//Document referer, location, title.
+
+var rf = document.referrer.toString();
+var dl = document.location.toString();
+var dt = document.title.toString();
+
+
+//Declare Global Variables.
+			
+var global_is_triggered 						= false;
+var global_trigger_proactive_id 				= '';
+var global_trigger_proactive_window_websiteid 	= 0;
+var global_trigger_department_id_select 		= 0;
+var global_trigger_delay 						= 0;
+var global_trigger_proactive_type				= '';
+var global_trigger_app							= '';
+var global_trigger_auto_start_chat 				= '';
+var global_trigger_router_type 					= '';
+var global_trigger_open_in_dock 				= '';
+
+var global_session_pages_visited 				= 0;
+
+var global_logged_in 							= '';
+var global_ipdeny_lsm							= '';
+
+var global_alive_guid                           = '';
+
+//URLs
+var global_base_url = (("https:" == document.location.protocol) ? "https://" : "http://") + 'tracking-v4.websitealive.com';
+
+var global_api_url = global_base_url + '/api/1.0/'
+var global_api_params = '?objectref=c1&groupid=6330&websiteid=0';
+
+
+//embed tracking js
+
+var js = document.createElement('script'); 
+js.type = 'text/javascript';
+
+if ('c1' == 'dev0' || ('c1' == 'wsa3' && '6330' == '9') || ('c1' == 'c1' && '6330' == '8128') || ('c1' == 'c1' && '6330' == '10123') || ('c1' == 'jc1' && '6330' == '9') || ('c1' == 'c1' && '6330' == '10468') || ('c1' == 'c1' && '6330' == '8127') || ('c1' == 'c1' && '6330' == '9137') ){
+
+    //js.src = global_base_url + '/js/tracking_v4.1.js?v=0.0';    //android
+    //js.src = global_base_url + '/js/tracking_v4.js';
+    //js.src = global_base_url + '/js/tracking_v4.min.js';
+    js.src = global_base_url + '/js/tracking_v4_ada.js';
+
+}else{
+
+    js.src = global_base_url + '/js/tracking_v4.min.js?v=1.4';
+
+}
+
+
+
+
+document.getElementsByTagName('head')[0].appendChild(js);

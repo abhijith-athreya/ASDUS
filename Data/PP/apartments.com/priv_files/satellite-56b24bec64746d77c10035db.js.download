@@ -1,0 +1,341 @@
+_satellite.pushAsyncScript(function(event, target, $variables){
+  /************************************
+ ____    ____    ______      __    __               __             __                
+/\  _`\ /\  _`\ /\__  _\    /\ \  /\ \             /\ \__         /\ \               
+\ \,\L\_\ \ \/\ \/_/\ \/    \ `\`\\/'/ ___   __  __\ \ ,_\  __  __\ \ \____     __   
+ \/_\__ \\ \ \ \ \ \ \ \     `\ `\ /' / __`\/\ \/\ \\ \ \/ /\ \/\ \\ \ '__`\  /'__`\ 
+   /\ \L\ \ \ \_\ \ \_\ \__    `\ \ \/\ \L\ \ \ \_\ \\ \ \_\ \ \_\ \\ \ \L\ \/\  __/ 
+   \ `\____\ \____/ /\_____\     \ \_\ \____/\ \____/ \ \__\\ \____/ \ \_,__/\ \____\
+    \/_____/\/___/  \/_____/      \/_/\/___/  \/___/   \/__/ \/___/   \/___/  \/____/
+
+Welcome to the plug-n-play Youtube script for DTM.  Please read below to ensure this gets installed correctly, although it is very easy to install.  As you will copy and paste some code, be sure that you DO NOT COPY AND PASTE THE COMMENTS.
+
+1. Add the script below to a page load rule as a 3rd party script.  It can be triggered at any point on the page.  It is recommended to add it as non-sequential JavaScript although it can be added as sequential as well.
+2. Make any necessary configurations (below the START and END comments below).
+  a. milestones = Capture % complete milestones as an array of numbers.  These will trigger direct call rules and set a data element, but are not used to configure the milestones for the Adobe Analytics Media Module.
+  b. directCallRules = This code will send data via direct call rules.  The names of the direct call rules can be configured here.  If you are not using direct call rules, you can empty the contents of this object.
+    i. start = Set at the start of a video.
+    ii. resume = Set when the video resumes after a pause.
+    iii. pause = Set when the video is paused.
+    iv. complete = Set when the video has completed.  This can be set if the video reaches the end or if the video completely disappears from the page (is in a modal and the user closes the modal).
+    v. buffer = Set when the video buffers.
+    vi. milestone = Set when the user views a video milestone, as defined in the _sdi.yt.milestones array.  You can either define a static name, or if {milestone} is used in the name, it will dynamically insert the milestone number.
+    vii. seek = Set when a user seeks from one point to another in the video.  It does not specify if it was a rewind or fast forward.
+  c. dataElements = When a direct call rule is triggered, video data will be stored in data elements.  The names of the data elements can be configured in this object.  Be sure to only use data element names that are not already created in DTM.
+    i. title = Friendly Youtube video title / name.
+    ii. time = The current video time in seconds when a direct call rule is triggered.
+    iii. milestone = The % milestone number when a milestone is triggered.
+    iv. author = The author's user ID as reported by Youtube.
+    v. id = The Youtube video ID, also available in the embed URL.
+    vi. duration = The total duration in seconds of the video.
+    vii. player = The player name, which is configured in the _sdi.yt.playerName object.  This just makes it available as a data element.
+  d. playerName = This is the name that is used in the "player" data element, as well as the player name reported to the Adobe Analytics Media Module.
+  e. sc = This is the Adobe Analytics Media Module trigger and configuration.
+    i. track = (boolean) Set to true if you want to track via the Adobe Analytics Media Module, and to false if you do not.
+    ii. sc = This is a function to get the correct "s" object.  If using a classic s_code file where you define the "s" object, you can use the definition of window.s (default).  If you are using an Adobe hosted file in DTM, it is suggested to use the s_gi function.  For example, if you have the report suite ID available in a data element (highly suggested you do this), you can do something like the following:
+
+      return s_gi(_satellite.getVar('rsid'));
+
+    This will ensure that you can still use the Media Module without having to create a global "s" object.  Just be sure that you have loaded the Media Module code and have also loaded it by using s.loadModule("Media").
+  f. timeout = This code will check for new iframes that have not been tracked every X milliseconds to ensure all videos are tracked.  This value determines the frequency.  The default is 1000, but can be updated if needed.  To avoid having to use this, you can instead ensure that each iframe's src contains "enablejsapi=1" in the query string.
+************************************/
+
+var _sdi = _sdi || {};
+
+// SDI Youtube Object
+_sdi.yt = {
+  /****** START Configuration ******/
+  milestones: [25,50,75,90],
+  directCallRules: {
+    start: 'yt_start',
+    complete: 'yt_complete'
+  },
+  dataElements: {
+    title: 'yt_title'
+  },
+  playerName: 'Youtube',
+  sc: {
+    track: false,
+    s: false
+  },
+  timeout: 1000,
+  /****** END Configuration ******/
+  stages: {},
+  players: {},
+  init: function() {
+    var scripts = document.getElementsByTagName('script'),
+      api = false,
+      ids = [],
+      vids = _sdi.yt.videos;
+    for (var i = 0; i < scripts.length; i++) {
+      var script = scripts[i],
+        src = script.src || '';
+      if (src.match(/youtube\.com\/iframe_api/)) {
+        api = true;
+      }
+    }
+    if (api === false) {
+      _satellite.notify('YT: Youtube API not loaded, loading now',1);
+      _satellite.loadScript('//www.youtube.com/iframe_api',function(){
+        _sdi.yt.ready('api');
+      });
+    }
+    else {
+      _sdi.yt.ready('api');
+    }
+  },
+  ready: function(stage){
+    _sdi.yt.stages[stage] = true;
+    if(_sdi.yt.stages.dom && _sdi.yt.stages.api){
+      _sdi.yt.checkIframes();
+    }
+  },
+  checkIframes: function(){
+    var vids = _sdi.yt.videos;
+    _satellite.cssQuery('iframe[src*="youtube"]', function(iframes){
+      for(var i=0; i<iframes.length; i++){
+        var ifr = iframes[i];
+        if(!ifr.getAttribute('data-sdi')){
+          var vid = ifr.src.match(/h?t?t?p?s?\:?\/\/www\.youtube(-nocookie)?\.com\/embed\/([\w-]{11})(?:\?.*)?/),
+            id = (vid.length>2?vid[2]:'');
+          if (!ifr.id) {
+            ifr.id = id;
+          }
+          if(!ifr.src.match(/enablejsapi=1/)){
+            var src = ifr.src;
+            ifr.src = src + (src.indexOf('?')>-1 ? '&' : '?') + 'enablejsapi=1';
+          }
+          else {
+            if (typeof YT != 'undefined') {
+              if (typeof YT.get != 'undefined') {
+                ready = true;
+                vids[id] = {};
+                if (!YT.get(ifr.id)) {
+                  _satellite.notify('YT: API for iframe ID "'+ifr.id+'" not configured, configuring now',1);
+                  vids[id].player = new YT.Player(ifr.id, {
+                    events: {
+                      onReady: function() {},
+                      onStateChange: function() {},
+                      videoId: ifr.id
+                    }
+                  });
+                  ifr.setAttribute('data-sdi','true');
+                }
+                else {
+                  ifr.setAttribute('data-sdi','true');
+                  _satellite.notify('YT: API for iframe ID "'+ifr.id+'" already configured',1);
+                }
+                _sdi.yt.timeout = 1000;
+              }
+              else {
+                _satellite.notify('YT: YT.get is not ready...',1);
+                _sdi.yt.timeout = 100;
+              }
+            }
+            else {
+              _satellite.notify('YT: YT is not ready...',1);
+              _sdi.yt.timeout = 100;
+            }
+          }
+        }
+      }
+    });
+    setTimeout(function() {
+      _sdi.yt.checkIframes()
+    }, _sdi.yt.timeout);
+  },
+  videos: {},
+  setVideoData: function(n,v){
+    var de = _sdi.yt.dataElements || {};
+    // set a specific value
+    if(n && v){
+      _satellite.setVar(de[n],v);
+    }
+    // set multiple values, object literal
+    else if(typeof n == 'object') {
+      for(var name in n){
+        _satellite.setVar(de[name], n[name]);
+      }
+    }
+    // player
+    if(de.player && _sdi.yt.playerName){
+      _satellite.setVar(de.player,_sdi.yt.playerName);
+    }
+  }
+};
+_sdi.yt.init();
+_satellite.addEventHandler(window, 'message', function(r) {
+  var d = {};
+  if (r.origin.match(/youtube\.com|youtube-nocookie\.com/) && typeof JSON != 'undefined') {
+    d = typeof r.data == 'string' ? JSON.parse(r.data) : {};
+    var videos = _sdi.yt.videos,
+      dc = _sdi.yt.directCallRules || {},
+      de = _sdi.yt.dataElements || {},
+      sc = _sdi.yt.sc || {},
+      data = {},
+      v;
+    // video info
+    if(d.event=='infoDelivery'){
+      var v = {}, id;
+      if(d.info.videoData){
+        id = d.info.videoData.video_id;
+        v = videos[id] || {};
+        v.info = d.info;
+        v.id = d.id;
+        videos[id] = v;
+      }
+      else {
+        for(var vs in videos){
+          var vid = videos[vs];
+          if(vid.id == d.id){
+            v = vid;
+          }
+        }
+        if(v.info )
+        {
+          //video time changes
+          if(d.info.currentTime){
+            // capture a scrub by checking if the last time we tracked was more than 1.5 seconds
+            if(Math.abs(d.info.currentTime - v.info.currentTime) > 1.5){
+              if(sc.track===true){
+                sc.s().Media.stop(v.info.videoData.title, v.info.currentTime);
+                sc.s().Media.play(v.info.videoData.title, d.info.currentTime);
+              }
+              _satellite.notify('YT: '+v.info.videoData.title+': seek from '+v.info.currentTime+' to '+d.info.currentTime, 1);
+              if(dc.seek){
+                data = {
+                  title: v.info.videoData.title,
+                  time: d.info.currentTime
+                };
+                _sdi.yt.setVideoData(data);
+                _satellite.track(dc.seek);
+              }
+            }
+
+            // milestones
+            var m = _sdi.yt.milestones || [],
+              t = d.info.currentTime;
+            if(m.length > 0){
+              v.milestones = v.milestones || {};
+              var pct = t / v.info.duration * 100;
+              for(var i=0; i<m.length; i++){
+                var next = m[i+1] || 100;
+                if(pct > m[i] && pct <= next && !v.milestones[m[i]]){
+                  if(dc.milestone){
+                    _satellite.setVar(de.milestone, m[i]);
+                    _satellite.track(dc.milestone.replace(/\{milestone\}/ig, ''+m[i]));
+                    v.milestones[m[i]] = true;
+                  }
+                }
+              }
+            }
+            v.info.currentTime = d.info.currentTime;
+          }
+
+        }
+      }
+      //_satellite.notify('YT: playerState - '+d.info.playerState);  
+      //player state changes
+      if(typeof d.info.playerState != "undefined"){
+        for(var vs2 in videos){
+          var vid2 = videos[vs2];
+          if(vid2.id == d.id){
+            v = vid2;
+          }
+        }
+        data = {
+          title: v.info.videoData.title,
+          duration: v.info.duration,
+          time: v.info.currentTime
+        };
+        // video play
+        if(d.info.playerState == 1){
+          // video start
+            _satellite.notify('YT: started - '+v.started);
+            _satellite.notify('YT: completed - '+v.completed);
+          if(!v.started || v.completed){
+
+            v.started = true;
+            v.completed = false;
+            if(sc.track===true){
+              sc.s().Media.open(v.info.videoData.title, v.info.duration, _sdi.yt.playerName);
+              sc.s().Media.play(v.info.videoData.title, v.info.currentTime);
+            }
+
+            _satellite.notify('YT: '+v.info.videoData.title+': video start',1);
+
+            if(dc.start){
+              _sdi.yt.setVideoData(data);
+              _satellite.track(dc.start);
+            }
+          }
+          // video resume
+          else {
+              
+            if(sc.track===true){              
+              sc.s().Media.play(v.info.videoData.title, v.info.currentTime);
+            }
+            _satellite.notify('YT: '+v.info.videoData.title+': video resume at '+v.info.currentTime,1);
+
+            if(dc.resume){
+              _sdi.yt.setVideoData(data);
+              _satellite.track(dc.resume);
+            }
+          }
+          v.state = 'playing';
+        }
+        // video pause
+        if(d.info.playerState == 2 && (v.info.duration - v.info.currentTime) > 1.5){
+
+          if(sc.track===true){
+            sc.s().Media.stop(v.info.videoData.title, v.info.currentTime);
+          }
+          _satellite.notify('YT: '+v.info.videoData.title+': video pause at '+v.info.currentTime,1);
+
+          if(dc.pause){
+            _sdi.yt.setVideoData(data);
+            _satellite.track(dc.pause);
+          }
+
+          v.state = 'paused';
+        }
+        // video buffer
+        if(d.info.playerState == 3 && v.started){
+          if(sc.track===true){
+            sc.s().Media.stop(v.info.videoData.title, v.info.currentTime);
+          }
+          _satellite.notify('YT: '+v.info.videoData.title+': video buffer/pause at '+v.info.currentTime,1);
+
+          if(dc.buffer){
+            _sdi.yt.setVideoData(data);
+            _satellite.track(dc.buffer);
+          }
+
+          v.state = 'paused';
+        }
+           
+        // video complete
+        if(d.info.playerState === 0){
+          v.completed = true;
+          v.state = 'completed';    
+          if(sc.track===true){              
+            sc.s().Media.stop(v.info.videoData.title, v.info.currentTime);
+            sc.s().Media.close(v.info.videoData.title);
+          }
+          _satellite.notify('YT: '+v.info.videoData.title+': video complete',1);
+
+          if(dc.complete){
+            _sdi.yt.setVideoData(data);
+            _satellite.track(dc.complete);
+          }
+          
+        }
+      }
+    }
+  }
+});
+
+_satellite.domReady(function(){
+  _sdi.yt.ready('dom');
+});
+});

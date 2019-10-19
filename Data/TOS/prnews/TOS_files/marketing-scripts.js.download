@@ -1,0 +1,63 @@
+// PRNM-2128 - Default value set - Start   
+var defaultPages = {};
+defaultPages['/solutions/overview']='solutionsoverview';
+defaultPages['/solutions/marketing']='solutionsmarketing';
+defaultPages['/solutions/public-relations']='solutionspublicrelations';
+defaultPages['/solutions/ir-compliance']='solutionsircompliance';
+defaultPages['/solutions/agency']='solutionsagency';
+defaultPages['/solutions/products-overview']='solutionsproducts';
+defaultPages['/knowledge-center']='knowledgecenter';
+defaultPages['/contact-us']='contactus';
+defaultPages['/OnlineMembershipForm']='prnnmf';
+
+var checkRefExist = function(refURL) {
+var isRefExist = false;
+var refObj = {};
+refObj.isRefExist = false;
+var loctag = document.createElement("a");
+loctag.href = refURL;
+var path = loctag.pathname; 
+if(loctag.hostname.indexOf('.prnewswire.com')>-1){
+if(path.indexOf('/solutions/overview') > -1){
+	refObj.isRefExist = true;
+refObj.campVal = defaultPages['/solutions/overview'];
+}else if(path.indexOf('/solutions/marketing') > -1){
+	refObj.isRefExist = true;
+refObj.campVal = defaultPages['/solutions/marketing'];
+}else if(path.indexOf('/solutions/public-relations') > -1){
+	refObj.isRefExist = true;
+refObj.campVal = defaultPages['/solutions/public-relations'];
+}else if(path.indexOf('/solutions/ir-compliance') > -1){
+	refObj.isRefExist = true;
+refObj.campVal = defaultPages['/solutions/ir-compliance'];
+}else if(path.indexOf('/solutions/agency') > -1){
+	refObj.isRefExist = true;
+refObj.campVal = defaultPages['/solutions/agency'];
+}else if(path.indexOf('/solutions/products-overview') > -1){
+	refObj.isRefExist = true;
+refObj.campVal = defaultPages['/solutions/products-overview'];
+}else if(path.indexOf('/knowledge-center') > -1){
+	refObj.isRefExist = true;
+refObj.campVal = defaultPages['/knowledge-center'];
+}else if(path.indexOf('/contact-us') > -1){
+	refObj.isRefExist = true;
+refObj.campVal = defaultPages['/contact-us'];
+}else if(path.indexOf('/OnlineMembershipForm') > -1){
+	refObj.isRefExist = true;
+refObj.campVal = defaultPages['/OnlineMembershipForm'];
+}else if(path.indexOf('/solutions/') > -1 && path.indexOf('.html') > -1){
+	refObj.isRefExist = true;
+refObj.campVal = 'solutions';
+}
+else if(path =='/' || path ==''){
+	refObj.isRefExist = true;
+refObj.campVal ='homepage' ;
+}
+else{
+refObj.isRefExist = true;
+refObj.campVal = '';
+}
+}
+return refObj;
+};  
+// PRNM-2128 - Default value set - End

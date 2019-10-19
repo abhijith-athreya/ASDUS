@@ -1,0 +1,1806 @@
+;//noinspection JSUnresolvedVariable
+(function($) {
+    'use strict';
+
+    $.fn.serviceabilityAddressDisplay = function () {
+        //check if validated-address-information exists in local-storage
+        //if its present, take that information, retrieve Address, Apt and Zip
+        //create an addressDisplay object
+        //populate the address-display-placeholder
+        var validatedAddress = Spectrum.Common.Components.MuiServiceability.Util.getFromStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.VALIDATED_ADDRESS
+        );
+
+        var displayAddress = "";
+        if(validatedAddress) {
+            var addr1 = validatedAddress.validatedAddress1 || "";
+            var apt = validatedAddress.validatedApt || validatedAddress.aptnum || "";
+            var zip = validatedAddress.validatedZip || "";
+            displayAddress = addr1 + " " + apt + " " + zip;
+        }
+
+        $(this).find(".address-display-placeholder").text(displayAddress);
+    };
+})(jQuery);
+
+var Spectrum = Spectrum || {};
+Spectrum.Common = Spectrum.Common || {};
+Spectrum.Common.Components = Spectrum.Common.Components || {};
+Spectrum.Common.Components.MuiServiceability = Spectrum.Common.Components.MuiServiceability || {};
+
+Spectrum.Common.Components.MuiServiceability.Enums = (function() {
+    "use strict";
+
+    return {
+        serviceStatus : {
+            NEVER : "never",
+            ACTIVE : "active",
+            FORMER : "former",
+            DISCONNECT : "disconnect",
+            NONE : "none"
+        },
+
+        serviceabilityMatch : {
+            NONE : "none",
+            ZIP4 : "zip4"
+        },
+
+        businessUnit : {
+            CHARTER : "chtr",
+            TWC : "twc",
+            BHN : "bhn"
+        },
+
+        handlerType : {
+            TRAFFIC_COP : "traffic-cop",
+            CHANNEL_LINE_UP : "channel-line-up"
+        },
+
+        storageKeys : {
+            VALIDATED_ADDRESS : "validated-address-information",
+            CONFIRM_NEW_HOME : "confirm-new-home",
+            UI_ERRORS : "ui-errors",
+            OUT_OF_FOOTPRINT : "out-of-footprint",
+            SERVICE_STATUS_ACTIVE : "serviceStatus-active-data",
+            MULTIPLE_ADDRESS : "multiple-address-data",
+            PARENT_TRANSACTION : "parent-transaction"
+        }
+    };
+
+})();
+
+var Spectrum = Spectrum || {};
+Spectrum.Common = Spectrum.Common || {};
+Spectrum.Common.Components = Spectrum.Common.Components || {};
+Spectrum.Common.Components.MuiServiceability = Spectrum.Common.Components.MuiServiceability || {};
+
+Spectrum.Common.Components.MuiServiceability.Util = (function() {
+    "use strict";
+
+    var ENUMS = Spectrum.Common.Components.MuiServiceability.Enums;
+    var PARAM_WHITELIST = {};
+    PARAM_WHITELIST.RESIDENTIAL = {};
+    PARAM_WHITELIST.BUSINESS = {};
+    PARAM_WHITELIST.RESIDENTIAL[ENUMS.businessUnit.BHN] = ['offerType', 'tvServiceFlag', 'voiceServiceFlag', 'dataServiceFlag'];
+    PARAM_WHITELIST.RESIDENTIAL[ENUMS.businessUnit.CHARTER] = ['prevalidation', 'businessInds', 'validatedCity', 'validatedState',
+                                                    'validatedAddress1', 'validatedApt', 'validatedZip', 'validatedZ4',
+                                                    'serviceVendorName', '911', 'present', 'v', 'a', 'aptnum', 'zip',
+                                                    'uacc', 'newlyBuilt', 'moving', 'startNewOrder', 'evo', 'fname',
+                                                    'lname', 'phone', 'email', 'confirmEmail', 'adp', 'emailRetrieveCart',
+                                                    'businessName', 'agentEmail', 'agentConfirmEmail', 'offerType',
+                                                    'tvServiceFlag', 'voiceServiceFlag', 'dataServiceFlag', 'dvrService',
+                                                    'wifiService', 'tvLocation', 'phoneQty', 'livedYear', 'tos', 'cbo',
+                                                    'employeeEmail', 'employeeConfirmEmail', 'mobile', 'o',
+                                                    'affpn', 'affpng', 'TA1H', 'TA1T', 'TA2H', 'TA2T', 'TA3H', 'TA3T',
+                                                    'lang', 'storeId', 'sid', 'csgOpid', 'salesID', 'tvProductType',
+                                                    'internetProductType', 'voiceProductType', 'phoneLineNew1',
+                                                    'phoneLineAlarm1', 'cmp', 'intcmp', 'offcmp', 'TransID', 'uid', 'upwd',
+                                                    'TOKEN', 'notes', 'leadReferral', 'referralAgentName', 'referredBy',
+                                                    'altSysPrin', 'altAgent', 'orgHouseColor', 'altHouseRef', 'mso'];
+    PARAM_WHITELIST.BUSINESS[ENUMS.businessUnit.BHN] = ['offerType', 'tvServiceFlag', 'voiceServiceFlag', 'dataServiceFlag'];
+    PARAM_WHITELIST.BUSINESS[ENUMS.businessUnit.CHARTER] = ['prevalidation', 'businessInds', 'validatedCity', 'validatedState',
+                                                    'validatedAddress1', 'validatedApt', 'validatedZip', 'validatedZ4',
+                                                    'serviceVendorName', '911', 'present', 'v', 'a', 'aptnum', 'zip',
+                                                    'uacc', 'newlyBuilt', 'moving', 'startNewOrder', 'evo', 'fname',
+                                                    'lname', 'phone', 'email', 'confirmEmail', 'adp', 'emailRetrieveCart',
+                                                    'businessName', 'agentEmail', 'agentConfirmEmail', 'offerType',
+                                                    'tvServiceFlag', 'voiceServiceFlag', 'dataServiceFlag', 'dvrService',
+                                                    'wifiService', 'tvLocation', 'phoneQty', 'livedYear', 'tos', 'cbo',
+                                                    'employeeEmail', 'employeeConfirmEmail', 'mobile', 'o',
+                                                    'affpn', 'affpng', 'TA1H', 'TA1T', 'TA2H', 'TA2T', 'TA3H', 'TA3T',
+                                                    'lang', 'storeId', 'sid', 'csgOpid', 'salesID', 'tvProductType',
+                                                    'internetProductType', 'voiceProductType', 'phoneLineNew1',
+                                                    'phoneLineAlarm1', 'cmp', 'intcmp', 'offcmp', 'TransID', 'uid', 'upwd',
+                                                    'TOKEN', 'notes', 'leadReferral', 'referralAgentName', 'referredBy',
+                                                    'altSysPrin', 'altAgent', 'orgHouseColor', 'altHouseRef'];
+    return {
+        getRedirectUrlForNewCustomers : function(parameters) {
+            //TODO: Confirm that the right parameters are being sent over to Charter
+            var twcCid = parameters.twcCid;
+            var businessUnit = parameters.businessUnit;
+            var theAddress = parameters.theAddress;
+            var submissionUrls = parameters.submissionUrls;
+            var queryStringMap = parameters.queryStringMap;
+            var forMultipleAddress = parameters.forMultipleAddress;
+            var multiAddressForcedRedirect = parameters.multiAddressForcedRedirect;
+            var selectedAddress = parameters.selectedAddress;
+            var serviceabilityOpts = parameters.serviceabilityOpts;
+
+            theAddress = forMultipleAddress ? translateMAFAddressToStandard(theAddress) : theAddress;
+            this.setGeolocationData(theAddress.postalCode);
+            businessUnit = businessUnit.toLowerCase();
+
+            if (businessUnit === ENUMS.businessUnit.CHARTER ||
+                this.isBusinessUnitTWCNewAndUsingCharterParamLogic(businessUnit, serviceabilityOpts.useChtrParamLogicForTWCNew) ||
+                this.isBusinessUnitBHNNewAndUsingCharterParamLogic(businessUnit, serviceabilityOpts.useChtrParamLogicForBHNNew)) {
+                queryStringMap.mso = businessUnit.toUpperCase();
+                return this.getCHTRRedirect(theAddress, queryStringMap, submissionUrls, forMultipleAddress, multiAddressForcedRedirect, selectedAddress);
+            } else if (businessUnit === ENUMS.businessUnit.BHN) {
+                return this.getBHNRedirect(theAddress, queryStringMap, submissionUrls, forMultipleAddress, multiAddressForcedRedirect);
+            } else if (businessUnit === ENUMS.businessUnit.TWC) {
+                return this.getTWCRedirect(twcCid, theAddress, queryStringMap, submissionUrls, forMultipleAddress, multiAddressForcedRedirect);
+            }
+        },
+
+        getRedirectUrlForExistingCustomers : function(parameters) {
+            var businessUnit = parameters.businessUnit;
+            var submissionUrls = parameters.submissionUrls;
+            var queryStringMap = parameters.queryStringMap;
+            var theAddress = parameters.theAddress;
+            var serviceabilityOpts = parameters.serviceabilityOpts;
+
+            theAddress = parameters.forMultipleAddress ? translateMAFAddressToStandard(theAddress) : theAddress;
+            this.setGeolocationData(theAddress.postalCode);
+            businessUnit = businessUnit.toLowerCase();
+            if (businessUnit === ENUMS.businessUnit.CHARTER ||
+                this.isBusinessUnitTWCExistingAndUsingCharterParamLogic(businessUnit, serviceabilityOpts.useChtrParamLogicForTWCExisting) ||
+                this.isBusinessUnitBHNExistingAndUsingCharterParamLogic(businessUnit, serviceabilityOpts.useChtrParamLogicForBHNExisting)) {
+                //MSO = CHTR
+                queryStringMap.mso = businessUnit.toUpperCase();
+                return this.getCHTRRedirect(theAddress, queryStringMap, submissionUrls, parameters.forMultipleAddress, false, parameters.selectedAddress);
+
+            } else if (businessUnit === ENUMS.businessUnit.TWC) {
+                //MSO = TWC
+                return submissionUrls.twcExisting;
+            } else {
+                //MSO = BHN
+                return submissionUrls.bhnExisting;
+            }
+        },
+
+        isBusinessUnitTWCNewAndUsingCharterParamLogic: function(businessUnit, useChtrParamLogicForTWCNew){
+            return businessUnit === ENUMS.businessUnit.TWC && useChtrParamLogicForTWCNew === true;
+        },
+
+        isBusinessUnitBHNNewAndUsingCharterParamLogic: function(businessUnit, useChtrParamLogicForBHNNew){
+            return businessUnit === ENUMS.businessUnit.BHN && useChtrParamLogicForBHNNew === true;
+        },
+
+        isBusinessUnitTWCExistingAndUsingCharterParamLogic: function(businessUnit, useChtrParamLogicForTWCExisting){
+            return businessUnit === ENUMS.businessUnit.TWC && useChtrParamLogicForTWCExisting === true;
+        },
+
+        isBusinessUnitBHNExistingAndUsingCharterParamLogic: function(businessUnit, useChtrParamLogicForBHNExisting){
+            return businessUnit === ENUMS.businessUnit.BHN && useChtrParamLogicForBHNExisting === true;
+        },
+
+        setGeolocationData: function(zip) {
+            if(!zip) { return; }
+
+            zip = zip.length === 5 ? zip : zip.substring(0, 5);
+            var channel = Spectrum.Residential || Spectrum.Business;
+            channel.LocationService.getLocationDataPromise(zip).then(function (geolocation) {
+                channel.Profile.setGeolocation(geolocation, false);
+            })
+        },
+
+        setInStorage: function(key, value) {
+            //TODO: Figure out whether localStorage will work across all browsers
+            if (window.localStorage) {
+                if (localStorage.getItem(key)) {
+                    localStorage.removeItem(key);
+                }
+                localStorage.setItem(key, JSON.stringify(value));
+                return true;
+            }
+            console.error("localStorage not available!");
+            return false;
+        },
+
+        getFromStorage: function(key) {
+            //TODO: Figure out whether localStorage will work across all browsers
+            if(window.localStorage) {
+                if(localStorage.getItem(key)) {
+                    var value = JSON.parse(localStorage.getItem(key));
+                    return value;
+                } else {
+                    console.error("Key: " + key + " not found on localStorage.");
+                    return null;
+                }
+            }
+            console.error("LocalStorage not available");
+            return false;
+        },
+
+        removeFromStorage: function(key) {
+            if(window.localStorage) {
+                if(localStorage.getItem(key)) {
+                    localStorage.removeItem(key);
+                    return true;
+                } else {
+                    console.warn("Key: " + key + " not found on localStorage.");
+                    return null;
+                }
+            }
+            console.error("LocalStorage not available");
+            return false;
+
+        },
+
+        getOutOfFootPrintObject: function(address) {
+            var outOfFootPrintObject = {};
+            outOfFootPrintObject.address = address.line1;
+            outOfFootPrintObject.apartment = address.line2 ? address.line2 : "";
+            var postalCode = address.postalCode;
+            postalCode = postalCode.length === 5 ? postalCode : postalCode.substring(0, 5);
+            outOfFootPrintObject.zip = postalCode;
+            return outOfFootPrintObject;
+        },
+
+        getDefaultValuesFromQueryStringMap : function(queryStringMap) {
+            var defaultValues = {
+                address1: queryStringMap.a || queryStringMap.address1 || queryStringMap.streetaddress ||  "",
+                apt: queryStringMap.aptNum || queryStringMap.aptnum || queryStringMap.u || queryStringMap.address2 || "",
+                zip: queryStringMap.zip || queryStringMap.z || "",
+                businessInds: queryStringMap.businessInds || "",
+                businessUnit: queryStringMap.businessUnit || "",
+                evo: queryStringMap.evo || "",
+                isAddressSrubbed: queryStringMap.isAddressSrubbed || "",
+                isBarOrRestaurant: queryStringMap.isBarOrRestaurant || "",
+                level1: queryStringMap.level1 || "",
+                level2: queryStringMap.level2 || "",
+                level3: queryStringMap.level3 || "",
+                level4: queryStringMap.level4 || "",
+                prevalidation: queryStringMap.prevalidation || "",
+                serviceStatus: queryStringMap.serviceStatus || "",
+                v: queryStringMap.v || "",
+                validatedAddress1: queryStringMap.validatedAddress1 || "",
+                validatedApt: queryStringMap.validatedApt || "",
+                validatedCity: queryStringMap.validatedCity || "",
+                validatedState: queryStringMap.validatedState || "",
+                validatedZ4: queryStringMap.validatedZ4 || "",
+                validatedZip: queryStringMap.validatedZip || "",
+                salesId: queryStringMap.salesId || "",
+                isCustomerPresent: queryStringMap.isCustomerPresent || "",
+                account: queryStringMap.account || "",
+                displayCase: queryStringMap.displayCase || ""
+            };
+            return defaultValues;
+        },
+
+        createCLUBillingCodeArray: function(bc1, bc2, bc3, bc4) {
+            if (bc1) {
+                return createICOMSArray([bc1, bc2, bc3, bc4]);
+            } else {
+                return createCSGArray([bc2, bc3, bc4]);
+            }
+        },
+
+        persistAddressAndRedirect: function(addressInformation, redirectTo, selectedAddress) {
+            addressInformation.selectedAddress = selectedAddress;
+            var persistStatus = Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+                Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.VALIDATED_ADDRESS,
+                addressInformation);
+            if (persistStatus) {
+                console.log("Persisted Address");
+            } else {
+                console.warn("Could not persist address before redirect.");
+            }
+            if(addressInformation) {
+                var logMessage = addressInformation || {};
+                logMessage.redirectUrl = redirectTo;
+                logToAEM(JSON.stringify(logMessage), "info");
+            }
+            window.location = redirectTo;
+        },
+        
+        createBaseParams:  function(queryStringMap) {
+            if(queryStringMap.forMultipleAddress){
+                return {
+                    addr1 : queryStringMap.a || "",
+                    apt : queryStringMap.aptnum || "",
+                    zip : queryStringMap.zip || ""
+                };
+            } else {
+                return {
+                    addr1 : queryStringMap.validatedAddress1 || "",
+                    apt : queryStringMap.validatedApt || "",
+                    zip : queryStringMap.validatedZip || ""
+                };
+            }
+        },
+
+        createParams: function(queryStringMap, selectedAddress) {
+            var existing = queryStringMap.serviceStatus && (queryStringMap.serviceStatus.toLowerCase() === Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.ACTIVE) ? "true" : "false";
+            var mso = queryStringMap.businessUnit ? queryStringMap.businessUnit : "";
+            var houseRef ="";
+            if (selectedAddress) {
+                houseRef = selectedAddress.houseRef ? selectedAddress.houseRef : "";
+            }
+            var sp, a, scdf;
+            if(queryStringMap.level4) {
+                //Check if at least one of the billingControl Area levels are present
+                var billingControlCodes = this.createCLUBillingCodeArray(
+                    queryStringMap.level1,
+                    queryStringMap.level2,
+                    queryStringMap.level3,
+                    queryStringMap.level4
+                );
+                if(!queryStringMap.level1) {
+                    sp = billingControlCodes[0];
+                    a = billingControlCodes[1];
+                } else {
+                    scdf = billingControlCodes.join("");
+                }
+            }
+            return {
+                existing : existing,
+                sp : sp,
+                a : a,
+                scdf : scdf,
+                mso : mso,
+                houseRef : houseRef
+            };
+        },
+
+        loadCLUIframe: function(baseParams, otherParams, iframe, atgCLUIframeUrl) {
+            var params = Object.assign({}, baseParams, otherParams);
+            var queryString = $.param(params);
+            //noinspection JSUnresolvedFunction
+            var src = atgCLUIframeUrl;
+            var mainParts = src.split("?");
+            var main = mainParts[0];
+            var authoredParams = mainParts.length === 2 ? mainParts[1] : "";
+            var cluURL = main + "?" + authoredParams + "&" + queryString;
+            console.log("CLU URL : " + cluURL);
+            this.setGeolocationData(params.zip);
+            $(iframe).attr("src", cluURL);
+            $(iframe).show();
+        },
+
+        createCHTRAdditionalParams: function(selectedAddress, queryStringMap){
+            if(queryStringMap.businessInds) {
+                //Temp fix to mutate businessInds for http://jira.corp.mystrotv.com/browse/UBF-229
+                queryStringMap.businessInds = pickFirstBusinessIndsParamValue(queryStringMap.businessInds);
+            }
+            if(selectedAddress){
+                queryStringMap.orgHouseColor = selectedAddress.originalHouseColor || "";
+                queryStringMap.altHouseRef = selectedAddress.alternativeHouseId || "";
+                var altBillingControlArea = selectedAddress.altBillingControlArea;
+                if(altBillingControlArea){
+                    var level2 = altBillingControlArea.level2 || "";
+                    var level3 = altBillingControlArea.level3 || "";
+                    queryStringMap.altSysPrin = level2 + level3;
+                    queryStringMap.altAgent = altBillingControlArea.level4 || "";
+                }
+            }
+            return queryStringMap;
+        },
+
+        getCHTRRedirect: function(address, queryStringMap, submissionUrls, forMultipleAddress, multiAddressForcedRedirect, selectedAddress) {
+            var modifiedQueryStringMap = this.createCHTRAdditionalParams(selectedAddress, queryStringMap);
+            var params = this.getCombinedParams(modifiedQueryStringMap, address, forMultipleAddress, ENUMS.businessUnit.CHARTER, multiAddressForcedRedirect);
+            return submissionUrls.charter + "?" + params;
+        },
+
+        getTWCRedirect: function(twcCid, theAddress, queryStringMap, submissionUrls, forMultipleAddress, multiAddressForcedRedirect) {
+            var addressInfoToBuildParams = multiAddressForcedRedirect || queryStringMap.newHomeOverride ? queryStringMap : theAddress;
+            var builtAddress = this.buildAddressParams(addressInfoToBuildParams, forMultipleAddress, multiAddressForcedRedirect);
+            var addressLineTwo = builtAddress.aptnum ? " " + builtAddress.aptnum : "";
+            //Do not remove encoding on address data, will break IE and make me cry
+            var twcRedirectParams =
+                "?address=" +
+                encodeURIComponent(builtAddress.a) +
+                encodeURIComponent("|") +
+                encodeURIComponent(addressLineTwo) +
+                encodeURIComponent("|") +
+                builtAddress.zip +
+                encodeURIComponent("||") +
+                "&autologin=true&cid=" +
+                twcCid;
+            return submissionUrls.twc + twcRedirectParams;
+        },
+
+        getBHNRedirect: function(theAddress, queryStringMap, submissionUrls, forMultipleAddress, multiAddressForcedRedirect) {
+            var params = this.getCombinedParams(queryStringMap, theAddress, forMultipleAddress, ENUMS.businessUnit.BHN, multiAddressForcedRedirect);
+            var addressInfoToBuildParams = forMultipleAddress ? theAddress : (queryStringMap || theAddress);
+            var builtAddress = this.buildAddressParams(addressInfoToBuildParams, forMultipleAddress, multiAddressForcedRedirect);
+            var addressParam =
+                "|" + builtAddress.a +
+                "|" + builtAddress.aptnum +
+                "|" + builtAddress.zip +
+                "|" + builtAddress.city +
+                "|" + builtAddress.state;
+            var bhnRedirectParams =
+                "?address=" +
+                encodeURIComponent(addressParam) +
+                "&" +
+                params;
+            return submissionUrls.bhn + bhnRedirectParams;
+        },
+
+        buildAddressParams: function(data, forMultipleAddress, multiAddressForcedRedirect) {
+            if(!data) return {};
+            if (multiAddressForcedRedirect) {
+                return {
+                    zip: data.zip || "",
+                    city: "",
+                    state: "",
+                    aptnum: "",
+                    a: data.a || data.address1 || ""
+                }
+            }
+            if(forMultipleAddress) {
+                return {
+                    zip: data.postalCode ? data.postalCode.substring(0, 5) : "",
+                    city: data.city || "",
+                    state:data.territoryCode || "",
+                    aptnum: data.line2 || "",
+                    a: data.line1 || ""
+                }
+            }
+            if(data.newHomeOverride) {
+                return {
+                    zip: data.zip || "",
+                    aptnum: data.aptnum || "",
+                    a: data.a || ""
+                }
+            }
+
+            if(typeof data.validatedAddress1 !== 'undefined' && data.validatedAddress1) {
+                var validatedZipcode = data.validatedZip;
+                return {
+                    zip: validatedZipcode ? validatedZipcode.substring(0, 5) : "",
+                    city: data.validatedCity || "",
+                    state: data.validatedState || "",
+                    aptnum: data.validatedApt || "",
+                    a: data.validatedAddress1 || ""
+                }
+            }
+            else{
+                var postalCode = data.postalCode;
+                return {
+                    zip: postalCode ? postalCode.substring(0, 5) : "",
+                    city: data.city || "",
+                    state: data.territoryCode || "",
+                    aptnum: data.line2 || "",
+                    a: data.line1 || ""
+                }
+            }
+        },
+
+        getCombinedParams: function(queryStringMap, addressData, forMultipleAddress, buyflow, multiAddressForcedRedirect) {
+            addressData = multiAddressForcedRedirect ? {} : (addressData || {});
+            var addressInfoToBuildParams = forMultipleAddress ? addressData : (queryStringMap || addressData);
+            var builtAdditionalParams = this.buildAddressParams(addressInfoToBuildParams, forMultipleAddress, multiAddressForcedRedirect);
+            var builtParamsFromClientContext = this.getParamsFromClientContext();
+            var paramsObject = Object.assign(
+                {},
+                queryStringMap,
+                builtParamsFromClientContext,
+                builtAdditionalParams
+            );
+            var combinedParams = $.param(filterParams(paramsObject, buyflow));
+            return combinedParams;
+        },
+
+        getParamsFromClientContext: function() {
+            var data = {};
+            if (Spectrum && Spectrum.Util) {
+                var userProfile = Spectrum.Util.getUserProfile() || { data: {} };
+                var salesProfile = Spectrum.Util.getSalesProfile() || { data: {} };
+                //noinspection JSUnresolvedVariable
+                if (CQ_Analytics.ClientContext.get(salesProfile.getName()).initialize) {
+                    //noinspection JSUnresolvedVariable
+                    CQ_Analytics.ClientContext.get(salesProfile.getName()).initialize();
+                }
+                //noinspection JSUnresolvedVariable
+                if (CQ_Analytics.ClientContext.get(userProfile.getName()).initializeValues) {
+                    //noinspection JSUnresolvedVariable
+                    CQ_Analytics.ClientContext.get(userProfile.getName()).initializeValues();
+                }
+                data = Object.assign(data, userProfile.data, salesProfile.data);
+            }
+
+            var filtered_props = _.keys(data)
+                .filter(function(key) {
+                    return key.indexOf("_xss") === -1 && data[key];
+                });
+
+            return _.pick(data, filtered_props);
+        }
+    };
+
+    function logToAEM(log, level) {
+        var logger = "/bin/spectrum/logger/serviceabilityLogger";
+        $.ajax({
+            url: logger,
+            type: "POST",
+            dataType: "json",
+            data: { "log": log, "level": level },
+            timeout: 2000,
+            success: function(data) {
+                console.log("Logged");
+            },
+            failure: function(data) {
+                console.error("Error while logging.");
+            }
+        });
+    }
+
+    function pickFirstBusinessIndsParamValue(value) {
+        if(!value){
+            return "";
+        }
+        var parts = value.split("|");
+        if(parts && parts.length > 1) {
+            return parts[0];
+        }
+        return value;
+    }
+
+    function createICOMSArray(billingCodes) {
+        return _.map(billingCodes, function(billingCode) {
+            return billingCode.length <= 4 ? ("0000" + billingCode).slice(-4) : billingCode;
+        });
+    }
+
+    function createCSGArray(billingCodes) {
+        return [ billingCodes[0] + billingCodes[1], billingCodes[2] ];
+    }
+
+    function filterParams(paramsObj, buyflow) {
+        // TWC is the only one without a whitelist
+        if(buyflow === ENUMS.businessUnit.TWC) {
+            return paramsObj;
+        }
+        var channelParamWhitelist = Spectrum.Residential ? PARAM_WHITELIST.RESIDENTIAL : PARAM_WHITELIST.BUSINESS;
+        var filteredParams = _.keys(paramsObj).filter(function(key) {
+            return paramsObj[key] !== "" && channelParamWhitelist[buyflow].indexOf(key) !== -1;
+        });
+
+        return _.pick(paramsObj, filteredParams)
+    }
+
+    function translateMAFAddressToStandard(multipleFormAddressData) {
+        return {
+            line1: multipleFormAddressData.a,
+            line2: multipleFormAddressData.aptnum,
+            postalCode: multipleFormAddressData.validatedZip,
+            city: multipleFormAddressData.validatedCity,
+            territoryCode: multipleFormAddressData.validatedState
+        }
+    }
+})();
+
+var Spectrum = Spectrum || {};
+Spectrum.Common = Spectrum.Common || {};
+Spectrum.Common.Components = Spectrum.Common.Components || {};
+Spectrum.Common.Components.MuiServiceability = Spectrum.Common.Components.MuiServiceability || {};
+
+/**
+ * Methods to retrieve configurations needed for the MUI Serviceability Component
+ * and initializes the MUI Localization Form
+ **/
+Spectrum.Common.Components.MuiServiceability.Configuration = function($muiComponent) {
+    "use strict";
+
+    this.addresses = {};
+    this.defaultValues = {};
+    this.uiErrors = {};
+    this.type = "";
+    this.$baseContainer = $muiComponent;
+
+    this.dynamicContent = getDynamicContent(this.$baseContainer);
+    this.enabledFields = getEnabledFields(this.$baseContainer);
+    this.opts = getOpts(this.$baseContainer);
+    this.submissionUrls = getSubmissionUrls(this.$baseContainer);
+
+    //If disableErrors is false and component not used for CLU, retrieve stored LocalStorage object and pass it along to MUI Component
+    if(!this.enabledFields.disableErrors && !this.opts.useForCLU) {
+        var uiErrorsObject = Spectrum.Common.Components.MuiServiceability.Util.getFromStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.UI_ERRORS
+        );
+        if(uiErrorsObject) {
+            this.uiErrors = uiErrorsObject.uiErrors;
+            this.defaultValues = uiErrorsObject.defaultValues;
+        }
+    }
+
+    //apt and disAptQuestion exists
+    if(this.enabledFields.apt && this.enabledFields.disableAptQuestion) {
+        var uiErrorsObject = Spectrum.Common.Components.MuiServiceability.Util.getFromStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.UI_ERRORS
+        );
+        if(uiErrorsObject) {
+            this.uiErrors = uiErrorsObject.uiErrors;
+            this.defaultValues = uiErrorsObject.defaultValues;
+        }
+    }
+    //If disableQuestions is false and component not used for CLU, retrieve stored LocalStorage object and pass it along to MUI Component
+    if(!this.enabledFields.disableQuestions && !this.opts.useForCLU) {
+        var confirmNewHomeObject = Spectrum.Common.Components.MuiServiceability.Util.getFromStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.CONFIRM_NEW_HOME
+        );
+        if(confirmNewHomeObject) {
+            this.defaultValues = confirmNewHomeObject.defaultValues;
+            this.addresses = confirmNewHomeObject.addresses;
+        }
+    }
+
+    //If autoSubmit is true, set the defaultValues object with the query parameters
+    if(this.enabledFields.autoSubmit) {
+        var params = getParamsMap(window.location.search.substring(1));
+        this.defaultValues = Spectrum.Common.Components.MuiServiceability.Util.getDefaultValuesFromQueryStringMap(params);
+    }
+    //noinspection JSUnresolvedFunction
+    this.componentContainer = this.$baseContainer.find(".localization")[0];
+    this.type = this.opts.useForCLU ?
+        Spectrum.Common.Components.MuiServiceability.Enums.handlerType.CHANNEL_LINE_UP :
+        Spectrum.Common.Components.MuiServiceability.Enums.handlerType.TRAFFIC_COP;
+
+    //noinspection JSUnresolvedFunction
+    this.configForLocalizationForm = getConfigForLocalizationForm(
+        this.$baseContainer,
+        this.type,
+        this.opts,
+        this.submissionUrls,
+        this.addresses,
+        this.defaultValues,
+        this.enabledFields,
+        this.dynamicContent,
+        this.uiErrors,
+        30000
+    );
+
+    muiServiceabilityToggleOnSubmit(this.opts);
+
+    this.renderForm = function() {
+        if(this.type === Spectrum.Common.Components.MuiServiceability.Enums.handlerType.CHANNEL_LINE_UP) {
+            var iframe = this.$baseContainer.find(".cluIframe").find("iframe")[0];
+            var atgCluUrl = this.submissionUrls.atgCLUIframeUrl;
+
+            //If CLU, check if Cached address exists and if it does, load the iframe with it.
+            var validatedAddress = Spectrum.Common.Components.MuiServiceability.Util.getFromStorage(
+                Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.VALIDATED_ADDRESS
+            );
+
+            //Use the validated Address ONLY IF AutoSubmit is turned off
+            if(validatedAddress && !this.enabledFields.autoSubmit) {
+                console.log("Cached Validated Address found.");
+                this.$baseContainer.find(".localization").trigger("submitSuccess");
+                //if the component is being used for CLU and is in a modal
+                if(this.opts.isCLUInModal) {
+                    this.$baseContainer.closest('.modal').on("show.bs.modal showModal", function() {
+                        if(iframe.getAttribute("src") === "about:blank"){
+                            Spectrum.Common.Components.MuiServiceability.Util.loadCLUIframe(
+                                Spectrum.Common.Components.MuiServiceability.Util.createBaseParams(validatedAddress),
+                                Spectrum.Common.Components.MuiServiceability.Util.createParams(validatedAddress, validatedAddress.selectedAddress),
+                                iframe,
+                                atgCluUrl
+                            );
+                        }
+                    });
+                } else {
+                    //if the component is being used for CLU and is not in a modal
+                    Spectrum.Common.Components.MuiServiceability.Util.loadCLUIframe(
+                        Spectrum.Common.Components.MuiServiceability.Util.createBaseParams(validatedAddress),
+                        Spectrum.Common.Components.MuiServiceability.Util.createParams(validatedAddress, validatedAddress.selectedAddress),
+                        this.$baseContainer.find(".cluIframe").find("iframe")[0],
+                        this.submissionUrls.atgCLUIframeUrl
+                    );
+                }
+                //Persist Address Information
+                Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+                    Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.VALIDATED_ADDRESS,
+                    validatedAddress
+                );
+            }
+
+            //if Validated Address is not available and the component is being used for Clu inside a Modal
+            if(!validatedAddress){
+                if(this.opts.isCLUInModal) {
+                    this.$baseContainer.closest('.modal').on("show.bs.modal showModal", function() {
+                        if(iframe.getAttribute("src") === "about:blank"){
+                            $(iframe).attr("src", atgCluUrl);
+                        }
+                    });
+                }
+                else {
+                    $(iframe).attr("src", atgCluUrl);
+                }
+            }
+
+        }
+        //noinspection JSUnresolvedVariable
+        React.render(
+            React.createElement(
+                window.mui.localization.LocalizationForm,
+                this.configForLocalizationForm
+            ),
+            this.componentContainer
+        );
+        muiServiceabilityLoadAnalytics(this.opts);
+    };
+
+    function getParamsMap(queryString) {
+        var result = {};
+        if(queryString) {
+            var parts = queryString.split("&");
+            for (var i = 0, len = parts.length; i < len; i++) {
+                var subParts = parts[i].split('=');
+                result[subParts[0]] = decodeURIComponent(subParts[1] || '');
+            }
+        }
+        return result;
+    }
+
+    function muiServiceabilityToggleOnSubmit(opts) {
+      if (opts.cluSubmitBehavior === "no-hide") { return; }
+      $(opts.uuid).find('.localization').on("submitSuccess", function() {
+          if (opts.cluSubmitBehavior === "hide-with-toggle") {
+            $(opts.uuid).find('.muiToggle').removeClass("hidden");
+          }
+
+          $(opts.uuid).find('.localization').addClass("hidden");
+      });
+
+      $(opts.uuid).find('.muiToggle').click(function() {
+          $(opts.uuid).find('.muiToggle').addClass("hidden");
+          $(opts.uuid).find('.localization').removeClass("hidden");
+      });
+    }
+
+    function muiServiceabilityLoadAnalytics(opts) {
+        //noinspection JSUnresolvedFunction
+        var $link = $(opts.uuid).find('.localization__tooltip-icon');
+        if ($link) {
+            //noinspection JSUnresolvedFunction
+            $link.attr('data-linkname',  opts.analyticsTooltipName).attr('data-linktype', opts.analyticsTooltipType);
+        }
+
+        //noinspection JSUnresolvedFunction
+        var $submit =  $(opts.uuid).find('.localization__input-submit');
+        if ($submit) {
+            //noinspection JSUnresolvedFunction
+            $submit.attr('data-linkname',  opts.analyticsSubmitName).attr('data-linktype', opts.analyticsSubmitType);
+        }
+    }
+
+    function getConfigForLocalizationForm($baseContainer, type, opts, submissionUrls, addresses, defaultValues, enabledFields, dynamicContent, uiErrors, timeout) {
+        var twcCid = $baseContainer.attr("data-twc-cid");
+        var config = {
+            formSubmissionHandler: function(queryString, data, addresses, serviceErrors, uiErrors) {
+                try {
+                    var handler = Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler.createNew(
+                        {
+                            queryString : queryString,
+                            queryStringMap : data,
+                            serviceabilityResponse : addresses,
+                            opts : opts,
+                            submissionUrls : submissionUrls,
+                            twcCid : twcCid,
+                            serviceErrors : serviceErrors,
+                            uiErrors : uiErrors,
+                            enabledFields : enabledFields
+                        },
+                        type,
+                        $baseContainer
+                    );
+                    if(!handler) {
+                        console.error("Handler initialization failed.");
+                        return false;
+                    }
+                } catch(e) {
+                    console.error(e);
+                }
+                try {
+                    var redirectStatus = handler.handleSubmit();
+                    if(!redirectStatus) {
+                        console.error("Encountered an error while redirecting");
+                    } else {
+                        console.info("Successfully Redirected");
+                    }
+                } catch(e) {
+                    console.error("Exception while redirecting" + e);
+                }
+            },
+            displayLoaderHandler: function(showLoadingWhileProcessing) {
+                var $loadingContainer = $("#muiLoadingContainer");
+                if (!$loadingContainer) {
+                    return;
+                }
+
+                var url = window.location.href || "";
+                if (!showLoadingWhileProcessing &&
+                    this.formType !== Spectrum.Common.Components.MuiServiceability.Enums.handlerType.CHANNEL_LINE_UP &&
+                    (url.indexOf("address-does-not-match") !== -1 || url.indexOf("address-not-match") !== -1)) {
+                    $loadingContainer.addClass('hidden');
+                }
+
+                if (showLoadingWhileProcessing && this.formType !== Spectrum.Common.Components.MuiServiceability.Enums.handlerType.CHANNEL_LINE_UP) {
+                    $loadingContainer.removeClass('hidden');
+                }
+            }
+        };
+
+        config.formType = type;
+        config.addresses = addresses;
+        config.defaultValues = defaultValues;
+        config.enabledFields = enabledFields;
+        config.dynamicContent = dynamicContent;
+        config.uiErrors = uiErrors;
+        config.timeout = timeout;
+        config.numberOfAddressesToRestrict = opts.numberOfAddressesToRestrict || 1000;
+        config.parentTransaction = window.mui.util.LoggerMixin.createTransaction("LOCATION_SEARCH");
+        Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.PARENT_TRANSACTION,
+            config.parentTransaction
+        );
+        return config;
+    }
+
+    function getDynamicContent($component) {
+        //noinspection JSUnresolvedFunction
+        return {
+            buttonText : $component.attr("data-button-text"),
+            accountLabel : $component.attr("data-account-label"),
+            addressLabel : $component.attr("data-address-label"),
+            aptLabel : $component.attr("data-apt-label"),
+            zipLabel : $component.attr("data-zip-label"),
+            accountPlaceholder : $component.attr("data-account-placeholder"),
+            addressPlaceholder : $component.attr("data-address-placeholder"),
+            aptPlaceholder : $component.attr("data-apt-placeholder"),
+            zipPlaceholder : $component.attr("data-zip-placeholder"),
+            accountDescription : $component.attr("data-account-description"),
+            accountTooltip : $component.attr("data-account-tooltip"),
+            addressAnchor : $component.attr("data-address-anchor"),
+            localizationTooltip : $component.attr("data-localization-tooltip"),
+            localizationDescription : $component.attr("data-localization-description"),
+            salesIdLabel : $component.attr("data-sales-id-label"),
+            isCustomerPresentLabel : $component.attr("data-is-customer-present-label"),
+            isBarOrRestaurantLabel : $component.attr("data-is-bar-or-restaurant-label"),
+            isBarOrRestaurantTooltipText : $component.attr("data-is-bar-or-restaurant-tooltip-text"),
+            evoLabel : $component.attr("data-evo-label"),
+            evoPlaceHolder : $component.attr("data-evo-placeholder"),
+            evoTooltipText : $component.attr("data-evo-tooltip-text"),
+            evoTooltipFullText : $component.attr("data-evo-tooltip-full-text"),
+            newlyBuiltQuestion : $component.attr("data-error-messages-newly-built-question"),
+            errorMessages : getErrorMessages($component)
+        }
+    }
+
+    function getErrorMessages($component) {
+        //noinspection JSUnresolvedFunction
+        return {
+            account : $component.attr("data-error-messages-account"),
+            address1 : $component.attr("data-error-messages-address1"),
+            zip : $component.attr("data-error-messages-zip"),
+            error_line1_match : $component.attr("data-error-messages-error-line1-match"),
+            error_invalid_zip : $component.attr("data-error-messages-error-invalid-zip"),
+            error_zip_match : $component.attr("data-error-messages-error-zip-match"),
+            error_missing_number : $component.attr("data-error-messages-error-missing-number"),
+            error_missing_pobox : $component.attr("data-error-messages-error-missing-pobox"),
+            newlyBuiltEntered : $component.attr("data-error-messages-newly-built-entered")
+        }
+
+    }
+
+    function getEnabledFields($component) {
+        //noinspection JSUnresolvedFunction
+        return {
+            existingAccount : $component.attr("data-enabled-fields-show-account-field") === "true",
+            autosuggestAddress : $component.attr("data-enabled-fields-autosuggest-address") === "true",
+            disableErrors : $component.attr("data-enabled-fields-disable-errors") === "true",
+            disableQuestions : $component.attr("data-enabled-fields-disable-questions") === "true",
+            dialogSubmitButton : $component.attr("data-enabled-fields-dialog-submit-button") === "true",
+            salesId : $component.attr("data-enabled-fields-sales-id") === "true",
+            isCustomerPresent : $component.attr("data-enabled-fields-is-customer-present") === "true",
+            evo : $component.attr("data-enabled-fields-evo") === "true",
+            isBarOrRestaurant : $component.attr("data-enabled-fields-is-bar-or-restaurant") === "true",
+            //Currently not author-able. May not need to be.
+            enableAddressSearchCall : true,
+            showLoadingWhileProcessing: $component.attr("data-opts-use-for-clu") === "true",
+            autoSubmit : $component.attr("data-enabled-fields-auto-submit") === "true",
+            disableAptQuestion : $component.attr("data-enabled-fields-show-multiple-addr-verification-pg") === "true",
+            apt : $component.attr("data-enabled-fields-is-apt-required") === "true"
+        }
+    }
+
+    function getOpts($component) {
+        //noinspection JSUnresolvedFunction
+        return {
+            uuid : $component.attr("data-opts-uuid"),
+            analyticsTooltipName : $component.attr("data-opts-analytics-tooltip-name"),
+            analyticsTooltipType : $component.attr("data-opts-analytics-tooltip-type"),
+            analyticsSubmitType : $component.attr("data-opts-analytics-submit-type"),
+            analyticsSubmitName : $component.attr("data-opts-analytics-submit-name"),
+            useForCLU : $component.attr("data-opts-use-for-clu") === "true",
+            cluSubmitBehavior : $component.attr("data-opts-clu-submit-behavior"),
+            charterShort : $component.attr("data-opts-force-charter-redirect") === "true",
+            twcShort : $component.attr("data-opts-force-twc-redirect") === "true",
+            brighthouseShort : $component.attr("data-opts-force-brighthouse-redirect") === "true",
+            isCLUInModal : $component.attr("data-opts-is-clu-in-modal") === "true",
+            useChtrParamLogicForTWCNew : $component.attr("data-opts-use-chtr-param-for-twc-new") === "true",
+            useChtrParamLogicForBHNNew : $component.attr("data-opts-use-chtr-param-for-bhn-new") === "true",
+            useChtrParamLogicForTWCExisting : $component.attr("data-opts-use-chtr-param-for-twc-existing") === "true",
+            useChtrParamLogicForBHNExisting : $component.attr("data-opts-use-chtr-param-for-bhn-existing") === "true",
+            numberOfAddressesToRestrict : $component.attr("data-opts-number-of-addresses-to-restrict")
+        }
+    }
+
+    function getSubmissionUrls($component) {
+        //noinspection JSUnresolvedFunction
+        return {
+            twc : $component.attr("data-submission-urls-twc"),
+            twcExisting: $component.attr("data-submission-urls-twc-existing"),
+            bhn : $component.attr("data-submission-urls-bhn"),
+            bhnExisting : $component.attr("data-submission-urls-bhn-existing"),
+            charter : $component.attr("data-submission-urls-charter"),
+            multipleAddress : $component.attr("data-submission-urls-multiple-address-redirect-url"),
+            serviceStatusActiveRedirect : $component.attr("data-submission-urls-service-status-active-redirect-url"),
+            genericErrorRedirect : $component.attr("data-submission-urls-generic-error-redirect-url"),
+            outOfFootPrintRedirect : $component.attr("data-submission-urls-out-of-foot-print-redirect-url"),
+            addressDoesNotMatchRedirect : $component.attr("data-submission-urls-address-does-not-match-redirect-url"),
+            invalidAddressOrZipRedirect : $component.attr("data-submission-urls-invalid-address-or-zip-redirect-url"),
+            noServiceabilityMatchRedirect : $component.attr("data-submission-urls-no-serviceability-match-redirect-url"),
+            atgCLUIframeUrl : $component.attr("data-submission-urls-atg-clu-iframe-url"),
+            multipleAddressVerificationRedirect : $component.attr("data-submission-urls-multiple-address-verification-redirect-url")
+        }
+    }
+
+};
+
+var Spectrum = Spectrum || {};
+Spectrum.Common = Spectrum.Common || {};
+Spectrum.Common.Components = Spectrum.Common.Components || {};
+Spectrum.Common.Components.MuiServiceability = Spectrum.Common.Components.MuiServiceability || {};
+Spectrum.Common.Components.MuiServiceability.Handlers = Spectrum.Common.Components.MuiServiceability.Handlers || {};
+
+/**
+ * Abstract base class for Serviceability Submission Handler
+ * @param baseSubmissionData
+ * @constructor
+ */
+Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler = function(baseSubmissionData) {
+    "use strict";
+    if(this.constructor === Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler) {
+        throw new TypeError("Cannot instantiate Abstract Class. Create a concrete class instead");
+    }
+
+    this.queryString = baseSubmissionData.queryString;
+    this.queryStringMap = baseSubmissionData.queryStringMap;
+    this.serviceabilityResponse = baseSubmissionData.serviceabilityResponse;
+    this.opts = baseSubmissionData.opts;
+    this.enabledFields = baseSubmissionData.enabledFields;
+    this.submissionUrls = baseSubmissionData.submissionUrls;
+    this.twcCid = baseSubmissionData.twcCid;
+};
+
+/**
+ * Make sure that the abstract method cannot be called
+ * @returns {boolean}
+ */
+Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler.prototype.handleSubmit = function() {
+    throw new Error("Cannot call Abstract Method. Implement this method in the concrete class.");
+};
+
+/**
+ * Static" method to create concrete classes from AbstractHandler based on the "type" input
+ * @param submissionData
+ * @param type
+ * @param $baseContainer
+ * @returns {*}
+ */
+Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler.createNew = function(submissionData, type, $baseContainer) {
+    if(type === Spectrum.Common.Components.MuiServiceability.Enums.handlerType.CHANNEL_LINE_UP) {
+        //create channel-lineup handler
+        return new Spectrum.Common.Components.MuiServiceability.Handlers.ChannelLineUpHandler(submissionData, $baseContainer);
+    }
+    if(type === Spectrum.Common.Components.MuiServiceability.Enums.handlerType.TRAFFIC_COP) {
+        //create traffic-cop handler
+        return new Spectrum.Common.Components.MuiServiceability.Handlers.TrafficCopHandler(submissionData);
+    }
+    console.error("Invalid type. Cannot create handler");
+    return false;
+};
+
+var Spectrum = Spectrum || {};
+Spectrum.Common = Spectrum.Common || {};
+Spectrum.Common.Components = Spectrum.Common.Components || {};
+Spectrum.Common.Components.MuiServiceability = Spectrum.Common.Components.MuiServiceability || {};
+Spectrum.Common.Components.MuiServiceability.Handlers = Spectrum.Common.Components.MuiServiceability.Handlers || {};
+
+/**
+ * TrafficCop implementation for the MuiServiceability submission handler.
+ * @param submissionData
+ * @constructor
+ */
+Spectrum.Common.Components.MuiServiceability.Handlers.TrafficCopHandler = function(submissionData) {
+    "use strict";
+    if(!(this instanceof Spectrum.Common.Components.MuiServiceability.Handlers.TrafficCopHandler)) {
+        throw new TypeError("Cannot call class as a function.");
+    }
+
+    this.serviceErrors = submissionData.serviceErrors;
+    this.uiErrors = submissionData.uiErrors;
+
+    this.isConfirmNewHome = function() {
+        return this.queryStringMap.businessInds && this.queryStringMap.businessInds.indexOf("confirmNewHome") !== -1;
+    };
+
+    this.isUiErrors = function() {
+        //uiErrors.generalErrorFields are input fields which would highlight the input and verbiage
+        //uiErrors.errors are input fields which would getting use to have pointer like message (tooltip)
+        return (this.uiErrors && this.uiErrors.generalErrorFields && (this.uiErrors.generalErrorFields.length > 0))
+                || (this.uiErrors && this.uiErrors.errors && (this.uiErrors.errors.length > 0));
+    };
+
+    this.isServiceErrors = function() {
+        return this.serviceErrors && this.serviceErrors.message;
+    };
+
+    /**
+     * Handles Confirm-new-home case. Sets an object on localStorage and redirects to the localization page
+     * @returns {boolean}
+     */
+    this.handleConfirmNewHome = function() {
+        //New home case
+        var confirmNewHomeObject = {};
+        confirmNewHomeObject.defaultValues = Spectrum.Common.Components.MuiServiceability.Util.getDefaultValuesFromQueryStringMap(this.queryStringMap);
+        confirmNewHomeObject.addresses = this.serviceabilityResponse;
+        //Clear state
+        Spectrum.Common.Components.MuiServiceability.Util.removeFromStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.UI_ERRORS
+        );
+        var storageStatus = Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.CONFIRM_NEW_HOME,
+            confirmNewHomeObject
+        );
+        if(storageStatus) {
+            this.persistAddressAndRedirect(this.submissionUrls.addressDoesNotMatchRedirect);
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * Handles UI Errors case. Sets an object on localStorage and redirects to the appropriate page
+     * @returns {boolean}
+     */
+    this.handleUiErrors = function() {
+        //Clear state
+        Spectrum.Common.Components.MuiServiceability.Util.removeFromStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.CONFIRM_NEW_HOME
+        );
+        var uiErrorsObject = {};
+        uiErrorsObject.uiErrors = this.uiErrors;
+        var submissionUrl = this.submissionUrls;
+
+        //uiErrors.generalErrorFields are input fields which would highlight the input and verbiage
+        //uiErrors.errors are input fields which would getting use to have pointer like message (tooltip)
+        //Also AEM will never get an error for invalidAddressOrZipRedirect since it's been disabled by MUI itself.
+        //To enable invalidAddressOrZipRedirect error, AEM needs to override the MUI SmartyStreet responses with configuration variable 'smartyStreetsCaseMapping' from AEM.
+        var errorRedirectUrl = (typeof ( uiErrorsObject.uiErrors !== "undefined" ) && uiErrorsObject.uiErrors.errors && (uiErrorsObject.uiErrors.errors.length > 0) && (uiErrorsObject.uiErrors.errors[0] === "apt")) ? submissionUrl.multipleAddressVerificationRedirect : submissionUrl.invalidAddressOrZipRedirect;
+
+        uiErrorsObject.defaultValues = Spectrum.Common.Components.MuiServiceability.Util.getDefaultValuesFromQueryStringMap(this.queryStringMap);
+        var storageStatus = Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.UI_ERRORS,
+            uiErrorsObject
+        );
+        if(storageStatus) {
+            this.persistAddressAndRedirect(errorRedirectUrl);
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * Handles Service Errors case. Redirects to the genericError page
+     * @returns {boolean}
+     */
+    this.handleServiceErrors = function() {
+        var submissionUrls = this.submissionUrls;
+        var serviceErrors = this.serviceErrors;
+        var errorPage = submissionUrls.genericErrorRedirect;
+        console.error("Received error. message: " + (serviceErrors.message ? serviceErrors.message : ""));
+        console.log("No ServiceabilityResponse returned. Redirecting to a generic Error Page. URL : " + errorPage);
+        this.persistAddressAndRedirect(errorPage);
+        return false;
+    };
+
+    this.getBusinessUnitFromResponse = function(theResponse) {
+        var billingControlArea = theResponse.billingControlArea;
+        var businessUnit = billingControlArea ? billingControlArea.businessUnit : null;
+        businessUnit = businessUnit ? businessUnit.toLowerCase() : businessUnit;
+        return businessUnit;
+    };
+
+    /**
+     * Handles case where there is only one address returned from WebAPI
+     * @returns {boolean}
+     */
+    this.handleSingleServiceabilityResponse = function() {
+        var submissionUrls = this.submissionUrls;
+        //the first response
+        var theResponse = this.serviceabilityResponse[0];
+
+        //serviceabilityMatch value
+        var serviceabilityMatch = theResponse.address.serviceabilityMatch;
+        serviceabilityMatch = serviceabilityMatch ? serviceabilityMatch.toLowerCase() : "";
+
+        //noinspection JSUnresolvedVariable
+        var businessUnit = this.getBusinessUnitFromResponse(theResponse);
+
+        var isOutOfFootPrintBusinessUnit = function(businessUnit) {
+            return businessUnit && [
+                    Spectrum.Common.Components.MuiServiceability.Enums.businessUnit.CHARTER,
+                    Spectrum.Common.Components.MuiServiceability.Enums.businessUnit.TWC,
+                    Spectrum.Common.Components.MuiServiceability.Enums.businessUnit.BHN
+                ].indexOf(businessUnit) === -1;
+        };
+
+
+        //Check for OutOfFootPrint
+        if (isOutOfFootPrintBusinessUnit(businessUnit)) {
+            var outOfFootPrintObject = Spectrum.Common.Components.MuiServiceability.Util.getOutOfFootPrintObject(theResponse.address);
+            var storageStatus = Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+                Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.OUT_OF_FOOTPRINT,
+                outOfFootPrintObject
+            );
+            if(storageStatus) {
+                var outOfFootPrintCableMoversPage = submissionUrls.outOfFootPrintRedirect;
+                console.log("businessUnit != CHTR, TWC or BHN . Redirecting to the cablemovers page. URL : " + outOfFootPrintCableMoversPage);
+                this.persistAddressAndRedirect(outOfFootPrintCableMoversPage);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        var isServiceabilityMatchNone = function(serviceabilityMatch) {
+            return (
+                !serviceabilityMatch
+                ||
+                Spectrum.Common.Components.MuiServiceability.Enums.serviceabilityMatch.NONE === serviceabilityMatch
+            );
+        };
+
+        var isServiceabilityMatchZIP4 = function(serviceabilityMatch) {
+            return (
+                !serviceabilityMatch
+                ||
+                Spectrum.Common.Components.MuiServiceability.Enums.serviceabilityMatch.ZIP4 === serviceabilityMatch
+            );
+        };
+
+
+        if (isServiceabilityMatchNone(serviceabilityMatch)) {
+            var noneMatchUrl = "";
+            if(businessUnit) {
+                //noneMatchUrl = this.getForNewCustomers(businessUnit, theResponse);
+                noneMatchUrl = submissionUrls.noServiceabilityMatchRedirect;
+            } else {
+                //ServiceabilityMatch=NONE & no businessUnit . Redirecting to ATG
+                noneMatchUrl = this.getForNewCustomers
+                (
+                    Spectrum.Common.Components.MuiServiceability.Enums.businessUnit.CHARTER,
+                    theResponse
+                );
+            }
+            console.log("serviceabilityMatch == NONE - redirecting to URL: " + noneMatchUrl);
+            this.persistAddressAndRedirect(noneMatchUrl);
+            return false;
+        }
+
+        if(isServiceabilityMatchZIP4(serviceabilityMatch)) {
+            //ZIP4 case. Entered address is returned. Redirecting to Charter ATG
+            var zip4Url = this.getForNewCustomers(
+                Spectrum.Common.Components.MuiServiceability.Enums.businessUnit.CHARTER,
+                theResponse
+            );
+            console.log("ServiceabilityMatch : " + serviceabilityMatch + ". Redirecting to URL: " + zip4Url);
+            this.persistAddressAndRedirect(zip4Url);
+            return true;
+        }
+
+        if (!businessUnit) {
+            //No businessUnit (MSO) found. MSO = null. Redirecting to Charter Error Page
+            var noBusinessUnitErrorPage = submissionUrls.genericErrorRedirect;
+            console.log("businessUnit == null - redirecting to Error Page. URL: " + noBusinessUnitErrorPage);
+            this.persistAddressAndRedirect(noBusinessUnitErrorPage);
+            return false;
+        }
+
+        //Exact Match
+        console.log("Found exact match. serviceabilityMatch : " + serviceabilityMatch);
+
+
+        var serviceStatus = theResponse.serviceStatus;
+        serviceStatus = serviceStatus ? serviceStatus.toLowerCase() : serviceStatus;
+
+        if(serviceStatus) {
+            //handle serviceStatus = "never", "former", "active" or "disconnect
+            return this.handleServiceStatus(serviceStatus, businessUnit, theResponse, submissionUrls);
+        }
+
+        console.log("No valid case found. Redirecting to Error Page. URL: " + submissionUrls.genericErrorRedirect);
+        this.persistAddressAndRedirect(submissionUrls.genericErrorRedirect);
+        return false;
+    };
+
+    /**
+     * Handles various service statuses like NEVER, FORMER, DISCONNECT, etc.
+     * @param serviceStatus
+     * @param businessUnit
+     * @param theResponse
+     * @param submissionUrls
+     * @returns {boolean}
+     */
+    this.handleServiceStatus = function(serviceStatus, businessUnit, theResponse, submissionUrls) {
+        //TODO : UBF-228 Consolidate this with the same logic in muiMultipleAddressForm.js
+        var isServiceStatusNeverOrFormerOrDisconnectOrNone = function(serviceStatus) {
+            return [
+                    Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.NEVER,
+                    Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.FORMER,
+                    Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.DISCONNECT,
+                    Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.NONE
+                ].indexOf(serviceStatus) > -1;
+        };
+
+        var isServiceStatusActive = function(serviceStatus) {
+            return (Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.ACTIVE === serviceStatus);
+        };
+
+        var isServiceStatusActiveAndCharter = function(serviceStatus, businessUnit) {
+            return Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.ACTIVE === serviceStatus &&
+                businessUnit === Spectrum.Common.Components.MuiServiceability.Enums.businessUnit.CHARTER;
+        };
+
+        if (isServiceStatusNeverOrFormerOrDisconnectOrNone(serviceStatus)) {
+            console.log("New customer. serviceStatus = " + serviceStatus);
+            var newCustomerRedirectUrl = this.getForNewCustomers(businessUnit, theResponse);
+            console.log("Redirecting to : " + newCustomerRedirectUrl);
+            this.persistAddressAndRedirect(newCustomerRedirectUrl);
+            return true;
+        }
+
+        if (isServiceStatusActiveAndCharter(serviceStatus, businessUnit)) {
+            console.log("Existing customer. serviceStatus = " + serviceStatus);
+            var existingCustomersUrl = this.getForExistingCustomers(businessUnit, theResponse);
+            console.log("Redirecting to : " + existingCustomersUrl);
+            this.persistAddressAndRedirect(existingCustomersUrl);
+            return true;
+        }
+
+        if (isServiceStatusActive(serviceStatus)) {
+            console.log("Existing customer. serviceStatus = " + serviceStatus);
+            // existing customer
+            var serviceStatusActiveObject = {};
+            serviceStatusActiveObject.existingCustomersUrl = this.getForExistingCustomers(businessUnit, theResponse);
+            serviceStatusActiveObject.newCustomersUrl = this.getForNewCustomers(businessUnit, theResponse);
+            console.log("serviceStatusActiveObject : " + JSON.stringify(serviceStatusActiveObject));
+            var returnStatus = Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+                Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.SERVICE_STATUS_ACTIVE,
+                serviceStatusActiveObject
+            );
+            if(returnStatus) {
+                console.log("Redirecting to: " + submissionUrls.serviceStatusActiveRedirect);
+                this.persistAddressAndRedirect(submissionUrls.serviceStatusActiveRedirect);
+                return true;
+            }
+            console.error("Could not store in localStorage");
+            return false;
+        }
+    };
+
+    /**
+     * Handles multiple address match case. Sets an object on LocalStorage and redirects to the multiple-address page
+     * @returns {boolean}
+     */
+    this.handleMultipleServiceabilityResponse = function() {
+        var submissionUrls = this.submissionUrls;
+        console.log("Multiple Addresses returned.");
+        //Multi Address
+        var multipleAddressObject = {
+            twcCid : this.twcCid,
+            serviceabilityResponse : this.serviceabilityResponse,
+            defaultValues : Spectrum.Common.Components.MuiServiceability.Util.getDefaultValuesFromQueryStringMap(this.queryStringMap),
+            //Going to hard code this now. May not need to make this author-able
+            enabledFields : { enableAddressSearchCall : false },
+            queryString : this.queryString,
+            submissionUrls : this.submissionUrls,
+            serviceabilityOpts : this.opts
+        };
+        console.log("multipleAddresesObject : " + multipleAddressObject);
+
+        var localStorageStatus = Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.MULTIPLE_ADDRESS,
+            multipleAddressObject
+        );
+
+        if(localStorageStatus) {
+            window.location = submissionUrls.multipleAddress;
+            return true;
+        }
+        console.error("Could not store in localStorage");
+        return false;
+    };
+
+    /**
+     * Convenience method that just calls the Util method to create redirect URL for new customers
+     * @param businessUnit
+     * @param theAddress
+     * @returns {*}
+     */
+    this.getForNewCustomers = function(businessUnit, theAddress, multiAddressForcedRedirect) {
+        var url = Spectrum.Common.Components.MuiServiceability.Util.getRedirectUrlForNewCustomers(
+            {
+                twcCid: this.twcCid,
+                businessUnit: businessUnit,
+                theAddress: theAddress.address,
+                submissionUrls: this.submissionUrls,
+                queryStringMap: this.queryStringMap,
+                forMultipleAddress: false,
+                multiAddressForcedRedirect: multiAddressForcedRedirect,
+                selectedAddress: theAddress,
+                serviceabilityOpts: this.opts
+            }
+        );
+        return url;
+    };
+
+    /**
+     * Convenience method that just calls the Util method to create redirect URL for existing customers
+     * @param businessUnit
+     * @param theAddress
+     * @returns {*}
+     */
+    this.getForExistingCustomers = function(businessUnit, theAddress) {
+        var url = Spectrum.Common.Components.MuiServiceability.Util.getRedirectUrlForExistingCustomers(
+            {
+                businessUnit: businessUnit,
+                theAddress: theAddress.address,
+                submissionUrls: this.submissionUrls,
+                queryStringMap: this.queryStringMap,
+                forMultipleAddress: false,
+                selectedAddress: theAddress,
+                serviceabilityOpts: this.opts
+            }
+        );
+        return url;
+    };
+
+
+    /**
+     * This method persists the "generated" address after Serviceability and redirects to the URL passed in
+     * @param redirectTo
+     */
+    this.persistAddressAndRedirect = function(redirectTo) {
+        var selectedAddress = this.serviceabilityResponse ? this.serviceabilityResponse[0] : {};
+        Spectrum.Common.Components.MuiServiceability.Util.persistAddressAndRedirect(this.queryStringMap, redirectTo, selectedAddress);
+    };
+
+    /**
+     * Applies the remaining parameters to the Abstract base class
+     */
+    Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler.apply(this, [submissionData]);
+};
+
+/**
+ * Extends {Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler}
+ * @type {Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler}
+ */
+Spectrum.Common.Components.MuiServiceability.Handlers.TrafficCopHandler.prototype = Object.create(
+    Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler.prototype,
+    { 'constructor' : Spectrum.Common.Components.MuiServiceability.Handlers.TrafficCopHandler }
+);
+
+/**
+ * Concrete implementation of the handleSubmit abstract method in
+ * @type {Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler}
+ * @returns {boolean}
+ */
+Spectrum.Common.Components.MuiServiceability.Handlers.TrafficCopHandler.prototype.handleSubmit = function() {
+    console.log("Handling For TrafficCop");
+
+    this.queryStringMap.newHomeOverride = false;
+    if(this.isConfirmNewHome()) {
+    	if(!this.enabledFields.disableQuestions){
+            this.queryStringMap.newHomeOverride = true;
+        } else {
+            return this.handleConfirmNewHome();
+    	}
+    }
+    if(this.isUiErrors()) {
+        return this.handleUiErrors();
+    }
+    //Force Clear States
+    Spectrum.Common.Components.MuiServiceability.Util.removeFromStorage(Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.UI_ERRORS);
+    Spectrum.Common.Components.MuiServiceability.Util.removeFromStorage(Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.CONFIRM_NEW_HOME);
+
+    if(this.isServiceErrors()) {
+        return this.handleServiceErrors();
+    }
+
+    var theResponse = this.serviceabilityResponse[0];
+    var businessUnit = this.getBusinessUnitFromResponse(theResponse);
+
+    var redirectLegacyCharter = this.opts.charterShort && (Spectrum.Common.Components.MuiServiceability.Enums.businessUnit.CHARTER === businessUnit);
+    var redirectLegacyTWC = this.opts.twcShort && (Spectrum.Common.Components.MuiServiceability.Enums.businessUnit.TWC === businessUnit);
+    var redirectLegacyBrightHouse = this.opts.brighthouseShort && (Spectrum.Common.Components.MuiServiceability.Enums.businessUnit.BHN === businessUnit);
+    var redirectToLegacy = redirectLegacyCharter || redirectLegacyTWC || redirectLegacyBrightHouse;
+
+    if(redirectToLegacy) {
+        return this.persistAddressAndRedirect(this.getForNewCustomers(businessUnit, theResponse, this.serviceabilityResponse.length > 1));
+    }
+    if(this.serviceabilityResponse.length === 1) {
+        return this.handleSingleServiceabilityResponse();
+    }
+    if(this.serviceabilityResponse.length > 1) {
+        return this.handleMultipleServiceabilityResponse();
+    }
+
+    console.log("No valid case found.");
+    this.persistAddressAndRedirect(this.submissionUrls.genericErrorRedirect);
+    return false;
+};
+
+var Spectrum = Spectrum || {};
+Spectrum.Common = Spectrum.Common || {};
+Spectrum.Common.Components = Spectrum.Common.Components || {};
+Spectrum.Common.Components.MuiServiceability = Spectrum.Common.Components.MuiServiceability || {};
+Spectrum.Common.Components.MuiServiceability.Handlers = Spectrum.Common.Components.MuiServiceability.Handlers || {};
+
+/**
+ * Channel Line Up implementation for the MuiServiceability submission handler
+ * @param submissionData
+ * @param $baseContainer
+ * @constructor
+ */
+Spectrum.Common.Components.MuiServiceability.Handlers.ChannelLineUpHandler = function(submissionData, $baseContainer) {
+    "use strict";
+    if(!(this instanceof Spectrum.Common.Components.MuiServiceability.Handlers.ChannelLineUpHandler)) {
+        throw new TypeError("Cannot call class as a function.");
+    }
+
+    this.$multipleAddressFormContainer = $baseContainer.find('.muiMultipleAddressForm')[0];
+    this.$iframe = $baseContainer.find(".cluIframe").find("iframe")[0];
+    this.$baseContainer = $baseContainer;
+
+    Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler.apply(this, [submissionData]);
+};
+
+
+/**
+ * Extends {Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler}
+ * @type {Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler}
+ */
+Spectrum.Common.Components.MuiServiceability.Handlers.ChannelLineUpHandler.prototype = Object.create(
+    Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler.prototype,
+    { 'constructor' : Spectrum.Common.Components.MuiServiceability.Handlers.ChannelLineUpHandler }
+);
+
+/**
+ * Concrete implementation of the handleSubmit abstract method in
+ * @type {Spectrum.Common.Components.MuiServiceability.Handlers.AbstractHandler}
+ * @returns {boolean}
+ */
+Spectrum.Common.Components.MuiServiceability.Handlers.ChannelLineUpHandler.prototype.handleSubmit = function() {
+    console.log("Handling For ChannelLineUp");
+
+    function createBaseParams(queryStringMap) {
+        return Spectrum.Common.Components.MuiServiceability.Util.createBaseParams(queryStringMap);
+    }
+
+    function createParams(queryStringMap, selectedAddress) {
+        return Spectrum.Common.Components.MuiServiceability.Util.createParams(queryStringMap, selectedAddress);
+    }
+
+    var multipleAddressFormContainer = this.$multipleAddressFormContainer;
+    var iframe = this.$iframe;
+    var atgCLUIframeUrl = this.submissionUrls.atgCLUIframeUrl;
+    var $baseContainer = this.$baseContainer;
+
+    //DO THIS BETTER
+    $(iframe).show();
+    multipleAddressFormContainer.innerHTML = "";
+    $(multipleAddressFormContainer).show();
+    //DO THIS BETTER
+
+    var baseParams = {};
+    var otherParams = {};
+    if(this.serviceabilityResponse.length < 1) {
+        console.log("Response does not have any addresses. Creating params addr1, apt and zip");
+        this.$baseContainer.find(".localization").trigger("submitSuccess");
+        baseParams = createBaseParams(this.queryStringMap);
+        //We don't  know this since the user didn't go through Enterprise Serviceability
+        baseParams.existing = "false";
+    } else if(this.serviceabilityResponse.length == 1) {
+        console.log("Received 1 address back. Creating params addr1, apt, zip, existing, (mso, spa, scdf if available)");
+        this.$baseContainer.find(".localization").trigger("submitSuccess");
+        baseParams = createBaseParams(this.queryStringMap);
+        otherParams = createParams(this.queryStringMap, this.serviceabilityResponse[0]);
+    } else if(this.serviceabilityResponse.length > 1) {
+        //If serviceabilityResponse.length >= 1
+        //Show multipleAddress on the same page in the muiMultipleAddressForm container
+        //On submit for exact address, hide the multipleAddress Form
+        //Re-execute the above case of serviceabilityResponse.length <= 1
+        console.log("Handling multiple address case");
+
+        var configuration = {
+            addresses : this.serviceabilityResponse,
+            defaultValues : Spectrum.Common.Components.MuiServiceability.Util.getDefaultValuesFromQueryStringMap(this.queryStringMap),
+            enabledFields : { enableAddressSearchCall : false },
+            formSubmissionHandler : function(url, data, selectedAddress) {
+                $(multipleAddressFormContainer).hide();
+                $baseContainer.find(".localization").trigger("submitSuccess");
+                data.forMultipleAddress = true;
+                Spectrum.Common.Components.MuiServiceability.Util.loadCLUIframe(
+                    createBaseParams(data),
+                    createParams(data, selectedAddress),
+                    iframe,
+                    atgCLUIframeUrl
+                );
+                //Persist Address Information
+                data.selectedAddress = selectedAddress;
+                Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+                    Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.VALIDATED_ADDRESS,
+                    data
+                );
+            }
+        };
+
+        //Hide iframe
+        $(iframe).hide();
+
+        //noinspection JSUnresolvedVariable
+        React.render(
+            React.createElement(
+                window.mui.localization.AddressSearchForm,
+                configuration
+            ),
+            multipleAddressFormContainer
+        );
+    }
+
+    Spectrum.Common.Components.MuiServiceability.Util.loadCLUIframe(baseParams, otherParams, iframe, atgCLUIframeUrl);
+    //Persist Address Information
+    var address = this.queryStringMap;
+    address.selectedAddress = this.serviceabilityResponse[0];
+    Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+        Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.VALIDATED_ADDRESS,
+        address
+    );
+    return true;
+};
+
+;(function($) {
+    "use strict";
+    $.fn.muiServiceabilityComponent = function () {
+        var $muiComponent = $(this);
+        var configuration = new Spectrum.Common.Components.MuiServiceability.Configuration($muiComponent);
+        configuration.renderForm();
+    };
+})(jQuery);
+
+var Spectrum = Spectrum || {};
+Spectrum.Common = Spectrum.Common || {};
+Spectrum.Common.Components = Spectrum.Common.Components || {};
+Spectrum.Common.Components.MuiMultipleAddressForm = Spectrum.Common.Components.MuiMultipleAddressForm || {};
+
+Spectrum.Common.Components.MuiMultipleAddressForm.Enums = (function() {
+    "use strict";
+
+    return {
+        multipleAddressViewType : {
+            TILE : "TILE",
+            DROPDOWN : "DROPDOWN",
+            APTONLYTILE : "APTONLYTILE"
+        }
+    };
+
+})();
+
+;//noinspection JSUnresolvedVariable
+(function($) {
+    'use strict';
+
+    $.fn.muiMultipleAddressForm = function(opts) {
+        var $muiComponent = $(this);
+
+        function getConfiguration(multipleAddressData) {
+            var addressSearchFormConfig = {
+                formSubmissionHandler: function(url, theAddress, selectedAddress) {
+                    var businessUnit = theAddress.businessUnit.toLowerCase();
+                    var serviceStatus = theAddress.serviceStatus.toLowerCase();
+
+                    //TODO : UBF-228 Consolidate this with the same logic in trafficCopSubmissionHandler
+                    if(isServiceStatusNeverOrFormerOrDisconnectOrNone(serviceStatus)) {
+                        var newCustomersRedirectUrl = Spectrum.Common.Components.MuiServiceability.Util.getRedirectUrlForNewCustomers(
+                            {
+                                twcCid: multipleAddressData.twcCid,
+                                businessUnit: theAddress.businessUnit,
+                                theAddress: theAddress,
+                                submissionUrls: multipleAddressData.submissionUrls,
+                                queryString: multipleAddressData.queryString,
+                                queryStringMap: theAddress,
+                                forMultipleAddress: true,
+                                selectedAddress: selectedAddress,
+                                serviceabilityOpts: multipleAddressData.serviceabilityOpts
+                            }
+                        );
+                        console.log("New Customer. Redirecting to: " + newCustomersRedirectUrl);
+                        Spectrum.Common.Components.MuiServiceability.Util.persistAddressAndRedirect(
+                            theAddress,
+                            newCustomersRedirectUrl,
+                            selectedAddress
+                        );
+                        return true;
+                    }
+
+                    if(isServiceStatusActiveAndCharter(serviceStatus, businessUnit)) {
+                        var existingCustomersRedirectUrl = Spectrum.Common.Components.MuiServiceability.Util.getRedirectUrlForExistingCustomers(
+                            {
+                                businessUnit: theAddress.businessUnit,
+                                theAddress: theAddress,
+                                submissionUrls: multipleAddressData.submissionUrls,
+                                queryStringMap: theAddress,
+                                forMultipleAddress: true,
+                                selectedAddress: selectedAddress,
+                                serviceabilityOpts: multipleAddressData.serviceabilityOpts
+                            }
+                        );
+                        console.log("Existing Customer. Redirecting to: " + existingCustomersRedirectUrl);
+                        Spectrum.Common.Components.MuiServiceability.Util.persistAddressAndRedirect(
+                            theAddress,
+                            existingCustomersRedirectUrl,
+                            selectedAddress
+                        );
+                        return true;
+                    }
+
+                    if(isServiceStatusActive(serviceStatus)) {
+                        console.log("Existing customer. serviceStatus = " + serviceStatus);
+                        // existing customer
+                        var serviceStatusActiveObject = {};
+                        serviceStatusActiveObject.newCustomersUrl = Spectrum.Common.Components.MuiServiceability.Util.getRedirectUrlForNewCustomers(
+                            {
+                                twcCid: multipleAddressData.twcCid,
+                                businessUnit: theAddress.businessUnit,
+                                theAddress: theAddress,
+                                submissionUrls: multipleAddressData.submissionUrls,
+                                queryString: multipleAddressData.queryString,
+                                queryStringMap: theAddress,
+                                forMultipleAddress: true,
+                                selectedAddress: selectedAddress,
+                                serviceabilityOpts: multipleAddressData.serviceabilityOpts
+                            }
+                        );
+                        serviceStatusActiveObject.existingCustomersUrl = Spectrum.Common.Components.MuiServiceability.Util.getRedirectUrlForExistingCustomers(
+                            {
+                                businessUnit: theAddress.businessUnit,
+                                theAddress: theAddress,
+                                submissionUrls: multipleAddressData.submissionUrls,
+                                queryStringMap: theAddress,
+                                forMultipleAddress: true,
+                                selectedAddress: selectedAddress,
+                                serviceabilityOpts: multipleAddressData.serviceabilityOpts
+                            }
+                        );
+                        console.log("serviceStatusActiveObject : " + JSON.stringify(serviceStatusActiveObject));
+                        var returnStatus = Spectrum.Common.Components.MuiServiceability.Util.setInStorage(
+                            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.SERVICE_STATUS_ACTIVE,
+                            serviceStatusActiveObject
+                        );
+                        if(returnStatus) {
+                            console.log("Redirecting to: " + multipleAddressData.submissionUrls.serviceStatusActiveRedirect);
+                            Spectrum.Common.Components.MuiServiceability.Util.persistAddressAndRedirect(
+                                theAddress,
+                                multipleAddressData.submissionUrls.serviceStatusActiveRedirect,
+                                selectedAddress
+                            );
+                            return true;
+                        }
+                        console.error("Could not store in localStorage");
+                        return false;
+                    }
+
+                },
+                addresses : multipleAddressData.serviceabilityResponse,
+                defaultValues : multipleAddressData.defaultValues,
+                enabledFields : multipleAddressData.enabledFields,
+                parentTransaction : getParentTransactionData(),
+                multipleAddressViewType : determineMultipleAddressViewType(multipleAddressData.serviceabilityResponse, opts.multipleAddressViewType),
+                dynamicContent : getDynamicContent(opts)
+            };
+            return addressSearchFormConfig;
+        }
+
+            var getDynamicContent = function(opts) {
+                var dynamicContent = {
+                    multipleAddressAptOnlyText: opts.multipleAddressAptOnlyText
+                };
+                return dynamicContent;
+            };
+
+        var getParentTransactionData = function(){
+            var parentTransactionData = Spectrum.Common.Components.MuiServiceability.Util.getFromStorage(Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.PARENT_TRANSACTION);
+            return (parentTransactionData ? parentTransactionData : window.mui.util.LoggerMixin.createTransaction("LOCATION_SEARCH"));
+        };
+
+        var hasEmptyLine2 = function(serviceabilityAddress) {
+            if(serviceabilityAddress && serviceabilityAddress.address){
+                var line2 = serviceabilityAddress.address.line2;
+                return (!line2 || /^\s*$/.test(line2));
+            }
+            return true;
+        };
+
+        var determineMultipleAddressViewType = function(serviceabilityResponse, multipleAddressViewType) {
+            if(multipleAddressViewType === Spectrum.Common.Components.MuiMultipleAddressForm.Enums.multipleAddressViewType.APTONLYTILE
+                && serviceabilityResponse){
+                //check if line2 is unavailable
+                var addressesWithEmptyLine2 = serviceabilityResponse.filter(hasEmptyLine2);
+                if(addressesWithEmptyLine2.length > 0){
+                     return Spectrum.Common.Components.MuiMultipleAddressForm.Enums.multipleAddressViewType.TILE;
+                }
+            }
+
+            return multipleAddressViewType;
+        };
+
+        var isServiceStatusNeverOrFormerOrDisconnectOrNone = function(serviceStatus) {
+            return [
+                    Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.NEVER,
+                    Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.FORMER,
+                    Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.DISCONNECT,
+                    Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.NONE
+                ].indexOf(serviceStatus) > -1;
+        };
+
+        var isServiceStatusActive = function(serviceStatus) {
+            return (Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.ACTIVE === serviceStatus)
+        };
+
+        var isServiceStatusActiveAndCharter = function(serviceStatus, businessUnit) {
+            return Spectrum.Common.Components.MuiServiceability.Enums.serviceStatus.ACTIVE === serviceStatus &&
+                businessUnit === Spectrum.Common.Components.MuiServiceability.Enums.businessUnit.CHARTER;
+        };
+
+        function init(configuration) {
+            //noinspection JSUnresolvedFunction
+            var componentContainer = $muiComponent.find(".muiMultipleAddressForm")[0];
+            //noinspection JSUnresolvedVariable
+            React.render(
+                React.createElement(
+                    window.mui.localization.AddressSearchForm,
+                    configuration
+                ),
+                componentContainer
+            );
+        }
+
+        var multipleAddressData = Spectrum.Common.Components.MuiServiceability.Util.getFromStorage(
+            Spectrum.Common.Components.MuiServiceability.Enums.storageKeys.MULTIPLE_ADDRESS
+        );
+
+        if(multipleAddressData) {
+            var configuration = getConfiguration(multipleAddressData);
+            init(configuration);
+        } else {
+            console.error("No multiple-address-data found. Cannot show multiple-addresses");
+        }
+    };
+})(jQuery);
+

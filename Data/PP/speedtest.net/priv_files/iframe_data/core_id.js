@@ -1,0 +1,1 @@
+var _zd_core_id;if(!localStorage||!(_zd_core_id=localStorage.getItem('_zd_core_id'))){var _zd_core_id='98a882a07fd74208b0f9890fd30df233';localStorage.setItem('_zd_core_id',_zd_core_id)}var value='; '+document.cookie,parts=value.split('; h_zdbb='),zdbb='';2==parts.length&&(zdbb=parts.pop().split(';').shift()),parent.postMessage({core_id:_zd_core_id,zdbb:zdbb},'*');

@@ -1,0 +1,388 @@
+$(document).ready(function() {
+
+//==================================
+//! Tables
+//==================================
+
+// PLAN: var actionObj = {"basic":{}, "line":{}, "grid":{}, "matrix":{},};
+
+// example <table type="basic" title=""> //
+//
+$('#rn_AnswerText').find('table').each(function(){
+	$(this).wrap("<div class=\"table-responsive\"></div>");
+});
+
+
+//==================================
+//! Accordion 
+//==================================
+
+// PLAN: var actionObj = {"basic":{}, "block":{}, "hidden":{},};
+
+// example <kb-expand type="basic"> // 
+//
+	
+	$("kb-acc[type='text'], kb-acc[type='block'], .question, .kbAcc-h, .basic").prepend("<span class='collapsed'>[+]&nbsp;</span>");
+	$("kb-acc[type='content'], .answer, .kbAcc-c, .hidden").hide();
+	
+	$("kb-acc[type='text'], kb-acc[type='block'], .question, .kbAcc-h").click(function () {
+		if($(this).next().is(':hidden') != true) {
+			$(this).removeClass('active');
+			$(this).next().slideUp("normal");
+			$(this).children('.expanded').removeClass('expanded').addClass('collapsed').html('[+]&nbsp;');
+		}
+		else {
+			if($(this).next().is(':hidden') == true) {
+			$(this).addClass('active');
+			$(this).next().slideDown('normal');
+			$(this).children('.collapsed').removeClass('collapsed').addClass('expanded').html('[-]&nbsp;');
+			}
+		}
+	 });
+	
+	 //Jumps to Anchor and shows content if hidden
+	$('a').click(function () {
+		var target = (this.hash).substring(1, (this.hash).length);
+		if (target.length !=0){
+			var targetQ = $('a[name='+target+']').parent();
+			targetQ.addClass('active');
+			targetQ.next().slideDown('normal');
+			targetQ.children('.collapsed').removeClass('collapsed').addClass('expanded').html('[-]&nbsp;');
+		}
+	});
+	
+	$('.expand').click(function(event) {
+		$("kb-acc[type='text'], .question, .kbAcc-h").next().slideDown('normal');
+		$("kb-acc[type='text'], .question, .kbAcc-h").addClass('active');$('.collapsed').removeClass('collapsed').addClass('expanded').html('[-]&nbsp;');
+		$('#buttonbar .expand').hide();
+		$('#buttonbar .collapse').css({'display':'inline-block'});
+	});
+	
+	$('.collapse').click(function(event) {
+		$("kb-acc[type='text'], .question, .kbAcc-h").next().slideUp('normal');
+		$("kb-acc[type='text'], .question, .kbAcc-h").removeClass('active');$('.expanded').removeClass('expanded').addClass('collapsed').html('[+]&nbsp;');
+		$('#buttonbar .collapse').hide();
+		$('#buttonbar .expand').css({'display':'inline-block'});
+	});
+
+
+//==================================
+//! Menu Show\Hide Content
+//==================================
+	//Finds the content option containers and hides them
+	$('[class^="kb-opt-"]').hide();
+	
+	//Show the first option by default
+	$('.kb-opt-'+$('kb-menu select').val()).show();
+	
+	//Changes visibility based on selection
+	$('kb-menu select').change(function() {
+		var kbMenuVal = $(this).val();
+		
+		$('[class^="kb-opt-"]').hide();
+		$('.kb-opt-'+kbMenuVal).show();
+	});
+	
+//==================================
+//! KB Tabs for Answer pages
+//==================================
+	var kbTabs = {
+		init: function() {
+			// Select first category
+			$kbContent.find('>*').hide();
+			kbTabs.select($kbMenu.find('li:first-child'));
+			// Fix menu if mobile
+			var width = 20;
+			$kbMenu.find('li').each(function() {
+			    width += $(this)[0].scrollWidth;
+			});
+			kbTabs.menuWidth = width;
+			kbTabs.resize();
+			// Register event handlers
+			$kbMenu.find('li').on('click', function() {
+				kbTabs.select(this);
+			});
+			$(window).on('resize', kbTabs.resize);
+			$('body').on('click', '.kb-hamburger', function() {
+				$('.kb-hamburger').toggleClass('active');
+			});
+		},
+		select: function(el) {
+			var cat = $(el).data('category');
+			$kbMenu.find('li').removeClass('active');
+			$(el).addClass('active');
+			$kbContent.find('>*').hide();
+			$kbContent.find('[data-category="'+cat+'"]').show();
+		},
+		resize: function() {
+			if(kbTabs.menuWidth > $kbContent.outerWidth()) {
+				if($kbMenu.hasClass('kb-hamburger')) {
+					return false;
+				}
+				$kbMenu.addClass('kb-hamburger');
+			} else {
+				if(!$kbMenu.hasClass('kb-hamburger')) {
+					return false;
+				}
+				$kbMenu.removeClass('kb-hamburger');
+			}
+		}
+	}
+	var $kbTabs = $('.kb-tabs-container'),
+	$kbMenu = $('.kb-tabs-menu'),
+	$kbContent = $('.kb-tabs-content');
+	if($kbTabs.length) {
+		kbTabs.init();
+	}
+	
+	
+	
+	/* on load, get country code from lang_locale, and hide all kb-display-countryCode that don't match. Likewise, display a match */	
+	x = window.location.href.split('country/');
+  var country_lang_locale = getCookie('nike_locale').split('/')[0] || x[1].substring(0,2);
+//	console.log(x);
+//	var country_lang_locale = '<?= $this->data["country_lang_locale"] ?>';
+//	country_lang_locale = country_lang_locale.split("/")[0];
+	var country = '';
+	$('[class^="kb-display-"]').each(function() {
+		country = this.className.split("-")[2];
+		if(country == country_lang_locale){
+			$('.kb-display-' + country).show();
+		} else {
+			$('.kb-display-' + country).hide();
+		}
+	});		
+		
+  function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+  }
+
+	function dropdownPower(choice){
+		 /* get country code and hide all kb-display-countryCode that don't match. Likewise, display a match */
+		$('.kb-menu > option').each(function() {
+			if ( this.value == choice ){
+				$('.kb-menu-' + this.value).show();
+			} else {
+				$('.kb-menu-' + this.value).hide();
+			}
+		});	
+	}
+	/* On dropdown change, hide other content and show selected div */
+	$('.kb-menu').change(function(e) {
+		console.log('fires');
+    	dropdownPower(this.value);
+	});
+	/* also call it on load to display the default */
+	dropdownPower($('.kb-menu :selected').val());
+
+
+
+//==================================
+//! End $(document).ready()
+//==================================
+});
+
+$(function() {
+  if ($('.answer-social').html().trim().length > 0) {
+    $('.social-panel').append($('.answer-social'));
+  } else {
+    $('.answer-social').hide();
+    $('.social-panel').hide();
+  }
+
+  onResize();
+  window.setTimeout(onResize, 1000);
+
+  $(window).on('resize', onResize);
+
+  $(document).on('click', '.ch-VIRTUALHOLD, .ch-EMAIL', function() {
+    var href = $(this).attr('href');
+    window.open(href, 'a', 'width=510, height=675, resizable=0, menubar=no, toolbar=no, scrollbars=1');
+    return false;
+  });
+
+  $(document).on('click', '.ch-CHAT', function() {
+    var href = $(this).attr('href');
+    window.open(href, 'a', 'width=810, height=590, resizable=0, menubar=no, toolbar=no, scrollbars=1');
+    return false;
+  }); 
+  
+  $(document).on('focus', '.rn_AnswerFeedbackDialog .rn_Textarea', function(e) {
+    $('.rn_AnswerFeedbackDialog .rn_EmailField').attr('value', 'anonymous7@custhelp.com');
+    return true;
+  });
+
+  if ($.trim($('.previous-answers').text()) == '') {
+    $('.previous-answers').hide();
+  }
+
+  function onResize() {
+    var height = 'auto';
+    $('.answer-container').css({'min-height': height});
+    $('.answer-sidebar').css({'min-height': height});
+    if($(window).width() > 767) {
+      height = $('.answer-container')[0].scrollHeight;
+      if($('.answer-sidebar')[0].scrollHeight > height) {
+        height = $('.answer-sidebar')[0].scrollHeight;
+      }
+    }
+    // Hide sidebar when empty
+    if(!$('.answer-sidebar .answer-channels').children().length) {
+      $('.answer-sidebar').removeClass('col-xs-12 col-sm-3');
+      $('.answer-sidebar').addClass('hide');
+      $('.answer-container').removeClass('col-sm-9');
+      $('.answer-container').addClass('col-sm-12');
+      $('.answer-container').css({'border-right':'none'});
+      $('.social-panel').removeClass('col-sm-9');
+      $('.social-panel').addClass('col-sm-12');
+      $('.social-panel').css({'border-right':'none'});
+    } else {
+      $('.answer-container').css({'min-height': height});
+      $('.answer-sidebar').css({'min-height': height});
+    }
+  }
+
+  ///////////////////////
+  //! Timing App
+  ///////////////////////
+
+    var activeFilter = '.item';
+
+    function toggleViewAll() {
+      //Reset View All link
+      $('#viewAll').remove();
+      //Set active filter
+      var $items = $(activeFilter);
+      //Toggle View All
+      if ($items.length >20) {
+        $items.hide().slice(0,20).show();
+        $('#results-container').append('<div id="viewAll">...<span><a>View All</a></span></div>');
+        $('#viewAll').click(function () {
+            $items.fadeIn(); // or .show()
+            $(this).remove();
+        });
+      }
+    }
+
+    function behaviours(selection) {
+      //console.log(selection);
+
+      //Reset Active Filter, Search Count, Items
+      $('#tabs li').removeClass('activeFilter');
+      $('#search-count').text('');
+      $('.item').hide();
+      $('#tmsearch').val('');
+
+      if (selection.indexOf('team') >= 0) {
+        $('li[class="team"]').addClass('activeFilter');
+        $('.team').show();
+        $('#menu select').val(selection);
+        activeFilter = '.team';
+      }
+      else if (selection.indexOf('outdoor') >= 0) {
+        $('li[class="outdoor"]').addClass('activeFilter');
+        $('.outdoor').show();
+        $('#menu select').val(selection);
+        activeFilter = '.outdoor';
+      }
+      else if (selection.indexOf('kids') >= 0) {
+        $('li[class="kids"]').addClass('activeFilter');
+        $('.kids').show();
+        $('#menu select').val(selection);
+        activeFilter = '.kids';
+      }
+      else if (selection.indexOf('running') >= 0) {
+        $('li[class="running"]').addClass('activeFilter');
+        $('.running').show();
+        $('#menu select').val(selection);
+        activeFilter = '.running';
+      }
+      else if (selection.indexOf('womens') >= 0) {
+        $('li[class="womens"]').addClass('activeFilter');
+        $('.womens').show();
+        $('#menu select').val(selection);
+        activeFilter = '.womens';
+      }
+      else if (selection.indexOf('training') >= 0) {
+        $('li[class="training"]').addClass('activeFilter');
+        $('.training').show();
+        $('#menu select').val(selection);
+        activeFilter = '.training';
+      }
+      else if (selection.indexOf('all') >= 0) {
+        $('li[class="all"]').addClass('activeFilter');
+        $('.item').show();
+        $('#menu select').val(selection);
+        activeFilter = '.item';
+      }
+      toggleViewAll();
+    }
+
+    if( $('#timingApp-container').length ) {
+      $('#timingApp-container').load( "/app/landing/timing-app #timingApp",function() {
+        toggleViewAll();
+    
+      $('#tabs li, #tabs li a').on("click", function(e) {
+        //Prevents default Link Behaviour
+        e.preventDefault();
+
+        //Decalre selected tabs class and pass to the behaviours function
+        var $tab = $(this).attr("class");
+        behaviours($tab)
+      });
+
+    
+      $('#menu select').on("change", function() {
+        //Declare selections class and pass to the behaviours function
+        var $select = $("option:selected", this).attr("class");
+        behaviours($select);
+      });
+
+
+
+      $('#tmsearch').on("keyup", function() {
+        //Retrieve the input field text and reset the count to zero
+        var search = $(this).val();
+        var count=0;
+
+        //Remove View All when searching
+        $('#viewAll').remove();
+
+        //Loop through the links
+        $('#results-container span').filter(activeFilter).each(function() {
+          $('#search-count').text("Searching...");
+          if($(this).text().search(new RegExp(search, "i")) < 0) {
+            $(this).fadeOut();
+          }
+          else {
+            $(this).show();
+            count++;
+          }
+        });
+
+        var numberItems = count;
+        $('#search-count').text("Results: " + count);
+      });
+
+      $('#viewAll a').on("click", function(e) {
+        e.preventDefault();
+      });
+
+      /* CRM-1411 - Turkish & Indian Currency Symbols Break The Page - 5/4/15  */
+      jQuery('#rn_AnswerText td').each(function(i){ jQuery(this).text(jQuery(this).text().replace('[lira]', '₺'))});
+      jQuery('#rn_AnswerText td').each(function(i){ jQuery(this).text(jQuery(this).text().replace('[rupee]', '₹'))});
+    });
+  }
+});

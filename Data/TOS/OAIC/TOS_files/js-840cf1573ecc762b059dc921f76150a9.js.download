@@ -1,0 +1,1038 @@
+
+/*** superfish.js ***/
+
+/*!
+ * hoverIntent r7 // 2013.03.11 // jQuery 1.9.1+
+ * http://cherne.net/brian/resources/jquery.hoverIntent.html
+ *
+ * You may use hoverIntent under the terms of the MIT license.
+ * Copyright 2007, 2013 Brian Cherne
+ */
+;(function(e){e.fn.hoverIntent=function(t,n,r){var i={interval:100,sensitivity:7,timeout:0};if(typeof t==="object"){i=e.extend(i,t)}else if(e.isFunction(n)){i=e.extend(i,{over:t,out:n,selector:r})}else{i=e.extend(i,{over:t,out:t,selector:n})}var s,o,u,a;var f=function(e){s=e.pageX;o=e.pageY};var l=function(t,n){n.hoverIntent_t=clearTimeout(n.hoverIntent_t);if(Math.abs(u-s)+Math.abs(a-o)<i.sensitivity){e(n).off("mousemove.hoverIntent",f);n.hoverIntent_s=1;return i.over.apply(n,[t])}else{u=s;a=o;n.hoverIntent_t=setTimeout(function(){l(t,n)},i.interval)}};var c=function(e,t){t.hoverIntent_t=clearTimeout(t.hoverIntent_t);t.hoverIntent_s=0;return i.out.apply(t,[e])};var h=function(t){var n=jQuery.extend({},t);var r=this;if(r.hoverIntent_t){r.hoverIntent_t=clearTimeout(r.hoverIntent_t)}if(t.type=="mouseenter"){u=n.pageX;a=n.pageY;e(r).on("mousemove.hoverIntent",f);if(r.hoverIntent_s!=1){r.hoverIntent_t=setTimeout(function(){l(n,r)},i.interval)}}else{e(r).off("mousemove.hoverIntent",f);if(r.hoverIntent_s==1){r.hoverIntent_t=setTimeout(function(){c(n,r)},i.timeout)}}};return this.on({"mouseenter.hoverIntent":h,"mouseleave.hoverIntent":h},i.selector)}})(jQuery)
+;(function($){$.fn.superfish=function(op){var sf=$.fn.superfish,c=sf.c,$arrow=$(['<span class="',c.arrowClass,'"></span>'].join('')),
+    mobileBreakpoint = 999,
+keydownHandler = function(e) {
+                var $li = $(this);
+                if (e.which>=37 && e.which<=40) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                if (e.which == 27) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                switch (e.which) {
+                    //DOWN
+                    case 40:
+                        if ($li.parent().hasClass("superfish")) {
+                            // It's top level. We either want to open the menu or go into it.
+                            if ($li.children('ul:first').is(":visible")) {
+                                $li.children('ul:first').children('li:first').children('a:first').focus();  
+                            } else {
+                                overKeydown($li);
+                            }               
+                        }
+                        else {
+                            //Go down the list
+                            outKeydown($li);
+                            $li.next('li').children(":first").focus();   
+                        }
+                        break;
+                    //UP
+                    case 38: 
+                        if ($li.parent().hasClass("superfish")) {
+                            // It's top level; close it.
+                            outKeydown($li);
+                        } else {
+                            // Second level. We either want to go up the list, or it's the top one, so close it
+                            if ($("li",$li.parent()).index($li) == 0) {
+                                // It's the top-most item. Close it and return to parent
+                                $li.parent().parent().children("a:first").focus();
+                                outKeydown($li.parent().parent());
+                            } else {
+                                $li.prev('li').children("a:first").focus();
+                            }
+                        }
+                        break;
+                    //ESC
+                    case 27:
+                    	if ($li.parent().hasClass("superfish")) {
+                            // It's top level
+                            outKeydown($li);
+                            $li.children(":first").focus()
+                        } else {
+                            if ($li.parent().parent().parent().hasClass("superfish")) {
+                                // Second level.                            
+                                $li.parent().parent().children("a:first").focus();
+                                outKeydown($li.parent().parent());
+
+                            } else {
+                                //Third level
+                                $li.parent().parent().children("a:first").focus();
+                                outKeydown($li.parent().parent());
+                            }
+                        }
+                    	break;
+                    //LEFT
+                    case 37:
+                        if ($li.parent().hasClass("superfish")) {
+                            // It's top level
+                            outKeydown($li);
+                            $li.prev("li").children(":first").focus()
+                        } else {
+                            if ($li.parent().parent().parent().hasClass("superfish")) {
+                                // Second level.                            
+                                $li.parent().parent().prev("li").children("a:first").focus();
+                                outKeydown($li.parent().parent());
+
+                            } else {
+                                //Third level
+                                $li.parent().parent().children("a:first").focus();
+                                outKeydown($li.parent().parent());
+                            }
+                        }
+                        break;
+                    //RIGHT
+                    case 39:
+                        if ($li.parent().hasClass("superfish")) {
+                            // It's top level
+                            outKeydown($li);
+                            $li.next("li").children(":first").focus()
+                        } else {
+                            // Second level.
+                            if ($li.children("ul").length) {
+                                //Expand 3rd level menu. Either show it or go into it.
+                                if ($li.children('ul:first').is(":visible") ) {
+                                    $li.children('ul:first').children('li:first').children('a:first').focus();  
+                                } else {
+                                    overKeydown($li);
+                                }
+                            } else {
+                                // There's no sub menu, go to next 1st level menu item
+                                if ($li.parent().parent().parent().hasClass("superfish")) {
+                                    // Second level.   
+                                    $li.parent().parent().next("li").children("a:first").focus();
+                                    outKeydown($li.parent().parent());
+                                }                               
+                            }
+                        }
+                        break;
+                }
+            },
+            overKeydown = function(el) {
+                var $$ = $(el),
+                    menu = getMenu($$);
+                clearTimeout(menu.sfTimer);
+                $$.showSuperfishUl().siblings().hideSuperfishUl();
+            },
+            outKeydown = function(el) {
+                var $$ = $(el),
+                    menu = getMenu($$),
+                    o = sf.op;
+                clearTimeout(menu.sfTimer);
+                menu.sfTimer = setTimeout(function() {
+                    o.retainPath = ($.inArray($$[0], o.$path) > -1);
+                    $$.hideSuperfishUl();
+                    if (o.$path.length && $$.parents(['li.', o.hoverClass].join('')).length < 1) {
+                        over.call(o.$path)
+                    }
+                }, 0);
+            },
+            over=function(){
+                if ($(window).width() > mobileBreakpoint) {
+                    var $$=$(this),menu=getMenu($$);
+                    clearTimeout(menu.sfTimer);
+                    $$.showSuperfishUl().siblings().hideSuperfishUl()
+                }
+                
+            },
+            out=function(){
+                if ($(window).width() > mobileBreakpoint) {
+                    var $$=$(this),menu=getMenu($$),o=sf.op;
+                    clearTimeout(menu.sfTimer);
+                    menu.sfTimer=setTimeout(function(){o.retainPath=($.inArray($$[0],o.$path)>-1);$$.hideSuperfishUl();if(o.$path.length&&$$.parents(['li.',o.hoverClass].join('')).length<1){over.call(o.$path)}},o.delay)
+                }
+            },getMenu=function($menu){var menu=$menu.parents(['ul.',c.menuClass,':first'].join(''))[0];sf.op=sf.o[menu.serial];return menu},addArrow=function($a){$a.addClass(c.anchorClass).prepend($arrow.clone())};return this.each(function(){var s=this.serial=sf.o.length;var o=$.extend({},sf.defaults,op);o.$path=$('li.'+o.pathClass,this).slice(0,o.pathLevels).each(function(){$(this).addClass([o.hoverClass,c.bcClass].join(' ')).filter('li:has(ul)').removeClass(o.pathClass)});sf.o[s]=sf.op=o;$('li:has(ul)',this)[($.fn.hoverIntent&&!o.disableHI)?'hoverIntent':'hover'](over,out).each(function(){if(o.autoArrows)addArrow($('>a:first-child',this))}).not('.'+c.bcClass).hideSuperfishUl();
+			$('li:has(ul)>a').click(function(event) {
+				if (($(this).parent().children('ul:first').is(":visible")) || ($(window).width() <= mobileBreakpoint)) {
+                    /* Just go to the link */
+					event.stopPropagation();
+				} else {
+                    /* Open menu, don't go to link */
+					overKeydown($(this).parent());
+					event.preventDefault();
+				}
+			});
+			$('li', this).on('keydown', keydownHandler);
+			/* http://stackoverflow.com/questions/12279113/recommended-wai-aria-implementation-for-navigation-bar-menu*/
+			//$(this).attr("role", "menubar");
+			//$('ul', this).attr("role","menu");
+			//$('li', this).attr("role","presentation");
+			//$('a', this).attr("role","menuitem");
+			var menuCount = 0;
+			$('li:has(ul) > a', this).each(function() {
+				$(this).attr("aria-haspopup","true");
+				$(this).attr("aria-controls","gov-submenu-" + menuCount);
+				$(this).attr("aria-expanded","false");
+
+				$(this).next('ul').attr("aria-expanded","false");
+				$(this).next('ul').attr("id", "gov-submenu-" + menuCount);
+
+				menuCount++;
+			});
+
+            $('.superfish li:has(ul) > a, .superfish>li:first-child a').each(function() {
+                $(this).after('<button class="menuToggleResponsive" data-open="no"><span></span></button>');
+
+            });
+            $('.menuToggleResponsive').click(function(event) {               
+                /* Open menu, don't go to link */
+                if ($(this).attr("data-open") == "no") {
+                    overKeydown($(this).parent());
+                } else {
+                    outKeydown($(this).parent());
+                }
+                event.preventDefault();
+            });
+
+            
+			o.onInit.call(this)}).each(function(){menuClasses=[c.menuClass];if(sf.op.dropShadows&&!($.browser.msie&&$.browser.version<7))menuClasses.push(c.shadowClass);$(this).addClass(menuClasses.join(' '))})};var sf=$.fn.superfish;sf.o=[];sf.op={};sf.IE7fix=function(){var o=sf.op;if($.browser.msie&&$.browser.version>6&&o.dropShadows&&o.animation.opacity!=undefined)this.toggleClass(sf.c.shadowClass+'-off')};sf.c={bcClass:'sf-breadcrumb',menuClass:'sf-js-enabled',anchorClass:'sf-with-ul',arrowClass:'sf-sub-indicator',shadowClass:'sf-shadow'};sf.defaults={hoverClass:'sfHover',pathClass:'overideThisToUse',pathLevels:1,delay:800,animation:{opacity:'show'},speed:'normal',autoArrows:true,dropShadows:true,disableHI:false,onInit:function(){},onBeforeShow:function(){},onShow:function(){},onHide:function(){}};$.fn.extend({
+			hideSuperfishUl:function(){
+				var o=sf.op,not=(o.retainPath===true)?o.$path:'';o.retainPath=false;var $ul=$(['li.',o.hoverClass].join(''),this).add(this).not(not).removeClass(o.hoverClass).find('>ul').hide().css('visibility','hidden');
+				$ul.attr("aria-expanded","false"); $ul.prev('a').attr("aria-expanded","false");
+                var b = $ul.prev('button')
+                b.attr("data-open","no");
+                //b.html("Expand menu");
+				o.onHide.call($ul);return this},
+			showSuperfishUl:function(){
+				var o=sf.op,sh=sf.c.shadowClass+'-off',$ul=this.addClass(o.hoverClass).find('>ul:hidden').css('visibility','visible');
+				$ul.attr("aria-expanded","true");$ul.prev('a').attr("aria-expanded","true");
+                var b = $ul.prev('button')
+                b.attr("data-open","yes");
+                //b.html("Collapse menu");
+				sf.IE7fix.call($ul);o.onBeforeShow.call($ul);$ul.animate(o.animation,o.speed,function(){sf.IE7fix.call($ul);o.onShow.call($ul)});return this}})})(jQuery);
+;
+
+/*** custom.js ***/
+
+jQuery(document).ready(function(){
+
+	if((jQuery('div#sedblod-content').length == 0))
+	{
+		jQuery('div.item-page div#article-index').after(jQuery('<div id="sedblod-content"></div>'));
+	}
+
+	// Switch ordering of navigation tabs
+	if((jQuery('div.rt-pagination ul li').length > 0))
+	{
+				jQuery('div.rt-pagination ul li.pagination-next').insertAfter(jQuery('div.rt-pagination ul li.pagination-end'));
+	}
+
+	if((jQuery('div.pagination ul li').length > 0))
+	{
+				jQuery('div.pagination ul li.pagination-next').insertAfter(jQuery('div.pagination ul li.pagination-end'));
+	}
+	if((jQuery('div.search_results ul li').length > 0))
+	{
+				jQuery('div.search_results ul li.pagination-next').insertAfter(jQuery('div.search_results ul li.pagination-end'));
+	}
+	// End Switch ordering of navigation tabs
+
+	if((jQuery('div.cck_art_fulltext').length > 0) && (jQuery('div#article-index').length > 0) && (jQuery('div.cck_art_introtext').length < 1))
+	{
+			//console.log('No introtext located');
+		jQuery('#sedblod-content').prepend(jQuery('div.cck_art_fulltext, div.cck_value_wysiwyg_editor'));
+	}
+	else{
+		if((jQuery('div.cck_art_introtext').length > 0) && (jQuery('div#article-index').length > 0))
+		{
+			//console.log('Introtext located');
+			jQuery('#sedblod-content').prepend(jQuery('div.cck_art_introtext, div.cck_art_fulltext, div.cck_value_wysiwyg_editor'));
+		}}
+	if ( jQuery( ".rt-list" ).length ){	
+		equalHeight(jQuery(".rt-list"));
+		equalHeight(jQuery(".rt-list2"));
+	}
+
+	jQuery(".twitterWidgetmodule-style-none").bind("DOMSubtreeModified", function() {
+		if ( jQuery( ".menu-home .media" ).length ){
+			bottom = jQuery(".menu-home .media").offset().top + jQuery(".menu-home .media").height();
+			jQuery(".module-style-none").height(bottom - jQuery(".module-style-none").offset().top/* + 25*/);
+			jQuery(".twitter-timeline").css({"height":parseInt(bottom - jQuery(".module-style-none").offset().top/* + 25*/)+"px"});
+		}
+	});	
+});
+
+function equalHeight(group) {
+	var tallest = 0;
+	group.each(function() {
+		var thisHeight = jQuery(this).height();
+		if(thisHeight > tallest) {
+			tallest = thisHeight;
+		}
+	});
+	group.height(tallest);
+}
+;
+
+/*** tableFSViewer.js ***/
+
+(function($) {
+	//Vision Australia accessible dialog box (vadialog.js)
+	//www.visionaustralia.org/digital-access-dialog
+//define global object
+if(!window.visionaustralia){
+	window.visionaustralia = {};
+}
+
+
+visionaustralia.addDialog = function (linkId, dialogId,fBeforeOpen,fForCloseButton){
+	
+	$(function(){
+        //adds onclick handler to the link. Used when the content is already
+		//event handlers are added inside this function, so scope is keept separate for each dialog box, YES.
+		if (!linkId) return; //add console.log mersssage. OR throw error.
+		if (!dialogId) return;
+	
+		//add event handler to link
+		var triggerLink = $("#" + linkId);
+		triggerLink.click(function(event) {
+			open(this,event);
+		});
+				
+		//gib z-index for shadow &  dialog box
+		var bigZ = 16123456;
+		//body children that we will add or change aria-hidden on
+		var bodyChildren = [];
+			
+		var heading;
+		
+		var startDialog;
+		
+		//outside of open function as they are used by close
+		var dialog;
+		var shadow;
+		var parent;
+		var isOpen = false;
+		var contentCopy;
+		var body = $("body");
+
+		function open(link, ev){
+		
+			if(isOpen){
+				startDialog.focus();
+				ev.preventDefault();
+				return;
+			}
+			
+			isOpen = true;
+			
+			if(fBeforeOpen && typeof fBeforeOpen == "function") fBeforeOpen();
+			
+            //Note: .after() returns the link JQuery object - NOT the elements inserted
+            
+            //create JQuery objects. #temporary_value_hack is to get the table styles to behave. 
+            shadow = $('<div class="vashadow"></div>');
+            dialog = $('<div class="vadialog" id="temporary_value_hack"></div>');
+            
+            var closeButton = $('<button class="vaCloseButton" type="button">Close</button>');
+			var startCentinel = $('<span class="vaOffscreen" tabindex="0"></span>');
+			startDialog = $('<a class="vaOffscreen" tabindex="-1">Dialog start</a>');
+			var endDialog = $('<span class="vaOffscreen" tabindex="-1">Dialog end</span>');
+			var endCentinel = $('<span class="vaOffscreen" tabindex="0"></span>');
+            var dialogContainer = $("<div></div>");
+			
+			startCentinel.focus(function() {
+				startDialog.focus();
+			});
+			
+			endCentinel.focus(function() {
+				endDialog.focus();
+			});
+
+			dialog.append(startCentinel);
+			dialog.append(startDialog);
+            dialogContainer.append(closeButton)
+            
+        	var content = $("#" + dialogId);
+  			
+			parent = content.parent();
+            
+            var contentToShow = content.clone(true);
+            //copy to re-insert after dialog box was closed
+            contentCopy = content.clone(true);
+            
+            content.remove();
+            
+            dialog.append(dialogContainer);
+            dialogContainer.append(contentToShow);
+            dialogContainer.css("max-width", contentToShow.find("table").css("max-width"));
+            
+            contentToShow.show();
+            
+            dialog.append(endDialog);
+			dialog.append(endCentinel);
+			
+			//add event handler to close button
+			closeButton.click(function(){if(fForCloseButton && typeof fForCloseButton == "function") fForCloseButton(); close();})
+            
+			var win = $(window);
+			
+			//Changed to use aria-live much of the above - how we build the dialog - stays the same
+			//insert in DOM - it made ALL the difference for JAWS 10 to have these two lines down here!!!!!!!
+			dialog.css("z-index",bigZ);
+			shadow.css("z-index",bigZ);
+			
+			//hide all top level elements & remember their aria-hidden status
+			body.children().each(function () {
+				var jQchild = $(this);
+				
+				var o = {};
+				o.jqel = jQchild;
+
+				if(jQchild.attr("aria-hidden") !== undefined){
+					o.hadVal = true;
+					o.originalVal = jQchild.attr("aria-hidden");
+				}else{
+					o.hadVal = false;
+				}
+				bodyChildren.push(o);
+				//hide the child
+				jQchild.attr("aria-hidden", "true");
+			});
+
+			body.append(shadow);
+			body.append(dialog);
+			body.addClass("unleashedHideBody");
+			
+            shadow.show();
+
+			dialog.show();
+			
+			startDialog.focus(); 
+
+			ev.preventDefault();
+
+			body.on('keydown', unleashedKeydownHandler);
+			
+        }//end open ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+		
+		function unleashedKeydownHandler(e) {
+			if (e.which == 27) {
+                close();
+            }
+		}
+		
+		function close(){
+			if(!isOpen)return;
+			isOpen = false;
+
+			for(var i=0, c; c=bodyChildren[i]; i++){
+				//if element originally had aria-hidden attribute, reinstate value
+				if(c.hadVal){
+					c.jqel.attr("aria-hidden",c.originalVal);
+				//if no original aria-hidden, remove the attribute entirely
+				}else{
+					c.jqel.removeAttr("aria-hidden");
+				}
+			}
+
+			dialog.remove();
+			shadow.remove();
+			parent.append(contentCopy);
+			body.removeClass("unleashedHideBody");
+			body.off('keydown');
+
+			triggerLink.focus();
+		}
+		
+		visionaustralia[dialogId] = {};
+		visionaustralia[dialogId].closeDialog = close;
+		
+	});//end jQUERY on page load
+
+}// end addDialog
+	
+
+visionaustralia.closeDialog = function (dialogId){
+	visionaustralia[dialogId].closeDialog();
+}
+
+
+
+
+	$(document).ready(function(){
+		var unleashCount = 0;
+		
+		$(".unleash").each(function() {
+			var caption = $(this.createCaption());
+			caption.html(caption.html()+"&nbsp;");
+
+			var myTable = $(this).clone();
+			myTable.removeClass("unleash");
+
+			var myOpener = $("<button type='button' class='unleashButton' id='unleashLink" + unleashCount + "'>View <span class='vaOffscreen'>next table </span>in fullscreen</button>");
+			myOpener.insertBefore($(this));
+
+			var dialog = $("<div id='unleashDialog" + unleashCount + "' style='display:none'></div>");
+			dialog.append(myTable);
+			//dialog.append($('<button type="button" class="unleashCloseButtonBottom" onclick="visionaustralia.closeDialog(\'unleashDialog' + unleashCount + '\');">Close</button>'));
+
+			$("body").append(dialog);	
+
+			visionaustralia.addDialog("unleashLink"+unleashCount, "unleashDialog"+unleashCount, function() {}, function() {}); 
+			unleashCount++;
+		})
+
+	});
+})(jQuery);
+;
+
+/*** oaic.js ***/
+
+(function($) {
+	/*
+	govWrapNumberedParagraphs: This styles numbered paragraphs to look like lists.
+		example: 1.1 Paragraph text
+		example: 1.1.1 Paragraph text
+		Won't apply to: 1. Paragraph text
+		Won't apply to: 1 Paragraph text
+	Any <p> that has a <div> for a parent will be marked as "gov-is-numbered-paragraph-part".
+	Put a <div class="gov-numbered-paragraphs"> around the appropriate sections.
+	*/
+	$.fn.govWrapNumberedParagraphs = function () { 
+	    var node = this.contents().filter(function () { return this.nodeType === 3 }).first(),
+	        text = node.text().replace(/^\s+/g, ""),
+	        first = text.split(" ", 1).join(" ");
+
+	    if (!node.length) 
+	        return;
+	    
+	    if ((first.split(".")[1] == undefined) || (first.split(".")[1].length < 1)) {
+	    	if (this.parent().is("div")) this.addClass("gov-is-numbered-paragraph-part");
+	        return;    
+	    }
+	    
+	    node[0].nodeValue = text.slice(first.length);
+	    node.before('<span>' + first + '</span> ');
+
+	    this.addClass("gov-is-numbered-paragraph");
+	};
+
+	$.fn.isOnScreen = function(){
+	    var element = this.get(0);
+	    var bounds = element.getBoundingClientRect();
+	    return bounds.top < window.innerHeight && bounds.bottom > 0;
+	}
+	/* Document ready */
+	$(document).ready(function(){		
+		/* Add ARIA landmarks */
+		$("#pagetop").attr("role", "banner");
+		$(".primary-menu, .primary-submenu, #accessibility-links").attr("role", "navigation");
+		$("#rt-mainbody").attr("role", "main");
+		$("div.search-form").attr("role", "search");
+		$("#footersection").attr("role", "contentinfo");		
+		
+		$(".primary-menu .module-title").attr("id","primary-menu-label");
+		$(".primary-menu").attr("aria-labelledby", "primary-menu-label");
+		$(".primary-submenu .module-title").attr("id","primary-submenu-label");
+		$(".primary-submenu").attr("aria-labelledby", "primary-submenu-label");
+		//$("#rt-sidebar-a").attr("role", "complementary"); //Not sure why, but submenu won't register with NVDA if complementary is on.
+
+		/* Add <wbr> after /._+?%& Aimed at long URLs. Note that <wbr> doesn't work in IE - had to fix with CSS. */
+		$(".gov-wrap-url, .deadlink").each(function() {
+			var text = $(this).text().replace(/(\/|\.|_|\+|\?|%|&)/g, "$1<wbr>");
+			$(this).html(text);
+		});
+		/* Check for numbered paragraphs */
+		$(".gov-numbered-paragraphs p").each(function() {
+		    $(this).govWrapNumberedParagraphs();
+		});
+		/* If a category table has 2 cols or more, add banding to increase readability */
+		/* Example page: Submissions: /engage-with-us/submissions/ */
+		$("table.category").each(function() { 
+			var tableRows = $(this).find("tr");
+			if (tableRows.first().children("td").length > 1) { 
+				$(this).addClass("gov-banded-table"); 
+			}
+			/* Add filter box. Thanks to @dfsq of SO: http://stackoverflow.com/a/9127872 and http://jsfiddle.net/dfsq/7BUmG/1133/ */
+			$(this).prev('fieldset').append('<div class="filter-option"><label for="gov-filter-input">Filter by: </label><input type="text" id="gov-filter-input" placeholder="Keyword"></div>');
+			var $rows = $('tr', this);
+			$('#gov-filter-input').keyup(function() {
+			    
+			    var val = '^(?=.*\\b' + $.trim($(this).val()).split(/\s+/).join('\\b)(?=.*\\b') + ').*$',
+			        reg = RegExp(val, 'i'),
+			        text;
+			    
+			    $rows.show().filter(function() {
+			        text = $(this).text().replace(/\s+/g, ' ');
+			        return !reg.test(text);
+			    }).hide();
+			});
+			//$(this).attr("id","pagelist");
+			$(this).before('<span class="offscreen"><a id="pagelist">List of results</a></span>');
+			/* If there's ten or less results, hide the Display # dropdown, it's pointless */
+			if ((tableRows.length <= 10) && ($(this).next().attr('class') != "pagination")) {
+				$("div.display-limit").hide();
+			}
+		});
+		/* Ensure the focus goes back to the category table when using pagination */
+		/* Example page: Submissions: /engage-with-us/submissions/ */		
+		/* Example page: Media releases /media-and-speeches/media-releases/ */
+		$("div.items-row").first().before('<span class="offscreen"><a id="pagelist">List of results</a></span>');
+		$("a.pagenav").each(function() {
+			$(this).attr("href", $(this).attr("href") + "#pagelist");
+		});
+		$("#adminForm").attr("action", $("#adminForm").attr("action") + "#pagelist")
+
+		/* Tab over Twitter widget, and get rid of rounded corners */
+		$(".twitterWidgetmodule-style-none").on("DOMSubtreeModified", function() {
+			if ($("#beforeTwitter").length) {} else {
+				$('<div class="gov-skip-twitter"><a href="#afterTwitter" id="beforeTwitter">Jump forward over Twitter widget</a></div>').insertBefore("iframe.twitter-timeline");
+			}
+			if ($("#afterTwitter").length) {} else {
+				$('<div class="gov-skip-twitter"><a href="#beforeTwitter" id="afterTwitter">Jump backwards over Twitter widget</a></div>').insertAfter("iframe.twitter-timeline");
+			}
+			$("iframe.twitter-timeline").contents().find('head').append('<style>.timeline {border-radius:0 !important} .timeline-footer {background-color:#EDECE7}</style>');
+		});	
+		
+
+        /* Try to fix List All Categories bug, eg, Privacy archive */
+        if ($(location).attr('href').substr(-4) == "all/") {
+        	if ($(".primary-submenu .current ul").length) {
+        		// If it has a submenu displayed that we can copy...
+        		if ($(".category-desc").next("ul").find("div.category-desc").length===0) {
+        			// If it's not displaying category descriptions...
+        			if ($(".category-desc").next("ul").children("li").length == $(".primary-submenu .current ul li").length) {
+        				// If the menu list is the same length as the body list, assume they're the same.
+        				// For eg, the FOI archive's categories don't have menu items.
+		        		$(".category-desc").next("ul").remove();
+		        		$(".category-desc").after($(".primary-submenu .current ul").clone());
+	        		}
+	        	}
+        	}
+        } 
+
+        /* Set localstorage re using Vision Australia Player */
+        if (!localStorage.getItem('useVAPlayer'))  localStorage.setItem('useVAPlayer',0);
+
+        /* Archive icon not accessible - make it obvious */
+        $('a[href*="webarchive.nla.gov.au/gov/20"]').append('<span class="hide"> (from the NLA web archive)</span>');
+
+        // Fix glitch in 404 page where "Home" breadcrumb shows twice.
+        $('.menu-404 .breadcrumbs ol li:last-child').remove();
+
+        /* Privacy complaint checker */
+        $(".start-hidden, .qexample").hide();
+        $("[data-show-hide]").click(function() {
+        	$("#" + $(this).data('show-hide')).slideToggle();
+        });
+
+        /* Responsive menu toggler */
+        $("#main-menu-toggle").click(function() {
+        	if ($("#headersection").is(":visible")) {
+        		$(".finder-wrapper,#headersection").removeClass('main-menu-open');
+        	} else {
+        		$(".finder-wrapper,#headersection").addClass('main-menu-open');
+        	}
+        	
+        });
+        
+        /* Wrap tables in scrollers on mobile */
+        $(".cck_value_wysiwyg_editor table").wrap('<div class="scroll-wrapper">');
+
+        $("#back-to-top-btn").click(function(e) {
+        	e.preventDefault();
+        	$("html,body").animate({
+                scrollTop: 0
+            }, 300);
+        })
+
+        /* Popup new windows - where <a rel="popup"> */
+        var newWin = null;
+    	$("a[rel=popup]").click(function(e) {
+    		if ($(this).attr("href").indexOf("mailto:") == -1) {
+    			e.stopPropagation();
+	    		e.preventDefault();
+	    		newWindow = window.open($(this).attr("href"), 'newWin', 'width=940,height=600,location=1,menubar=0,scrollbars=1,status=0,toolbar=0,resizable=1');
+	    		newWindow.focus();
+    		}    		
+    	});
+
+        /******************
+         *
+         * Soopafilta
+         *
+         ******************/
+
+        var soopafiltaKeywords;
+        var soopafiltaNumResults = 0;
+        var articlesLoadStarted = false;
+        var articlesArray = [];
+        var categoriesArray = [];
+        var soopafiltaResultsEl;
+        $("#mod-finder-searchword").attr("autocomplete","off");
+        $("#mod-finder-searchword").focus(function() {
+        	if (soopafiltaResultsEl==undefined) {
+        		soopafiltaResultsEl = $('<div id="soopafiltaResults" class="bubble"></div>');
+        		$("#mod-finder-searchword").parent().append(soopafiltaResultsEl);
+        		soopafiltaResultsEl.hide();
+        	}
+    		$("body").on('click','#soopafiltaCloseBtn', closeSoopafilta);
+			$("body").on('keydown', soopafiltaKeydownHandler);
+        });
+        $("#mod-finder-searchword").keyup(function() {
+        	soopafiltaKeywords = $.trim($(this).val());
+        	if (soopafiltaKeywords.length==0) {
+        		soopafiltaResultsEl.empty();
+        		soopafiltaResultsEl.hide();
+        	} else {
+        		if (articlesArray.length == 0) {
+	        		if (sessionStorage.getItem("articles")==undefined) {
+	        			//Get it from server
+	        			if (!articlesLoadStarted) {
+	        				articlesLoadStarted = true;
+	        				$.getJSON("/resources/soopafilta.txt", {_: new Date().getTime()}).done(function( json ) {
+	        					// Drop any array element that looks dodge
+	        					var urlRegExp = RegExp(/[><;'"\\]/g);
+	        					var titleRegExp = RegExp(/[><"\\]/g);
+	        					var ar = $.grep(json.articlesArray,function(item) {
+	        						var urlOK = !item.u.match(urlRegExp);
+	        						var titleOK = !item.t.match(titleRegExp);
+	        						return urlOK && titleOK;
+	        					});
+	        					var ca = $.grep(json.categoriesArray,function(item) {
+	        						var urlOK = !item.u.match(urlRegExp);
+	        						var titleOK = !item.t.match(titleRegExp);
+	        						return urlOK && titleOK;
+	        					});
+	        			        sessionStorage.setItem("articles", escapeHtml(JSON.stringify(ar)));
+	        			        sessionStorage.setItem("categories", escapeHtml(JSON.stringify(ca)));
+	        					articlesArray = JSON.parse(sessionStorage.getItem("articles"));
+	        					categoriesArray = JSON.parse(sessionStorage.getItem("categories"));
+	        			    	soopafiltaResults()
+	        				})
+	        				  .fail(function( jqxhr, textStatus, error ) {
+	        				    var err = textStatus + ", " + error;
+	        				    console.log( "Request Failed: " + err );
+	        				});
+	        			}
+	        		} else {
+	        			articlesArray = JSON.parse(sessionStorage.getItem("articles"));
+	        			categoriesArray = JSON.parse(sessionStorage.getItem("categories"));
+	        			soopafiltaResults();
+	        		}
+	        	} else soopafiltaResults();
+        	}	
+        });
+
+
+        // Use the browser's built-in functionality to quickly and safely escape
+        // the string. http://shebang.brandonmintern.com/foolproof-html-escaping-in-javascript/
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        function soopafiltaResults() {
+        	var val = '^(?=.*\\b' + soopafiltaKeywords.split(/\s+/).join('\\b)(?=.*\\b') + ').*$',
+        	reg = RegExp(val, 'i');
+        	result = $.grep(articlesArray, function(s) { 
+        		return s.t.match(reg) 
+        	});
+        	
+        	soopafiltaNumResults = result.length;
+        	soopafiltaDisplay(result);
+        }
+        function closeSoopafilta() {
+    		soopafiltaResultsEl.hide();
+    		soopafiltaResultsEl.empty();
+    		$("#mod-finder-searchword").next().focus();
+    		$("body").off('click');
+			$("body").off('keydown');
+    		return false;        	
+        }        		
+		function soopafiltaKeydownHandler(e) {
+			if (e.which == 27) {
+                closeSoopafilta();
+            }
+		}
+        function soopafiltaDisplay(arr) {
+        	var plural = (soopafiltaNumResults == 1) ? '' : 's';
+        	var ender = (soopafiltaNumResults == 0) ? '.' : ':';
+        	var ret='';
+        	ret += '<button class="bubble-close" type="button" aria-label="Close" id="soopafiltaCloseBtn"><span class="vaOffscreen">Close</span></button>';
+        	ret += '<div class="soopafiltaTitle">' + soopafiltaNumResults + ' suggested page' + plural + ender + '</div>';
+        	ret += '<div id="soopafiltaScroll">';
+        	var len = arr.length;//(arr.length > 9) ? 10 : arr.length;
+        	for (var i=0; i<len; i++) {
+        		var cat = soopafiltaGetCat(arr[i].u);
+        		ret += '<div><a href="' + arr[i].u + '" onclick="ga(\'send\', \'event\', \'soopafilta\', \'' + arr[i].u + '\', \'' + $("#mod-finder-searchword").val() + '\');_paq.push([\'trackEvent\', \'soopafilta\', \'' + arr[i].u + '\', \'' + $("#mod-finder-searchword").val() + '\']);">' + arr[i].t + '<br><span>' + cat + '</span></a></div>';
+        	}                                                    
+        	ret += '</div>';
+        	ret += '<div><button type="submit" class="bootstrap-btn">Search within all pages</button></div>';
+        	soopafiltaResultsEl.html(ret);
+        	soopafiltaResultsEl.fadeIn();
+        }
+        function soopafiltaGetCat(str) {
+        	var parent = "";
+        	var pieces = str.split("/");
+        	if (str.slice(-1)=="/") {
+        		parent = pieces.splice(0,pieces.length-2).join("/") + "/"
+        	} else {
+        		parent = pieces.splice(0,pieces.length-1).join("/") + "/"
+        	}
+
+        	var title = "";    
+        	for (var i = 0; i < categoriesArray.length; i++) {
+        	    if (categoriesArray[i].u == parent) {
+        	        title = categoriesArray[i].t;
+        	        break;
+        	    }
+        	}
+        	return title;
+        }
+
+
+		/******************
+		 *
+		 * Concertina TOCs
+		 *
+		 ******************/
+		var secondLevel = $("#toc ol ol");
+		var idcount = 0;
+		function doMenuAction(toggler, action) {
+			var myMenu = $('#'+toggler.attr('aria-controls'));
+			if (action == 'expand') {
+				$('img',toggler).attr({
+					'src':'/templates/energetica/images/icons/icon-collapse.svg',
+					'alt': 'Collapse menu'
+				});
+				toggler.attr("aria-expanded", true);
+				myMenu.attr("aria-expanded", true);
+				myMenu.slideDown(200);
+			} else if (action == 'collapse') {
+				$('img',toggler).attr({
+					'src':'/templates/energetica/images/icons/icon-expand.svg',
+					'alt': 'Expand menu'
+				});
+				toggler.attr("aria-expanded", false);
+				myMenu.attr("aria-expanded", false);
+				myMenu.slideUp(200);
+			}
+		}
+		if (secondLevel.length) {
+			preload = $('<div class="offscreen"><img src="/templates/energetica/images/icons/icon-collapse.svg" alt=""><div>');
+			$('body').append(preload);
+			$("#toc ol").css("margin-left","24px");
+			secondLevel.hide();
+			secondLevel.each(function () {
+				$(this).attr('id','toc-menu-' + idcount);
+				$(this).attr('aria-expanded',false);
+				$(this).before('<button type="button" class="toggler" aria-haspopup="true" aria-expanded="false" aria-controls="'+'toc-menu-' + idcount+'"><img src="/templates/energetica/images/icons/icon-expand.svg" width="14" height="14" alt="Expand menu"></button> ');
+				idcount++;
+			});
+			var togglers = $(".toggler");
+			togglers.click(function (e) {		
+				var action = ($(this).attr("aria-expanded") == 'false' ? 'expand' : 'collapse')
+				doMenuAction($(this),action);
+			});
+			$("#toc h2").after('<div id="toc-show-all"><button type="button">Expand all</button></div>');
+			$("#toc-show-all button").click(function() {
+				if ($(this).text() == "Expand all") {
+					$(".toggler").next("ol:hidden").each(function(){doMenuAction($(this).prev(),'expand')})
+					$(this).text("Collapse all");
+				} else {
+					$(".toggler").next("ol:visible").each(function(){doMenuAction($(this).prev(),'collapse')})
+					$(this).text("Expand all");
+				}
+			});
+		}
+
+		/* * * * * * *
+		 *
+		 * fancyfootnote 
+		 *
+		 * * * * * * */
+		var fancyfootnoteZ = 424242;
+		$('a[href^=#ftn],a[href^=#_ftn]').each(function() {
+			if (!$(this).attr("id")) {
+				$(this).attr("id",$(this).attr("name"));
+			}
+			$(this).attr("aria-label","Footnote " + $(this).text());
+		});
+		$('a[href^=#ftn],a[href^=#_ftn]').click(function(e){
+			var hash = this.hash.substr(1);
+			if (hash.indexOf("ref") != -1) return;
+
+			e.preventDefault();
+			
+			if ($(this).attr("data-fancyfootnote-open") == "1") {
+				closeFootnote($("#fancyfootnote-"+ $(this).attr('id')));
+				return;
+			}
+
+			var closeButton = $('<button type="button" aria-label="Close"><span class="vaOffscreen">Close</span></button>');
+			var footnote = $('<span style="left:0" id="fancyfootnote-'+ $(this).attr('id') +'" class="fancyfootnote" data-trigger="'+ $(this).attr('id') +'"></span>');
+			
+			var startFootnote = $('<a class="vaOffscreen" tabindex="-1">Footnote start</a>');
+			var endFootnote = $('<span class="vaOffscreen" tabindex="-1">Footnote end</span>');
+
+			// Determine what to clone - check if there's a surrounding div grouping the different elements of the footnote.
+			var clone;
+			if ($("#"+hash).parent().parent().is("div") && $("#"+hash).parent().index() == 0) {
+				clone = $("#"+hash).parent().parent().clone();
+			} else {
+				clone = $("#"+hash).parent().clone();
+			}
+			clone.find("a:first").remove();
+
+			footnote.append(startFootnote);
+			footnote.append(clone);
+			footnote.append(closeButton);
+			footnote.append(endFootnote);
+			footnote.insertAfter($(this));
+
+			$(this).attr("data-fancyfootnote-open",1);
+
+			var boxWidth = footnote.outerWidth();
+			var gutter = 10;
+			var positionTop = $(this).position().top + 25;
+			var containerWidth = 700;
+			var positionLeft = $(this).position().left - (boxWidth/2);
+			if (positionLeft < 0) positionLeft = 0;
+			if (positionLeft + boxWidth + gutter > containerWidth) positionLeft = containerWidth - boxWidth - gutter;
+
+			footnote.css({
+				top: positionTop,
+				left: positionLeft,
+				'z-index': fancyfootnoteZ
+			})	
+			fancyfootnoteZ++;
+
+			if(!footnote.isOnScreen()) {
+				positionTop = $(this).position().top - 5 - footnote.outerHeight();
+				footnote.css({
+					top: positionTop
+				});
+			}
+
+			function closeFootnote(footnoteEl) {
+				var trigger = footnoteEl.attr("data-trigger");
+				footnoteEl.remove(); 
+				$("#" + trigger).focus();
+				$("#" + trigger).attr("data-fancyfootnote-open",0);
+			}
+
+			closeButton.click(function() {
+				closeFootnote($(this).parent());
+			});
+
+			startFootnote.focus(); 
+		});
+
+  		// From WebAIM with thanks.
+  		// If there is a '#' in the URL (someone linking directly to a page with an anchor), highlight that section and set focus to it.
+		// The tabindex attribute is removed AFTER the user navigates away from the element to help address a nasty VoiceOver bug.		
+		if (document.location.hash) {
+			var myAnchor = document.location.hash;
+			$(myAnchor).attr('tabindex', -1).on('blur focusout', function () {
+				$(this).removeAttr('tabindex');
+			}).focus();
+		}
+		// Make empty anchors able to be landed on in IE
+		$("a:not([href])").attr('tabindex', -1);
+		// From WebAIM with thanks.
+		/* This function looks for a change in the hash (activation of an in-page link) and sets focus to and 
+		highlights the target element. This is necessary because webkit does not set focus as it should. If 
+		the hash is empty (the user hit the back button after activating an in-page link) focus is set to body.
+		*/
+		$(window).bind('hashchange', function() {
+			var hash = "#"+window.location.hash.replace(/^#/,'');
+			if (hash!="#") {
+				$(hash).attr('tabindex', -1).on('blur focusout', function () {
+					$(this).removeAttr('tabindex');
+				}).focus();
+				$(hash).focus();
+			}
+			else {
+				$("#focustop").attr('tabindex', -1).on('blur focusout', function () {
+					$(this).removeAttr('tabindex');
+				}).focus();
+			}
+		});		
+		/* End*/ 
+		/* GA track downloads. Thanks: http://www.blastam.com/blog/index.php/2013/09/howto-track-downloads-links-universalanalytics */
+		if (typeof jQuery != 'undefined') {
+			var filetypes = /\.(zip|exe|dmg|pdf|doc.*|xls.*|ppt.*|mp3|mp4|txt|rar|wma|mov|avi|wmv|flv|wav)$/i;
+			var baseHref = '';
+			if (jQuery('base').attr('href') != undefined) baseHref = jQuery('base').attr('href');
+			var hrefRedirect = '';
+
+			jQuery('body').on('click', 'a', function(event) {
+				var el = jQuery(this);
+				var track = true;
+				var href = (typeof(el.attr('href')) != 'undefined' ) ? el.attr('href') : '';
+				var isThisDomain = href.match(document.domain.split('.').reverse()[1] + '.' + document.domain.split('.').reverse()[0]);
+				if (!href.match(/^javascript:/i)) {
+					var elEv = []; elEv.value=0, elEv.non_i=false;
+					if (href.match(/^mailto\:/i)) {
+						elEv.category = 'email';
+						elEv.action = 'click';
+						elEv.label = href.replace(/^mailto\:/i, '');
+						elEv.loc = href;
+					}
+					else if (href.match(filetypes)) {
+						var extension = (/[.]/.exec(href)) ? /[^.]+$/.exec(href) : undefined;
+						elEv.category = 'download';
+						elEv.action = 'click-' + extension[0];
+						elEv.label = href.replace(/ /g,'-');
+						elEv.loc = baseHref + href;
+					}
+					else if (href.match(/^https?\:/i) && !isThisDomain) {
+						elEv.category = 'external';
+						elEv.action = 'click';
+						elEv.label = href.replace(/^https?\:\/\//i, '');
+						elEv.non_i = true;
+						elEv.loc = href;
+					}
+					else if (href.match(/^tel\:/i)) {
+						elEv.category = 'telephone';
+						elEv.action = 'click';
+						elEv.label = href.replace(/^tel\:/i, '');
+						elEv.loc = href;
+					}
+					else track = false;
+
+					if (track) {
+						var ret = true;
+
+						if((elEv.category == 'external' || elEv.category == 'download') && (el.attr('target') == undefined || el.attr('target').toLowerCase() != '_blank') ) {
+							hrefRedirect = elEv.loc;
+
+							ga('send','event', elEv.category.toLowerCase(),elEv.action.toLowerCase(),elEv.label.toLowerCase(),elEv.value,{
+								'nonInteraction': elEv.non_i ,
+								'hitCallback':gaHitCallbackHandler
+							});
+
+							ret = false;
+						}
+						else {
+							ga('send','event', elEv.category.toLowerCase(),elEv.action.toLowerCase(),elEv.label.toLowerCase(),elEv.value,{
+								'nonInteraction': elEv.non_i
+							});
+						}
+
+						return ret;
+					}
+				}
+			});
+
+			gaHitCallbackHandler = function() {
+				window.location.href = hrefRedirect;
+			}
+		}
+	});
+})(jQuery);
+;

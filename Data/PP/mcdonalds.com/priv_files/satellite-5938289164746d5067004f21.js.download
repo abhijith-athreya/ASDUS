@@ -1,0 +1,27 @@
+_satellite.pushAsyncScript(function(event, target, $variables){
+  var lnkName = "", linkTgt = "", mch;
+
+$('ul#mb1 > li:nth-child(6) a').on('click',function(){
+  lnkName = $(this).attr("data-at");
+  linkTgt = $(this).attr("href");
+  new Image().src = "https://pulse.mcdonalds.com/no-content?event=siteinteraction&ch=onsite&url=" + encodeURIComponent(document.location.href) + "&spg=" + encodeURIComponent(_satellite.getVar('pageNameDE')) + "&sch=" + encodeURIComponent(_satellite.getVar('channelDE')) + "&tar_url=" + "/content/us/en-us/mcdonalds-app.html" + "&lk_nm=" + lnkName + "&evnt_nm=mcNugget&rnd=" + new Date().getTime();
+});
+
+$('ul#mb1 > li:nth-child(6) > ul > li ul > li:nth-child(3) a').on('click',function(){
+   	lnkName = $(this).attr("data-at");
+	linkTgt = $(this).attr("href");
+	new Image().src = "https://pulse.mcdonalds.com/no-content?event=siteinteraction&ch=onsite&url=" + encodeURIComponent(document.location.href) + "&spg=" + encodeURIComponent(_satellite.getVar('pageNameDE')) + "&sch=" + encodeURIComponent(_satellite.getVar('channelDE')) + "&tar_url=" + linkTgt + "&lk_nm=" + lnkName + "&evnt_nm=mcNugget&rnd=" + new Date().getTime();
+});
+
+$('div#homeCarouselComponent > ul > li:nth-child(2) p a').on('click',function(){
+	lnkName = $(this).attr("data-at");
+	linkTgt = $(this).attr("href");
+	new Image().src = "https://pulse.mcdonalds.com/no-content?event=siteinteraction&ch=onsite&url=" + encodeURIComponent(document.location.href) + "&spg=" + encodeURIComponent(_satellite.getVar('pageNameDE')) + "&sch=" + encodeURIComponent(_satellite.getVar('channelDE')) + "&tar_url=" + linkTgt + "&lk_nm=" + lnkName + "&evnt_nm=mcNugget&rnd=" + new Date().getTime();
+});
+
+var mcNuggetPage = document.location.href;
+mch = mcNuggetPage.match(/chicken-mcnuggets-4-piece.html/g);
+if(mch != null){
+	new Image().src = "https://pulse.mcdonalds.com/no-content?event=sitepageview&ch=onsite&url=" + encodeURIComponent(document.location.href) + "&spg=" + encodeURIComponent(_satellite.getVar('pageNameDE')) + "&sch=" + encodeURIComponent(_satellite.getVar('channelDE')) +"|mcNugget"+ "&rnd=" + new Date().getTime();
+}
+});

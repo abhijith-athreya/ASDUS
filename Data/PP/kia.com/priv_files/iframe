@@ -1,0 +1,247 @@
+/* eslint-disable */
+
+// IMPORTANT: This script should be placed at the end of the document body as it needs access to the DOM.
+// NOTE: Uses an immediately invoked function to avoid messing with the vendor scope.
+
+(function (){
+
+  var chrome   = navigator.userAgent.indexOf('Chrome') > -1;
+  var safari   = navigator.userAgent.indexOf('Safari') > -1;
+  // the chrome user agent contains "Safari" too
+  if (chrome && safari) safari = false;
+
+  var botUrl = 'https://live.kia.carlabs.com/';
+
+  var head = document.head,
+    link = document.createElement('link');
+  link.type = 'text/css';
+  link.rel = 'stylesheet';
+  link.href = botUrl.replace(/\/$/, '') + '/css/iframe.css';
+  head.appendChild(link);
+
+  var smallScreen = document.documentElement.clientWidth <= 768;
+
+  var KIAN_CHAT_STATE_KEY = '__kian_chat_state';
+  var CHAT_STATE_OPEN = 'open';
+  var CHAT_STATE_COLLAPSED = 'collapsed';
+  var CHAT_STATE_HIDDEN = 'hidden';
+
+  // those are handlebars placeholders parsed on hapi route handlers
+  var initialState = '';
+  var placement = '';
+  var offset = '';
+  var width = '';
+  var height = '';
+
+  // validate initial state
+  if (initialState === '' ||
+    (initialState !== CHAT_STATE_OPEN && initialState !== CHAT_STATE_COLLAPSED && initialState !== CHAT_STATE_HIDDEN)) {
+    initialState = CHAT_STATE_COLLAPSED;
+  }
+
+  // defaults
+  var CHAT_CONTAINER_DEFAULT_WIDTH = 400;
+  var CHAT_CONTAINER_DEFAULT_HEIGHT = 500;
+  var CHAT_CONTAINER_DEFAULT_OFFSET = 10;
+
+  // height values
+  var CHAT_CONTAINER_HEIGHT_VISIBLE = (height === ''|| isNaN(height))
+    ? CHAT_CONTAINER_DEFAULT_HEIGHT
+    : parseInt(height);
+  var CHAT_CONTAINER_HEIGHT_COLLAPSED = 40;
+  var CHAT_CONTAINER_HEIGHT_HIDDEN = 0;
+
+  var formatUnitValue = function (value) {
+    var unit = 'px';
+    return value + unit;
+  };
+  var setChatState = function(state) {
+    if (localStorage) {
+      localStorage.setItem(KIAN_CHAT_STATE_KEY, state);
+    }
+  };
+  var getChatState = function(initialState) {
+    if (initialState === CHAT_STATE_HIDDEN) {
+      return initialState;
+    }
+    if (smallScreen) {
+      return CHAT_STATE_COLLAPSED;
+    }
+    if (localStorage) {
+      return localStorage.getItem(KIAN_CHAT_STATE_KEY) || initialState;
+    }
+    return initialState;
+  };
+  var getChatHeight = function (state) {
+    var result;
+    switch (state) {
+      case CHAT_STATE_OPEN:
+        result = CHAT_CONTAINER_HEIGHT_VISIBLE;
+        break;
+      case CHAT_STATE_COLLAPSED:
+        result = CHAT_CONTAINER_HEIGHT_COLLAPSED;
+        break;
+      case CHAT_STATE_HIDDEN:
+        result = CHAT_CONTAINER_HEIGHT_HIDDEN;
+        break;
+      default:
+        result = CHAT_CONTAINER_HEIGHT_VISIBLE;
+        break;
+    }
+    return formatUnitValue(result);
+  };
+  var getChatWidth = function (width) {
+    if (width === ''|| isNaN(width)) {
+      width = CHAT_CONTAINER_DEFAULT_WIDTH;
+    }
+    return formatUnitValue(width);
+  };
+  var getChatWindowPlacement =  function (placement, offset) {
+    if (offset === ''|| isNaN(offset)) {
+      offset = CHAT_CONTAINER_DEFAULT_OFFSET;
+    }
+    if (placement === 'right') {
+      return 'right:' + formatUnitValue(offset);
+    }
+    return 'left:' + formatUnitValue(offset);
+  };
+
+  var state = getChatState(initialState);
+
+  /*******************************************************************
+  //// Create the HTML elements
+  *******************************************************************/
+  var chatIframe = document.createElement('iframe');
+  chatIframe.frameborder = 0;
+  chatIframe.src = botUrl;
+  chatIframe.className = '__carla-iframe';
+  chatIframeStyle = [
+    'height: ' + formatUnitValue(CHAT_CONTAINER_HEIGHT_VISIBLE - CHAT_CONTAINER_HEIGHT_COLLAPSED),
+  ].join(';');
+  chatIframe.setAttribute('style', chatIframeStyle);
+
+  var chatContainer = document.createElement('div');
+  chatContainer.className = '__carla-chat-container';
+  var chatContainerStyle = [
+   'display: ' + (state === CHAT_STATE_OPEN ? 'block' : 'none'),
+   getChatWindowPlacement(placement, offset),
+   'width: ' + getChatWidth(width),
+   'height: ' + getChatHeight(state),
+  ].join(';');
+  chatContainer.setAttribute('style', chatContainerStyle);
+
+  var chatHeader = document.createElement('div');
+  chatHeader.className = '__carla-chat-header';
+  chatHeader.innerText = 'Chat with Kian';
+  chatHeaderStyle = [
+    'height: ' + getChatHeight(CHAT_STATE_COLLAPSED),
+  ].join(';');
+  chatHeader.setAttribute('style', chatHeaderStyle);
+
+  // originally the close button was designed using a css pseudo element (:before)
+  // this is a translation using only html/js
+  var minimizeButton = document.createElement('div');
+  minimizeButton.className = 'minimize-button';
+  chatHeader.appendChild(minimizeButton);
+
+  // floating widget that calls the actual chat window
+  var chatWidget = document.createElement('div');
+  chatWidget.className = '__carla-chat-teaser';
+  chatWidgetStyle = [
+    'display: ' + (state === CHAT_STATE_OPEN ? 'none' : 'block'),
+    getChatWindowPlacement(placement, offset),
+  ].join(';');
+  chatWidget.setAttribute('style', chatWidgetStyle);
+
+  var chatWidgetBubble = document.createElement('div');
+  chatWidgetBubble.className = 'bubble';
+  chatWidgetBubble.innerText = 'Let\'s chat!';
+  chatWidget.appendChild(chatWidgetBubble);
+
+  chatContainer.appendChild(chatHeader);
+  if (state === CHAT_STATE_OPEN) {
+    chatContainer.appendChild(chatIframe);
+  }
+
+  var chatWidgetAnchor;
+  // safari does not allow us to set cookie inside of a iframe :(
+  // then aws cookie for session stickyness won't work
+  // workaround to open a new window
+  if (safari) {
+    chatWidgetAnchor = document.createElement('a');
+    chatWidgetAnchor.setAttribute('href', botUrl);
+    chatWidgetAnchor.setAttribute('target', '_blank');
+    chatWidgetAnchor.appendChild(chatWidget);
+  }
+
+  /*******************************************************************
+  //// Define event handlers and related functions
+  *******************************************************************/
+  var closeChat = window.__closeKianChat = function() {
+    chatContainer.style.height = getChatHeight(CHAT_STATE_COLLAPSED);
+    setChatState(CHAT_STATE_COLLAPSED);
+    chatWidget.style.display = 'block';
+    chatContainer.style.display = 'none';
+  };
+
+  var openChat = window.__openKianChat = function() {
+    if (smallScreen) {
+      window.open(botUrl);
+      return;
+    }
+    if (safari) {
+      return;
+    }
+    if (!chatContainer.contains(chatIframe)) {
+      chatContainer.appendChild(chatIframe);
+    }
+    chatWidget.style.display = 'none';
+    chatContainer.style.display = 'block';
+    chatContainer.style.height = getChatHeight(CHAT_STATE_OPEN);
+    setChatState(CHAT_STATE_OPEN);
+  };
+
+  var removeChatFromDOM = window.__removeKianChat = function() {
+    setChatState(CHAT_STATE_COLLAPSED);
+    document.body.removeChild(chatContainer);
+  };
+
+  var chatHeaderClickEventHandler = function() {
+    var currentState = getChatState();
+    if (currentState === CHAT_STATE_OPEN) {
+      closeChat();
+    } else {
+      openChat();
+    }
+  };
+
+  var chatWidgetClickHandler = function() {
+    if (smallScreen) {
+      window.open(botUrl);
+    } else {
+      openChat();
+    }
+  };
+
+  /*******************************************************************
+  //// Attach event handlers to elements
+  *******************************************************************/
+  chatHeader.addEventListener('click', chatHeaderClickEventHandler);
+  chatWidget.addEventListener('click', chatWidgetClickHandler);
+  // when ready attach the chat container to the document body
+  document.onreadystatechange = function() {
+    if (document.readyState === 'complete') {
+      if (!smallScreen) {
+        document.body.appendChild(chatContainer);
+      }
+      if (state !== CHAT_STATE_HIDDEN) {
+        if (safari) {
+          document.body.appendChild(chatWidgetAnchor);
+        } else {
+          document.body.appendChild(chatWidget);
+        }
+      }
+    }
+  };
+})();
+

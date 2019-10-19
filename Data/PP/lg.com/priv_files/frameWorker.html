@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!-- saved from url=(0086)http://gateway.foresee.com/sites/lge-com/production/trigger/frameWorker.html?v=7b0qpsv -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script type="text/javascript">
+        ;
+        (function (g) {
+            var ft = "foresee_frame_controller.js";
+
+            function getParameterByName(name) {
+                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                        results = regex.exec(location.search);
+                return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            };
+
+            var qp = getParameterByName("v");
+
+            var acsMakeURI = function (o) {
+                if (qp) {
+                    return (o + "?v=" + qp);
+                } else {
+                    return o;
+                }
+            };
+
+            if (qp) {
+                ft = acsMakeURI(ft);
+            }
+
+            var addTag = function (aex, stag, t) {
+                var d = document, i, am = d.createElement(stag);
+                for (var attr in aex) {
+                    am[attr] = aex[attr];
+                }
+                t.appendChild(am);
+            };
+
+            addTag({
+                "src": ft,
+                "type": "text/javascript",
+                "async": "true"
+            }, "script", g.document.head || g.document.getElementsByTagName("head")[0]);
+
+        })(window);
+
+    </script><script src="./foresee_frame_controller.js.download" type="text/javascript" async=""></script></head><body></body></html>

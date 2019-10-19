@@ -1,0 +1,355 @@
+$(function() {
+
+	var data = {};
+	var date = new Date();
+	console.log(date);
+	var date_string = WeekNumToName(date.getDay()) + ' ' + MonthsFullNameZed(date.getMonth()) + ' ' + date.getDate() + ', ' + date.getFullYear();
+
+	//temp
+	data['date'] = [];
+	data['date'] = [date_string];
+	data['beta'] = "";
+	var urlPath = window.location.pathname;
+	if (urlPath === "/") {
+		data['beta'] = "BETA";
+	}
+	if (urlPath.indexOf("/article") > -1) {
+		data['beta'] = "BETA";
+	}
+	if (urlPath.indexOf("/section/news") > -1) {
+		data['beta'] = "BETA";
+	}
+	var header_source = $("#header-template").html();
+	var header_template = Handlebars.compile(header_source);
+	$("#header").html(header_template(data));
+
+	function setupLevels(data, level) {
+    data.level = level;
+    data.listClass = (level === 0) ? "nav-root" : "nav-child";
+    data.hidden = (level !== 0);
+		for ( var i in data.children ) {
+			var item = data.children[i];
+			setupLevels(item, level+1);
+		}
+	}
+
+  //Getting the navigation data
+	var navData = NavigationDataHandler();
+	setupLevels(navData.company, 0);
+
+  //Registering helper to create the nested url
+	Handlebars.registerHelper("nested-url", function(object) {
+		var url = Handlebars.Utils.escapeExpression(object.url);
+		var text = Handlebars.Utils.escapeExpression(object.text);
+		var leftPadding = 10 + (20 * object.level);
+		var style = "padding-left: " + leftPadding + "px;";
+		if ( object.children && object.children.length > 0 ) {
+      var childList = "nav-nested-level-" + (object.level);
+      //<i class='fa fa-plus'></i>
+			var toggleBtn = "<span class='nav-nested-list-toggle-btn nav-nested-list-toggle-plus'>&nbsp;</span>";
+      return new Handlebars.SafeString(
+        "<span class='nav-nested-list-toggle' style='" + style + "' aria-controls='" + childList + "'>" + text + toggleBtn + "</span>"
+      );
+		}
+		return new Handlebars.SafeString(
+			"<a href='" + url + "' style='" + style + "'>" + text + "</a>"
+		);
+	});
+
+  //Creating and setting up the templates for the navigation
+	var navigation_source = $("#navigation-template").html();
+	var nested_navigation_source = $("#nested-navigation-template").html();
+	var navigation_template = Handlebars.compile(navigation_source);
+	Handlebars.registerPartial("nested-navigation-template", nested_navigation_source);
+	$(".header-hamburger").html(navigation_template(navData));
+
+	//HANDLE CLICK OF HAMBURGER MENU
+	$('.header-container-menu').click(function(){
+    var icon = $(this).find("i.fa");
+    if ( icon.hasClass("fa-close") ) {
+      icon.attr("class", "fa fa-bars");
+      $('#header-hamburger').stop().slideUp();
+      closeChildren($(".nav-nested-list")[0]);
+    }
+    else {
+      icon.attr("class", "fa fa-close");
+      $('#header-hamburger').stop().slideDown();
+
+
+			setTimeout(function(){
+				$('html').click(function(event){
+					if(!$(event.target).closest('#header-hamburger').length){
+						//Reset menu icon and slide up menu
+						$('.header-container-menu-text > i').attr('class', 'fa fa-bars');
+						$('#header-hamburger').stop().slideUp();
+						$('html').unbind('click');
+					}
+				});
+			}, 1);
+    }
+	});
+
+  //HANDLE HOVERS
+  function triggerHoverIn(element, selector) { //handlerIn
+    var firstItem = $(element).parent().find(selector)[0];
+    if ( firstItem ) {
+      $(firstItem).addClass("hover");
+    }
+  }
+
+  function triggerHoverOut(element, selector) { //handlerIn
+    var firstItem = $(element).parent().find(selector)[0];
+    if ( firstItem ) {
+      $(firstItem).removeClass("hover");
+    }
+  }
+
+  $('.nav-nested-list-item > .nav-nested-list-toggle').hover(
+    function() { triggerHoverIn(this, ".nav-nested-list-toggle-btn"); },
+    function() { triggerHoverOut(this, ".nav-nested-list-toggle-btn"); }
+  );
+
+  //HANDLE HOVER OF MENU BUTTON
+  $('.nav-nested-list-item > .nav-nested-list-toggle-btn').hover(
+    function() { triggerHoverIn(this, "> .nav-nested-list-toggle"); },
+    function() { triggerHoverOut(this, "> .nav-nested-list-toggle"); }
+  );
+
+  //HANDLE CLICK ON MENU ITEM
+  function closeChildren(list) {
+    var subLists = $(list).find(".nav-nested-list");
+    var subToggles = $(list).find(".nav-nested-list-toggle-btn");
+    subToggles.addClass("nav-nested-list-toggle-plus");
+    subToggles.removeClass("nav-nested-list-toggle-close");
+    subLists.stop().slideUp();
+  }
+
+  $('.nav-nested-list-toggle').click(function(event) {
+    // var icon = $(this).find("img");
+    var btn = $(this).find(".nav-nested-list-toggle-btn");
+    var list = $(this).parent().find("." + $(this).attr("aria-controls"));
+    var isHidden = list.attr("aria-hidden") == "true";
+    if ( isHidden ) {
+      list.attr("aria-hidden", false);
+      btn.addClass("nav-nested-list-toggle-close");
+      btn.removeClass("nav-nested-list-toggle-plus");
+      list.stop().slideDown();
+    }
+    else {
+      list.attr("aria-hidden", true);
+      closeChildren($(this).parent());
+    }
+  });
+});
+
+NavigationDataHandler = function() {
+	return {
+		topics: [
+			{
+        text: "home",
+        url: "/"
+      },
+      {
+        text: "news",
+        url: "/section/news"
+      },
+      {
+        text: "sports",
+        url: "/section/sports"
+      },
+      {
+        text: "entertainment",
+        url: "/section/entertainment"
+      },
+      {
+        text: "business",
+        url: "/section/business"
+      },
+      {
+        text: "real estate",
+        url: "/section/realestate"
+      },
+      {
+        text: "travel",
+        url: "/section/travel"
+      }
+		],
+		company: {
+      title: "company info",
+      children: [
+        {
+          text: "about us",
+          url: "/about-us"
+        },
+        {
+          text: "investor relations",
+          children: [
+            {
+              text: "overview",
+              url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-irhome"
+            },
+            {
+              text: "news releases",
+              url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-news&nyo=0"
+            },
+            {
+              text: "stock information",
+              children: [
+                {
+                  text: "analyst coverage",
+                  url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-analysts"
+                },
+								{
+									text: "stock quote & chart",
+									url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-stockquote"
+								},
+								{
+									text: "historical price lookup",
+									url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-stocklookup"
+								},
+								{
+									text: "stock calculator",
+									url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-stockcalculator"
+								}
+              ]
+            },
+						{
+              text: "news & events",
+              children: [
+                {
+									text: "press releases",
+									url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-news&nyo=0"
+								},
+								{
+									text: "investor calender",
+									url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-calendar"
+								},
+                {
+                  text: "presentations",
+                  url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-presentations"
+                }
+              ]
+            },
+            {
+              text: "financial information",
+              children: [
+                {
+                  text: "sec filings",
+                  url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-sec"
+                },
+								{
+									text: "quarterly earnings",
+									url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=quarterlyearnings"
+								},
+								{
+									text: "annual reports & form 10",
+									url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-reportsannual"
+								},
+                {
+                  text: "tax information",
+                  url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-tax"
+                }
+              ]
+            },
+            {
+              text: "corporate governance",
+              children: [
+                {
+                  text: "governance highlights",
+                  url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-govhighlights"
+                },
+								{
+								text: "management team",
+								url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-govManage"
+								},
+								{
+								text: "board of directors",
+                url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-govBoard"
+								},
+								{
+									text: "committee composition",
+									url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-govcommcomp"
+								}
+              ]
+            },
+						{
+              text: "shareholder services",
+              children: [
+                {
+                  text: "investor faq",
+                  url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-faq"
+                },
+                {
+                  text: "information request",
+                  url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-inforeq"
+                },
+								{
+									text: "e-mail alerts",
+									url: "http://investor.tronc.com/phoenix.zhtml?c=254385&p=irol-alerts"
+								}
+              ]
+            }
+          ]
+        },
+        {
+          text: "careers",
+          //url: "https://careers-tribunepublishing.icims.com/jobs/intro?hashed=-435716452"
+					url: "/careers"
+        },
+				/*{
+					text: "sponsored content terms",
+					url: "/sponsored-content-terms"
+				},*/
+        {
+          text: "terms of service",
+          url: "/central-terms-of-service"
+        },
+        {
+          text: "subscriber terms and conditions",
+          url: "/subscriber-terms-and-conditions"
+        },
+        {
+          text: "privacy policy",
+          url: "/privacy-policy"
+        },
+        {
+          text: "política de privacidad y sus derechos de privacidad",
+          url: "/politica-de-privacidad"
+        },
+        {
+          text: "términos de servicio principales",
+          url: "/terminos-de-servicio-principales"
+        }
+      ]
+    }
+	};
+};
+MonthsFullNameZed = function(number){
+  var month = {
+    "0":"January",
+    "1":"February",
+    "2":"March",
+    "3":"April",
+    "4":"May",
+    "5":"June",
+    "6":"July",
+    "7":"August",
+    "8":"September",
+    "9":"October",
+    "10":"November",
+    "11":"December",
+  }
+  return month[number];
+}
+WeekNumToName = function(number){
+	var weekday = new Array(7);
+	weekday[0]=  "Sunday";
+	weekday[1] = "Monday";
+	weekday[2] = "Tuesday";
+	weekday[3] = "Wednesday";
+	weekday[4] = "Thursday";
+	weekday[5] = "Friday";
+	weekday[6] = "Saturday";
+
+return weekday[number];
+}

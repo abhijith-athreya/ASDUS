@@ -1,0 +1,21 @@
+var trusteId="pid=ziffdavis01&aid=ziffdavis01";var popdiv=("pop-div"+Math.random()).replace(".","");var popdiv2=("pop-div2"+Math.random()).replace(".","");
+if(typeof TRUSTeWidget=="undefined"){var TRUSTeWidget={}}if(typeof TRUSTeWidget.Tab=="undefined"){TRUSTeWidget.Tab={id:"TRUSTeWidget-feedback-tab",link:function(a){TRUSTePrefview(trusteId)
+},close:function(a){TRUSTePrefclosebox()}}}function TRUSTePrefview(a){var d=document.createElement("div");
+d.setAttribute("id",popdiv);var p=document.createElement("div");p.setAttribute("id",popdiv2);var k=document.createElement("div");
+var m=document.createElement("div");var l=document.createElement("iframe");d.className="overlay";p.className="box_overlay";
+m.className="close";k.className="box_overlay_inner";d.style.backgroundColor="#000";d.style.opacity="0.8";
+d.style.position="fixed";d.style.zIndex="1000000";d.style.width="100%";d.style.height="100%";d.style.top="0";
+d.style.left="0";d.style.overflow="hidden";d.style.filter="Alpha(Opacity: 80)";p.style.position="absolute";
+p.style.zIndex="2000000";p.style.top="10%";var e=(document.body.clientWidth/2)-(890/2);var r=e+"px";if(parseFloat(navigator.appVersion.split("MSIE")[1])==7){}var n=890;
+n=-n/2;p.style.left="50%";p.style.marginLeft=n+"px";var j=(window.location.protocol=="http:")?"https://preferences.truste.com/images/close.png":"https://preferences.truste.com/images/close.png".replace("http:","https:");
+m.innerHTML='<a href="javascript:TRUSTeWidget.Tab.close()" style="cursor:pointer;"><img src='+j+' border="0" /></a>';
+m.style.position="absolute";m.style.top="-20px";m.style.right="-20px";k.style.backgroundColor="#fff";
+k.style.position="relative";k.style.left="0px";k.style.width="890px";k.style.padding="10px";k.style.border="5px solid #92c53f";
+var g=(window.location.protocol=="http:")?"http://preferences-mgr.truste.com/?type=ziffdavispop&affiliateId=pid=ziffdavis01&aid=ziffdavis01":"http://preferences-mgr.truste.com/?type=ziffdavispop&affiliateId=pid=ziffdavis01&aid=ziffdavis01".replace("http:","https:");
+g=g.replace("affiliateId=","");l.src=g;l.id="tframe";l.width="890";l.height="740";l.frameBorder="0";l.scrolling="no";
+l.style.border="0";document.body.appendChild(d);document.body.appendChild(p);p.appendChild(k);k.appendChild(m);
+k.appendChild(l);var q=document.getElementsByTagName("object");for(var k=0;k<q.length;++k){var h=q[k];
+h.style.visibility="hidden"}scrollTo(0,0)}function TRUSTePrefclosebox(){try{document.body.removeChild(document.getElementById(popdiv));
+document.body.removeChild(document.getElementById(popdiv2));var b=document.getElementsByTagName("object");
+for(var a=0;a<b.length;++a){var d=b[a];d.style.visibility="visible"}}catch(c){alert(c.message)}}function view(a){TRUSTePrefview(a)
+};

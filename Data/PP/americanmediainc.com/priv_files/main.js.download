@@ -1,0 +1,27 @@
+(function ($) {
+    "use strict";
+    $(document).ready(function () {
+        $('#node-270 span.form-required').remove();
+    });
+
+    Drupal.behaviors.amiDepends = {
+        attach: function (context) {
+            $(document).bind('clientsideValidationAddCustomRules', function (event) {
+                jQuery.validator.addMethod("country", function (value, element, param) {
+                    if ($("#webform-component-country select").val() == "US") {
+                        if ($("#webform-component-state select").val() == "") {
+                            return false;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                    else {
+                        $("#webform-component-state select").val('');
+                        return true;
+                    }
+                }, jQuery.format('State field is required for United States.'));
+            });
+        }
+    };
+})(jQuery);

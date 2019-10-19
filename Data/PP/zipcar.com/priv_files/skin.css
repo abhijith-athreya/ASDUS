@@ -1,0 +1,953 @@
+/* non-flash js alternative will be shown via javascript */
+.no-flash-content {
+    display: none;
+}
+
+
+/* totally custom skins */
+.header {
+    background: transparent url(/images/template/css/bg_body.gif) 0 0 repeat-x;
+    height: 110px;
+}
+
+.footer {
+    margin-top: 40px;
+    padding-top: 60px;
+    padding-bottom: 20px;
+    color: #BCBEC0;
+}
+
+/* more piecemeal skins for broader application */
+/* do we want to split this? i don't feel strongly.. */
+
+/* borders */
+.grey-tb-border {
+    border: 1px solid #b2b4b6;
+    border-width: 1px 0;
+}
+/* this class has other non-border styles because
+    it is used as a stylized border */
+.grey-tb-border-outer {
+    border: 1px solid #b2b4b6;
+    border-width: 1px 0;
+    padding: 1px 0;
+}
+
+.s-grey-border, .s-grey-border-no-dd {
+    border: 1px solid #b2b4b6;
+    border-radius: 5px;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.s-grey-top-border {
+    border-top: 1px solid #b2b4b6;
+    border-left: 1px solid #b2b4b6;
+    border-right: 1px solid #b2b4b6;
+    border-bottom: 0px solid #b2b4b6;
+    border-radius: 5px 5px 0px 0px;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.s-grey-left-border {
+    border-top: 0px solid #b2b4b6;
+    border-left: 0px solid #b2b4b6;
+    border-right: 0px solid #b2b4b6;
+    border-bottom: 0px solid #b2b4b6;
+    border-radius: 5px 0px 0px 5px;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.s-grey-bottom-border {
+    border-top: 0px solid #b2b4b6;
+    border-left: 1px solid #b2b4b6;
+    border-right: 1px solid #b2b4b6;
+    border-bottom: 1px solid #b2b4b6;
+    border-radius: 0px 0px 5px 5px;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.s-lightgreen-border {
+    border: 1px solid #dde1db;
+    border-radius: 3px;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.s-yellow-border {
+    border: 1px solid #aea048;
+    border-radius: 5px;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.s-orange-border {
+    border: 1px solid #ffd200;
+    border-radius: 5px;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.s-red-border {
+    border: 1px solid #eec5c5;
+    border-radius: 5px;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+/* border radii for elements contained within elements with roundedness */
+.med-top-round {
+    border-radius: 5px 5px 0px 0px;
+    overflow: hidden; /* hide non-round corners of child elements */
+    behavior: url(/styles/template/PIE.htc);
+}
+
+/* border as a divider */
+.divider-grey {
+    border-right: 1px solid #b2b4b6;
+}
+
+
+/* content */
+.text-middle {
+    text-align: center !important;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right !important;
+}
+
+/* backgrounds */
+.trans-bg {
+    background: transparent none;
+}
+
+.white-bg {
+    background-color: #fff;
+}
+
+.lightgrey-bg {
+    background-color: #fbfbfb;
+}
+
+.medgrey-bg {
+    background-color: #c9c9ca;
+}
+
+.grey-bg {
+    background-color: #696a6c;
+}
+
+.orange-bg {
+    background-color: #fbf9e1;
+}
+
+/* background images */
+
+/* webkit and mozilla support multiple backgrounds; ie does not.
+    alternatively; we could just have two divs. one with a green gradient;
+    one with the image.this would   */
+.post-app-small {
+    background: transparent url(/registration/images/app-status/spdmtr-s.png) 90% 100% no-repeat;
+    min-height: 95px;
+}
+
+.post-app-large {
+    background: transparent url(/registration/images/app-status/spdmtr-l.png) 50% 100% no-repeat;
+    min-height: 310px;
+}
+
+.app-status-global {
+    background: #50A824 url('/registration/images/app-status/app-status-global.png') no-repeat scroll right bottom;
+}
+
+/* to be retired for post-app-large once we have settled on a font for it.*/
+.post-app-static {
+    background: transparent url(/registration/images/app-status/spdmtr-static.gif) 50% 100% no-repeat;
+    min-height: 310px;
+}
+
+.giant-zipcard {
+    background: transparent url(/registration/images/app-status/zipcard-ph.png) 0% 100% no-repeat;
+    width: 485px;
+    height: 60px;
+    padding-top: 280px;
+    padding-left: 60px;
+}
+
+.mini-zipcard {
+    background: transparent url(/registration/images/app-status/zipcard-ph.png) 0% 100% no-repeat;
+    width: 285px;
+    height: 30px;
+    padding-top: 180px;
+    padding-left: 30px;
+    padding-bottom:15px;
+    margin-top:20px;
+    display: block;
+    background-size: 100%
+}
+
+.confirm-zipcard {
+    background: transparent url(/registration/images/app-status/zipcard_conv_confirm.png) 0% 100% no-repeat;
+    width: 285px;
+    height: 30px;
+    padding-top: 180px;
+    padding-left: 30px;
+    padding-bottom:15px;
+    margin-top:20px;
+    display: block;
+    background-size: 100%
+}
+
+.enter-zipcard {
+    background: transparent url(/registration/images/app-status/zipcard_conv_entrywbubble.png) 0% 100% no-repeat;
+    width: 353px;
+    height: 30px;
+    padding-top: 180px;
+    padding-left: 30px;
+    padding-bottom:15px;
+    margin-top:20px;
+    margin-left:-65px;
+    display: block;
+    background-size: 100%
+}
+
+form.transition .confirm-zipcard,
+form.transition .enter-zipcard {
+    padding-top: 148px;
+}
+
+.reserve-preview {
+    background: transparent url(/registration/images/app-status/reserve-preview.png) 50% 0% no-repeat;
+    min-height: 340px;
+}
+
+.giant-coin {
+    background: transparent url(/registration/images/app-status/giant-coin.png) 50% 50% no-repeat;
+    width: 220px;
+    height: 220px;
+}
+
+.res-magnifier {
+    background: transparent url(/images/icons/button-viewreservation.png) 50% 50% no-repeat;
+    width: 26px;
+    height: 25px;
+}
+.res-magnifier:hover {
+    background: transparent url(/images/icons/button-viewreservation-over.png) 50% 50% no-repeat;
+}
+
+.honda-image {
+    background: transparent url(/registration/images/hondaImagePhotoclip.png) 50% 50% no-repeat;
+    width: 214px;
+    height: 175px;
+    margin-left: 10px;
+    margin-top: -10px;
+}
+
+/* NOTE: this halo isn't lined up yet */
+.giant-coin-halo {
+    width: 220px;
+    height: 220px;
+    background: -webkit-gradient(radial, 50% 30%, 60, 50% 50%, 111, from(#7ce019), to(#51a601));
+    /* For Mozilla/Gecko (Firefox etc) */
+    background: -moz-radial-gradient(50% 50%, farthest-side, #ffffa2, #00f);
+}
+
+/* gradients are cool, they have stop points where the color will match
+    e.g. webkit-gradient:
+    the color-stops and percentages from -moz- gradient mean at that percentage
+    from whichver direction we are measuring will be that color. then the linear
+    gradient gets applied between those spots. the two ends (smaller than the smallest
+    stop and larger than the largest) will be solid colors equal to that color stop.
+
+    NOTE: background default is for opera (non webkit/mozilla)
+        filter and zoom are for IE
+        -webkit-gradient you can guess
+        -moz-linear-gradient you can guess
+
+    IE doesn't support color stops.
+*/
+/* we like gradients for headers and navigation type elements */
+.grey-grad {
+    /* setting the zoom so that ie will haslayout */
+    zoom: 1.0;
+    background: #c9c9ca;
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#FFD5D5D6', EndColorStr='#FFC9C9CA');
+    background: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.5, rgb(201,201,202)),
+        color-stop(0.8, rgb(213,213,214))
+    );
+    background: -moz-linear-gradient(
+        center bottom,
+        rgb(201,201,202) 50%,
+        rgb(213,213,214) 80%
+    );
+}
+
+.green-grad {
+    zoom: 1.0;
+    background: #53ad0b;
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#FF6eb634', EndColorStr='#FF53ad0b');
+    background: -webkit-gradient(
+            linear,
+            left bottom,
+            left top,
+            color-stop(0.5, #53ad0b),
+            color-stop(0.8, #6eb634)
+        );
+    background: -moz-linear-gradient(
+            center bottom,
+            #53ad0b 50%,
+            #6eb634 80%
+        );
+
+}
+
+.green-banner-zipcard
+{
+	background: url("/registration/images/masthd_zipcard.png") no-repeat scroll 90% 100% transparent;
+    min-height: 95px;
+    z-index:100;
+}
+
+.green-cars-acrossthepond
+{
+    background: url("/registration/images/masthd_stnd_acrossthepond.png") no-repeat scroll 90% 100% transparent;
+    min-height: 95px;
+    margin-right: 5px;
+}
+
+.green-banner-cars
+{
+	zoom: 1.0;
+    background: #53ad0b;
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#FF6eb634', EndColorStr='#FF53ad0b');
+    background: -webkit-gradient(
+            linear,
+            left bottom,
+            left top,
+            color-stop(0.5, #53ad0b),
+            color-stop(0.8, #6eb634)
+        );
+    background: -moz-linear-gradient(
+            center bottom,
+            #53ad0b 50%,
+            #6eb634 80%
+        );
+	background: transparent url(/images/icons/arrow-right.png) 0 50% no-repeat;
+}
+
+.green-bg {
+    background-color: #51a601;
+}
+
+.lightgreen-bg {
+    background-color: #f3f8f0;
+}
+
+.yellow-bg {
+    background-color: #f9f3bb;
+}
+
+/* fonts */
+.white {
+    color: #FFF;
+}
+/* should this be a new gray? */
+a.white:visited {
+    color: #FFF;
+}
+.white a:hover, .white a.over,
+a.white:hover, a.white.over {
+    color: #bcbec0;
+}
+.green {
+    color: #51a601;
+}
+.error-red {
+    color: #df2f2f;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+/* should this have a different cursor style? */
+.modal-ajax {
+    cursor: pointer;
+}
+
+.expand {
+    padding-left: 20px;
+    background: transparent url(/images/icons/arrow-right.png) 0 50% no-repeat;
+    cursor: pointer;
+}
+.expanded {
+    padding-left: 20px;
+    background: transparent url(/images/icons/arrow-down.png) 0 50% no-repeat;
+    cursor: pointer;
+}
+
+.expand-details {
+    display: none;
+}
+
+.expand-details-border {
+    border-top: 1px solid #b2b4b6;
+}
+
+/* sometimes details start expanded already */
+.expanded-details {
+    display: block;
+}
+
+/* various divs for states */
+.status-icon {
+    width: 30px;
+    height: 20px;
+    float: right;
+}
+
+.status-icon-l {
+    width: 30px;
+    height: 20px;
+    float: left;
+}
+
+.error {
+  border:2px solid red;
+}
+.approved {
+    background: transparent url(/images/icons/green-check.png) 0 -5px no-repeat;
+}
+.pending {
+    background: transparent url(/images/icons/gears.png) 0 -5px no-repeat;
+}
+.rejected, .revoked {
+    background: transparent url(/images/icons/alert.png) 0 -5px no-repeat;
+}
+.invalid {
+    background: transparent url(/images/icons/cross.png) 6px 5px no-repeat;
+
+}
+
+/* text decorations */
+.s-font {
+    font-size: .85em;
+    line-height: 1.3em;
+}
+
+.m-font {
+    font-size: 1.3em;
+    line-height: 1.3em;
+}
+
+/* lists */
+/* this should be deleted with a better base style */
+.skinny-piped-list {
+    margin-bottom: 0;
+}
+
+.piped-list > li, .skinny-piped-list > li {
+    display: inline;
+    margin: 0 8px 0 0;
+    padding: 0 10px 0 0;
+    background: none;
+    list-style-image: none;
+    border-right: 2px solid #b2b4b6;
+}
+.piped-list > li.last,
+.skinny-piped-list > li.last {
+    border-right: none;
+    padding-right: 0px;
+}
+.piped-list > li:last-child,
+.skinny-piped-list > li:last-child {
+    border-right: none;
+    padding-right: 0px;
+}
+
+.spaced-list > li {
+    display: inline-block;
+    float: left;
+    vertical-align: top;
+    width: auto;
+    background: none;
+    list-style-image: none;
+    padding: 0;
+    margin: 0 5px 0 0;
+}
+
+.thirds-list > li {
+    display: block;
+    float: left;
+    vertical-align: top;
+    width: 50%;
+    background: none;
+    list-style-image: none;
+    padding: 0;
+    margin: 0;
+}
+
+.thirds-list > li.bordered > div {
+    border-right: 1px solid #b2b4b6;
+}
+
+.thirds-list p {
+    margin-bottom: 0;
+}
+
+/* box shadows - do we need shadows of different colors?*/
+.box-shadow {
+    box-shadow: 0px 1px 1px #666;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+/* these should become styles just for the tag once we move away from the other buttons */
+.button {
+    color: #4D4D4F;
+    padding: 5px 13px;
+    font-weight: bold;
+    border: 1px solid #B2B4B6;
+    border-bottom-left-radius: 3px 3px;
+    border-bottom-right-radius: 3px 3px;
+    border-top-left-radius: 3px 3px;
+    border-top-right-radius: 3px 3px;
+    background: #fff;
+    /* TODO: gradients for other browsers */
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.0, #d7e4cd),
+        color-stop(0.5, #fff)
+    );
+    box-shadow: 0 0 3px 0 #999c9e;
+    -webkit-box-shadow: 0 0 3px 0 #999c9e;
+
+}
+/* hovering buttons makes them slighty darker so they look inset */
+.button:hover {
+    background: #ededef;
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.0, #d5d6d8),
+        color-stop(0.5, #ededef)
+    );
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+/* TODO: fill in this text color */
+.button.orange {
+    color: white;
+    background: #fe741f;
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.0, #fe741f),
+        color-stop(0.5, #ffa15b)
+    );
+}
+.button.orange:hover {
+    color: white;
+    background: #ee7520;
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.0, #ee7520),
+        color-stop(0.5, #f0883a)
+    );
+}
+
+/* default overlay modal */
+#popoverlay {
+    background: white;
+    display: block;
+    top: 15%;
+    position: absolute;
+    width: 900px;
+    zoom: 1;
+    /* TODO: this overlay should cap out at the screen-height and start
+        having a scroll bar
+    max-height: 70%; */
+    box-shadow: 0px 2px 3px #333;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+#popoverlay .loading {
+    background: transparent url(/images/settings/loading.gif) 0% 50% no-repeat;
+    margin: 125px 0 0 45%;
+    padding: 3px 0 3px 30px;
+}
+
+/* needs to sit on top of jqmOverlay */
+.tooltipoverlay {
+    display: block;
+    position: absolute;
+    z-index: 4000;
+    background: white;
+    padding: 5px;
+    box-shadow: 0px 1px 2px #777;
+    behavior: url(/styles/template/PIE.htc);
+}
+/* top of -8 because that's how large our border is */
+.up-triangle {
+    border-top: 0;
+    border-bottom: 8px solid #b2b4b6;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: -8px;
+    left: 10px;
+}
+/* this is relative of the parent, so our top is 2 to push us in line with our parent's bottom */
+.up-triangle-inner {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid white;
+    position: relative;
+    top: 2px;
+    left: -6px;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+/* toggling controls */
+.toggler {
+    cursor:pointer;
+}
+.togglee {
+    display: none;
+    cursor: default;
+}
+
+
+/* different table appearances using child selectors because we dont
+    want to effect nested tables
+*/
+body.print table.colored tr {
+    background: transparent none !important;
+}
+
+table.colored {
+    width: 100%;
+}
+
+table.colored > tbody {
+    margin: 1em 0;
+}
+
+table.colored > tbody > tr {
+    background-color:#fbfdfa;
+}
+table.colored > tbody > tr.no-bg {
+    background: transparent none;
+}
+
+table.colored > tbody > tr.alt {
+    background-color:#f3f8f0;
+}
+
+table.colored > tbody > tr.outstanding {
+    background-color:#eaedeb;
+}
+
+table.colored > tbody > tr.outstanding > td {
+    border-bottom-style: dashed;
+}
+
+table.colored > tbody > tr.hover:hover {
+    background-color: #d9ecc8;
+}
+
+table.colored > tbody > tr.toggleable:hover {
+    cursor: pointer;
+}
+
+table.colored > tbody > tr > th {
+    padding: 0 10px;
+}
+
+table.colored > tbody > tr > th.first {
+    padding: 0 5px 0 1em;
+}
+table.colored > tbody > tr > th:first-child {
+    padding: 0 5px 0 1em;
+}
+
+table.colored > tbody > tr > th.last {
+    padding: 0 1em 0 10px;
+}
+table.colored > tbody > tr > th:last-child {
+    padding: 0 1em 0 10px;
+}
+
+
+table.colored > tbody > tr > td {
+    padding: 1em 10px;
+    vertical-align: top;
+}
+
+table.colored > tbody > tr > td.first {
+    padding: 1em 5px 1em 1em;
+}
+table.colored > tbody > tr > td:first-child {
+    padding: 1em 5px 1em 1em;
+}
+
+table.colored > tbody > tr > td.last {
+    padding: 1em 1em 1em 10px;
+}
+table.colored > tbody > tr > td:last-child {
+    padding: 1em 1em 1em 10px;
+}
+
+table.colored > tbody > tr > td,
+table.data > tbody > tr > td {
+    border-bottom: 1px solid #b1bcaa;
+    /* this style should be removed once we remove other overwriting styles for our fonts
+        note this is 100%/1em because we dont want to effect the size; but we do want to
+        overwrite another class that does */
+    font: 100%/1em Arial, Helvetica, sans-serif;
+}
+/* want to make sure we overwrite a dashed border style if we need to */
+table.colored > tbody > tr.bordered > th,
+table.colored > tbody > tr.bordered > td {
+    border-bottom: 1px solid #b1bcaa;
+}
+table.data > tbody > tr > th {
+    /* this style should be removed once we remove other overwriting styles for our fonts
+        note this is 100%/1em because we dont want to effect the size; but we do want to
+        overwrite another class that does */
+    font: 85%/1em Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+table.colored > tbody > tr > td > div.toggleable {
+    display: none;
+    cursor: auto;
+    padding: 0 5%;
+}
+
+
+/* table of formatted data */
+table.data {
+    width: 100%;
+}
+
+table.data > tbody > tr > th,
+table.data > tbody > tr > td {
+    padding: 2px 5px;
+    min-height: 20px;
+}
+
+table.data > tbody > tr > th.widecol,
+table.data > tbody > tr > td.widecol {
+    max-width: 70%;
+}
+
+table.data > tbody > tr > th.skinnycol,
+table.data > tbody > tr > td.skinnycol {
+    min-width: 10%;
+}
+
+table.data > tbody > tr > td {
+    border: 1px dotted #b1bcaa;
+    font-size: .85em;
+    line-height: 1.3em;
+    vertical-align: bottom;
+}
+
+table.data > tbody > tr.padded > td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+table.colored > tbody > tr.borderless > td,
+table.data > tbody > tr.borderless > td {
+    border: none;
+}
+
+table.data > tbody > tr > td:first-child {
+    border-left: 0px;
+}
+table.data > tbody > tr > td.first {
+    border-left: 0px;
+}
+
+table.data > tbody > tr > td:last-child {
+    border-right: 0px;
+}
+table.data > tbody > tr > td.last {
+    border-right: 0px;
+}
+
+/* icons -- here we have all the icons that we like to include on the right of various blocks of text or links */
+
+.icn-blank {
+    padding-left: 15px;
+}
+
+.icn-toggle {
+    background: transparent url(/images/template/css/icon_sm_arrow.gif) no-repeat left center;
+    padding-left: 15px;
+}
+
+.icn-toggled {
+    background: transparent url(/images/template/css/icon_sm_arrow_down.gif) no-repeat left center;
+    padding-left: 15px;
+}
+
+/* are these top two even any different than eachother? */
+.icn-expandrows {
+    background: transparent url(/images/icons/icn-expandrows.png) no-repeat left center;
+    padding-left: 25px;
+}
+.icn-collapserows {
+    background: transparent url(/images/icons/icn-collapserows.png) no-repeat left center;
+    padding-left: 25px;
+}
+.icn-email {
+    background: transparent url(/images/icons/icn-email.png) no-repeat left center;
+    padding-left: 25px;
+}
+.icn-print {
+    background: transparent url(/images/icons/icn-print.png) no-repeat left center;
+    padding-left: 25px;
+}
+.icn-spreadsheet {
+    background: transparent url(/images/icons/icn-spreadsheet.gif) no-repeat left center;
+    padding-left: 25px;
+}
+
+/* these icons are for invoice line items */
+/* should make the padding/margin it's own class.. ajl; software engineer */
+
+.icn-pendingdate {
+    background: transparent url(/images/icons/icn-pendingdate.png) no-repeat left -1px;
+    padding-left: 25px;
+    margin-top: -3px;
+    padding-top: 3px;
+}
+.icn-charges {
+    background: transparent url(/images/icons/icn-charges.png) no-repeat left -2px;
+    padding-left: 25px;
+    margin-top: -5px;
+    padding-top: 5px;
+}
+.icn-extramiles {
+    background: transparent url(/images/icons/icn-extramiles.png) no-repeat left -1px;
+    padding-left: 25px;
+    margin-top: -3px;
+    padding-top: 3px;
+}
+.icn-reservationadjust {
+    background: transparent url(/images/icons/icn-reservationadjust.png) no-repeat left -1px;
+    padding-left: 25px;
+    margin-top: -6px;
+    padding-top: 6px;
+}
+.icn-reservation {
+    background: transparent url(/images/icons/icn-reservation.png) no-repeat left -1px;
+    padding-left: 25px;
+    margin-top: -3px;
+    padding-top: 3px;
+}
+.icn-reservationcancellation {
+    background: transparent url(/images/icons/icn-reservationcancellation.png) no-repeat left -1px;
+    padding-left: 25px;
+    margin-top: -3px;
+    padding-top: 3px;
+}
+.icn-tollcharge {
+    background: transparent url(/images/icons/icn-tollcharge.png) no-repeat left -2px;
+    padding-left: 25px;
+    margin-top: -5px;
+    padding-top: 5px;
+}
+.icn-waiverfee {
+    background: transparent url(/images/icons/icn-waiverfee.png) no-repeat left -1px;
+    padding-left: 25px;
+    margin-top: -3px;
+    padding-top: 3px;
+}
+.icn-membership {
+    background: transparent url(/images/icons/icn-membership.png) no-repeat left -1px;
+    padding-left: 25px;
+    margin-top: -3px;
+    padding-top: 3px;
+}
+.icn-res-magnifier {
+    background: transparent url(/images/icons/button-viewreservation.png) left 50% no-repeat;
+    padding-left: 30px;
+    min-height: 20px;
+    margin-top: -5px;
+    padding-top: 5px;
+}
+.icn-res-magnifier:hover {
+    background: transparent url(/images/icons/button-viewreservation-over.png) left 50% no-repeat;
+}
+/* when we have an icon in some list items; we might need to
+    shift content that doesn't have an icon */
+.icn-shift {
+    min-height: 20px;
+    margin-top: -5px;
+    padding-top: 5px;
+}
+
+/* do we need paid by other means icons? */
+.icn-paidcc {
+    background: transparent url(/images/icons/icn-paidcc.png) no-repeat left center;
+    padding-left: 20px;
+}
+
+/* learn more links - add the little green arrow */
+.arrow-right {
+    background:url('/images/template/css/icon_sm_arrow_trans.gif') right 4px no-repeat;
+    padding-right:10px;
+}
+
+.got-questions {
+    padding-top:10px;
+    padding-left:23px;
+    background:url('/images/template/css/icon_grnquestion.png') left 17px no-repeat;
+}
+
+.z4b-welcome-box {
+   height:auto;
+}
+
+.heading-size{
+  padding-top:10px;
+  font-size:19px;
+}
+
+.text-align{
+   width:403px;
+   font-size:13px;
+   margin-bottom:auto;
+}
+.lt-ie8 .text-align
+{
+margin-bottom:1px !important;
+}
+.text-padding {
+    padding: 0px 0px 5px 11px;
+}
+
+
+.s-grey-border-billing {
+    width: 54.797%;
+}

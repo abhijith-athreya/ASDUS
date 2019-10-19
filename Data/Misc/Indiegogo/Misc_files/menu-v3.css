@@ -1,0 +1,89 @@
+/* top level  */
+ul.smt-menu {
+	position:relative;
+	list-style:none !important;
+	text-indent:none;
+	margin:0;
+	padding:0;
+	width:175px !important;
+	overflow:hidden;
+	overflow:hidden;
+}
+
+ul.smt-menu.smt-autoPlace {
+	z-index:99999;
+}
+
+/* no focus dotted line  */
+ul.smt-menu :focus {
+
+}
+
+/* container of menu items */
+ul.smt-menu ul {
+	display:none;
+	position:absolute;
+	list-style:none !important;
+	text-indent:none;
+	margin:0;
+	padding:0;
+	width:100%;
+	background-color:#ebebeb;
+	border:1px solid #c0c0c0;
+}
+
+
+/* auto placed menus need position static */
+ul.smt-autoPlace ul {
+	position:static !important;
+}
+
+
+/* list items (includes trigger) */
+ul.smt-menu li {
+	display:block;
+}
+
+/* styles trigger link */
+ul.smt-menu a.smt-trigger-link
+{
+	display:block;
+	text-decoration:none;
+	font-family:arial;
+	font-size:11.5px;
+	font-weight:bold;
+	color:#fff;
+	background-color:#484848;
+	cursor:pointer;		
+	padding:3px 10px 3px 10px !important;
+	background-image:url('//cdn01.smartling.com/ls/static/arrow-down.png');
+	background-repeat:no-repeat;
+	background-position:right 6px;
+	letter-spacing:1px;
+}
+
+ul.smt-menu.smt-botRight a.smt-trigger-link {
+	background-image:url('//cdn01.smartling.com/ls/static/arrow-up.png');
+}
+
+/* styles item link tags */
+a.smt-link 
+{
+	display:block;
+	padding:5px 0px 5px 0px;
+	text-decoration:none !important;
+	font-family:arial !important;
+	font-size:12px !important;
+	line-height:12px !important;
+	color:#000;
+	word-wrap: break-word;
+	text-align:center;
+}
+
+/* hover state for menu items */
+ul.smt-menu li li a:hover 
+{
+	color:#fff !important;
+	background-color:#5dccd8;
+}
+

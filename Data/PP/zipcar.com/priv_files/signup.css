@@ -1,0 +1,497 @@
+html body #wrapper input[type=hidden]{display: none;}  /* fix firefox */
+
+.signup-page #primary h2{
+    clear: left;
+}
+
+
+ol.status-bar{
+	list-style-type: none;
+	margin:0 0 2em 0;
+	overflow: hidden;
+    padding:0;
+	width: 672px;
+}
+	ol.status-bar li{
+		background-image:  url(/images/template/css/nav-join-status-bar.gif);
+		display: block;
+		float: left;
+		height: 45px;
+	    margin:0;
+	    padding:0;
+		text-indent: -9999em;
+		width: 168px;
+	}
+
+	ol.status-bar li img {
+		border: none;
+	    padding: 0;
+	}
+li#status-choose{background-position: 0 -45px;}
+li#status-apply	{background-position: -168px -45px;}
+li#status-about	{background-position: -336px -45px;}
+li#status-drive	{background-position: -504px -45px;}
+
+li#status-choose.active {background-position: 0 0;}
+li#status-apply.active {background-position: -168px 0;}
+li#status-about.active {background-position: -336px 0;}
+li#status-drive.active {background-position: -504px 0;}
+
+
+.sign-up-form .dp_box {
+	background-image: url(/images/template/css/bg_box_round_wider_bottom_longer.gif) ;
+}
+.sign-up-form ul, .sign-up-form li {
+	list-style-type: none;
+    margin:0;
+    padding:0;
+}
+.sign-up-form fieldset li {
+	background-image: none;
+	clear: left;
+	float: left;
+    margin: 0;
+	padding: .8em 1%;
+	width: 97.5%;
+}
+	.sign-up-form fieldset li.check-wrap {padding: .2em 1%   }
+.sign-up-form fieldset {
+    clear: left;
+	margin: 2em 0;
+	padding-bottom: 1em;
+}
+.dp_box legend{
+	display: none;
+}
+
+.sign-up-form input, .sign-up-form select {
+	float: left;
+	padding: 1px;
+	width: 17.5em;
+	}
+	.sign-up-form input {padding: 2px 1px;}
+	.sign-up-form select {width: 17.8em;}
+	.sign-up-form input.radio { width: auto; }
+
+.sign-up-form label, .sign-up-form div.label {
+	clear: left;
+	float: left;
+	margin-right: 12px;
+	text-align: right;
+    width: 150px;
+	}
+
+.sign-up-form .notetxt, .sign-up-form .notetxt-textarea{
+    clear: left;
+	font-size: .825em;
+    line-height: 1.2em;
+	color: #888;
+	display: block;
+	margin-left: 162px;
+}
+	* html .sign-up-form .notetxt {margin-top: -8px;}
+	*+html .sign-up-form .notetxt {margin-top: -10px;}
+	
+.sign-up-form button{
+	clear: both;
+	float: right;
+}
+
+.sign-up-form button.nothanks{
+    background: transparent url(/images/template/css/btn_nothanks.gif) 0 0 no-repeat; /*needs repointing */
+	width: 93px;
+    height: 30px;
+}
+
+.sign-up-form h3{
+    color: #4FA600;
+	font-size: 1.308em;
+	font-weight: bold;
+}
+
+.error-box {
+	background-color: #ffeeee;
+    border: 1px solid #cc0000;
+	margin: 1em 0;
+	padding: 10px;
+	color: #c00;
+    border-radius: 5px;
+    behavior: url(/styles/template/PIE.htc);
+}
+	.error-box h3 	{color: #333;}
+	.error-box ol	{padding-left: 1.8em;}
+	.error-box li	{margin-left: 0; background: none; list-style-type: decimal; }
+	.error-box p	{color: #333;}
+	.error-box ol li a, .error-box ol li a:visited {color: #c00;}
+	.error-box li a { text-decoration: underline;}
+
+.sign-up-form li.error {
+	background-color: #ffeeee;
+    border: 1px solid #cc0000;
+	border-color: #cc0000 #ffdddd;
+	margin: .5em 0;
+}
+	.error h4 {
+	    color: #cc0000;
+		margin-left: 162px;
+	}
+	.error label {
+	    color: #4D4D4F;
+	}
+
+
+/* Particular form bits */
+* html .sign-up-form label.accessibility{display: none;} /* really only for multi-select wraps.  */
+
+.sign-up-form .license-exp-wrap select {
+	margin-right: 5px;
+    width: 110px;
+	clear: none;
+}
+
+
+.sign-up-form .birthday-wrap input,  .sign-up-form .license-exp-wrap input { width: 40px; }
+	.sign-up-form .birthday-wrap select {width: 8em;margin-right: 5px;}
+	select#birthdate-day {width: 6em;}
+
+.residence-wrap input{
+	border: none;
+    float: left;
+	width: 15px;
+}
+	* html .residence-wrap input{background: none;}
+	*+html .residence-wrap input{background: none;}
+	
+.residence-wrap label {
+    clear: none;
+	padding-left: 4px;
+	text-align: left;
+	width: 3em;
+}
+#license_expiration.month {
+    width: 4em;
+}
+.check-wrap input{
+	margin-left: 162px;
+	margin-right: 4px;
+    width: 15px;
+}
+	* html .check-wrap input{
+		border: none;
+		background: none;
+		margin-left: 81px;
+	}
+	*+html .check-wrap input{		border: none;		background: none;}
+	
+	.check-wrap label{
+	    clear: none;
+		text-align: left;
+		width: 250px;
+	}
+
+    #services_for_disabled .check-wrap label { width: 450px; }
+
+.zipcard-info input {
+	clear: none;
+    width: 1em;
+	border: none;
+}
+	* html .zipcard-info input {background: none;}
+	*+html .zipcard-info input {background: none;}
+
+	.zipcard-info input#zipcard {border: 1px solid #ccc; width:100px;}
+.zipcard-info label{
+	clear: none;
+	padding-left: 5px;
+	text-align: left;
+    width: 85%;
+}
+.zipcard-info label#zipcard-label{
+	margin-left: 17px;
+	padding: 0;
+	width: 60%;
+}
+.address-type input{
+	background: none;
+	border: none;
+	clear: left;
+	margin-right: 5px;
+    width: 15px;
+}
+	.address-type label{
+		margin-left: 165px;
+		text-align: left;
+	}
+	* html .address-type label{margin-left: 82px;}
+
+label.full{
+	clear: left;
+	float: left;
+	margin-right: 12px;
+	text-align: right;
+	margin-left: 0;
+    width: 150px;
+}
+
+	.address-type label.full{margin:0 12px -1.2em 0px;}
+
+.zipcard-info p, .zipcard-info .notetxt {
+    clear: left;
+	margin-left: 51px;
+}
+.cc-expiration label {
+	clear: none;
+	margin-right: 0;
+	text-align: left;
+    width: 3.5em;
+}
+	.cc-expiration .full {width: 150px; margin-right: 12px; text-align: right;}
+	.cc-expiration select {width: 6em; margin-right: 5px;}
+
+    .cc-start select { width: 8em; margin-right: 4px; }
+    .cc-start input  { width: 4em; }
+
+	/* .sign-up confirmation page  
+	.sign-up-confirm-page #primary button{
+		border: 1px solid #ccc;
+		color: 666px;
+		padding:1px 6px;
+	}*/
+	.sign-up-confirm-page #primary fieldset, .sign-up-confirm-page #terms-wrap{
+		padding: 20px;
+		}
+	#terms-wrap {
+        padding-bottom: 0;	
+		border-top: 1px solid #000;
+        padding-right: 5px;
+    }
+	.sign-up-confirm-page table {min-width: 50%; font-weight: normal; display: block;}
+	
+	.sign-up-confirm-page table tr th {border: 1px solid #ccc; text-align: left; font-weight: normal;}
+	.sign-up-confirm-page td{text-align: right; font-weight: normal;  }
+	.sign-up-confirm-page tfoot td {text-align: left;}
+
+	.sign-up-confirm-page td:last-child{text-align: right;  }
+	.sign-up-confirm-page tfoot td:last-child {text-align: left;}
+
+
+	.sign-up-confirm-page dt{
+		float: none;	
+		font-weight: bold; 
+		width: 90%;
+		}
+		.sign-up-confirm-page dd{
+			float: none;
+			margin-bottom: 1em;	 
+			width: 90%;
+			}
+	.sign-up-confirm-page .terms-accept input, .sign-up-confirm-page .terms-accept label {display: inline; }		
+	.sign-up-confirm-page .message {
+		background-color: #DCEAD2;
+		border: 1px solid #51A601;
+		border-width: 1px 0;
+		padding: .8em;
+	}
+
+.btn-edit {
+	background: transparent url(/images/template/css/btn_edit.gif) 0 0 no-repeat ;
+	display: block;
+	height: 18px;
+	text-indent: -999em;
+	width: 40px;
+}
+	#wrapper .btn-edit:hover{background-position: 0 -18px; }
+	
+	#wrapper .btn-submit {
+		background: transparent url(/images/template/css/btn_submit.gif) 0 0 no-repeat;
+		display: block;
+		float: right;
+		height: 30px;
+        margin: 9px 0 0 23px;
+		text-indent: -999em;
+		width: 143px;
+	}
+	.join-now-page #wrapper .btn-submit {
+		background: transparent url(/images/template/css/btn-submitapplication.gif) 0 0 no-repeat;
+    }
+	#wrapper .btn-submit:hover, #wrapper .sign-up-form button.btn-submit:hover {background-position: 0 -30px; }
+	
+	.office-address{display: block; padding-left: 1.5em; }
+
+/* business sign up page */
+/* copies form.generic-form li .radio-right from zipcar.css */
+#billing-method .radio-right {
+    margin-left: 162px;
+    margin-bottom: 0.75em;
+    position: relative;
+    clear: left;
+}
+#billing-method .radio-right input {
+    position: absolute;
+    left: -24px;
+    
+    border: 0px transparent none;
+    width: auto;
+    float: none;
+}
+
+#billing-method .radio-right label {
+	float: none;
+	width: auto;
+	clear: none;
+	margin: 0;
+	display: inline;
+    margin-right: 0px;
+}
+
+/* end business sign up page */
+
+
+body.waivers-page td { border: 0; padding: 0; font-weight: normal; }
+
+	#billing-method {margin: 0; padding: 0;}
+	#billing-method label {margin-left: 162px; width: 500px;}
+	#billing-method label.full {margin-left: 0; width: 150px;}
+	#billing-method label#label-company-card {margin-left: 0;}
+	#billing-method input {margin-left: 0;}
+
+body.waivers-page td { border: 0; padding: 0; font-weight: normal; }
+
+body.waivers-page #waivers-buttons {
+    display: block;
+    float: right;
+    margin-left: 7px;
+}
+body.waivers-page #waivers-buttons .no_thanks-button {
+    margin-top: 3px;
+}
+
+
+ul.survey li {
+    clear: both;
+    list-style-type: none;
+    background: none;
+    margin-top: 15px;
+}
+
+ul.survey select, ul.survey textarea { margin-left: 20px; margin-top: 4px; float: none; width: auto; }
+ul.survey input { margin-right: 5px; }
+ul.survey input.checkbox { width: auto; border: none; }
+ul.survey blockquote { margin-left: 40px; margin-top: 4px; }
+ul.survey blockquote input { width: auto; padding: 0; border: 0 none transparent; clear: both; background-image: none; }
+*+html ul.survey blockquote input {border: none; width: 15px;}
+
+span.confirm-label {
+    font-weight: bold;
+}
+.accept-box {
+    width: 660px;
+}
+.box-top {
+    background: transparent url(/images/template/css/tc_box_top.gif) no-repeat scroll 0 0;
+    min-height: 135px;
+    padding-top: 4px;
+}
+.box-mid {
+    background: transparent url(/images/template/css/tc_box_middle.gif);
+    min-height: 100px;
+    padding: 25px;
+    width: 610px;
+}
+.box-low {
+    background: transparent url(/images/template/css/tc_box_bottom.gif) no-repeat scroll 0 0;
+    height: 10px;
+}
+div.box-mid div {
+    float: left;
+    margin-right: 10px;
+}
+div.accept-copy {
+    width: 500px;
+}
+#wrapper .accept-copy .btn-submit {
+    background: transparent url(/images/template/css/btn_appsubmit.gif) no-repeat scroll 0 0;
+    float: left;
+    margin: 0;
+    width: 150px;
+}
+.disabled-members {
+    border-top: 1px solid #000000;
+}
+.disabled-members .confirm-header {
+    display: block;
+    width: 400px;
+}
+.disabled-members ul {
+    padding: 10px;
+}
+.disabled-members li {
+    margin-bottom: 0;
+}
+.disabled-members button {
+    float: left;
+}
+.terms-box {
+    border: 1px solid black;
+    height: 65px;
+    line-height:1.35em;
+    overflow: auto;
+    padding: 15px;
+    width: 668px;
+}
+button.fake-link {
+    background: none;
+    color: #DE7521;
+    display: inline;
+}
+button.fake-link:hover {
+    text-decoration: underline;
+}
+
+/* gift certificate goodies */
+body.gift-page ol.banner { 
+    display:none; 
+    margin-bottom:0 !important; 
+}
+
+body.gift-page #gift_picker {
+    width: 85px;
+}
+
+body.gift-page #amount {
+    margin-left:10px;
+    width: 115px;
+    display:none;
+}
+
+body.gift-page #min_amt.notetxt {
+    margin-left: 5px;
+    display:none;
+}
+
+body.gift-page #email_or_not {
+    list-style:none;
+    background:none !important;
+    margin-top:5px;
+}
+
+body.gift-page #email_or_not li {
+    margin-left:20px;
+    margin-bottom:10px;
+    background:none !important;
+}
+
+body.gift-page #email_or_not input {
+    margin-right:5px;
+    width:2em;
+    margin-top:2px;
+}
+
+/* mobile responsive css for members/account/billing/cc/edit*/
+
+@media only screen and (max-width: 320px){
+    .cc-expiration .full {
+        width: 100%;
+        text-align: left;
+    }
+}

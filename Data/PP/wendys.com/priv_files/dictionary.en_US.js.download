@@ -1,0 +1,577 @@
+var DICTIONARY = {
+    "meta":{
+        locale:"en_US"
+    },
+    "wendys": "Wendy's",
+    "welcomeToWendys": "Welcome To Wendy's",
+    "nav": {
+        "about": "About",
+        "careers": "Careers"
+    },
+    filters:{
+        // These keys should match the filtering keys within a WEN Nearby Location Service response
+        hasBreakfast:{
+            label:'Breakfast',
+            cssClass:'indicator_bf'
+        },
+        hasCokeFreestyle:{
+            label:'Coca-Cola Freestyle',
+            cssClass:'indicator_cf'
+        },
+        hasDigitalCoupon:{
+            label:'Digital Coupon',
+            cssClass:''
+        },
+        hasHola:{
+            label:'',
+            cssClass:''
+        },
+        hasLoyalty:{
+            label:'Loyalty',
+            cssClass:''
+        },
+        hasMobileOrder:{
+            label:'Mobile Ordering',
+            cssClass:''
+        },
+        hasMobilePay:{
+            label:'Mobile Payments Accepted',
+            cssClass:'indicator_mp'
+        },
+        hasWifi:{
+            label:'Wi-Fi',
+            cssClass:'indicator_wifi'
+        },
+        isOpen24Hours:{
+            label:'Open 24-Hours',
+            cssClass:'indicator_24'
+        },
+        isOpenLate:{
+            label:'Open Late',
+            cssClass:'indicator_ln'	// late night
+        }
+    },
+    "addAFavoriteLocation": "Add a favorite location",
+    "genericErrorTitle": "An error has occurred",
+    "fetchingContentErrorTitle": "Error Fetching Content",
+    "serviceErrorTitle": "Service Error",
+    "genericErrorMessage": "So sorry, something's gone wrong and we can't retrieve your information. Please try back a little later.",
+    "directions": "Directions",
+    "buttons": {
+        "previous": "previous",
+        "next": "next",
+        "submit": "Submit",
+        "close": "Close",
+        "ok": "OK",
+        "cancel": "Cancel",
+        "remove": "Remove",
+        "continue": "Continue",
+        "confirm": "Confirm",
+        "yes": "Yes",
+        "no": "No",
+        "done": "Done",
+        "seeMore": "See More",
+        "search": "Search",
+        "save": "Save"
+    },
+    "unit": {
+        "distance": "miles",
+        "currency": {
+            "symbol": "$",
+            "name": "dollars"
+        }
+    },
+    "mealbuilder": {
+        "editDisabled": "Meal created with {{ country }} menu. Please change your country to edit.",
+        "clickToCustomize": "Click below to customize your meal",
+        "tapToCustomize": "Tap below to customize your meal",
+        "tapModify": "Tap To Modify",
+        "clickModify": "Click To Modify",
+        "mealsUnderCalories": "Meals Under Calories",
+        "option": "Option",
+        "mealNamePlaceholder": "Name Your Meal",
+        "mealNameTitle": "Name Your Meal Field",
+        "mealNameRequiredMessage": "Please enter 1 or more characters",
+        "mealNameTooLongMessage": "Please keep your meal name to 50 characters or less",
+        "itemsTitle": "Items",
+        "itemsRequiredMessage": "You must have at least one item",
+        "missingItemTitle": "Items",
+        "missingItemDesc": "You must have at least one item.",
+        "notLoggedInTitle": "Log In",
+        "notLoggedInDesc": "You must be logged in to save your meal.",
+        "saveMeal": "Save Meal",
+        "saved": "Saved!!",
+        "my": "My",
+        "meal": "Meal",
+        "editThisMeal": "Edit This Meal",
+        "currentlyEditingMeal": "You are currently editing a meal.",
+        "willReplaceCurrentMeal": "If you continue, this meal will replace the one currently being edited.",
+        "errorModal": {
+            "title": "Save some room! (Literally).",
+            "copy": "We like that you're thinking big, but there's a 4 item limit. Please save your selections or delete an item to continue.",
+            "cta": "Take me to the Meal Builder"
+        },
+        "saveUnsuccessful": "Save Unsuccessful",
+        "overwriteMealModal": {
+            "title": "This meal name currently exists",
+            "copy": "Would you like to overwrite the existing meal?",
+            "overwrite": "Overwrite",
+            "edit": "Edit"
+        }
+    },
+    "location": {
+        "emptyQuery": "Please use search field to enter ZIP or City and State to find locations.",
+        "locations": "Locations",
+        "youSearchedFromHere": "You searched from here",
+        "directions": {
+            "drivingDirections": "Driving Directions",
+            "distance": "distance",
+            "totalDistance": "Total Driving Distance",
+            "estimatedTime": "Estimated Driving Time",
+            "start": "Start",
+            "end": "End",
+            "startPL": "Enter starting address",
+            "useCurrent": "Use Current Location",
+            "changeDestination": "Change Destination",
+            "findLocations": "Find Locations",
+            "noLocations": "No locations match your search criteria.",
+            "ambiguous": "Did you mean"
+
+        }
+    },
+    "countries": {
+        "CA": "Canada",
+        "US": "United States"
+    },
+    "languages": {
+        "en": "English",
+        "es": "Spanish",
+        "fr": "French"
+    },
+    "locale": {
+        "en_US": "US English",
+        "es_US": "US Spanish",
+        "en_CA": "CA English",
+        "fr_CA": "CA French"
+    },
+    "months": [
+        {"name": "Month"},
+        {"name": "January", "value": "01"},
+        {"name": "February", "value": "02"},
+        {"name": "March", "value": "03"},
+        {"name": "April", "value": "04"},
+        {"name": "May", "value": "05"},
+        {"name": "June", "value": "06"},
+        {"name": "July", "value": "07"},
+        {"name": "August", "value": "08"},
+        {"name": "September", "value": "09"},
+        {"name": "October", "value": "10"},
+        {"name": "November", "value": "11"},
+        {"name": "December", "value": "12"}
+    ],
+    "nutrition": {
+        "refreshData": "Refresh Nutritional Data",
+        "chooseCategory": "Choose a Menu Category",
+        "chooseItem": "Choose a Menu Item",
+        "getStarted": "Get Started",
+        "components": "Components",
+        "optional": "Optional",
+        "calories": "Calories",
+        "fiber": "Fiber",
+        "protein": "Protein",
+        "caloriesFromFat": "Calories From Fat",
+        "totalFat": "Total Fat (g)",
+        "transFat": "Trans Fat (g)",
+        "cholesterol": "Cholesterol (mg)",
+        "carbohydrates": "Carbohydrates (g)",
+        "saturatedFat": "Saturated Fat (g)",
+        "sugars": "Sugar (g)",
+        "sodium": "Sodium (mg)",
+        "vitaminA": "Vitamin A (%DV)",
+        "vitaminC": "Vitamin C (%DV)",
+        "calcium": "Calcium (%DV)",
+        "iron": "Iron (%DV)",
+        "potassium": "Potassium (mg)",
+        "monounsaturated": "Monounsaturated Fat (g)",
+        "polyunsaturated": "Polyunsaturated Fat (g)",
+        "facts": "Nutrition Facts",
+        "pdf": "Nutrition PDF",
+        "contactUs": "Contact Us"
+    },
+    "products": {
+        "customize": "Customize",
+        "cannotCustomize": "This product can not be customized.",
+        "prices": "Prices",
+        "about": "About",
+        "remove": "Remove",
+        "addTopping": "Add A Topping",
+        "addToMeal": "Add To Meal",
+        "addItem": "Add Item",
+        "addToOrder": "Add Topping To Order",
+        "chooseTopping": "Choose Your Topping",
+        "disclaimer": "Prices and participation may vary. *Approximate weight before cooking. *Fresh beef available in contiguous US and Canada.",
+        "oldFashioned": "Old-Fashioned Hamburgers"
+    },
+    "nutritionXPromoError": "<br/>Oops! An error has occurred.  We are unable to find nutritional information for this product.",
+    "header": {
+        "myWendys": {
+            "loginRequired": "Login Required",
+            "youMustLogin": "You must log in to complete this action."
+        }
+    },
+    "navigation": {
+        "next": "Next",
+        "previous": "Previous"
+    },
+    "socialMedia": {
+        "tweet": "Tweet",
+        "share": "Share",
+        "realTalkAbout": "Real Talk About"
+    },
+    "restaurant": {
+        "closed": "Closed",
+        "open": "Open",
+        "openSoon": "Open Soon",
+        "openLate": "Open Late",
+        "openToday": "Open Today",
+        "servesBreakfast": "Serves Breakfast",
+        "offersWifi": "Offers Wi-fi",
+        "wifi": "Wi-fi",
+        "makeDefault": "Make Default",
+        "defaultLocation": "Default Location",
+        "theWordDefault": "Default",
+        "saveLocation": "Save Location",
+        "open24Hours": "Open 24 Hours",
+        "mobilePaymentsAccepted": "Mobile Payments Accepted",
+        "holidayHoursVary": "Holiday Hours may vary",
+        "saved": "Saved",
+        "find": "Find",
+        "directions": "Directions",
+        "myNearestWendys": "My nearest Wendy's",
+        "noneFound":"No locations match your search criteria.",
+        "storeNumberPrefix":"#"
+    },
+    "login": {
+        "login": "Login",
+        "hasExpiredTitle": "Login has expired",
+        "hasExpiredMessage": "So sorry, it looks like you've been logged out due to inactivity. Click OK to return to the home page and login again."
+    },
+    "security": {
+        "updateCredentialsTitle": "Update Security Credentials",
+        "updateCredentialsMessage": "You need to create a new password. First, enter your old password. Then, choose a security question.",
+        "newPassword": "New Password",
+        "confirmNewPassword": "Confirm New Password",
+        "securityQuestionTitle": "Security Question Field",
+        "securityQuestionMessage": "Security Question is a required field. Please fill in your information and resubmit.",
+        "selectSecurityQuestion": "Select a Security Question",
+        "securityQuestionAnswer": "Security Question Answer",
+        "firstNameRequiredTitle": "First Name Field",
+        "firstNameRequiredMessage": "First name is a required field. Please fill in your information and resubmit.",
+        "lastNameRequiredTitle": "Last Name Field",
+        "lastNameRequiredMessage": "Last name is a required field. Please fill in your information and resubmit.",
+        "dobRequiredTitle": "Date of Birth Field",
+        "dobRequiredMessage": "Date of Birth is a required field. Please fill in your information and resubmit.",
+        "dobInvalidDateMessage": "Date of Birth is not a valid date. Please fill in your information and resubmit.",
+        "zipCodeFormatTitle": "Zip/Postal Code Field",
+        "zipCodeFormatMessage": "Zip/Postal code is a required field. US Zip code must be 5 numeric characters. CA Postal code must be 6 alpha and numeric characters in the following format: X1X 1X1.",
+        "usernameFieldTitle": "Username Field",
+        "usernameFieldMessage": "Username is a required field",
+        "passwordFieldTitle": "Password Field",
+        "passwordFieldMessage": "Password is a required field",
+        "enterExistingPasswordTitle": "Existing Password Field",
+        "enterExistingPasswordMessage": "Please enter your existing password.",
+        "answerFieldTitle": "Answer Field",
+        "answerFieldMessage": "Please fill in your answer.",
+        "memberIDTitle": "Member ID",
+        "memberIDMessage": "Please enter your Member ID.",
+        "agreeToTermsTitle": "Terms and Conditions",
+        "agreeToTermsMessage": "You must agree to the terms and conditions.",
+        "countryFieldTitle": "Country Field",
+        "countryFieldMessage": "Country is a required field. Please fill in your information and resubmit.",
+        "languageFieldTitle": "Language Field",
+        "languageFieldMessage": "Language is a required field. Please fill in your information and resubmit.",
+        "currencyFieldTitle": "Currency Field",
+        "currencyFieldMessage": "Currency is a required field. Please fill in your information and resubmit.",
+
+        "forgotPassword": {
+            "emailFormatTitle": "Email Field",
+            "emailFormatMessage": "Email addresses must be formatted as user@domain.sufix. Only one @ allowed. @ cannot have a period adjacent to it. A max of 100 characters on either side of the @ sign is permitted.",
+            "securityAnswerTitle": "Answer of Security Question Field",
+            "securityAnswerMessage": "Answer of Security Question is a required field. Please fill in your information and resubmit.",
+            "passwordFormatTitle": "Password Fields",
+            "passwordFormatMessage": "Please make sure your password has a minimum of 8 characters and maximum of 20 and uses at least one uppercase letter, one lowercase letter and one number. Feel free to include the following characters: _ - : @ ( ) $ /. Oh, and make sure you can remember it.",
+            "answerFormatTitle": "Security Question",
+            "answerFormatMessage": "Please make sure you answer the security question.",
+            "passwordFormat6": "Please make sure your password has a minimum of 6 characters and maximum of 20 and uses at least one uppercase letter, one lowercase letter and one number. Feel free to include the following characters: _ - : @ ( ) $ /. Oh, and make sure you can remember it.",
+            "checkEmail": "Please check your email to reset your password.",
+            "passwordMatchTitle": "Confirm Password",
+            "passwordMatchMessage": "Please make sure the password confirmation matches your new password.",
+            "enterYourEmail": "Enter your email address that you used to sign up for My Wendy\'s<sup>&trade;</sup> to reset your password."
+        }
+    },
+    "giftCard": {
+        "registerCardLabel": "Register Cards",
+        "registerCardMessage": "Please enter your card number and card pin in the form below to register your card.",
+        "cardNumberLabel": "Your Wendy's Card Number is",
+        "cardPaymentNumberLabel": "Card Payment Number",
+        "invalidGiftCardNumberLabel": "Gift Card Number Field",
+        "invalidGiftCardNumberMessage": "Your Gift Card Number is invalid. Try removing any spaces or letters and resubmit.",
+        "invalidGiftCardPinLabel": "Gift Card Pin Field",
+        "invalidGiftCardPinMessage": "Your Gift Card Pin is invalid. Try removing any spaces or letters and resubmit."
+    },
+    "validateSearch": {
+        "searchTermFieldTitle": "Search Term Field",
+        "searchTermFieldMessage": "Please enter a search term"
+    },
+    "promotionalOffers": {
+        "emailOfferParticipatingLocations": "Please check your email for more details. Offer available only in participating locations. Offer is for one combo per order per day."
+    },
+    "geolocation": {
+        "browserNoGeolocation": "Sorry, your browser does not support Geolocation.",
+        "youRefusedGeolocation": "You previously declined a request to use geo-location on this site. To allow geo-location on this site, please clear your browsers geo-location settings.",
+        "noLocationMatch": "No locations match your search criteria.",
+        "locInfoUnavailable": "Location information is unavailable.",
+        "locRequestTimeout": "The location request has timed out.",
+        "unknownError": "An unknown error occurred.",
+        "whoops": "Whoops!  There was an error during the request",
+        "noLocationsReturned": "Sorry, no locations were returned for this search.",
+        "estimatedDrivingTime": "Estimated Driving Time",
+        "totalDrivingDistance": "Total Driving Distance",
+        "didYouMean": "Did You Mean",
+        "searchPL": "ZIP or City & State",
+        "useCurrentLocation": "Use Current Location",
+        "findInstructions": "Please use search field to enter ZIP or City and State to find locations."
+    },
+    "signIn": {
+        "registerNow": "Register Now",
+        "login": "Login",
+        "username": "Username",
+        "password": "Password",
+        "forgotPassword": "Forgot Password?",
+        "signIn": "Sign In",
+        "error": "Error",
+        "logout": "Logout",
+        "onGiftCards": "on my Wendy's Gift Cards",
+        "buyGiftCards": "on my Wendy's Gift Cards",
+        "onAccount": "on my Digital Payment Account",
+        "copy": "Sign up and receive personalized offers, create and save custom meals, and access saved meals on the My Wendy's™ App",
+        "forgot": {
+            "copy": "Enter your email address that you used to sign up for My Wendy's™ to reset your password.",
+            "emailPlaceholder": "johndoe@email.com",
+            "accountHelp": "Need Account Help?",
+            "answerPlaceholder": "answer",
+            "accountHelpTitle": "Account Help",
+            "accountHelpMessage": [
+                "Enter the email address that you used to sign up for My Wendy's™ and tap SUBMIT to reset your password.",
+                "Answer the security question and hit SUBMIT.",
+                "For further assistance, contact us at 1-877-949-3622."
+            ],
+            "accountHelpFooter": "©2013 Oldemark LLC. One Dave Thomas Boulevard, Dublin, OH 43017"
+        }
+    },
+    "signup": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "dob": "Date of Birth",
+        "legalAge": "(Must be 18yrs or older)",
+        "day": "Day",
+        "month": "Month",
+        "year": "Year",
+        "zipCode": "Zip/Postal Code",
+        "required": "Required",
+        "gender": "Gender",
+        "genderSelect": {
+            "select": "Select",
+            "male": "Male",
+            "female": "Female"
+        },
+        "country": "Country",
+        "countrySelect": {
+            "select": "Select",
+            "us": "United States",
+            "ca": "Canada"
+        },
+        "language": "Language",
+        "languageSelect": {
+            "select": "Select",
+            "chooseLanguage": "Choose your language settings (Canada &mdash; French, Canada &mdash; English, or US &mdash; English). Note that language settings will only determine the language in which Wendy's communications are received.",
+            "en": "English",
+            "fr": "French"
+        },
+        "currency": "Currency for your Payment Account",
+        "currencySelect": {
+            "symbol": "$",
+            "chooseCurrency": "Choose a currency (US or Canadian dollars) for your My Wendy's payment account.  All funds loaded to the account will be converted to your chosen currency.  Once your account is created, the currency choice cannot be changed.",
+            "select": "Select",
+            "usd": "USD",
+            "cad": "CAD"
+        },
+        "membership": {
+            "email": "E-mail Address",
+            "thisBeUsername": "(This will be your username)",
+            "createPassword": "Create Password",
+            "passwordRequirements": "Minimum of 8 characters, maximum of 20, must use at least one uppercase letter, one lowercase letter and one number. Password may also contain the following characters: ! # $ % * / ? ^ ( ) ' { } &amp; + - = _ ",
+            "confirmPassword": "Confirm Password",
+            "selectSecurityQuestion": "Select a Security Question",
+            "select": "Select",
+            "answerSecurityQuestion": "Answer of Security Question",
+            "veteransAdvantageMember": "Veterans Advantage Member?",
+            "whatsThis": "What's This?",
+            "yes": "Yes",
+            "no": "No",
+            "memberId": "Member ID",
+            "yesToMail": "Yes, I want to receive Wendy Mail",
+            "signUpForOffers": "Sign up here to start receiving personalized offers and exciting news.",
+            "ackTermsConditions": "In order to create your online account, please agree to the terms and conditions.",
+            "agreeTermsConditions": "I agree to the terms and conditions.",
+            "realTalk": "Real Talk About",
+            "success": "Success!",
+            "thanks": "Thank you for signing up!"
+        }
+    },
+    "myProfile": {
+        "salutation": "Welcome",
+        "logout": "Log Out",
+        "myAccount": "My Account",
+        "myBalance": "My Balance",
+        "onMyCards": "on my Wendy's Gift Cards",
+        "onAccount": "on my Digital Payment Account",
+        "balanceFootNote": "* Balance shown may be calculated from multiple Gift Cards",
+        "buyCards": "Buy Wendy's Gift Cards",
+        "myMeals": "My Meals",
+        "manageMyMeals": "Manage My Meals",
+        "share": "Share",
+        "editMeal": "Edit This Meal",
+        "myLocations": "My Locations",
+        "manageMyLocations": "Manage My Locations",
+        "makeDefault": "Make Default",
+        "directions": "Directions",
+        "myFoodPreferences": "My Food Preferences",
+        "manageFoodPreferences": "Manage My Food Preferences",
+        "myProfile": "My Profile",
+        "accountInfo": "Account Information",
+        "name": "Name",
+        "postalCode": "Postal Code",
+        "email": "Email Address",
+        "communication": "Communication Preferences",
+        "optIn": [
+            "You are currently receiving ",
+            "Wendy Mail"
+        ],
+        "optOut": [
+            "Looks like you're not receiving WendyMail yet. ",
+            "Click here",
+            " to get the latest from Wendy's."
+        ],
+        "editProfile": "Edit\u00A0Profile",
+        "asOfToday": "as of TODAY at"
+
+
+    },
+    "editprofile": {
+        "required": "Required",
+        "changeMyPassword": "I want to change my password",
+        "existingPassword": "Existing Password",
+        "newPassword": "New Password",
+        "confirmNewPassword": "Confirm New Password",
+        "loginToEdit": "Log in to edit you profile",
+        "updated": "Your profile has been updated",
+        "forgot": {
+            "forgotPassword": "Forgot Your Password?",
+            "completeForm": "Please complete the the form below to reset your password.",
+            "email": "Enter your email address that you used to sign up for My Wendy's",
+            "toReset": "to reset your password.",
+            "createNewPassword": "Create New Password",
+            "passwordChanged": "Your password has successfully been changed."
+        }
+    },
+    "unsubscribe": {
+        "title": "Unsubscribe",
+        "form": {
+            "body": "To stop receiving communications from Wendy's, please fill out the information below.",
+            "emailLabel": "e-mail address",
+            "emailSubLabel": "Your My Wendy's Username",
+            "required": "Required"
+        },
+        "success": {
+            "header": "We're sorry to see you go.",
+            "body": "You have been unsubscribed and will no longer receive updates from this service.",
+            "continue": "Click to return to Wendy's.com"
+        },
+        "error": {
+            "header": "There were problems with your entry.",
+            "body": "Please make Corrections and try again:"
+        }
+    },
+    "translation": {
+        "preNav": {
+            "title": "Not so fast!",
+            "body": "The page you need currently isn’t available for your region or language. What would you like to do?",
+            "stay": "Keep Me Here",
+            "continue": "That’s Ok. Let’s go!"
+        },
+        "postNav": {
+            "title": "Oops!",
+            "body": "Looks like there’s been a bit of a mix up. This page may include content not yet available in your selected language. What would you like to do?",
+            "continue": "Let’s Stay Here",
+            "back": "Take Me Back"
+        }
+    },
+    "careers": {
+				"form": {
+					"state": "state",
+					"province": "province",
+					"miles": "miles",
+					"mile": "mile",
+					"kilometers": "kilometers",
+					"kilometer": "kilometer",
+					"incomplete": "Please complete all required fields and try again."
+				},
+        "search": {
+            "country": "Country",
+            "state": "State/Province",
+            "city": "City",
+            "category": "Category",
+            "keyword": "Keyword",
+            "keywordPL": "Enter a keyword",
+            "radius": "Radius",
+            "required": "Required",
+            "ambiguous": "Did you mean...",
+            "results": "Search Results",
+            "near": "near",
+            "selectCategory": "Select a category below to view jobs.",
+            "sortedByDistance": "Results sorted by distance from search location.",
+            "noResults": "Sorry, no results match your criteria.",
+            "loading": "Loading...",
+            "refineSearch": "Refine Your Search",
+            "quickSearches": "Quick searches",
+            "for": "for",
+            "notIn": "Not in",
+            "changeLocation": "Change Location",
+            "viewDetails": "View Details",
+            "disclaimer": "If you do not see a particular location listed, it may be one of our many franchised locations. Independently owned and operated, Wendy's franchise organizations determine their compensation, benefit and career programs which may vary from company-owned locations."
+        },
+				"posting": {
+					"returnToResults": "Return to Search Results",
+					"applyNow": "Apply\u00A0Now",
+					"jobTitle": "Full Job Title",
+					"location": "Location",
+					"refNumber": "Reference Number",
+					"disclaimer": "If you do not see a particular location listed, it may be one of our many franchised locations. Independently owned and operated, Wendy's franchise organizations determine their compensation, benefit and career programs which may vary from company-owned locations."
+				},
+        "categories": {
+            "all": "All Categories",
+            "cro": "Crew Positions",
+            "rmo": "Restaurant Operations",
+            "cfo": "Corporate and Field Support"
+        },
+        "ourCulture": "Our Culture",
+        "theTeam": "The Team",
+        "careerAdvancement": "Career Advancement",
+        "benefits": "Benefits"
+    },
+    "dma":{
+    	"learnMoreIn":"See what's fresh at a Wendy's near ",
+    	"dmaName":"you"
+    }
+};

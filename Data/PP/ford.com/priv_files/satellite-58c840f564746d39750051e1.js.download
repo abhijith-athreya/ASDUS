@@ -1,0 +1,42 @@
+_satellite.pushAsyncScript(function(event, target, $variables){
+  if (_satellite.getVar('dcm:cat')) {
+    
+    var axel = Math.random() + "";
+    var a = axel * 10000000000000;
+    
+    var params = [];
+    params.push({name: 'src', value: '690327'});
+    params.push({name: 'type', value: 'fvflup'});
+    params.push({name: 'cat', value: _satellite.getVar('dcm:cat')});
+    params.push({name: 'u1', value: _satellite.getVar('dart-u1-nameplate')});
+    params.push({name: 'u2', value: _satellite.getVar('dart-u2-fid')});
+    params.push({name: 'u3', value: _satellite.getVar('dart-u3-mcid')});
+    params.push({name: 'u9', value: _satellite.getVar('dart-u9-model-year-nameplate')});
+    params.push({name: 'u12', value: _satellite.getVar('dart-u12-cks-lead-id')});
+    params.push({name: 'u14', value: _satellite.getVar('dart-u14-fdaf-code')});
+    params.push({name: 'u15', value: _satellite.getVar('dart-u15-user-language-rad-ui')});
+    params.push({name: 'u17', value: _satellite.getVar('dart-u17-site')});
+    params.push({name: 'u19', value: _satellite.getVar('dart-u19-page-name-no-vehicle')});
+    params.push({name: 'u20', value: _satellite.getVar('dart-u20-url')});
+    params.push({name: 'ord', value: a});
+    
+    
+    var paramString = '';
+    
+    for (var i = 0; i < params.length; i++) {
+        var param = params[i]
+        if (!param.value || param.value == '') {
+            param.value = 'na'
+        }
+        paramString += ';' + param.name + '=' + param.value
+    }
+
+    var newIFrame=document.createElement('iframe');
+    newIFrame.src='https://fls.doubleclick.net/activityi' + paramString + '?';
+    newIFrame.width="1";
+    newIFrame.frameborder="0";
+    newIFrame.height="1";
+    document.body.appendChild(newIFrame);
+}
+
+});

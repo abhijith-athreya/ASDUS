@@ -1,0 +1,89 @@
+// will be moved to frontend
+function getContext(elem) {
+  var objs = []
+  objs.push(getBiContext(elem))
+  var parent = elem.parentElement
+  while (parent) {
+    objs.push(getBiContext(parent))
+    parent = parent.parentElement
+  }
+  var result = {}
+  objs.reverse().forEach(function(obj) {
+    Object.keys(obj).forEach(function(key) {
+      result[key] = obj[key]
+    })
+  })
+
+  return result
+
+  function getBiContext(elem) {
+    var context = elem.getAttribute('data-bi-context')
+    if (context) {
+      return JSON.parse(context)
+    } else {
+      return {}
+    }
+  }
+}
+
+var _dataInt = [];
+
+function getInteractive(el) {
+  var interactive = el.getAttribute('data-bi-interactive');
+  if (interactive) {
+    _dataInt = interactive.split(" / ");
+  } else if (interactive == 'null') {
+    var interactive = el.parentNode.getAttribute('data-bi-interactive');
+    _dataInt = interactive.split(" / ");
+  } else {
+    console.log("all failed");
+  }
+  for (var i = 0; i < _dataInt.length; i++) {
+    _dataInt[i] = _dataInt[i].trim()
+  }
+  return _dataInt
+}
+
+function modalGather() {
+  if (modalDetails) {
+    if (location.search.indexOf('focusId') > -1) {
+      // schedule modal
+      var focusId = location.search.split('=')[1];
+      if (focusId) {
+        _satellite.setVar('focusId', focusId);
+        modalDetails.focusId = focusId;
+      }
+      var vidTitle = typeof document.getElementsByClassName('components/OverlayHero--title')[0] !== 'undefined' ? document.getElementsByClassName('components/OverlayHero--title')[0].innerText : '';
+      _satellite.setVar('vidTitle', vidTitle);
+      modalDetails.vidTitle = vidTitle;
+      var seriesTitle = typeof document.getElementsByClassName('components/OverlayHero--seriesTitle')[0] !== 'undefined' ? document.getElementsByClassName('components/OverlayHero--seriesTitle')[0].innerText : '';
+      if (seriesTitle) {
+        var titleDetails = typeof document.getElementsByClassName('components/OverlayHero--title')[0].nextElementSibling !== 'undefined' ? document.getElementsByClassName('components/OverlayHero--title')[0].nextElementSibling.innerText : '';
+        var fullVidDetails = vidTitle + seriesTitle + titleDetails;
+        modalDetails.seriesTitle = seriesTitle;
+        modalDetails.titleDetails = titleDetails;
+        modalDetails.fullVidDetails = fullVidDetails;
+      }
+    } else if (document.getElementsByClassName('modules/VideoPlayerOverlay--modalPlayerDetail').length > 0){
+      // modal video player
+      var modalTitle = document.getElementsByClassName('modules/VideoPlayerOverlay--modalPlayerDetail')[0].innerText.indexOf(':') < 0 ? document.getElementsByClassName('modules/VideoPlayerOverlay--modalPlayerDetail')[0].innerText.toLowerCase() : document.getElementsByClassName('modules/VideoPlayerOverlay--modalPlayerDetail')[0].innerText.replace(':', '').toLowerCase();
+      modalDetails.modalTitle = modalTitle;
+      timeEl = document.getElementsByClassName('modules/VideoPlayerOverlay--modalPlayer')[0].firstChild.firstChild.firstChild.childNodes[1].childNodes[1].firstChild.childNodes[1].childNodes[0];
+      titleEl = document.getElementsByClassName('modules/VideoPlayerOverlay--modalPlayer')[0].firstChild.firstChild.firstChild.childNodes[1].childNodes[1].firstChild.childNodes[1].childNodes[1];
+      var vidTitle = titleEl.innerText.replace(/(-|:)/g,'').toLowerCase();
+      modalDetails.vidTitle = vidTitle;
+      var vidMin = timeEl.innerText.split(':').length > 2 && timeEl.innerText.split(':')[0] == '1' ? parseInt(timeEl.innerText.split(':')[1]) + 60: parseInt(timeEl.innerText.split(':')[0]);
+      modalDetails.vidMin = vidMin;
+      sec = timeEl.innerText.split(':').length > 2 && timeEl.innerText.split(':')[0] == '1' ? parseInt(timeEl.innerText.split(':')[2]): parseInt(timeEl.innerText.split(':')[1]);
+      vidSec = vidMin * 60 + sec;
+      modalDetails.vidSec = vidSec;
+    } else {
+      // streaming overlay
+      var vidTitle = typeof document.getElementsByClassName('components/OverlayHero--title')[0] !== 'undefined' ? document.getElementsByClassName('components/OverlayHero--title')[0].innerText : '';
+      _satellite.setVar('vidTitle', vidTitle);
+      modalDetails.vidTitle = vidTitle;
+      var parent = location.pathname.split('/')[1];
+      modalDetails.page = parent;
+    }
+  }
+}

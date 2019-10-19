@@ -1,0 +1,206 @@
+/*global resets that we need to declare since they may be missing on some pages  */
+.mlb-bar, .mlb-overlay {font:14px Helvetica, Arial, "Lucida Grande", sans-serif;line-height:1.4em;color:#000;}
+.mlb-bar ul, .mlb-bar li, .mlb-bar div{margin:0;padding:0;zoom:1;}
+.mlb-bar li{list-style:none;}
+
+/* common stuff we can reuse */
+.clrfix{zoom:1;}
+.clrfix:after{content:".";display:block;height:0;width:0;line-height:0;font-size:0px;clear:both;visibility:hidden;}
+.hide {display: none;}
+.nav dl.list dd{list-style-type:none;background:url(/images/icons/bullet_square_black.gif) 7px 7px no-repeat;padding-left:14px;margin-bottom:7px;}
+.nav .ds {box-shadow: 6px 4px 8px -5px rgba(0, 0, 0, 0.4); -moz-box-shadow: 6px 4px 8px -5px rgba(0, 0, 0, 0.4); -webkit-box-shadow: 6px 4px 8px -5px rgba(0, 0, 0, 0.4);}
+
+/* container */
+#top-content-container {z-index:4;position:relative;background:#262626;color:#909090;border-bottom:2px solid #425661;height:29px;}
+#top-content.mlb-bar {width:990px;margin:0 auto;}
+#top-content .container {float:right;}
+#top-content li.last {border: 0;}
+#top-content {position:relative;}
+
+/* language navigation */
+.mlb-bar #lang-nav {float: left;margin: 9px 0 0 7px;}
+.mlb-bar #lang-nav li {float:left;font-size:77%;padding:0 3px;line-height: 1.2em;border-right:1px solid #909090;}
+.mlb-bar #lang-nav li.last {border:none;}
+.mlb-bar #lang-nav li a {color:#909090; text-decoration:none;}
+.korean {background: url("/images/global/global_account_bar.png") 50% -88px no-repeat; width: 30px;text-indent: -9999px; overflow: hidden; display:block;}
+
+/* search box */
+.mlb-bar #search_container {float: left;margin: 2px 0 0 0;}
+#top-content .search #query_text1 {z-index:5000;}
+ul.ui-autocomplete {background: #ffffff; /* old browsers */background: -moz-linear-gradient(top, #FFFFFF 0%, #E5E5E5 57%); /* firefox */background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(57%,#E5E5E5)); /* webkit */}
+.mlb-bar #search_container .search {border:1px solid #2b2b2b;background-color: rgb(0, 0, 0);background-color: rgba(0, 0, 0, 0.2);position:relative;left:0px;top:1px;width:203px; white-space:nowrap; height:22px;-moz-border-radius: 3px;border-radius: 3px;}
+.mlb-bar #search_container .search #query_text1 {color:#7e7d7d; font-size:85%;}
+.mlb-bar #search_container .search input {background:transparent}
+.mlb-bar #search_container .search #search_button {color:#ffffff;border:none;background:url(/images/global/global_account_bar.png) center -39px; }
+.mlb-bar #search_container .search input {background-color:transparent;}
+.mlb-bar #search_container .search #query_text1 {cursor:pointer;position:absolute;height:14px;width:164px;left:6px;margin-top:3px;border:0;margin-top:4px; }
+.mlb-bar #search_container .search #search_button {cursor:pointer;height:23px;width:26px;display:inline;float:left;margin-left:176px;}
+.mlb-bar #search_container .search .auto_complete {height:22px;clear:both;display:block;}
+
+/* top level nav */
+#top-content .nav li {float:left; color: #c8c8c8; font-size:85%;padding: 0;line-height:2.6em; margin:0px 4px;}
+#top-content .nav a:link,#top-content .nav a:visited, #top-content .nav a:hover, #top-content .nav a:active {color: #c8c8c8;text-decoration: none;line-height: 2.65em;display: block;}
+#top-content .nav .hd {text-transform: uppercase;}
+
+/* community*/
+.mlb-bar #com-nav {float: left;margin-right: 14px;}
+
+/* return to mlb */
+#header-return     {float:left;padding-right:10px;font-size:75%;line-height:2.5em;text-transform:uppercase;}
+#header-return a   {display:block;color:#c8c8c8;text-decoration:none;}
+#header-return img {vertical-align:middle;}
+
+/* bigdoor*/
+#top-content #bd-nav-container {margin-top: 7px;position:relative;width:auto;}
+/* overriding big door styles */
+#bd-nav-container #bd-navbar {position: relative;right:0;}
+
+/* login/register */
+.mlb-bar #login-nav {float:left;*width:151px;display:block;font:14px mlb_primary;padding-left: 14px;}
+.mlb-bar #login-nav a {font-family:mlb_primary;}
+.mlb-bar #login-nav.load {min-width: 134px;*width:151px;}
+.mlb-bar #login-nav.logged-in {*width:185px;*min-width:185px;}
+.nav.load {background: none;}
+#top-content .nav.load a, .nav.load a, #login-nav.load .fb {display: none;}
+.nav .login-lnk {float:left;}
+#login-nav .fb {background: url(/shared/images/icons/facebook_sprite.png) -20px bottom no-repeat;display: block;width: 29px;float: right;height: 18px;margin: 5px 0px 0 7px;border-right: 1px solid gray;}
+
+/* login/register -- IE7 */
+.ie7 .mlb-bar #login-nav li.hd.last {margin-left:40px;}
+.ie7 #login-nav .fb {float: left;height: 18px;position:absolute; top:0px;}
+
+/* account navigation - logged in */
+#top-content .nav #account-nav {position: relative;width: auto; margin-right: -1px;}
+.wideView #top-content .nav #account-nav {margin-right: 3px;}
+#profile-lnk {color: #fff;padding: 0 0 0 3px;}
+#profile-lnk .name {max-width: 170px;display:block;float:left;line-height:12px;margin-top:10px;overflow:hidden;}
+.team #profile-lnk .name {display:inline;}
+#account-nav.fb-share-off .name, #account-nav.fb-share-on .name, .team #profile-lnk .name {margin-top:4px;}
+#profile-lnk .arw {display:block;background: url(/images/global/global_account_bar.png) right -123px no-repeat;display: block;width: 30px;float: right;height: 29px;margin-left: 4px;}
+#profile-lnk .profile-pic {display: block;float: left;margin: 4px 4px 4px 0;}
+#account-nav.open .arw {background-color: #1f5a97; }
+#account-nav.open {background-color: #000; }
+#account-nav .drop {width: 175px;display: none;position:absolute; background: #1f5a97; padding: 7px 10px 7px;top:29px;right:0;}
+#account-nav .drop li {font-size: 100%;float: none;line-height: 1.5em;text-align: left;}
+#account-nav .drop li:hover {background:#6281a7;}
+#account-nav .drop .divider {border-top: 1px solid #163860;border-bottom: 1px solid #6281a7; width: 170px;margin: 5px 0;*height:1px;*font-size:0px;}
+#top-content #account-nav .drop li a {color: #fff;display: block;margin-left: 20px;line-height: 1.8em;}
+#top-content #account-nav .drop li a:hover {color: #003366;}
+
+/* fb share */
+#account-nav.fb-share-off #profile-lnk .profile-pic{opacity:.5}
+#profile-lnk #state-msg {font-style:normal;display:block;font-size:10px;}
+.team #profile-lnk #state-msg {display:inline;}
+.team #profile-lnk #state-msg::before {
+  content: " - ";
+ }
+#top-content #account-nav.fb-share-on #fb-share-setting {margin-left:0;}
+.ie7 #account-nav .check, .ie8 #account-nav .check {font-family: Arial unicode MS, Arial, Geneva, sans-serif;}
+#account-nav.fb-share-off .check {display:none;padding-right:0;}
+#account-nav.fb-share-on .check {display:inline;padding-right:10px;}
+#top-content #account-nav .drop li .fb-privacy {margin-left:35px;font-style:italic;}
+
+/* login overlay styles */
+.mlb-overlay { height: 390px; width: 700px; padding: 0;}
+.mlb-overlay h4 {color: #666; font: normal 123.1%/25px mlb_secondary;margin:0;padding:0;}
+.mlb-overlay .column {float: left;}
+
+/* columns */
+.mlb-overlay .col1 { background: #fff; width: 395px; min-height: 380px; *height: 380px; margin: 3px 0 0 17px; padding-top: 10px;box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2); -moz-box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2); -webkit-box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);}
+.mlb-overlay .col2 {color: #333; width: 230px;margin: 12px 0 0 25px;}
+
+/* register column */
+.mlb-overlay .col2 h4 {margin-bottom: 14px;}
+.mlb-overlay .col2 .list {margin-top: 40px;}
+.mlb-overlay .col2 .list dt {font-size:93%; margin-bottom: 10px;}
+.mlb-overlay .col2 .list .last {background: none;}
+.mlb-overlay .col2 a {font-weight: bold;}
+.fb-link { margin: 25px 0 12px;}
+#login-mod-lnk {display:block; text-align:center;margin-right: 45px; }
+
+/* form styles - need to find out was it out on the site that can be re-used */
+.mlb-form-wrap, .fb-connect { padding:  0 0 0 17px; }
+.mlb-form-wrap { position: relative; }
+fieldset {border:0;}
+.form-messages {color:#f00; padding: 2px 0 18px; font-weight: normal;}
+.form-messages p {padding: 0 4px; line-height: 1.25em; }
+.form-field { margin:0 0 18px; }
+.form-field label { color: #999; font-size: 93%; display:block; width: 60px; float: left; text-align: right; padding-right: 20px; line-height: 2em;}
+.form-field label.multi { line-height: 1.1em;}
+.form-field.error label { color:#f00; font-weight: normal;}
+.form-field .input { border:1px solid #999; padding:4px; width:235px; }
+.form-field .input.error { color: #000; font-weight: normal;}
+.form-field input.input { font-size:93%; }
+.form-field .input-select { font-size: 93%; width: auto; }
+.form-actions { text-align: right; margin: 20px 60px 0 0;}
+.form-actions a {font-size: 85%;margin-right: 20px;line-height: 3.5em; vertical-align: middle;}
+.submit-btn { min-width:100px; *width:75px; float:right; margin:0; cursor: pointer; }
+
+.mlb-overlay .col1 .form-actions { width: 225px; margin:0 0 0 100px;}
+.mlb-overlay .col1 .fb-connect { margin: 14px 0 0 80px; }
+.mlb-overlay .col1 .get-pswd { float: left; }
+
+/* jqueryUI dialog overrides for the overlay */
+.ui-widget-overlay { background: black url(/shared/style/images/ui-bg_flat_0_000000_40x100.png) 50% 50% repeat-x;opacity: .50;}
+/* name spaced for dialog only */
+.ui-widget.mlb-dialog {
+    font-size: 100%;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top,  #ffffff 0%, #dedede 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#dedede)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #ffffff 0%,#dedede 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #ffffff 0%,#dedede 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #ffffff 0%,#dedede 100%); /* IE10+ */
+}
+.mlb-dialog .ui-widget-header {border: 0;background: none;}
+.mlb-dialog .ui-widget-header .ui-icon {width: 30px;height: 30px;background: url("/images/global/global_account_bar.png") 0 0 no-repeat;}
+.ui-widget-content.mlb-dialog a {color: #0066cc;}
+
+/* dialog widget only */
+.mlb-dialog .ui-dialog-title {display:none}
+.ui-dialog.mlb-dialog {overflow: visible;}
+.ui-dialog.mlb-dialog .ui-dialog-titlebar-close {right: -8px; top: 50%; margin: -20px 0 0 0;}
+.ui-dialog.mlb-dialog .ui-dialog-titlebar-close.ui-state-hover {background: none;border-color:transparent;}
+
+/* misc */
+.mlb-overlay .loadingMask{display:none;position: absolute; background:#fff url(/images/loading.gif) no-repeat center center; z-index:999999; text-align:center; min-height: 363px;height: 363px; width: 378px;border: none;}
+.mlb-overlay .divider { text-align: center; font-size: 85%;  color: #a3a3a3; text-transform: uppercase;margin: 7px 60px 7px 0; float: none; line-height: 1.4em;}
+
+/* page specific overrides */
+#top-content-container.gameday {background:none;border:0;z-index:99;}
+
+/* MLB.com specific header styles */
+.mlb #header {
+    height: 86px;
+}
+.mlb #top-content-container {
+  background: linear-gradient(to bottom, #FAFAFA 0%, #D6D6D6 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+  border-bottom: 1px solid #484F57;
+  color: #333333;
+  height: 37px;
+}
+.mlb .mlb-bar #lang-nav li a {
+  color: #333333;
+  text-decoration: none;
+}
+.mlb .mlb-bar #search_container .search {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid #CCCCCC;
+}
+.mlb #top-content .nav a:link, 
+.mlb #top-content .nav a:visited, 
+.mlb #top-content .nav a:hover, 
+.mlb #top-content .nav a:active {
+  color: #333333;
+}
+.mlb .mlb-bar #search_container {
+  float: left;
+  margin: 6px 0 0;
+}
+.mlb .mlb-bar #lang-nav {
+  float: left;
+  margin: 12px 0 0 7px;
+}
+.mlb .mlb-bar #login-nav {
+  margin-top: 3px;
+}

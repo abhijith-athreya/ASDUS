@@ -1,0 +1,141 @@
+(function(){
+var HasPrebidTTLMS = 15 * 60 * 60 * 1000;
+var NoBidTTLMS = 3 * 60 * 60 * 1000;
+var BackupCache = {};
+var InflightRequests = {};
+
+var AudienceNetworkPrebid = function(placementID) {
+  this._placementID = placementID;
+};
+AudienceNetworkPrebid.prototype._getKey = function() {
+  return 'adnw_prebid:' + this._placementID;
+};
+
+AudienceNetworkPrebid.prototype._tryGetToken = function() {
+  var contents = null;
+  try {
+    contents = window.localStorage.getItem(this._getKey());
+  } catch (e) {
+    contents = BackupCache[this._getKey()];
+  }
+  if (contents) {
+    contents = JSON.parse(contents);
+    if (contents.hasToken) {
+      if (contents.createdTime > Date.now() - HasPrebidTTLMS) {
+        return contents.token;
+      }
+
+    } else {
+      if (contents.createdTime > Date.now() - NoBidTTLMS) {
+        return contents.token;
+      }
+    }
+  }
+
+  return null;
+};
+
+AudienceNetworkPrebid.prototype._tryStoreToken = function(token) {
+  var value = JSON.stringify({
+    hasToken: (token !== 'nobid'),
+    token: token,
+    createdTime: Date.now(),
+  });
+  try {
+    window.localStorage.setItem(this._getKey(), value);
+  } catch (e) {
+    BackupCache[this._getKey()] = value;
+  }
+};
+
+AudienceNetworkPrebid.prototype.getProfile = function(onProfileComplete) {
+  var requestData = {
+    placementid: this._placementID,
+  };
+  var token = this._tryGetToken();
+  if (token) {
+    if(onProfileComplete){
+    	onProfileComplete({
+      		token: token,
+    	});
+    }
+    return;
+  }
+
+  var onError = function () {
+    onProfileComplete({
+      token: 'nobid',
+    });
+  };
+
+  var onLoad = function (responseText) {
+    var response = JSON.parse(responseText);
+    var prebidToken = 'nobid';
+    if (
+      typeof response === 'object'
+      && typeof response.token === 'string'
+    ) {
+      prebidToken = response.token;
+    }
+    this._tryStoreToken(prebidToken);
+    try {
+      onProfileComplete({
+        token: prebidToken,
+      });
+    } catch (e) {
+    }
+  };
+
+  try {
+    var requests = InflightRequests[this._getKey()];
+    if (!requests) {
+      requests = [];
+      InflightRequests[this._getKey()] = requests;
+    }
+    requests.push({
+      onError: onError,
+      onLoad: onLoad,
+    });
+
+    if (requests.length > 1) {
+      return;
+    }
+    var xhr = new XMLHttpRequest();
+    if (!('withCredentials' in xhr)) {
+      onError();
+      return;
+    }
+    xhr.open('POST', 'https://an.facebook.com/v1/prebid.json', true);
+    xhr.withCredentials = true;
+    xhr.setRequestHeader(
+      'Content-type',
+      'application/x-www-form-urlencoded'
+    );
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        InflightRequests[this._getKey()] = [];
+        requests.forEach(function(request) {
+          if (xhr.status === 200) {
+            request.onLoad.apply(this, [xhr.responseText]);
+          } else {
+            request.onError.apply(this);
+          }
+        }.bind(this));
+      }
+    }.bind(this);
+    var params = [];
+    Object.keys(requestData).forEach(function(key) {
+      var value = requestData[key];
+      params.push(encodeURIComponent(key) +
+        '=' +
+        encodeURIComponent(value)
+      );
+    });
+    xhr.send(params.join('&'));
+  } catch (ignore) {
+    onError();
+  }
+}
+
+window.AudienceNetworkPrebid = AudienceNetworkPrebid;
+})();

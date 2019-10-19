@@ -1,0 +1,24 @@
+$('a[data-track="topNav"]').on('click',function(){
+    var val = $(this).attr('data-at');
+	/* 	
+		eVar12 - Link Name
+		eVar38 - Link Type
+		evar67 - Content Engagement Type
+		prop67 - Content Engagement Type
+		event19 - Link Clicks
+	*/
+    var s = _satellite.getToolsByType('sc')[0].getS();
+		
+  	s.linkTrackVars = 'events,eVar12,eVar21,eVar38,eVar67,prop12,eVar20,prop20,prop21,prop38,prop67,eVar60,prop60';
+    s.events='event19';
+    s.eVar12 = s.prop12 = val;
+		s.eVar20 = s.prop20 = _satellite.getVar("core-global-marketId-js");
+  	s.eVar21 = s.prop21 = _satellite.getVar('core-global-pagename-js');
+    s.eVar38 = s.prop38 = val.split(':')[0];
+  	s.eVar67 = val.split(':')[0];
+  	s.prop67 = val.split(':')[0];
+  	s.eVar60 = s.prop60 = "web:"+_satellite.getVar("core-global-marketId-js");
+    s.tl(this,'o',val);
+  	//s.clearVars();
+	
+});

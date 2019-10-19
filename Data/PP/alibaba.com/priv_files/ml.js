@@ -1,0 +1,1 @@
+landing8978252(['http://cmap.alibaba.com/criteo.gif','http://cmap.alibaba.com/landing.gif'])

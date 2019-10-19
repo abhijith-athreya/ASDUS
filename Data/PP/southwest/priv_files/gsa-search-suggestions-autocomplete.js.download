@@ -1,0 +1,11 @@
+$(document).ready(function(){var b=$("#swa-header--search-input");
+var a=$("#searchCustomerServiceKeywords");
+var c="https://"+$(location).attr("host")+"/search/suggestions/";
+options={url:c,getValue:"name",list:{match:{enabled:true}},requestDelay:500,minCharNumber:3};
+$(".gsa-search-header").click(function(){setTimeout(function(){var d=$("#swa-header--search-input");
+d.gsaAutocomplete(options);
+d.focus()
+},100)
+});
+if(a){a.gsaAutocomplete(options)
+}});

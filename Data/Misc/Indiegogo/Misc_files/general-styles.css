@@ -1,0 +1,435 @@
+/**
+ * IGG general Visual Composer styles
+ *
+ * @since 1.0.0
+ *
+ * @package IGG Visual Composer Add Ons
+ */
+
+/* Utility Classes
+--------------------------------------------- */
+
+.overflow-hidden {
+	overflow: hidden;
+}
+
+/* Rows & Columns
+--------------------------------------------- */
+
+.entry-content > .wpb_row,
+.page-banner + .site-inner .entry-content > .wpb_row:not(.has-bg-image) {
+	margin-bottom: 0;
+	padding: 35px 0;
+}
+
+/* Don't pad top of first row after entry-title */
+.entry-header + .entry-content > .wpb_row:first-child:not(.has-bg-image) {
+	padding-top: 0;
+}
+
+/* Don't pad rows/columns containing only a Hero Banner */
+.wpb_row.hero-row {
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+.hero-row .wpb_column {
+	margin-bottom: 0 !important;
+}
+
+.entry-content > .wpb_row > .wpb_column,
+.entry-content > .wpb_row > .wpb_column .wpb_row > .wpb_column  {
+	margin-bottom: 3em;
+}
+
+.entry-content > .wpb_row > .wpb_column:last-child,
+.entry-content > .wpb_row > .wpb_column .wpb_row > .wpb_column:last-child {
+	margin-bottom: 0;
+}
+
+/* Fix for VC inserting empty .vc_row-full-width div's after every row */
+.wpb_row + .vc_row-full-width:last-child:empty {
+	margin-top: -35px;
+}
+
+.vc_col-sm-3 {
+	font-size: 16px;
+}
+
+.vc_col-sm-3 img {
+	max-width: 145px;
+}
+
+.vc_col-sm-4 {
+	font-size: 18px;
+}
+
+.vc_col-sm-3 h3 {
+	margin-bottom: 0.5em;
+}
+
+.vc_col-sm-8 {
+	font-size: 18px;
+}
+
+.wpb_row.align-center {
+	text-align: center;
+}
+
+.wpb_row.narrow .vc_col-sm-12 {
+	padding-right: 10%;
+	padding-left: 10%;
+}
+
+.wpb_single_image img {
+    vertical-align: top;
+    height: auto;
+    max-width: 100%;
+}
+
+.vc_col-has-fill>.vc_column-inner, .vc_row-has-fill+.vc_row-full-width+.vc_row>.vc_column_container>.vc_column-inner, .vc_row-has-fill+.vc_row>.vc_column_container>.vc_column-inner, .vc_row-has-fill+.vc_vc_row>.vc_row>.vc_vc_column>.vc_column_container>.vc_column-inner, .vc_row-has-fill+.vc_vc_row_inner>.vc_row>.vc_vc_column_inner>.vc_column_container>.vc_column-inner, .vc_row-has-fill>.vc_column_container>.vc_column-inner, .vc_row-has-fill>.vc_row>.vc_vc_column>.vc_column_container>.vc_column-inner, .vc_row-has-fill>.vc_vc_column_inner>.vc_column_container>.vc_column-inner {
+	padding-top: 0;
+}
+
+.wpb_button, .wpb_content_element, .wpb_row, ul.wpb_thumbnails-fluid>li {
+	margin-bottom: 35px;
+}
+
+.wpb_button, .wpb_column>.vc_column-inner >.wpb_wrapper>:last-child {
+	margin-bottom: 0;
+}
+
+/* Full Width Rows
+--------------------------------------------- */
+
+.full-width,
+.has-bg-image {
+	zoom: 1;
+	background-size: cover;
+	background-position: 50% 50%;
+}
+
+.entry-content .full-width.has-bg-image {
+	padding-top: 6%;
+	padding-bottom: 6%;
+}
+
+/* Full Width Rows
+--------------------------------------------- */
+
+.bg-parallax-parent {
+	color: #fff;
+}
+
+.parallax[data-direction="none"] + .vc_row .parallax-inner {
+	-webkit-transform: none !important;
+	   -moz-transform: none !important;
+	    -ms-transform: none !important;
+	     -o-transform: none !important;
+	        transform: none !important;
+}
+
+/* Colors
+--------------------------------------------- */
+
+.dark-text,
+.dark-text h1,
+.dark-text h2,
+.dark-text h3,
+.dark-text h4,
+.dark-text h5,
+.dark-text h6 {
+	color: #2A2A2A;
+}
+
+.light-text,
+.light-text h1,
+.light-text h2,
+.light-text h3,
+.light-text h4,
+.light-text h5,
+.light-text h6,
+.light-text .sailthru-form .sailthru-widget-label {
+	color: #fff;
+}
+
+.medium-text,
+.medium-text h1,
+.medium-text h2,
+.medium-text h3,
+.medium-text h4,
+.medium-text h5,
+.medium-text h6 {
+	color: #a8a8a8;
+}
+
+/* Resources
+--------------------------------------------- */
+
+.resources {
+	/*font-family: 'Benton Sans Medium', sans-serif;*/
+	font-size: 16px;
+}
+
+.resources h2,
+.resources h3 {
+	/*font-family: 'Benton Sans Medium', sans-serif;
+	color: #6a6a6a;*/
+}
+
+.resources p {
+	margin-bottom: 1em;
+}
+
+/* Stats
+--------------------------------------------- */
+
+.stats {
+	font-size: 24px;
+}
+
+.stats h3 {
+	/*font-family: 'Benton Sans Medium', sans-serif;*/
+	font-size: 22px;
+	font-weight: bold !important;
+}
+
+/* Media Queries
+--------------------------------------------- */
+
+@media (max-width: 767px) {
+
+	.vc_row.border-separator {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.vc_row.border-separator .wpb_column {
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	.extra-padding .vc_column_container {
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+
+	.entry-content > .wpb_row.child-count-5.full-width > .wpb_column .wpb_row.equal-width-children.child-count-3.border-separator > .wpb_column {
+		margin-bottom: 0;
+	}
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+
+	.vc_col-sm-3 {
+		float: left;
+		width: 50%;
+	}
+
+	.vc_col-sm-3:nth-child( 2n + 1 ) {
+		clear: both;
+	}
+
+	.vc_row.extra-padding.equal-width-children .vc_col-sm-3,
+	.vc_row.extra-padding.equal-width-children.border-separator .vc_col-sm-3 {
+		padding-left: 7%;
+		padding-right: 7%;
+	}
+
+	.vc_row.extra-padding.equal-width-children .vc_col-sm-3:nth-child( 2n ),
+	.vc_row.extra-padding.equal-width-children.border-separator .vc_col-sm-3:nth-child( 2n ) {
+		padding-right: 0;
+	}
+
+	.vc_row.extra-padding.equal-width-children .vc_col-sm-3:nth-child( 2n + 1 ),
+	.vc_row.extra-padding.equal-width-children.border-separator .vc_col-sm-3:nth-child( 2n + 1 ) {
+		padding-left: 0;
+	}
+
+	.vc_row.extra-padding.equal-width-children.child-count-4 {
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+
+@media (min-width: 600px) {
+
+	.entry-content > .wpb_row,
+	.page-banner + .site-inner .entry-content > .wpb_row:not(.has-bg-image) {
+		margin-bottom: 0;
+		padding: 55px 0;
+	}
+}
+
+@media only screen and (min-width: 641px) {
+	.gform_wrapper .gform_body {
+	    width: 100% !important;
+	}
+}
+
+@media (min-width: 768px) {
+	.extra-padding .wpb_column:first-child {
+	    padding-left: 15px;
+	}
+}
+
+@media (min-width: 768px) {
+
+	body .wpb_column > .wpb_wrapper .wpb_column,
+	.entry-content > .wpb_row > .wpb_column,
+	.entry-content > .wpb_row > .wpb_column .wpb_row > .wpb_column {
+		margin-bottom: 0;
+	}
+
+	.vc_col-sm-3 {
+		width: 25%;
+	}
+
+	.vc_col-sm-3:nth-child( 2n + 1 ) {
+		clear: none;
+	}
+
+	.vc_col-sm-3:nth-child( 4n + 1 ) {
+		clear: both;
+	}
+
+	.pull-up {
+		position: relative;
+		z-index: 99;
+		margin-top: -105px;
+		margin-bottom: 8px !important;
+		padding: 30px 35px !important;
+		background-color: #fff;
+		box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.14)
+	}
+
+	.border-separator > .wpb_column {
+		border-right: 1px solid #ddd;
+	}
+
+	.entry-content > .wpb_row.child-count-5.full-width > .wpb_column .wpb_row.equal-width-children.child-count-3.border-separator > .wpb_column {
+		padding: 0;
+	}
+
+	.border-separator > .wpb_column:first-child {
+		padding-left: 0px;
+	}
+
+	.border-separator > .wpb_column:last-child {
+		padding-right: 0px;
+		border-right: none;
+	}
+
+	/* Extra Padding */
+
+	.vc_row.extra-padding.equal-width-children {
+		padding-left: 15px !important;
+		padding-right: 15px !important;
+	}
+
+	.vc_row.extra-padding.equal-width-children .wpb_column {
+		padding-right: 0 !important;
+		padding-left: 0 !important;
+		float: left;
+		display: block;
+		position: relative;
+	}
+
+	.vc_row.extra-padding.equal-width-children .wpb_column:last-child {
+		margin-right: 0 !important;
+	}
+
+	.vc_row.extra-padding.border-separator.equal-width-children .wpb_column {
+		border-right: 0;
+	}
+
+	.vc_row.extra-padding.border-separator.equal-width-children .wpb_column::after {
+		content: '';
+		display: block;
+		position: absolute;
+		width: 1px;
+		background-color: #ddd;
+		height: 100%;
+		top: 0;
+	}
+
+	.vc_row.extra-padding.border-separator.equal-width-children .wpb_column:last-child::after {
+		display: none;
+	}
+
+	.vc_row.extra-padding.border-separator.equal-width-children .wpb_column.vc_col-sm-6::after {
+		right: -11.1111%;
+	}
+
+	.vc_row.extra-padding.border-separator.equal-width-children .wpb_column.vc_col-sm-4::after {
+		right: -14.2857%;
+	}
+
+	.vc_row.extra-padding.border-separator.equal-width-children .wpb_column.vc_col-sm-3::after {
+		right: -21.0526%;
+	}
+
+	.vc_row.extra-padding.equal-width-children .vc_col-sm-3 {
+		width: 19%;
+		margin-right: 8%;
+	}
+
+	.vc_row.extra-padding.equal-width-children .vc_col-sm-4 {
+		width: 28%;
+		margin-right: 8%;
+	}
+
+	.vc_row.extra-padding.equal-width-children .vc_col-sm-6 {
+		width: 45%;
+		margin-right: 10%;
+	}
+
+	.extra-padding .vc_col-sm-6 {
+		padding-right: 9%;
+		padding-left: 9%;
+	}
+
+	.extra-padding .vc_col-sm-4,
+	.extra-padding .vc_col-sm-3 {
+		padding-right: 4%;
+		padding-left: 4%;
+	}
+
+	.extra-padding .wpb_column:first-child {
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+
+	.extra-padding .wpb_column:last-child {
+		padding-right: 15px;
+	}
+
+	.extra-padding .vc_column_container>.vc_column-inner {
+	    padding-left: 0px;
+	    padding-right: 0px;
+	}
+
+	/* No Top Padding */
+
+	.border-separator.no-top-padding > .wpb_column {
+		padding-top: 0;
+	}
+}
+
+@media (max-width: 1090px) {
+
+	.full-width:not(.hero-banner) {
+		padding-right: 0 !important;
+		padding-left: 0 !important;
+	}
+
+	.vc_column_container>.vc_column-inner {
+	    padding-left: 15px;
+	    padding-right: 15px;
+	}
+
+	.extra-padding .vc_column_container>.vc_column-inner {
+	    padding-left: 0px;
+	    padding-right: 0px;
+	}
+}

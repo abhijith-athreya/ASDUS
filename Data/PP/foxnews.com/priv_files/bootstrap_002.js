@@ -1,0 +1,3 @@
+/*! updated; 01-10-2017 01:02 PM */
+
+!function(Modulr,$){var uid="FOX_PLUGINS";if(Modulr.getInstance(uid))return!1;var domain=window.FOX_ENV_STATIC_DOMAIN,config={instance:uid,baseDomain:domain,baseUrl:"/static/v/all/js/amd/apps/plugins/app",shim:{jquery:{src:"/static/v/all/js/ag.jquery.js",exports:"jQuery"},lodash:{src:"/static/v/all/js/lodash.js",exports:"_"},AKAMAI_TIME_HELPER:{src:"//global.fncstatic.com/static/v/all/js/geo.js",exports:"AKAMAI_TIME_HELPER"}}},Instance=Modulr.config(config);Instance.define("ENV",function(){return window.FOX_ENV_STATIC}),Instance.define("STATIC_DOMAIN",function(){return window.FOX_ENV_STATIC_DOMAIN})}(window.Modulr,window.jQuery);

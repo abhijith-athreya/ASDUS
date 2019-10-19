@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <title></title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <noscript>
+        <meta http-equiv="Cache-control" content="no-cache" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <meta http-equiv="EXPIRES" content="0" />
+		<meta name="refresh" http-equiv="refresh" content="0; URL=r.png?amp;noscript=true&amp;p=9dea9e23-98cf-4e59-9551-846dc7edda83&segment=2ac6be2879ffe411a7020050569b1b56&seg_apx=2847223&1puid=541d542050f6479e89900c1dc3104776"/>
+    </noscript>
+</head>
+<body>    
+    <noscript>
+        <img src="p.png?noscript=true&p=9dea9e23-98cf-4e59-9551-846dc7edda83&segment=2ac6be2879ffe411a7020050569b1b56&seg_apx=2847223&1puid=541d542050f6479e89900c1dc3104776" width="1" height="1" />
+    </noscript>
+    <script src="i_data/bc.js"></script>
+    <script type="text/javascript">
+        (function () {
+            var urlParams = {};
+            var e,
+                d = function (s) { return decodeURIComponent(s).replace(/\+/g, " "); },
+                q = window.location.search.substring(1),
+                r = /([^&=]+)=?([^&]*)/g;
+
+            while (e = r.exec(q)) {
+                if (e[1].indexOf("[") == "-1")
+                    urlParams[d(e[1])] = d(e[2]);
+                else {
+                    var b1 = e[1].indexOf("["),
+                        aN = e[1].slice(b1+1, e[1].indexOf("]", b1)),
+                        pN = d(e[1].slice(0, b1));
+
+                    if (typeof urlParams[pN] != "object")
+                        urlParams[d(pN)] = {},
+                        urlParams[d(pN)].length = 0;
+
+                    if (aN)
+                        urlParams[d(pN)][d(aN)] = d(e[2]);
+                    else
+                        Array.prototype.push.call(urlParams[d(pN)], d(e[2]));
+                }
+            }
+            if (urlParams.p) {
+                var pid = urlParams.p;
+                delete urlParams.p;
+                b.edge(pid, urlParams,function (err, result) {});
+            }
+        })();
+    </script>
+
+
+</body></html>

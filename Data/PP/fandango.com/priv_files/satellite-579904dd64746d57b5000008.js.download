@@ -1,0 +1,41 @@
+_satellite.pushAsyncScript(function(event, target, $variables){
+  jQuery(function(){
+  jQuery('body').append('<iframe name="__bkframe" height="0" width="0" frameborder="0" style="display:none;position:absolute;clip:rect(0px 0px 0px 0px)" src="about:blank"></iframe>');
+});
+
+window.bk_use_multiple_iframes = true;
+window.bk_allow_multiple_calls = true;
+
+if(window.BKTAG)
+  bluekai();
+else {
+  _satellite.loadScript('//tags.bkrtx.com/js/bk-coretag.js', function(){
+    bluekai();
+  });
+}
+
+function bluekai(){
+  bk_addPageCtx("FnPgLvl1", _satellite.getVar('Page Level 1'));
+  bk_addPageCtx("FnPgLvl2", _satellite.getVar('Page Level 2'));
+  bk_addPageCtx("FnMvId", _satellite.getVar('Movie ID'));
+  bk_addPageCtx("FnMvTitle", _satellite.getVar('Movie Name'));
+  bk_addPageCtx("FnMvGenre", _satellite.getVar('Movie Genre'));
+  if(_satellite.getVar('Performer ID') || _satellite.getVar('Performer Name') != ""){
+    bk_addPageCtx("FnMvTalent", _satellite.getVar('Performer ID') + '|' + _satellite.getVar('Performer Name'));
+  }
+  bk_addPageCtx("FnUID", _satellite.getVar('Customer GUID'));
+  bk_addPageCtx("FnIntSrch", _satellite.getVar('Search Term'));
+  bk_addPageCtx("FnProd", _satellite.getVar('Movie ID'));
+
+  // Global Tag Variables to be maintained by WB
+  bk_addPageCtx("TW_OU", 'WB');
+  bk_addPageCtx("Seat", 'US');
+  bk_addPageCtx("TagType", 'DesktopWeb');
+  bk_addPageCtx("TagVersion", '2');
+  bk_addPageCtx("Asset", 'Fandango Desktop Web');
+
+  bk_doJSTag(36806, 10);
+  
+  BKTAG._reset();
+}
+});

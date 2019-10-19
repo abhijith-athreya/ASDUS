@@ -1,0 +1,175 @@
+define(['jquery', 'mmenu', 'prn.mobilemenu-build'], function($, mmenu, dynamicMenu) {
+  //init mobile nav
+  var navMobile = $('nav#nav-mobile');
+	if(serverJSONObj.isCountry == "true"){
+	var hrefValue1 = serverJSONObj.sectionNavhref1;
+	var hrefValue2 =	serverJSONObj.sectionNavhref2;
+	var hrefValue3 = serverJSONObj.sectionNavhref3;
+	}else{
+		var hrefValue1 = "#mm-panel-news";
+	var hrefValue2 =	"#mm-panel-solutions";
+	var hrefValue3 = "#mm-panel-resources";
+	}
+  navMobile.mmenu({
+    extensions: ["border-full"],
+    offCanvas: {
+      zposition: 'front'
+    },
+    navbar: {
+      add: true,
+      title: null
+    },
+    navbars: [{
+      position: 'top',
+      content: [
+      '<p class="mmenu-header"><i class="btl bt-times mm-close"></i></p>'
+      ],
+      height: 1
+    }, {
+      position: "top",
+      content: [
+      '<a class="tier-one panel-link news" href="'+hrefValue1+'">'+serverJSONObj.sectionNavLinks1+'</a>',
+      '<a class="tier-one panel-link solutions" href="'+hrefValue2+'">'+serverJSONObj.sectionNavLinks2+'</a>',
+      '<a class="tier-one panel-link resources" href="'+hrefValue3+'">'+serverJSONObj.sectionNavLinks3+'</a>'
+      ],
+      height: 1
+    }]
+  });
+
+  //set api var
+  var api = navMobile.data('mmenu');
+
+  var headerIcons = $('.header-mobile a.dropdown-toggle');
+
+
+  api.bind('open', function() {
+
+    $(headerIcons).fadeOut();
+
+  });
+
+  //  load extra menu options
+
+  var dynamicEx = false;
+  api.bind('open', function() {
+    if (dynamicEx === false) {
+      for (i = 0; i < Object.keys(dynamicMenu).length; i++) {
+        var section = Object.keys(dynamicMenu)[i],
+        list = '#mm-' + section,
+        html = dynamicMenu[section.toString()],
+        panel = '#mm-panel-' + section;
+        $(list).prepend(html);
+        api.init($(panel));
+        console.log(html);
+      }
+      dynamicEx = true;
+    }
+
+    this.path = window.location.pathname.replace(/\/$/, "");
+    var self = this;
+    var match = false;
+
+    // look for exact match
+    if (self.path != '/' && !match) {
+      if (self.path.indexOf('photos-list') > -1 || self.path.indexOf('videos-list') > -1) {
+        self.path = "/news-releases/multimedia";
+      }
+      if (self.path.indexOf('-list') > -1) {
+        var p = self.path.substr(0, self.path.lastIndexOf('/'));
+      } else if (self.path.indexOf('latest-news-topics') > -1) {
+        var p = "/news-releases/latest-news-topics";
+      } else {
+        var p = self.path;
+      }
+      $.each($('#nav-mobile li:not(.mm-footer) a:not(.panel-link,.mm-title,.mm-btn,.mm-next)'), function(i){
+        var l = $(this).attr('href').replace(/\/$/, "");
+        if ( p === l ) {
+          match = true;
+          api.setSelected( $(this).parent('li') );
+          api.openPanel( $(this).closest('.mm-panel') );
+          return false
+        }
+      });
+
+      // look for partial match
+      if (!match) {
+        var p = self.path.substr(0, self.path.lastIndexOf('/'));
+        if (p.indexOf('news-releases') > -1) {
+          p = '/news-releases';
+        }
+        switch(p) {
+          case '/news-releases':
+            api.openPanel( $('#mm-panel-news') )
+            break;
+          case '/solutions':
+            api.openPanel( $('#mm-panel-solutions') )
+            break;
+          case '/knowledge-center':
+            api.openPanel( $('#mm-panel-resources') )
+            break;
+          case '/blog':
+            api.openPanel( $('#mm-panel-resources') )
+        }
+      }
+    }
+
+  });
+
+  api.bind('openPanel', function() {
+    var currentSection = $('.mm-panel.mm-current').find('ul').data('section');
+    if (currentSection) {
+      $('.panel-link').removeClass('active');
+      $('.panel-link[href="#mm-panel-' + currentSection + '"]').addClass('active');
+    }
+  })
+
+  api.bind('closing', function() {
+    $('.header-mobile a.dropdown-toggle').fadeIn();
+  });
+
+  // Create close button
+  $('.mm-close').click(function() {
+
+    api.close();
+
+    }); // Close 'mm-close' click function
+
+
+  // Close menu if window is resized over 768 width
+  var resizeTimer;
+
+  $(window).on('resize', function(e) {
+
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      if ($(window).width() > 768) {
+        api.close();
+      }
+    }, 250);
+
+  }); // Close resize function
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

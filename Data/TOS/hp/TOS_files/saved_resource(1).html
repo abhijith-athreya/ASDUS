@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<!-- saved from url=(0079)https://hpsupport.qualtrics.com/jfe/form/SV_85EJOQsHC3mUMiV?Q_CHL=si&Country=US -->
+<html class="JFEScope" lang="EN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Online Survey | Built with Qualtrics Experience Management™</title>
+  
+  <link rel="dns-prefetch" href="https://co1.qualtrics.com/WRQualtricsShared/">
+  <link rel="preconnect" href="https://co1.qualtrics.com/WRQualtricsShared/">
+  
+  <link rel="dns-prefetch" href="https://jfe-cdn.qualtrics.com/jfe/static/dist/">
+  <link rel="preconnect" href="https://jfe-cdn.qualtrics.com/jfe/static/dist/">
+  
+  <meta name="description" content="">
+  <meta name="robots" content="noindex">
+  <meta id="meta-viewport" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=2.5">
+  <meta property="og:title" content="Online Survey | Built with Qualtrics Experience Management™">
+  <meta property="og:description" content="">
+  
+  
+  <link rel="apple-touch-icon-precomposed" href="https://co1.qualtrics.com/WRQualtricsShared/Graphics/qipadicon.png">
+  
+  <script>(function(w) {
+  'use strict';
+  if (w.history && w.history.replaceState) {
+    var path = w.location.pathname;
+    var jfePathRegex = /^\/jfe\d+\//;
+
+    if (jfePathRegex.test(path)) {
+      w.history.replaceState(null, null, w.location.href.replace(path, path.replace(jfePathRegex, '/jfe/')));
+    }
+  }
+})(window);
+</script>
+<link type="image/x-icon" rel="icon" href="https://hpsupport.qualtrics.com/WRQualtricsShared/Brands/hpsupport/favicon.ico"><script type="text/javascript" charset="utf-8" async="" src="./mc.4132fb7d3e3f9d7e313e.js.download"></script><script type="text/javascript" charset="utf-8" async="" src="./jsApi.2fbc13c301b5b5827655.js.download"></script><script data-runid="6160667270976612">window.Q_CustomJSContextQID = "QID1";window.Q_CustomJSContextQID = "QID1";
+Qualtrics.SurveyEngine.addOnload(function() {
+	(function($) {
+	   $(function(){
+			var $questionBody = $('.Skin .QuestionBody'),
+				$table = $questionBody.find('> table.ChoiceStructure'),
+				$labels = $table.find('tr > td > table:first th'),
+				$body = $('body'),
+				$trBtns = $table.find('tr > td.LabelContainer:first').parent(),
+				$smilyFace = $('<div/>', {class: 'smily-face'}).append('<div class="happines5"></div>'),
+				currentSmile = '5',
+				submitBtn = $('#NextButton').attr('disabled', 'disabled'),
+				disablingAttemps = 100;
+
+		  	//COMMON
+			$questionBody.before($smilyFace);
+			function updateFace(happinesLevel, update) {
+				if (update) {
+					currentSmile = happinesLevel;
+				}
+				$smilyFace.find('>div').attr('class', 'happines' + happinesLevel);
+			};
+			
+		    //DESKTOP ONLY
+			$trBtns.prepend('<td class="label first"><span>' + $labels.first().html() + '</span></td>').append('<td class="label"><span>' + $labels.last().html() + '</span></td>');
+			$table.find('input[type="radio"]').on('change', function(e) {
+				updateFace($(this).val(), true);
+			});
+			$trBtns.find('>td').on('mouseenter', function() {
+				var radioInput = getRadioInputFromTd($(this));
+				if (radioInput.length) {
+					updateFace(radioInput.attr('value'));
+				}
+			}).on('mouseleave', function() {
+				updateFace(currentSmile);
+			});
+			$trBtns.find('label.SingleAnswer').on('click', function() {
+				if (!$('#SkinContent').hasClass('hightlight-selected')) {
+					$('#SkinContent').addClass('hightlight-selected');
+					enableSubmitButton();
+				}
+			});
+			function enableSubmitButton() {
+				submitBtn.removeAttr('disabled');
+			}
+			function getRadioInputFromTd(td) {
+				var label = td.find('.LabelWrapper > label');
+
+				if (label.length) {
+					return $('input[aria-labelledby="' + label.attr("id") + '"]');
+				}
+				return [];
+			};
+			function preselectVote(value) {
+				var inputRadio = getRadioInputFromTd($trBtns.find('.LabelContainer').eq(value));
+				if (inputRadio.length) {
+					inputRadio.prop('checked', true).trigger('change');
+				}
+			};
+			function disableSubmitBtn() {
+				if (submitBtn.attr('disabled') != 'disabled') {
+					submitBtn.attr('disabled', 'disabled')
+				} else if (disablingAttemps > 0 ) {
+					disablingAttemps--;
+					setTimeout(disableSubmitBtn, 50);
+				}
+			};
+			preselectVote(5);
+			disableSubmitBtn();
+		});
+	})(jQuery); 
+});;delete window.Q_CustomJSContextQID;; delete window.Q_CustomJSContextQID;</script><script data-runid="6160667270976612">Qualtrics.SurveyEngine.addOnload(Qualtrics.uniformLabelHeight);</script><script data-runid="6160667270976612">
+//TM6 Question Text Cell Padding
+	//JFE
+	Page.on('ready:imagesLoaded',function() {
+		var t = jQuery(".QuestionText table");
+	  for (i=0; i<t.length; i++) {
+	    if (t[i].cellPadding != undefined) {
+	      var p = t[i].cellPadding + "px";
+	      t.eq(i).find("th").css("padding",p);
+	      t.eq(i).find("td").css("padding",p);
+	    }
+	  }
+	});
+	//SE
+	jQuery(window).load(function() {
+		if (jQuery("div").hasClass("JFE") == false) {
+	    var t = jQuery(".QuestionText table");
+	    for (i=0; i<t.length; i++) {
+	      if (t[i].cellPadding != undefined) {
+	        var p = t[i].cellPadding + "px";
+	        t.eq(i).find("th").css("padding",p);
+	        t.eq(i).find("td").css("padding",p);
+	      }
+	    }
+		};
+	});
+//TM21 iOS Text Box Width Fix
+	//JFE
+	Page.on('ready:imagesLoaded',function() {
+		function isIE () {
+	  	var myNav = navigator.userAgent.toLowerCase();
+	  	return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+		}
+		if (!isIE()) {
+			var mq = window.matchMedia( "(max-width: 480px)" );
+			if (mq.matches == true) {
+				jQuery(".Skin .MC .TextEntryBox").css("width","100%");
+				jQuery(".Skin .TE .ESTB .InputText").css("width","100%");
+				jQuery(".Skin .TE .FORM .InputText").css("width","100%");
+				jQuery(".Skin .TE .ML .InputText").css("width","100%");
+				jQuery(".Skin .TE .PW .InputText").css("width","100%");
+				jQuery(".Skin .TE .SL .InputText").css("width","100%");
+			};
+		};
+	});
+	//SE
+	jQuery(window).load(function() {
+		function isIE () {
+	  	var myNav = navigator.userAgent.toLowerCase();
+	  	return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+		}
+		if (!isIE()) {
+			var mq = window.matchMedia( "(max-width: 480px)" );
+			if (jQuery("div").hasClass("JFE") == false && mq.matches == true) {
+				jQuery(".Skin .MC .TextEntryBox").css("width","100%");
+				jQuery(".Skin .TE .ESTB .InputText").css("width","100%");
+				jQuery(".Skin .TE .FORM .InputText").css("width","100%");
+				jQuery(".Skin .TE .ML .InputText").css("width","100%");
+				jQuery(".Skin .TE .PW .InputText").css("width","100%");
+				jQuery(".Skin .TE .SL .InputText").css("width","100%");
+			};
+		};
+	});
+</script><script type="text/javascript" charset="utf-8" async="" src="./simp.de9fdca4b3e9ab5bafee.js.download"></script></head>
+<body id="SurveyEngineBody" style="direction: inherit;">
+  <noscript>&lt;style&gt;#pace{display: none;}&lt;/style&gt;&lt;div style="padding:8px 15px;font-family:Helvetica,Arial,sans-serif;background:#fcc;border:1px solid #c55"&gt;Javascript is required to load this page.&lt;/div&gt;</noscript>
+  
+  <style type="text/css">.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#007ac0;position:fixed;z-index:2000;top:0;left:0;height:2px;-webkit-transition:width 1s;-moz-transition:width 1s;-o-transition:width 1s;transition:width 1s}.pace .pace-progress-inner{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #007ac0,0 0 5px #007ac0;opacity:1;-webkit-transform:rotate(3deg) translate(0,-4px);-moz-transform:rotate(3deg) translate(0,-4px);-ms-transform:rotate(3deg) translate(0,-4px);-o-transform:rotate(3deg) translate(0,-4px);transform:rotate(3deg) translate(0,-4px)}.pace .pace-activity{display:block;position:fixed;z-index:2000;top:30%;right:50%;width:50px;height:50px;border:8px solid transparent;border-top-color:#007ac0;border-left-color:#007ac0;border-radius:80px;-webkit-animation:pace-spinner 1s linear infinite;-moz-animation:pace-spinner 1s linear infinite;-ms-animation:pace-spinner 1s linear infinite;-o-animation:pace-spinner 1s linear infinite;animation:pace-spinner 1s linear infinite;margin:-33px -33px 0 0;box-sizing:border-box}@-webkit-keyframes pace-spinner{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes pace-spinner{0%{-moz-transform:rotate(0);transform:rotate(0)}100%{-moz-transform:rotate(360deg);transform:rotate(360deg)}}@-o-keyframes pace-spinner{0%{-o-transform:rotate(0);transform:rotate(0)}100%{-o-transform:rotate(360deg);transform:rotate(360deg)}}@-ms-keyframes pace-spinner{0%{-ms-transform:rotate(0);transform:rotate(0)}100%{-ms-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes pace-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+</style>
+  
+  
+  <script type="text/javascript">
+    var QSettings = {
+      jfeVersion: "6cf445689d89acd7f22740ff5c9cbb834d0c0116\n",
+      publicPath: "//jfe-cdn.qualtrics.com/jfe/static/dist/",
+      cbs: [], bootstrapSkin: null, ab: false,
+      getPT: function(cb) {
+        if (this.pt !== undefined) {
+          cb(this.success, this.pt);
+        } else {
+          this.cbs.push(cb);
+        }
+      },
+      setPT: function(s, pt) {
+        this.success = s;
+        this.pt = pt;
+        if (this.cbs.length) {
+          for (var i = 0; i < this.cbs.length; i++) {
+            this.cbs[i](s, pt);
+          }
+        }
+      }
+    };
+  </script>
+  
+  <script>!function(e){function a(c){if(r[c])return r[c].exports;var d=r[c]={i:c,l:!1,exports:{}};return e[c].call(d.exports,d,d.exports,a),d.l=!0,d.exports}var c=window.webpackJsonp;window.webpackJsonp=function(r,t,n){for(var o,b,f,i=0,u=[];i<r.length;i++)b=r[i],d[b]&&u.push(d[b][0]),d[b]=0;for(o in t)Object.prototype.hasOwnProperty.call(t,o)&&(e[o]=t[o]);for(c&&c(r,t,n);u.length;)u.shift()();if(n)for(i=0;i<n.length;i++)f=a(a.s=n[i]);return f};var r={},d={38:0};a.e=function(e){function c(){o.onerror=o.onload=null,clearTimeout(b);var a=d[e];0!==a&&(a&&a[1](new Error("Loading chunk "+e+" failed.")),d[e]=void 0)}var r=d[e];if(0===r)return new Promise(function(e){e()});if(r)return r[2];var t=new Promise(function(a,c){r=d[e]=[a,c]});r[2]=t;var n=document.getElementsByTagName("head")[0],o=document.createElement("script");o.type="text/javascript",o.charset="utf-8",o.async=!0,o.timeout=12e4,a.nc&&o.setAttribute("nonce",a.nc),o.src=a.p+"c/"+({0:"jqueryui-jfe",1:"slidercontrol-jfe",2:"timing",3:"matrix",4:"mc",5:"scoring",6:"ro",7:"hotspot",8:"hl",9:"fileupload",10:"cs",11:"slider",12:"fancybox",13:"db",14:"toc",15:"te",16:"ss",17:"heatmap",18:"draw",19:"pgr",20:"meta",21:"response-summary",22:"preview",23:"sbs",24:"dd",25:"captcha",26:"jsApi",27:"simp",28:"slide",29:"flip",30:"fade",31:"barrel-roll",32:"adobe",33:"focus-handler",34:"vendor",35:"jfe",36:"jfePreview",37:"advance-button-template"}[e]||e)+"."+{0:"5de56dd83cca789c7a9b",1:"b2003e0ce36462ed47f7",2:"d23ba331cae6c3807953",3:"a7aa82e5a4aa4b5b55db",4:"4132fb7d3e3f9d7e313e",5:"ab773192d6c1134fa3d3",6:"896f134ccafe1ee3245d",7:"246a7e66402aea010155",8:"9c77c584f925882657c0",9:"37de6860cdf3a0b7fd0e",10:"a9b68c3980a583054ac1",11:"f96590d010c718bc7071",12:"e30ffef8ee11f95463d9",13:"7029624b30326990e7bb",14:"8d796fc8b5292e18f8c4",15:"384f47e2ca84c4d47d24",16:"1f2e78dbad78baf6b052",17:"1c647ce0597a5381d42f",18:"58bded01da84139e786b",19:"6d88c170bd8c27196a7c",20:"3a5b59c88731284e8eef",21:"0e58b13a5a76ebcda276",22:"9b7236e5d5edb5cf837d",23:"f4341dafe53d39870939",24:"0fec483fb652f79954bb",25:"a61db887a14b16e15631",26:"2fbc13c301b5b5827655",27:"de9fdca4b3e9ab5bafee",28:"edd8c832d267943fc895",29:"9c3fd598bbd61fcedd90",30:"87ba3790346a02d84106",31:"937c080c4c0f16ae08be",32:"a407c5687caee526692f",33:"df8fde69f6d0e0272008",34:"d7a98066d5533a3740cb",35:"3eb269ff61eaf33d33dc",36:"ed7955c3d9db3eb6c09a",37:"f9d033d23a25a99d277d"}[e]+".js";var b=setTimeout(c,12e4);return o.onerror=o.onload=c,n.appendChild(o),t},a.m=e,a.c=r,a.d=function(e,c,r){a.o(e,c)||Object.defineProperty(e,c,{configurable:!1,enumerable:!0,get:r})},a.n=function(e){var c=e&&e.__esModule?function(){return e.default}:function(){return e};return a.d(c,"a",c),c},a.o=function(e,a){return Object.prototype.hasOwnProperty.call(e,a)},a.p="",a.oe=function(e){throw console.error(e),e}}([]);</script>
+  <script src="./vendor.d7a98066d5533a3740cb.js.download" crossorigin="anonymous"></script>
+  <script src="./jfe.3eb269ff61eaf33d33dc.js.download" crossorigin="anonymous"></script>
+
+<link href="./stylesheet.css" rel="stylesheet">
+<link id="rtlStyles" rel="stylesheet" type="text/css">
+<style id="customStyles">/*START CSS FOR SECOND SCREEN*/
+#QID6 li.Selection {
+	position: relative;
+}
+
+#QID6 li.Selection input.radio {
+	opacity: 1;
+    	width: auto;
+    	height: auto;
+	top: 50%;
+	transform: translateY(-100%);
+	margin-top: 0;
+}
+
+#QID6 li.Selection label.SingleAnswer {
+	background: none;
+	padding: 0;
+	padding-left: 25px;
+	border-width: 0;
+	
+}
+
+#QID7 .QuestionText,
+#QID6 .QuestionText {
+	padding-bottom: 10px;
+    	padding-top: 10px;
+	margin-bottom: 0;
+}
+
+#QID7 textarea {
+	display: block;
+	margin: 0 auto;
+	padding: 10px;
+	background-color: #f6f6f6;
+	border-color: #e6e6e6;
+}
+/*END CSS FOR SECOND SCREEN*/ 
+
+
+/*This was to center the Next Button. This is so this survey gets the format you want*/
+
+.Skin #Buttons #PreviousButton {
+	display:none;
+}
+
+.Skin #Buttons #NextButton {
+	margin:0% 40%;
+}
+
+@media (max-width:550px) {
+	.Skin #Buttons #NextButton {
+		margin:0% 28%;
+	}
+}
+@font-face {
+  font-family: 'HP Simplified Light';
+  src: url('https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1494546119787-4dfaad/files/latin-e-light-ttf.ttf');
+  src: url('https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1494546119787-4dfaad/files/latin-e-light-eot.eot?#iefix') format('embedded-opentype'),
+       url('https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1494546119787-4dfaad/files/latin-e-light-woff.woff') format('woff'),
+       url('https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1494546119787-4dfaad/files/latin-e-light-ttf.ttf')  format('truetype'),
+       url('https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1494546119787-4dfaad/files/latin-e-light-svg.svg#latin-e-light-svg') format('svg');
+}
+#Buttons #NextButton,#Buttons #PreviousButton,#Footer,#Header,.QuestionBody,.QuestionText{font-family:'HP Simplified Light',Arial,sans-serif!important;}
+.JFEScope .JFEContent #SkinContent.LoadingPage {
+    position: static!important;
+}
+.Skin .QuestionOuter {overflow: visible} 
+.Skin .QuestionBody table.ChoiceStructure {border-spacing: 0;}
+.Skin .QuestionBody table.ChoiceStructure td {padding:5px;}
+.Skin table.ChoiceStructure{table-layout: fixed}
+.Skin table.ChoiceStructure td.label {width: 100px; padding: 0;}
+.Skin table.ChoiceStructure td.label span{display: inline-block; width: 100px; text-align: left; padding-left: 5px;} 
+.Skin table.ChoiceStructure td.label.first span {text-align: right; padding-left:0; padding-right: 5px;} 
+.Skin table.ChoiceStructure tr:first-child {display: none;} 
+.Skin table.ChoiceStructure tr > td.LabelContainer .LabelWrapper>label {
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px; 
+    border-width: 1px; 
+    background: #FAFAFA;
+}
+#SkinContent table.ChoiceStructure label.SingleAnswer.q-checked {
+    border-color: transparent;
+}
+.Skin #SkinContent #Buttons .disabler {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+#SkinContent.hightlight-selected table.ChoiceStructure label.SingleAnswer.q-checked {
+    border-color: #2da6db;
+}
+.Skin #SkinContent #Buttons input#NextButton {margin: 0; background: #C5E4F6; opacity: 1;}
+.Skin #SkinContent.hightlight-selected #Buttons input#NextButton {background: #2da6db;} 
+.Skin #Buttons {text-align: center;}
+.Skin #Buttons {overflow: hidden; text-align: center;}
+.Skin .QuestionText {line-height: 40px;font-size: 29px;text-align: center; max-width: 800px; margin: 0 auto 10px auto;} 
+.Skin .QuestionText strong {font-weight: normal;}
+
+.smily-face {margin-bottom: 25px;} 
+.smily-face > div {margin: 0 auto;width: 70px;height: 70px;background: url(https://hpsupport.qualtrics.com/ControlPanel/Graphic.php?IM=IM_8BXBZP1Qi1pzE0d) 0 0 no-repeat;} 
+.smily-face .happines0 {background-position: -1px 0}https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1492981399607-237bd2/files/latin-e-light-ttf.ttf
+.smily-face .happines1 {background-position: -73px 0}
+.smily-face .happines2 {background-position: -145px 0}
+.smily-face .happines3 {background-position: -217px 0}
+.smily-face .happines4 {background-position: -289px 0}
+.smily-face .happines5 {background-position: -361px 0}
+.smily-face .happines6 {background-position: -1px -72px}
+.smily-face .happines7 {background-position: -73px -72px}
+.smily-face .happines8 {background-position: -145px -72px}
+.smily-face .happines9 {background-position: -217px -72px}
+.smily-face .happines10 {background-position: -289px -72px}
+
+.Skin .QuestionBody .slider-container .BarContainer ul {position: absolute; top: 22px; display: block; width: 100%; padding: 0 7px;}
+.Skin .QuestionBody .slider-container .BarContainer ul>li {display: block; float: left; border-left: 1px solid #C6C6C6; width: 10%!important; height: 5px; font-size: 0;}
+.Skin .QuestionBody .slider-container .BarContainer ul>li.first {display: none;}
+.Skin .QuestionBody .slider-container .BarContainer ul>li.first + li {border: none;}
+.Skin .QuestionBody .horizontalbar.ChoiceStructure {padding-right: 0;}
+.Skin .QuestionBody .slider-container .BarContainer ul:before {content: ""; background: #C6C6C6; width: 1px; position: absolute; height: 14px; left: 7px; top: 0}
+.Skin .QuestionBody .slider-container .BarContainer ul:after {content: ""; background: #C6C6C6; width: 1px; position: absolute; height: 14px; right: 7px; top: 0}
+.Skin .QuestionBody table.Slider {height: 39px;}
+.Skin .horizontalbar .Slider .track .handle {box-shadow: rgb(81, 161, 167) 0px 0px 4px inset; top: -11px; width: 14px!important; height: 28px; border-radius: 3px; background: #64C9D1;}
+.Skin .horizontalbar .Slider .track .handle:before {content: ""; position: absolute; width: 1px;height: 10px; background: white; left: 4px; top: 10px;}
+.Skin .horizontalbar .Slider .track .handle:after {content: ""; position: absolute; width: 1px;height: 10px; background: white; right: 4px; top: 10px;}
+.Skin .QuestionBody .horizontalbar.MobileFriendly div.track {border: none;}
+.Skin .QuestionBody .BarContainer  .trackHolderRel:before {content: "0";position: absolute;top: -25px;left: 3px; font-size: 17px;}
+.Skin .QuestionBody .BarContainer  .trackHolderRel:after {content: "10";position: absolute;top: -25px;right: 0; font-size: 17px;}
+.Skin .QuestionBody .horizontalbar ul.labels {margin-top: 10px;}
+.Skin .QuestionBody .horizontalbar ul.labels > li {vertical-align: top!important;}
+.Skin .QuestionBody .horizontalbar ul.labels > li > span {display: inline-block; max-width: 50%;}
+.Skin .labels-container ul {
+    display: none!important;
+}
+.Skin #Plug {
+    height: 0;
+    width: 0;
+    overflow: hidden;
+}
+.Skin #Footer,
+.Skin #PushStickyFooter {
+    display: none;
+}
+.Skin .LanguageSelectorContainer {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+@media screen and (min-width: 800px) {
+    #SkinContent table.ChoiceStructure td:hover label.SingleAnswer {
+        border-color: #2da6db;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .Skin .horizontalbar .Slider .handle:hover {
+        padding: 0;
+    }
+    .Skin, html, body, body > .JFE, 
+    body > .JFE > div, 
+    body > .JFE > div > form {
+        height: 100%;
+        min-height: 450px;
+    }
+    .Skin {
+        padding-bottom: 60px;
+    }
+    .Skin #Buttons {
+        position: absolute;
+        padding-bottom: 0;
+        width: 100%;
+        bottom: 0;
+    }
+    .Skin #SkinContent {
+        position: static;
+    }
+    .Skin .QuestionText {
+        line-height: 30px;
+        font-size: 22px;
+    }
+    .Skin .smily-face {
+        margin-bottom: 0
+    }
+    .Skin #Buttons {padding-left: 0; padding-right: 0}
+    .Skin #Buttons input#NextButton {width: 100%;border-radius: 0;}
+}
+</style>
+<style type="text/css">.accessibility-hidden{height:0;width:0;overflow:hidden;position:absolute;left:-999px}</style>
+<div id="polite-announcement" class="accessibility-hidden" aria-live="polite" aria-atomic="true"></div>
+<div id="assertive-announcement" class="accessibility-hidden" aria-live="assertive" role="alert" aria-atomic="true"></div>
+<script type="text/javascript">
+  QSettings.ab = false;
+  
+  document.title = "Online Survey | Built with Qualtrics Experience Management™";
+  (function(s) {
+    QSettings.bootstrapSkin = s;
+    var sp = document.getElementById('skinPrefetch');
+    if (sp) {
+      sp.innerHTML = s;
+    }
+  })("<meta name=\"HandheldFriendly\" content=\"true\" />\n<meta name = \"viewport\" content = \"user-scalable = no, maximum-scale=1, minimum-scale=1, initial-scale = 1, width = device-width\" />\n<div class='Skin'>\n\t<div id=\"Overlay\"></div>\n\t<div id=\"Wrapper\">\n\t\t<div id='ProgressBar'>{~ProgressBar~}</div>\n\t\t<div class='SkinInner'>\n\t\t\t<div id='LogoContainer'>\n\t\t\t\t<div id='Logo'></div>\n\t\t\t</div>\n\t\t\t<div id='HeaderContainer'>\n\t\t\t\t\t<div id='Header'>{~Header~}</div>\n\t\t\t\t</div>\n\t\t\t<div id='SkinContent'>\n\t\t\t\t<div id='Questions'>{~Question~}</div>\n\t\t\t\t<div id='Buttons'>{~Buttons~}</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div id='Footer'>{~Footer~}</div>\n\t\t<div id='PushStickyFooter'></div>\n\t</div>\n\t<div id=\"Plug\" style=\"display:block !important;\"><a style=\"display:block !important;\" href=\"http://www.qualtrics.com/\" target=\"_blank\">{~Plug~}</a></div>\n</div>\n<script>Qualtrics.SurveyEngine.addOnload(Qualtrics.uniformLabelHeight);<\/script>\n\n<script>\n//TM6 Question Text Cell Padding\n\t//JFE\n\tPage.on('ready:imagesLoaded',function() {\n\t\tvar t = jQuery(\".QuestionText table\");\n\t  for (i=0; i<t.length; i++) {\n\t    if (t[i].cellPadding != undefined) {\n\t      var p = t[i].cellPadding + \"px\";\n\t      t.eq(i).find(\"th\").css(\"padding\",p);\n\t      t.eq(i).find(\"td\").css(\"padding\",p);\n\t    }\n\t  }\n\t});\n\t//SE\n\tjQuery(window).load(function() {\n\t\tif (jQuery(\"div\").hasClass(\"JFE\") == false) {\n\t    var t = jQuery(\".QuestionText table\");\n\t    for (i=0; i<t.length; i++) {\n\t      if (t[i].cellPadding != undefined) {\n\t        var p = t[i].cellPadding + \"px\";\n\t        t.eq(i).find(\"th\").css(\"padding\",p);\n\t        t.eq(i).find(\"td\").css(\"padding\",p);\n\t      }\n\t    }\n\t\t};\n\t});\n//TM21 iOS Text Box Width Fix\n\t//JFE\n\tPage.on('ready:imagesLoaded',function() {\n\t\tfunction isIE () {\n\t  \tvar myNav = navigator.userAgent.toLowerCase();\n\t  \treturn (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;\n\t\t}\n\t\tif (!isIE()) {\n\t\t\tvar mq = window.matchMedia( \"(max-width: 480px)\" );\n\t\t\tif (mq.matches == true) {\n\t\t\t\tjQuery(\".Skin .MC .TextEntryBox\").css(\"width\",\"100%\");\n\t\t\t\tjQuery(\".Skin .TE .ESTB .InputText\").css(\"width\",\"100%\");\n\t\t\t\tjQuery(\".Skin .TE .FORM .InputText\").css(\"width\",\"100%\");\n\t\t\t\tjQuery(\".Skin .TE .ML .InputText\").css(\"width\",\"100%\");\n\t\t\t\tjQuery(\".Skin .TE .PW .InputText\").css(\"width\",\"100%\");\n\t\t\t\tjQuery(\".Skin .TE .SL .InputText\").css(\"width\",\"100%\");\n\t\t\t};\n\t\t};\n\t});\n\t//SE\n\tjQuery(window).load(function() {\n\t\tfunction isIE () {\n\t  \tvar myNav = navigator.userAgent.toLowerCase();\n\t  \treturn (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;\n\t\t}\n\t\tif (!isIE()) {\n\t\t\tvar mq = window.matchMedia( \"(max-width: 480px)\" );\n\t\t\tif (jQuery(\"div\").hasClass(\"JFE\") == false && mq.matches == true) {\n\t\t\t\tjQuery(\".Skin .MC .TextEntryBox\").css(\"width\",\"100%\");\n\t\t\t\tjQuery(\".Skin .TE .ESTB .InputText\").css(\"width\",\"100%\");\n\t\t\t\tjQuery(\".Skin .TE .FORM .InputText\").css(\"width\",\"100%\");\n\t\t\t\tjQuery(\".Skin .TE .ML .InputText\").css(\"width\",\"100%\");\n\t\t\t\tjQuery(\".Skin .TE .PW .InputText\").css(\"width\",\"100%\");\n\t\t\t\tjQuery(\".Skin .TE .SL .InputText\").css(\"width\",\"100%\");\n\t\t\t};\n\t\t};\n\t});\n<\/script>\n");
+  
+    (function() {
+      var fv = document.createElement('link');
+      fv.type = 'image/x-icon';
+      fv.rel = 'icon';
+      fv.href = "https://hpsupport.qualtrics.com/WRQualtricsShared/Brands/hpsupport/favicon.ico";
+      document.getElementsByTagName('head')[0].appendChild(fv);
+    }());
+  
+</script>
+
+    <script type="text/javascript">
+      QSettings.setPT(true, {"FormSessionID":"FS_1FKTwhEUtJVlDjd","QuestionIDs":["QID1"],"QuestionDefinitions":{"QID1":{"DefaultChoices":false,"DataExportTag":"Q1","QuestionType":"MC","Selector":"NPS","Configuration":{"QuestionDescriptionOption":"UseText"},"Choices":[{"Display":"0"},{"Display":"1"},{"Display":"2"},{"Display":"3"},{"Display":"4"},{"Display":"5"},{"Display":"6"},{"Display":"7"},{"Display":"8"},{"Display":"9"},{"Display":"10"}],"ChoiceOrder":["0","1","2","3","4","5","6","7","8","9","10"],"Validation":{"Settings":{"ForceResponse":"OFF","ForceResponseType":"ON","Type":"None"}},"GradingData":[],"Language":{"HR":{"ColumnLabels":{"1":{"Display":"Uopće nije vjerojatno"},"2":{"Display":"Iznimno vjerojatno"}}},"EN":{"QuestionText":"Based on your web experience today, how likely are you to recommend HP to a friend, family member, or colleague?","Choices":[{"Display":"0"},{"Display":"1"},{"Display":"2"},{"Display":"3"},{"Display":"4"},{"Display":"5"},{"Display":"6"},{"Display":"7"},{"Display":"8"},{"Display":"9"},{"Display":"10"}],"ColumnLabels":{"1":{"Display":"Not at all likely"},"2":{"Display":"Extremely likely"}}}},"ColumnLabels":{"1":{"Display":"Not at all likely","IsLabelDefault":false},"2":{"Display":"Extremely likely","IsLabelDefault":false}},"QuestionID":"QID1","QuestionJS":"Qualtrics.SurveyEngine.addOnload(function() {\n\t(function($) {\n\t   $(function(){\n\t\t\tvar $questionBody = $('.Skin .QuestionBody'),\n\t\t\t\t$table = $questionBody.find('> table.ChoiceStructure'),\n\t\t\t\t$labels = $table.find('tr > td > table:first th'),\n\t\t\t\t$body = $('body'),\n\t\t\t\t$trBtns = $table.find('tr > td.LabelContainer:first').parent(),\n\t\t\t\t$smilyFace = $('<div/>', {class: 'smily-face'}).append('<div class=\"happines5\"></div>'),\n\t\t\t\tcurrentSmile = '5',\n\t\t\t\tsubmitBtn = $('#NextButton').attr('disabled', 'disabled'),\n\t\t\t\tdisablingAttemps = 100;\n\n\t\t  \t//COMMON\n\t\t\t$questionBody.before($smilyFace);\n\t\t\tfunction updateFace(happinesLevel, update) {\n\t\t\t\tif (update) {\n\t\t\t\t\tcurrentSmile = happinesLevel;\n\t\t\t\t}\n\t\t\t\t$smilyFace.find('>div').attr('class', 'happines' + happinesLevel);\n\t\t\t};\n\t\t\t\n\t\t    //DESKTOP ONLY\n\t\t\t$trBtns.prepend('<td class=\"label first\"><span>' + $labels.first().html() + '</span></td>').append('<td class=\"label\"><span>' + $labels.last().html() + '</span></td>');\n\t\t\t$table.find('input[type=\"radio\"]').on('change', function(e) {\n\t\t\t\tupdateFace($(this).val(), true);\n\t\t\t});\n\t\t\t$trBtns.find('>td').on('mouseenter', function() {\n\t\t\t\tvar radioInput = getRadioInputFromTd($(this));\n\t\t\t\tif (radioInput.length) {\n\t\t\t\t\tupdateFace(radioInput.attr('value'));\n\t\t\t\t}\n\t\t\t}).on('mouseleave', function() {\n\t\t\t\tupdateFace(currentSmile);\n\t\t\t});\n\t\t\t$trBtns.find('label.SingleAnswer').on('click', function() {\n\t\t\t\tif (!$('#SkinContent').hasClass('hightlight-selected')) {\n\t\t\t\t\t$('#SkinContent').addClass('hightlight-selected');\n\t\t\t\t\tenableSubmitButton();\n\t\t\t\t}\n\t\t\t});\n\t\t\tfunction enableSubmitButton() {\n\t\t\t\tsubmitBtn.removeAttr('disabled');\n\t\t\t}\n\t\t\tfunction getRadioInputFromTd(td) {\n\t\t\t\tvar label = td.find('.LabelWrapper > label');\n\n\t\t\t\tif (label.length) {\n\t\t\t\t\treturn $('input[aria-labelledby=\"' + label.attr(\"id\") + '\"]');\n\t\t\t\t}\n\t\t\t\treturn [];\n\t\t\t};\n\t\t\tfunction preselectVote(value) {\n\t\t\t\tvar inputRadio = getRadioInputFromTd($trBtns.find('.LabelContainer').eq(value));\n\t\t\t\tif (inputRadio.length) {\n\t\t\t\t\tinputRadio.prop('checked', true).trigger('change');\n\t\t\t\t}\n\t\t\t};\n\t\t\tfunction disableSubmitBtn() {\n\t\t\t\tif (submitBtn.attr('disabled') != 'disabled') {\n\t\t\t\t\tsubmitBtn.attr('disabled', 'disabled')\n\t\t\t\t} else if (disablingAttemps > 0 ) {\n\t\t\t\t\tdisablingAttemps--;\n\t\t\t\t\tsetTimeout(disableSubmitBtn, 50);\n\t\t\t\t}\n\t\t\t};\n\t\t\tpreselectVote(5);\n\t\t\tdisableSubmitBtn();\n\t\t});\n\t})(jQuery); \n});","SurveyLanguage":"EN"}},"NextButton":null,"PreviousButton":false,"Count":1,"Skipped":0,"NotDisplayed":0,"LanguageSelector":null,"Messages":{"PoweredByQualtrics":"Powered by Qualtrics","A11yNextPage":"You are on the next page","A11yPrevPage":"You are on the previous page","FailedToReachServer":"We were unable to connect to our servers. Please check your internet connection and try again.","ConnectionError":"Connection Error","IPDLError":"Sorry, an unexpected error occurred.","Retry":"Retry","Cancel":"Cancel","Language":"Language","BipolarPreference":"Select this answer if you prefer %1 over %2 by %3 points.","BipolarNoPreference":"Select this answer if you have no preference between %1 and %2.","MCMSB_Instructions":"To select multiple options in a row, click and drag your mouse or hold down Shift when selecting. To select non-sequential options, hold down Control (on a PC) or Command (on a Mac) when clicking. To deselect an option, hold down Control or Command and click on a selected option.","CaptchaRequired":"Answering the captcha is required to proceed","MLDND_Instructions":"Drag and drop each item from the list into a bucket.","ROSB_Instructions":"Select items and then rank them by clicking the arrows to move each item up and down.","PGR_Instructions":"Drag and drop items into groups. Within each group, rank items by dragging and dropping them into place.","Blank":"Blank"},"IsPageMessage":false,"ErrorCode":null,"PageMessageTranslations":{},"CurrentLanguage":"EN","FallbackLanguage":"EN","QuestionRuntimes":{"QID1":{"Highlight":false,"ID":"QID1","Type":"MC","Selector":"NPS","SubSelector":null,"ErrorMsg":null,"Valid":false,"MobileFirst":false,"Displayed":true,"PreValidation":{"Settings":{"ForceResponse":"OFF","ForceResponseType":"ON","Type":"None"}},"Choices":{"0":{"ID":"0","RecodeValue":0,"VariableName":0,"Text":"","Display":"0","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true},"1":{"ID":"1","RecodeValue":1,"VariableName":1,"Text":"","Display":"1","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true},"2":{"ID":"2","RecodeValue":2,"VariableName":2,"Text":"","Display":"2","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true},"3":{"ID":"3","RecodeValue":3,"VariableName":3,"Text":"","Display":"3","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true},"4":{"ID":"4","RecodeValue":4,"VariableName":4,"Text":"","Display":"4","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true},"5":{"ID":"5","RecodeValue":5,"VariableName":5,"Text":"","Display":"5","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true},"6":{"ID":"6","RecodeValue":6,"VariableName":6,"Text":"","Display":"6","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true},"7":{"ID":"7","RecodeValue":7,"VariableName":7,"Text":"","Display":"7","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true},"8":{"ID":"8","RecodeValue":8,"VariableName":8,"Text":"","Display":"8","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true},"9":{"ID":"9","RecodeValue":9,"VariableName":9,"Text":"","Display":"9","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true},"10":{"ID":"10","RecodeValue":10,"VariableName":10,"Text":"","Display":"10","InputWidth":null,"Exclusive":false,"Selected":false,"Password":false,"TextEntry":false,"TextEntrySize":"Small","TextEntryLength":null,"InputHeight":null,"Error":null,"Displayed":true}},"ChoiceOrder":["0","1","2","3","4","5","6","7","8","9","10"],"ChoiceTextPosition":"Left","Selected":null,"LabelPosition":"BELOW","QuestionText":"Based on your web experience today, how likely are you to recommend HP to a friend, family member, or colleague?","ColumnLabels":{"1":{"Display":"Not at all likely"},"2":{"Display":"Extremely likely"}},"CustomJS":"Qualtrics.SurveyEngine.addOnload(function() {\n\t(function($) {\n\t   $(function(){\n\t\t\tvar $questionBody = $('.Skin .QuestionBody'),\n\t\t\t\t$table = $questionBody.find('> table.ChoiceStructure'),\n\t\t\t\t$labels = $table.find('tr > td > table:first th'),\n\t\t\t\t$body = $('body'),\n\t\t\t\t$trBtns = $table.find('tr > td.LabelContainer:first').parent(),\n\t\t\t\t$smilyFace = $('<div/>', {class: 'smily-face'}).append('<div class=\"happines5\"></div>'),\n\t\t\t\tcurrentSmile = '5',\n\t\t\t\tsubmitBtn = $('#NextButton').attr('disabled', 'disabled'),\n\t\t\t\tdisablingAttemps = 100;\n\n\t\t  \t//COMMON\n\t\t\t$questionBody.before($smilyFace);\n\t\t\tfunction updateFace(happinesLevel, update) {\n\t\t\t\tif (update) {\n\t\t\t\t\tcurrentSmile = happinesLevel;\n\t\t\t\t}\n\t\t\t\t$smilyFace.find('>div').attr('class', 'happines' + happinesLevel);\n\t\t\t};\n\t\t\t\n\t\t    //DESKTOP ONLY\n\t\t\t$trBtns.prepend('<td class=\"label first\"><span>' + $labels.first().html() + '</span></td>').append('<td class=\"label\"><span>' + $labels.last().html() + '</span></td>');\n\t\t\t$table.find('input[type=\"radio\"]').on('change', function(e) {\n\t\t\t\tupdateFace($(this).val(), true);\n\t\t\t});\n\t\t\t$trBtns.find('>td').on('mouseenter', function() {\n\t\t\t\tvar radioInput = getRadioInputFromTd($(this));\n\t\t\t\tif (radioInput.length) {\n\t\t\t\t\tupdateFace(radioInput.attr('value'));\n\t\t\t\t}\n\t\t\t}).on('mouseleave', function() {\n\t\t\t\tupdateFace(currentSmile);\n\t\t\t});\n\t\t\t$trBtns.find('label.SingleAnswer').on('click', function() {\n\t\t\t\tif (!$('#SkinContent').hasClass('hightlight-selected')) {\n\t\t\t\t\t$('#SkinContent').addClass('hightlight-selected');\n\t\t\t\t\tenableSubmitButton();\n\t\t\t\t}\n\t\t\t});\n\t\t\tfunction enableSubmitButton() {\n\t\t\t\tsubmitBtn.removeAttr('disabled');\n\t\t\t}\n\t\t\tfunction getRadioInputFromTd(td) {\n\t\t\t\tvar label = td.find('.LabelWrapper > label');\n\n\t\t\t\tif (label.length) {\n\t\t\t\t\treturn $('input[aria-labelledby=\"' + label.attr(\"id\") + '\"]');\n\t\t\t\t}\n\t\t\t\treturn [];\n\t\t\t};\n\t\t\tfunction preselectVote(value) {\n\t\t\t\tvar inputRadio = getRadioInputFromTd($trBtns.find('.LabelContainer').eq(value));\n\t\t\t\tif (inputRadio.length) {\n\t\t\t\t\tinputRadio.prop('checked', true).trigger('change');\n\t\t\t\t}\n\t\t\t};\n\t\t\tfunction disableSubmitBtn() {\n\t\t\t\tif (submitBtn.attr('disabled') != 'disabled') {\n\t\t\t\t\tsubmitBtn.attr('disabled', 'disabled')\n\t\t\t\t} else if (disablingAttemps > 0 ) {\n\t\t\t\t\tdisablingAttemps--;\n\t\t\t\t\tsetTimeout(disableSubmitBtn, 50);\n\t\t\t\t}\n\t\t\t};\n\t\t\tpreselectVote(5);\n\t\t\tdisableSubmitBtn();\n\t\t});\n\t})(jQuery); \n});","ColumnLabelsOrder":[1,2],"ExistingChoices":{},"ProcessedDisplayChoiceOrder":["0","1","2","3","4","5","6","7","8","9","10"],"ChoiceOrderSetup":true,"Active":true}},"IsEOS":false,"FailedValidation":false,"BlockID":"BL_bBMOLusWimtYuyx","FormTitle":null,"SurveyMetaDescription":null,"TableOfContents":null,"UseTableOfContents":false,"SM":{"BaseServiceURL":"https://hpsupport.qualtrics.com","StartDate":"2018-05-02 03:32:26","StartDateRaw":1525231946393,"BrowserName":"Chrome","BrowserVersion":"65.0.3325.181","OS":"Windows NT 10.0","UserAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36 OPR/52.0.2871.99","LastUserAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36 OPR/52.0.2871.99","QueryString":"Q_CHL=si&Country=US","IP":"72.49.3.145","URL":"https://hpsupport.qualtrics.com/jfe/form/SV_85EJOQsHC3mUMiV?Q_CHL=si&Country=US","BaseHostURL":"https://hpsupport.qualtrics.com","ProxyURL":"https://hpsupport.qualtrics.com/jfe/form/SV_85EJOQsHC3mUMiV?Q_CHL=si&Country=US","JFEDataCenter":"jfe1","dataCenterPath":"jfe1","FormSessionID":"FS_1FKTwhEUtJVlDjd","SurveyID":"SV_85EJOQsHC3mUMiV"},"ED":{"SID":"SV_85EJOQsHC3mUMiV","SurveyID":"SV_85EJOQsHC3mUMiV","Q_CHL":"si","Country":"US","Q_URL":"https://hpsupport.qualtrics.com/jfe/form/SV_85EJOQsHC3mUMiV?Q_CHL=si&Country=US","UserAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36 OPR/52.0.2871.99","Q_LastModified":1503476837,"Q_Language":"EN"},"FormRuntime":{"Questions":{"QID1":{"Highlight":false,"ID":"QID1","Type":"MC","Selector":"NPS","SubSelector":null,"Valid":false,"MobileFirst":false,"Displayed":true,"Choices":{"0":{"ID":"0","Display":"0","Selected":false,"Text":"","Displayed":true},"1":{"ID":"1","Display":"1","Selected":false,"Text":"","Displayed":true},"2":{"ID":"2","Display":"2","Selected":false,"Text":"","Displayed":true},"3":{"ID":"3","Display":"3","Selected":false,"Text":"","Displayed":true},"4":{"ID":"4","Display":"4","Selected":false,"Text":"","Displayed":true},"5":{"ID":"5","Display":"5","Selected":false,"Text":"","Displayed":true},"6":{"ID":"6","Display":"6","Selected":false,"Text":"","Displayed":true},"7":{"ID":"7","Display":"7","Selected":false,"Text":"","Displayed":true},"8":{"ID":"8","Display":"8","Selected":false,"Text":"","Displayed":true},"9":{"ID":"9","Display":"9","Selected":false,"Text":"","Displayed":true},"10":{"ID":"10","Display":"10","Selected":false,"Text":"","Displayed":true}},"ChoiceOrder":["0","1","2","3","4","5","6","7","8","9","10"],"ChoiceTextPosition":"Left","Selected":null,"LabelPosition":"BELOW","QuestionText":"Based on your web experience today, how likely are you to recommend HP to a friend, family member, or colleague?","ColumnLabels":{"1":{"Display":"Not at all likely"},"2":{"Display":"Extremely likely"}},"ColumnLabelsOrder":[1,2],"ExistingChoices":{},"ProcessedDisplayChoiceOrder":["0","1","2","3","4","5","6","7","8","9","10"],"ChoiceOrderSetup":true,"Active":true}},"Blocks":{},"Form":{"FormVersion":2,"IgnoreResponse":false,"AnonymizeResponse":false,"CurrentLanguage":"EN","FallbackLanguage":"EN","DefaultLanguage":"EN","TransactionID":1,"Errors":{},"ED":{"SID":"SV_85EJOQsHC3mUMiV","SurveyID":"SV_85EJOQsHC3mUMiV","Q_CHL":"si","Country":"US","Q_URL":"https://hpsupport.qualtrics.com/jfe/form/SV_85EJOQsHC3mUMiV?Q_CHL=si&Country=US","UserAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36 OPR/52.0.2871.99","Q_LastModified":1503476837,"Q_Language":"EN"},"SM":{"BaseServiceURL":"https://hpsupport.qualtrics.com","StartDate":"2018-05-02 03:32:26","StartDateRaw":1525231946393,"BrowserName":"Chrome","BrowserVersion":"65.0.3325.181","OS":"Windows NT 10.0","UserAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36 OPR/52.0.2871.99","LastUserAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36 OPR/52.0.2871.99","QueryString":"Q_CHL=si&Country=US","IP":"72.49.3.145","URL":"https://hpsupport.qualtrics.com/jfe/form/SV_85EJOQsHC3mUMiV?Q_CHL=si&Country=US","BaseHostURL":"https://hpsupport.qualtrics.com","ProxyURL":"https://hpsupport.qualtrics.com/jfe/form/SV_85EJOQsHC3mUMiV?Q_CHL=si&Country=US","JFEDataCenter":"jfe1","dataCenterPath":"jfe1","FormSessionID":"FS_1FKTwhEUtJVlDjd","SurveyID":"SV_85EJOQsHC3mUMiV","EndDate":"2018-05-02 03:32:26","EndDateRaw":1525231946396,"Progress":0},"BlockID":"BL_bBMOLusWimtYuyx","TOCProgress":{"BL_bBMOLusWimtYuyx":0},"lastPageQuestionIds":["QID1"],"CurrentFlowNodeID":"FL_2","CurrentTOCFlowNodeID":null,"ExpirationLength":"+1 week"},"Progress":0,"TransactionID":1,"FlowHistory":["FL_21","FL_5"],"Flow":{"FL_1":{},"FL_21":{},"FL_5":{},"FL_4":{},"FL_2":{"Block":{"blockPageIndex":0,"current":0,"previous":0,"history":[],"HasBeenValidated":false,"Active":false,"blockSkipped":false,"BlockPages":"[{\"questions\":[\"QID1\"]}]","sequence":[{"Type":"Question","QuestionID":"QID1"}]}},"FL_6":{},"FL_9":{},"FL_13":{},"FL_11":{},"FL_23":{},"FL_3":{},"FL_7":{},"FL_15":{},"FL_17":{},"FL_19":{},"FL_10":{},"FL_14":{},"FL_12":{},"FL_16":{},"FL_18":{},"FL_20":{}}},"TransactionID":1,"ReplacesOutdated":false,"EOSRedirectURL":null,"RedirectURL":null,"SaveOnPageUnload":true,"ProgressPercent":0,"ProgressBarText":"Survey Completion","ProgressAccessibleText":"Current Progress","FormOptions":{"BackButton":false,"SaveAndContinue":true,"SurveyProtection":"PublicSurvey","BallotBoxStuffingPrevention":false,"NoIndex":"Yes","SecureResponseFiles":true,"SurveyExpiration":"None","SurveyTermination":"DefaultMessage","Header":"","Footer":"","ProgressBarDisplay":"None","PartialData":"+1 week","ValidationMessage":"","PreviousButton":{"Display":"<<"},"NextButton":{"Display":"SUBMIT"},"SkinLibrary":"hpsupport","SkinType":"MQ","Skin":"hpskin_9","NewScoring":1,"libraryId":"","nextButtonMid":"","previousButtonMid":"","headerMid":"","footerMid":"","QuestionsPerPage":"","PageTransition":"Fade","ExternalCSS":null,"CustomStyles":{"errorStyles":{"selector":".Skin .ValidationError","styles":{"color":null,"backgroundColor":null,"borderColor":null}},"errorStylesBG":{"selector":".Skin .HeaderValidationError, .Skin .HeaderValidationError li a","styles":{"color":null,"backgroundColor":null}},"pageStyles":{"selector":"#SurveyEngineBody","styles":{"backgroundColor":null}},"textStyles":{"selector":".SkinInner","styles":{"fontFamily":null,"fontSize":null,"fontWeight":null,"fontStyle":null,"textDecoration":null,"color":null}},"questionStyles":{"selector":".Skin .QuestionText","styles":{"fontFamily":null,"fontSize":null,"fontWeight":null,"fontStyle":null,"textDecoration":null,"color":null}},"choiceStyles":{"selector":".Skin .horizontalbar th.ylabel, .Skin .Matrix table td, .Skin .Matrix table th, .Skin .Matrix table thead th, .Skin .Matrix table thead td, .Skin .PGR .DragAndDrop .Items label, .Skin .QuestionBody ul.ChoiceStructure, .Skin .PGR .DragAndDrop .Group ul, .Skin .PGR .DragAndDrop .Group h2, .Skin .PGR .DragAndDrop .Items ul, .Skin .PGR .DragAndDrop .Items h2, .Skin .DD .QuestionBody table.ChoiceStructure, .Skin .PGR .DragAndDrop .NoColumns td.groupsContainerTd div ul, .Skin .PGR .DragAndDrop .NoColumns td.groupsContainerTd div h2, .Skin .SBS thead th, .Skin .SBS td, .Skin .SBS .Answers td, .Skin .SBS .Answers th, .SBS table.ChoiceStructure, .Skin .horizontalbar thead table.LabelDescriptions tr td, .Skin .horizontalbar thead tr td.NotApplicable, .QuestionBody th, .Skin .QuestionBody .MC .MAVR label, .Skin .QuestionBody .MC .SAVR label, .Skin .SBS thead th, .Skin .SBS td, .Skin .RO .DND ul li, .Skin .reg, .SkinInner .ChoiceStructure, .Skin thead, .Skin .GAP .ChoiceStructure thead th, .Skin .GAP .ChoiceStructure .c4, .Skin .GAP .ChoiceStructure th, .Skin .GAP .ChoiceStructure .WhyText, .SkinInner .ChoiceStructure .LightBG, .Skin .QuestionOuter.Highlight .Inner .reg, .Skin .QuestionOuter.Highlight .Inner .alt, .Skin .QuestionOuter.Highlight .Inner .ReadableAlt       ","styles":{"fontFamily":null,"fontSize":null,"fontWeight":null,"fontStyle":null,"textDecoration":null,"color":null}},"headerStyles":{"selector":".Skin div#Header","styles":{"color":null}},"footerStyles":{"selector":".Skin #Footer","styles":{"color":null}},"questionSeparatorStyles":{"selector":".Skin .Separator ~ .Separator","styles":{"backgroundColor":null,"display":null}},"highlightStyles":{"selector":".Skin .QuestionOuter.Highlight .Inner, .Skin .QuestionOuter.Highlight .Inner .reg, .Skin .QuestionOuter.Highlight .Inner .alt, .Skin .QuestionOuter.Highlight .Inner .ReadableAlt","styles":{"backgroundColor":null}},"highlightStylesAlt":{"selector":".Skin .QuestionOuter.Highlight .Inner .ReadableAlt, .Skin .QuestionOuter.Highlight .Inner .LightBG","styles":{"backgroundColor":null}},"textEntryStyles":{"selector":".Skin select, .Skin .InputText","styles":{"color":null}},"borderStyles":{"selector":".Skin .CS .horizontalbar table.sliderGrid tr.xlabel th, .Skin .CS .horizontalbar .ylabel, .Skin .CS .horizontalbar table.sliderGrid tr td.value, .Skin .Slider .horizontalbar table.sliderGrid tr.xlabel th, .Skin .BorderColor, .Skin .DarkBorderColor, .Skin .Slider .horizontalbar table.sliderGrid tr td.value, .Skin thead, .Skin .GAP .ChoiceStructure thead th  ","styles":{"borderColor":null}},"altRowStyles":{"selector":".Skin .ReadableAlt, .Skin .LightBG","styles":{"backgroundColor":null}},"customCSS":"/*START CSS FOR SECOND SCREEN*/\n#QID6 li.Selection {\n\tposition: relative;\n}\n\n#QID6 li.Selection input.radio {\n\topacity: 1;\n    \twidth: auto;\n    \theight: auto;\n\ttop: 50%;\n\ttransform: translateY(-100%);\n\tmargin-top: 0;\n}\n\n#QID6 li.Selection label.SingleAnswer {\n\tbackground: none;\n\tpadding: 0;\n\tpadding-left: 25px;\n\tborder-width: 0;\n\t\n}\n\n#QID7 .QuestionText,\n#QID6 .QuestionText {\n\tpadding-bottom: 10px;\n    \tpadding-top: 10px;\n\tmargin-bottom: 0;\n}\n\n#QID7 textarea {\n\tdisplay: block;\n\tmargin: 0 auto;\n\tpadding: 10px;\n\tbackground-color: #f6f6f6;\n\tborder-color: #e6e6e6;\n}\n/*END CSS FOR SECOND SCREEN*/ \n\n\n/*This was to center the Next Button. This is so this survey gets the format you want*/\n\n.Skin #Buttons #PreviousButton {\n\tdisplay:none;\n}\n\n.Skin #Buttons #NextButton {\n\tmargin:0% 40%;\n}\n\n@media (max-width:550px) {\n\t.Skin #Buttons #NextButton {\n\t\tmargin:0% 28%;\n\t}\n}\n@font-face {\n  font-family: 'HP Simplified Light';\n  src: url('https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1494546119787-4dfaad/files/latin-e-light-ttf.ttf');\n  src: url('https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1494546119787-4dfaad/files/latin-e-light-eot.eot?#iefix') format('embedded-opentype'),\n       url('https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1494546119787-4dfaad/files/latin-e-light-woff.woff') format('woff'),\n       url('https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1494546119787-4dfaad/files/latin-e-light-ttf.ttf')  format('truetype'),\n       url('https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1494546119787-4dfaad/files/latin-e-light-svg.svg#latin-e-light-svg') format('svg');\n}\n#Buttons #NextButton,#Buttons #PreviousButton,#Footer,#Header,.QuestionBody,.QuestionText{font-family:'HP Simplified Light',Arial,sans-serif!important;}\n.JFEScope .JFEContent #SkinContent.LoadingPage {\n    position: static!important;\n}\n.Skin .QuestionOuter {overflow: visible} \n.Skin .QuestionBody table.ChoiceStructure {border-spacing: 0;}\n.Skin .QuestionBody table.ChoiceStructure td {padding:5px;}\n.Skin table.ChoiceStructure{table-layout: fixed}\n.Skin table.ChoiceStructure td.label {width: 100px; padding: 0;}\n.Skin table.ChoiceStructure td.label span{display: inline-block; width: 100px; text-align: left; padding-left: 5px;} \n.Skin table.ChoiceStructure td.label.first span {text-align: right; padding-left:0; padding-right: 5px;} \n.Skin table.ChoiceStructure tr:first-child {display: none;} \n.Skin table.ChoiceStructure tr > td.LabelContainer .LabelWrapper>label {\n    -webkit-border-radius: 0px;\n    -moz-border-radius: 0px;\n    -ms-border-radius: 0px;\n    -o-border-radius: 0px;\n    border-radius: 0px; \n    border-width: 1px; \n    background: #FAFAFA;\n}\n#SkinContent table.ChoiceStructure label.SingleAnswer.q-checked {\n    border-color: transparent;\n}\n.Skin #SkinContent #Buttons .disabler {\n    position: absolute;\n    height: 100%;\n    width: 100%;\n    top: 0;\n    left: 0;\n}\n#SkinContent.hightlight-selected table.ChoiceStructure label.SingleAnswer.q-checked {\n    border-color: #2da6db;\n}\n.Skin #SkinContent #Buttons input#NextButton {margin: 0; background: #C5E4F6; opacity: 1;}\n.Skin #SkinContent.hightlight-selected #Buttons input#NextButton {background: #2da6db;} \n.Skin #Buttons {text-align: center;}\n.Skin #Buttons {overflow: hidden; text-align: center;}\n.Skin .QuestionText {line-height: 40px;font-size: 29px;text-align: center; max-width: 800px; margin: 0 auto 10px auto;} \n.Skin .QuestionText strong {font-weight: normal;}\n\n.smily-face {margin-bottom: 25px;} \n.smily-face > div {margin: 0 auto;width: 70px;height: 70px;background: url(https://hpsupport.qualtrics.com/ControlPanel/Graphic.php?IM=IM_8BXBZP1Qi1pzE0d) 0 0 no-repeat;} \n.smily-face .happines0 {background-position: -1px 0}https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1492981399607-237bd2/files/latin-e-light-ttf.ttf\n.smily-face .happines1 {background-position: -73px 0}\n.smily-face .happines2 {background-position: -145px 0}\n.smily-face .happines3 {background-position: -217px 0}\n.smily-face .happines4 {background-position: -289px 0}\n.smily-face .happines5 {background-position: -361px 0}\n.smily-face .happines6 {background-position: -1px -72px}\n.smily-face .happines7 {background-position: -73px -72px}\n.smily-face .happines8 {background-position: -145px -72px}\n.smily-face .happines9 {background-position: -217px -72px}\n.smily-face .happines10 {background-position: -289px -72px}\n\n.Skin .QuestionBody .slider-container .BarContainer ul {position: absolute; top: 22px; display: block; width: 100%; padding: 0 7px;}\n.Skin .QuestionBody .slider-container .BarContainer ul>li {display: block; float: left; border-left: 1px solid #C6C6C6; width: 10%!important; height: 5px; font-size: 0;}\n.Skin .QuestionBody .slider-container .BarContainer ul>li.first {display: none;}\n.Skin .QuestionBody .slider-container .BarContainer ul>li.first + li {border: none;}\n.Skin .QuestionBody .horizontalbar.ChoiceStructure {padding-right: 0;}\n.Skin .QuestionBody .slider-container .BarContainer ul:before {content: \"\"; background: #C6C6C6; width: 1px; position: absolute; height: 14px; left: 7px; top: 0}\n.Skin .QuestionBody .slider-container .BarContainer ul:after {content: \"\"; background: #C6C6C6; width: 1px; position: absolute; height: 14px; right: 7px; top: 0}\n.Skin .QuestionBody table.Slider {height: 39px;}\n.Skin .horizontalbar .Slider .track .handle {box-shadow: rgb(81, 161, 167) 0px 0px 4px inset; top: -11px; width: 14px!important; height: 28px; border-radius: 3px; background: #64C9D1;}\n.Skin .horizontalbar .Slider .track .handle:before {content: \"\"; position: absolute; width: 1px;height: 10px; background: white; left: 4px; top: 10px;}\n.Skin .horizontalbar .Slider .track .handle:after {content: \"\"; position: absolute; width: 1px;height: 10px; background: white; right: 4px; top: 10px;}\n.Skin .QuestionBody .horizontalbar.MobileFriendly div.track {border: none;}\n.Skin .QuestionBody .BarContainer  .trackHolderRel:before {content: \"0\";position: absolute;top: -25px;left: 3px; font-size: 17px;}\n.Skin .QuestionBody .BarContainer  .trackHolderRel:after {content: \"10\";position: absolute;top: -25px;right: 0; font-size: 17px;}\n.Skin .QuestionBody .horizontalbar ul.labels {margin-top: 10px;}\n.Skin .QuestionBody .horizontalbar ul.labels > li {vertical-align: top!important;}\n.Skin .QuestionBody .horizontalbar ul.labels > li > span {display: inline-block; max-width: 50%;}\n.Skin .labels-container ul {\n    display: none!important;\n}\n.Skin #Plug {\n    height: 0;\n    width: 0;\n    overflow: hidden;\n}\n.Skin #Footer,\n.Skin #PushStickyFooter {\n    display: none;\n}\n.Skin .LanguageSelectorContainer {\n    width: 0;\n    height: 0;\n    overflow: hidden;\n}\n@media screen and (min-width: 800px) {\n    #SkinContent table.ChoiceStructure td:hover label.SingleAnswer {\n        border-color: #2da6db;\n    }\n}\n\n@media screen and (max-width: 800px) {\n    .Skin .horizontalbar .Slider .handle:hover {\n        padding: 0;\n    }\n    .Skin, html, body, body > .JFE, \n    body > .JFE > div, \n    body > .JFE > div > form {\n        height: 100%;\n        min-height: 450px;\n    }\n    .Skin {\n        padding-bottom: 60px;\n    }\n    .Skin #Buttons {\n        position: absolute;\n        padding-bottom: 0;\n        width: 100%;\n        bottom: 0;\n    }\n    .Skin #SkinContent {\n        position: static;\n    }\n    .Skin .QuestionText {\n        line-height: 30px;\n        font-size: 22px;\n    }\n    .Skin .smily-face {\n        margin-bottom: 0\n    }\n    .Skin #Buttons {padding-left: 0; padding-right: 0}\n    .Skin #Buttons input#NextButton {width: 100%;border-radius: 0;}\n}"},"HighlightQuestions":"off","AvailableLanguages":{"EN":[]},"ProtectSelectionIds":true,"SkinQuestionWidth":700,"SurveyLanguage":"EN","ActiveResponseSet":"RS_57KsG8uP6BJbG4t","SurveyStartDate":"-0001-11-30 07:00:00","SurveyExpirationDate":"-0001-11-30 07:00:00","SurveyCreationDate":"2017-05-04 06:23:19","SkinOptions":{"Description":"HP - NPS Formatted Theme","Deprecated":false,"Sort":8,"Version":"2","AnyDeviceSupport":true,"Transitions":"Slide,Fade,Flip,Barrel","DefaultTransition":"Fade","CSS":"basestylesv4","WindowWidth":900,"WindowHeight":600,"QuestionWidth":700,"CssVersion":4,"Author":"","ResponsiveSkin":{"SkinLibrary":"Qualtrics","SkinType":"MQ","Skin":"v4qualtrics1","BaseCss":"https://jfe-cdn.qualtrics.com/themes/skins/qualtrics/v4qualtrics1/version-1524853931134-80cade/stylesheet.css"}},"SkinBaseCss":"https://jfe-cdn.qualtrics.com/themes/skins/hpsupport/hpskin_9/version-1521698334343-4ef3ad/stylesheet.css","Favicon":"https://hpsupport.qualtrics.com/WRQualtricsShared/Brands/hpsupport/favicon.ico","CustomLanguages":null,"SurveyTimezone":"Asia/Calcutta","LinkType":"anonymous","Language":"EN","Languages":null,"DefaultLanguages":{"AR":"العربية","ASM":"অসমীয়া","AZ-AZ":"Azərbaycan dili","BEL":"Беларуская","BG":"Български","BS":"bosanski","BN":"বাংলা","CA":"Català","CEB":"Bisaya","CS":"Čeština","CY":"Cymraeg","DA":"Dansk","DE":"Deutsch","EL":"Ελληνικά","EN":"English","EN-GB":"English - United Kingdom","EN_GB":"English - Great Britain","EO":"Esperanto","ES":"Español (América Latina)","ES-ES":"Español","ET":"Eesti","FA":"فارسی","FI":"Suomi","FR":"Français","GU":"ગુજરાતી ","HE":"עברית","HI":"हिन्दी","HIL":"Hiligaynon","HR":"Hrvatski","HU":"Magyar","HYE":"արևելահայերեն","ID":"Bahasa Indonesia","ISL":"Íslenska","IT":"Italiano","JA":"日本語","KAN":"ಕನ್ನಡ","KAT":"ქართული","KAZ":"Қазақ","KM":"ភាសាខ្មែរ","KO":"한국어","LV":"Latviešu","LT":"Lietuviškai","MAL":"മലയാളം","MAR":"मराठी","MK":"Mакедонски","MN":"Монгол","MS":"Bahasa Melayu","MY":"မြန်မာဘာသာ","NL":"Nederlands","NO":"Norsk","ORI":"ଓଡ଼ିଆ ଭାଷା","PA-IN":"ਪੰਜਾਬੀ (ਗੁਰਮੁਖੀ)","PL":"Polski","PT":"Português","PT-BR":"Português Brasileiro","RO":"Română","RU":"Pyccĸий","SIN":"සිංහල","SK":"Slovenčina","SL":"Slovenščina","SQI":"Shqip","SR":"Srpski","SR-ME":"Crnogorski","SV":"Svenska","SW":"Kiswahili","TA":"தமிழ்","TEL":"తెలుగు","TGL":"Tagalog","TH":"ภาษาไทย","TR":"Tϋrkçe","UK":"Українська","UR":"اردو","VI":"Tiếng Việt","ZH-S":"简体中文","ZH-T":"繁體中文","Q_DEV":"Developer"},"ThemeURL":"//co1.qualtrics.com/WRQualtricsShared/","AutoAdvanceLabel":"Press enter to continue"},"Header":"","Footer":"","HasJavaScript":false,"IsSystemMessage":false,"FeatureFlags":{},"NextButtonAriaLabel":"SUBMIT","PreviousButtonAriaLabel":"Previous","BrandType":"Corporate","FilteredEDKeys":[],"CookieActions":{"Set":[],"Clear":[]}});
+    </script>
+  
+
+<div class="JFE" id="P_1525231947629"><div class="JFEContent SkinV2 webkit CSS3"><form id="Page" name="Page" class="Page ActivePage"><meta name="HandheldFriendly" content="true">
+<meta name="viewport" content="user-scalable = no, maximum-scale=1, minimum-scale=1, initial-scale = 1, width = device-width">
+<div class="Skin">
+	<div id="Overlay"></div>
+	<div id="Wrapper">
+		<div id="ProgressBar"></div>
+		<div class="SkinInner">
+			<div id="LogoContainer">
+				<div id="Logo"></div>
+			</div>
+			<div id="HeaderContainer">
+					<div id="Header" role="banner"></div>
+				</div>
+			<div id="SkinContent">
+				<div id="Questions" role="main"><!-- rivets: if runtime.SeparatorDisplayed --><div id="QID1Separator" class="Separator"></div><div class="QuestionOuter BorderColor MC  QID1" id="QID1" questionid="QID1" posttag="QID1" data-runtime-remove-class-hidden="runtime.Displayed"> <div id="QR~QID1~VALIDATION" class="ValidationError" data-runtime-html="runtime.ErrorMsg" role="alert" data-runtime-show="runtime.ErrorMsg" style="display: none;"></div> <div class="Inner BorderColor NPS"> <div class="InnerInner BorderColor"> <fieldset> <!-- BEGIN PARTIALS --><!-- Partial for defining the ControlContainerContent --><!-- Partial for defining the LabelContainerContent --><!-- END PARTIALS --><legend> <div class="QuestionText BorderColor">Based on your web experience today, how likely are you to recommend HP to a friend, family member, or colleague?</div></legend><div class="smily-face"><div class="happines5"></div></div><div class="QuestionBody"> <table role="presentation" class="ChoiceStructure" cellpadding="0" cellspacing="0" border="0"> <tbody>    <tr> <td class="ColumnLabels" colspan="11"> <table style="width:100%"> <tbody> <tr>     <th class="ColumnLabel First" width="50%;" data-runtime-html="runtime.ColumnLabels.1.Display">Not at all likely</th>     <th class="ColumnLabel Last" width="50%;" data-runtime-html="runtime.ColumnLabels.2.Display">Extremely likely</th>  </tr> </tbody> </table> </td> </tr>  <tr><td class="label first"><span>Not at all likely</span></td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner reg"> <span class="LabelWrapper"><label id="QID1-0-label" for="QR~QID1~0" class="SingleAnswer" data-runtime-class-q-checked="runtime.Choices.0.Selected"><span data-runtime-html="runtime.Choices.0.Display">0</span></label></span><label for="QR~QID1~0" class="q-radio" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.0.Selected"></label> </td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner alt"> <span class="LabelWrapper"><label id="QID1-1-label" for="QR~QID1~1" class="SingleAnswer" data-runtime-class-q-checked="runtime.Choices.1.Selected"><span data-runtime-html="runtime.Choices.1.Display">1</span></label></span><label for="QR~QID1~1" class="q-radio" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.1.Selected"></label> </td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner reg"> <span class="LabelWrapper"><label id="QID1-2-label" for="QR~QID1~2" class="SingleAnswer" data-runtime-class-q-checked="runtime.Choices.2.Selected"><span data-runtime-html="runtime.Choices.2.Display">2</span></label></span><label for="QR~QID1~2" class="q-radio" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.2.Selected"></label> </td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner alt"> <span class="LabelWrapper"><label id="QID1-3-label" for="QR~QID1~3" class="SingleAnswer" data-runtime-class-q-checked="runtime.Choices.3.Selected"><span data-runtime-html="runtime.Choices.3.Display">3</span></label></span><label for="QR~QID1~3" class="q-radio" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.3.Selected"></label> </td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner reg"> <span class="LabelWrapper"><label id="QID1-4-label" for="QR~QID1~4" class="SingleAnswer" data-runtime-class-q-checked="runtime.Choices.4.Selected"><span data-runtime-html="runtime.Choices.4.Display">4</span></label></span><label for="QR~QID1~4" class="q-radio" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.4.Selected"></label> </td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner alt"> <span class="LabelWrapper"><label id="QID1-5-label" for="QR~QID1~5" class="SingleAnswer q-checked" data-runtime-class-q-checked="runtime.Choices.5.Selected"><span data-runtime-html="runtime.Choices.5.Display">5</span></label></span><label for="QR~QID1~5" class="q-radio q-checked" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.5.Selected"></label> </td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner reg"> <span class="LabelWrapper"><label id="QID1-6-label" for="QR~QID1~6" class="SingleAnswer" data-runtime-class-q-checked="runtime.Choices.6.Selected"><span data-runtime-html="runtime.Choices.6.Display">6</span></label></span><label for="QR~QID1~6" class="q-radio" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.6.Selected"></label> </td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner alt"> <span class="LabelWrapper"><label id="QID1-7-label" for="QR~QID1~7" class="SingleAnswer" data-runtime-class-q-checked="runtime.Choices.7.Selected"><span data-runtime-html="runtime.Choices.7.Display">7</span></label></span><label for="QR~QID1~7" class="q-radio" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.7.Selected"></label> </td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner reg"> <span class="LabelWrapper"><label id="QID1-8-label" for="QR~QID1~8" class="SingleAnswer" data-runtime-class-q-checked="runtime.Choices.8.Selected"><span data-runtime-html="runtime.Choices.8.Display">8</span></label></span><label for="QR~QID1~8" class="q-radio" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.8.Selected"></label> </td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner alt"> <span class="LabelWrapper"><label id="QID1-9-label" for="QR~QID1~9" class="SingleAnswer" data-runtime-class-q-checked="runtime.Choices.9.Selected"><span data-runtime-html="runtime.Choices.9.Display">9</span></label></span><label for="QR~QID1~9" class="q-radio" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.9.Selected"></label> </td>   <!-- LabelContainer needs to have both for now because there's a misspelling in the CSS --> <td width="9.090909090909092%" class="LabelContainer LabelContatiner reg"> <span class="LabelWrapper"><label id="QID1-10-label" for="QR~QID1~10" class="SingleAnswer" data-runtime-class-q-checked="runtime.Choices.10.Selected"><span data-runtime-html="runtime.Choices.10.Display">10</span></label></span><label for="QR~QID1~10" class="q-radio" aria-hidden="true" data-runtime-class-q-checked="runtime.Choices.10.Selected"></label> </td>  <td class="label"><span>Extremely likely</span></td></tr> <tr>   <td style="width: 9.090909090909092%;" class="ControlContainer reg"> <input choiceid="0" class="radio QR-QID1-0 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~0" value="0" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-0-label"> </td>   <td style="width: 9.090909090909092%;" class="ControlContainer alt"> <input choiceid="1" class="radio QR-QID1-1 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~1" value="1" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-1-label"> </td>   <td style="width: 9.090909090909092%;" class="ControlContainer reg"> <input choiceid="2" class="radio QR-QID1-2 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~2" value="2" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-2-label"> </td>   <td style="width: 9.090909090909092%;" class="ControlContainer alt"> <input choiceid="3" class="radio QR-QID1-3 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~3" value="3" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-3-label"> </td>   <td style="width: 9.090909090909092%;" class="ControlContainer reg"> <input choiceid="4" class="radio QR-QID1-4 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~4" value="4" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-4-label"> </td>   <td style="width: 9.090909090909092%;" class="ControlContainer alt"> <input choiceid="5" class="radio QR-QID1-5 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~5" value="5" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-5-label"> </td>   <td style="width: 9.090909090909092%;" class="ControlContainer reg"> <input choiceid="6" class="radio QR-QID1-6 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~6" value="6" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-6-label"> </td>   <td style="width: 9.090909090909092%;" class="ControlContainer alt"> <input choiceid="7" class="radio QR-QID1-7 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~7" value="7" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-7-label"> </td>   <td style="width: 9.090909090909092%;" class="ControlContainer reg"> <input choiceid="8" class="radio QR-QID1-8 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~8" value="8" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-8-label"> </td>   <td style="width: 9.090909090909092%;" class="ControlContainer alt"> <input choiceid="9" class="radio QR-QID1-9 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~9" value="9" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-9-label"> </td>   <td style="width: 9.090909090909092%;" class="ControlContainer reg"> <input choiceid="10" class="radio QR-QID1-10 QWatchTimer" type="radio" name="QR~QID1" id="QR~QID1~10" value="10" data-runtime-checked="runtime.Selected" aria-labelledby="QID1-10-label"> </td>  </tr> </tbody></table> </div> </fieldset> </div> </div>  </div></div>
+				<div id="Buttons" role="navigation"><input id="NextButton" class="NextButton Button" title="SUBMIT" type="button" name="NextButton" value="SUBMIT" data-runtime-disabled="runtime.Disabled" data-runtime-aria-label="runtime.ariaLabel" data-runtime-hide="runtime.Hide" page-id="P_1525231947629" aria-label="SUBMIT" disabled="disabled"></div>
+			</div>
+		</div>
+		<div id="Footer" role="contentinfo"></div>
+		<div id="PushStickyFooter"></div>
+	</div>
+	<div id="Plug" style="display:block !important;"><a style="display:block !important;" href="http://www.qualtrics.com/" target="_blank">Powered by Qualtrics</a></div>
+</div>
+
+
+
+</form></div></div></body></html>

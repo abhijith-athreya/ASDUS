@@ -1,0 +1,191 @@
+@font-face {		
+	font-family: "FontAwesome";		
+	src: url('/lib/fonts/font-awesome/font-awesome.eot');		
+	src: url('/lib/fonts/font-awesome/font-awesome.eot?#iefix') format('eot'), url('/lib/fonts/font-awesome/font-awesome.woff') format('woff'), url('/lib/fonts/font-awesome/font-awesome.ttf') format('truetype'), url('/lib/fonts/font-awesome/font-awesome.svg') format('svg');		
+}
+
+.displayOverlay {
+    display: none;
+    height: 100%;
+    width: 100%;
+    background: rgba(255,255,255,0.7);
+    z-index: 1;
+    position: relative;
+    cursor: pointer;
+}
+
+.load-state .largePlayBtn,
+.start-state .largePlayBtn,
+.end-state .largePlayBtn {
+    display: none !important;
+}
+
+.load-state .displayOverlay,
+.start-state .displayOverlay,
+.end-state .displayOverlay {
+    display: block;
+}
+
+.displayOverlay .elementContainer {
+    display: inline-block;
+    position: absolute;
+    bottom: 50px;
+    /*left: 25px;
+    margin-right: 25px;*/
+    width: 100%;
+}
+
+.size-small .displayOverlay .elementContainer {
+    bottom: 20px;
+    left: 10px
+}
+
+.elementContainer .videoMeta {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+.size-small .elementContainer .videoMeta {
+    margin-bottom: 2px;
+    font-size: 11px;
+}
+
+.elementContainer .videoMeta .series {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 500;
+    color: #199dd6;
+}
+
+.elementContainer .headline {
+    color: #000;
+    font-size: 36px;
+    font-family: 'Heebo', sans-serif;
+    font-weight: 900;
+    line-height: 34px;
+    display: table-cell;
+    vertical-align: top;
+}
+
+.size-medium .elementContainer .headline {
+    font-size: 26px;
+    line-height: 26px;
+    letter-spacing: -0.02em;
+}
+
+.size-small .elementContainer .videoMeta .series {
+    letter-spacing: -0.01em;
+}
+
+.size-small .elementContainer .headline {
+    font-size: 22px;
+    line-height: 22px;
+    letter-spacing: -0.02em;
+}
+
+.elementContainer .the-elements {
+    padding-left: 15px;
+    padding-right: 15px;
+    /*display: flex;
+    flex-direction: row;
+    align-items: flex-end;*/
+}
+
+.the-elements .icon {
+    padding-right: 15px;
+}
+
+.size-small .the-elements .icon {
+    padding-right: 10px;
+}
+
+.the-elements .icon::before {
+    font-family: FontAwesome;
+    font-size: 68px;
+    color: #000;
+    content: "\f144";
+}
+
+.size-small .the-elements .icon::before {
+    font-size: 45px;
+    font-style: normal;
+    text-align: left;
+    letter-spacing: -0.01em;
+}
+
+.elementContainer .the-elements .flex-meta {
+    display: flex;
+    align-items: baseline;
+}
+
+.elementContainer .the-elements .flex-headlines {
+    display: table;
+}
+
+.elementContainer .the-elements .titles .icon {
+    display: table-cell;
+    vertical-align: top;
+    max-width: 68px;
+    width: 68px;
+}
+
+.size-small .the-elements .titles .icon {
+    display: table-cell;
+    vertical-align: top;
+    max-width: 40px;
+    width: 40px;
+}
+
+.elementContainer .the-elements .flex-meta .icon {
+    visibility: hidden;
+}
+.start-state .topBarContainer,
+.pause-state .topBarContainer {
+    top: -5.2em !important;
+}
+
+/* Enables Display of Top Bar on hover
+.start-state:hover .topBarContainer,
+.pause-state:hover .topBarContainer {
+    top: 0 !important;
+}
+*/
+
+.start-state .controlBarContainer,
+.pause-state .controlBarContainer {
+    bottom: -4.2em !important;
+}
+
+.start-state:hover .controlBarContainer,
+.pause-state:hover .controlBarContainer {
+    bottom: 0 !important;
+}
+
+.displayOverlay .countdowner {
+    display: flex !important;
+    justify-content: center;
+    flex-direction: column;
+    min-width: 45px;
+    margin-right: 10px;
+    max-height: 45px;
+    max-width: 45px;
+}
+
+.displayOverlay .countdowner .progressbar-text {
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 30px;
+    color: #000;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.size-medium .displayOverlay .countdowner {
+    max-height: 68px;
+    max-width: 68px;
+}

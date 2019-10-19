@@ -1,0 +1,196 @@
+(function ($) {
+
+	var methods = {
+		init : function (options) {
+
+			var settings = $.extend({
+				'autoPlay': false,
+				'afterSlide': null,
+				'direction': 'rtl', // [options: 'rtl', 'ltr',  or 'auto']
+				'duration': 1000, // Animation duration
+				'next': null, // Selector for the previousSlide trigger
+				'prev': null, // Selector for the nextSlide trigger
+				'slides': null, // [null, array of selectors, or a sizzle selector string]
+				'speed': 400  // [null, array of selectors, or a sizzle selector string]
+			}, options);
+
+			return this.each(function () {
+
+				var $this = $(this),
+					data = $this.data('freeslide');
+
+				if (! data) { // Unitialized Element
+
+					var positions = [];
+					var slides = $(settings.slides);
+					var clones = $('<div class="freeslide-clone"/>');
+					// var activeElement = settings.direction === 'ltr' ? (slides.length - 1) : 0;
+
+					$(slides).each(function () {
+
+						var clone = $(this).clone();
+						var left = $(this).css('left');
+
+						positions.push(left);
+						$(clone).data('clone', $(this)).css('left', left).appendTo($(clones));
+
+						$(this).bind('click.freeslide', function (e) {
+							var index = $(this).attr('data-freeslide-pos');
+							$this.freeslide('slide', {offset: index, e: e});
+							if (typeof settings.afterSlide === 'function') {
+								settings.afterSlide.apply(this, new Array($(this), $(slides)));
+							}
+						});
+					});
+
+					$(this).data('freeslide', {
+						positions: positions,
+						settings: settings,
+						slides: slides,
+						target: $this,
+						trigger: null
+					});
+				}
+			});
+		},
+		slide: function (options) {
+			var clickedIndex = parseInt(options.offset);
+			switch (clickedIndex) {
+				case 4:
+					$(this).freeslide('slideFourClicked');
+					break;
+				case 3:
+					$(this).freeslide('slideThreeClicked');
+					break;
+				case 2:
+					$(this).freeslide('slideTwoClicked');
+					break;
+				case 1:
+					break;
+				default:
+					return $(this);
+			}
+		},
+		slideTwoClicked: function () {
+			var data = $(this).data('freeslide');
+			var speed = data.settings.speed;
+			var $first = $(data.settings.slides + '.first');
+			var $second = $(data.settings.slides + '.second');
+			var $third = $(data.settings.slides + '.third');
+			var $fourth = $(data.settings.slides + '.fourth');
+
+			$first.css('display', 'none').css({left: '376px'})
+			.fadeIn('fast').attr('data-freeslide-pos', 4)
+			.removeClass('first')
+			.addClass('fourth');
+			$second.animate({left: 102}, speed, function () {
+				$(this).attr('data-freeslide-pos', 1).removeClass('second').addClass('first');
+			});
+			$third.animate({left: 210}, speed, function () {
+				$(this).attr('data-freeslide-pos', 2).removeClass('third').addClass('second');
+			});
+			$fourth.animate({left: 292}, speed).attr('data-freeslide-pos', 3)
+			.removeClass('fourth').addClass('third');
+			$second.fadeOut((speed / 4)).fadeIn((speed / 4));
+		},
+		slideThreeClicked: function () {
+			var data = $(this).data('freeslide');
+			var speed = data.settings.speed;
+			var $first = $(data.settings.slides + '.first');
+			var $second = $(data.settings.slides + '.second');
+			var $third = $(data.settings.slides + '.third');
+			var $fourth = $(data.settings.slides + '.fourth');
+
+			$third.animate({left: 102}, (speed * 1.5), function () {
+				$(this).attr('data-freeslide-pos', 1).removeClass('third').addClass('first');
+			});
+			$first.fadeOut((speed / 4)).css({left: '376px', display: 'block'})
+			.fadeIn((speed / 4)).animate({left: 292}, (speed)).attr('data-freeslide-pos', 3)
+			.removeClass('first').addClass('third');
+			$fourth.animate({left: 210}, (speed * 1.5)).attr('data-freeslide-pos', 2)
+			.removeClass('fourth').addClass('second');
+
+			$second.animate({left: 102, opacity: 0}, (speed / 2), function () {
+				$(this).fadeOut();
+				$(this).css({left: '376px', opacity: 1});
+				$(this).fadeIn('slow').css('display', 'block').attr('data-freeslide-pos', 4)
+				.removeClass('second').addClass('fourth');
+			});
+			$third.fadeOut((speed / 4)).fadeIn((speed / 4));
+		},
+		slideFourClicked: function () {
+			var data = $(this).data('freeslide');
+			var speed = data.settings.speed;
+			var $first = $(data.settings.slides + '.first');
+			var $second = $(data.settings.slides + '.second');
+			var $third = $(data.settings.slides + '.third');
+			var $fourth = $(data.settings.slides + '.fourth');
+
+			$first.css({opacity: 0, left: '376px'});
+			$second.css({opacity: 0, left: '376px'});
+			$third.css({opacity: 0, left: '376px'});
+
+			$fourth.animate({left: 102}, (speed * 3))
+			.attr('data-freeslide-pos', 1)
+			.removeClass('fourth')
+			.addClass('first');
+
+			setTimeout(function () {
+				$first.animate({left: 210, opacity: 1}, (speed * 2), function () {
+					$(this).attr('data-freeslide-pos', 2).removeClass('first').addClass('second');
+				});
+			}, speed / 2);
+
+			setTimeout(function () {
+				$second.animate({left: 292, opacity: 1}, (speed), function () {
+					$(this).attr('data-freeslide-pos', 3).removeClass('second').addClass('third');
+				});
+			}, speed);
+
+			setTimeout(function () {
+				$third.animate({opacity: 1}, (speed * 3), function () {
+					$(this).attr('data-freeslide-pos', 4).removeClass('third').addClass('fourth');
+				});
+			}, speed);
+
+			$fourth.fadeOut((speed / 4)).fadeIn((speed / 4));
+		},
+		slideFourClickedOld: function () {
+			var data = $(this).data('freeslide');
+			var speed = data.settings.speed;
+			var $first = $(data.settings.slides + '.first');
+			var $second = $(data.settings.slides + '.second');
+			var $third = $(data.settings.slides + '.third');
+			var $fourth = $(data.settings.slides + '.fourth');
+
+			$first.css('display', 'none').css({left: '376px', display: 'block'})
+			.animate({left: 210}, (speed * 3)).attr('data-freeslide-pos', 2)
+			.removeClass('first')
+			.addClass('second');
+			$second.animate({left: 102}, speed, function () {
+				$(this).css({left: '376px', opacity: 1});
+				$(this).animate({left: 292}, (speed * 2)).attr('data-freeslide-pos', 3)
+				.removeClass('second').addClass('third');
+			});
+			$third.animate({left: 102}, (speed * 2), function () {
+				$(this).css({left: '376px', opacity: 1});
+				$(this).fadeIn('fast').attr('data-freeslide-pos', 4)
+				.removeClass('third').addClass('fourth');
+			});
+			$fourth.animate({left: 102}, (speed * 3)).attr('data-freeslide-pos', 1)
+			.removeClass('fourth').addClass('first');
+			$fourth.fadeOut((speed / 4)).fadeIn((speed / 4));
+		}
+	};
+
+	if (typeof $.fn.konstrukt === 'undefined') {$.fn.konstrukt = {}; }
+	$.fn.freeslide = function (method) {
+		if (methods[method]) {
+			return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+		} else if (typeof method === 'object' || !method) {
+			return methods.init.apply(this, arguments);
+		} else {
+			$.error('Method' + method + ' does not exist in jQuery.freeslide');
+		}
+	};
+})(jQuery);

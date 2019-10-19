@@ -1,0 +1,1192 @@
+/* Typographic styles */
+
+
+/* Font definitions */
+
+/* fonts for IE version < 9 */
+@font-face {
+    font-family: DINFamily;
+    src: url('/fonts/DINWebPro.eot');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: DINFamilyBold;
+    src: url('/fonts/DINWebPro-Bold.eot');
+}
+@font-face {
+    font-family: DINFamily;
+    src: url('/fonts/DINWebPro-Medium.eot');
+}
+@font-face {
+    font-family: DINFamilyLight;
+    src: url('/fonts/DINWebPro-Light.eot');
+}
+
+/* fonts for WOFF-compliant browsers */
+@font-face {
+    font-family: DINFamily;
+    src: url('/fonts/DINWebPro.woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: DINFamilyBold;
+    src: url('/fonts/DINWebPro-Bold.woff');
+}
+@font-face {
+    font-family: DINFamily;
+    src: url('/fonts/DINWebPro-Medium.woff');
+}
+/*@font-face {
+    font-family: DINFamily;
+    src: url('/fonts/DINWebPro-Black.woff');
+    font-weight: 900;
+}*/
+@font-face {
+    font-family: DINFamilyLight;
+    src: url('/fonts/DINWebPro-Light.woff');
+}
+
+
+/* Buttons */
+
+.white-button {
+    display: inline-block;
+    position: relative;
+    font: 13px 'DINFamilyBold', sans-serif;
+    line-height: 21px;
+    color: #4d4d4f;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: 1px 1px #ffffff;
+    text-transform: lowercase;
+    padding: 4px 15px 2px 15px;
+    box-shadow: 0 2px 0 rgba(227, 227, 228, .4) inset,
+                0 -1px 0 rgba(0, 0, 0, .1) inset,
+                0 0 10px rgba(255, 255, 255, .3) inset,
+                0 1px 2px rgba(0, 0, 0, .3);
+    border: 1px solid #a2a4a6;
+    border-radius: 4px;
+    background: #fff; /* default for old browsers */
+    /* Background gradients */
+    background: linear-gradient(top, #ffffff 0%, #fcfcfa 50%, #f6fcef 51%, #e5eedd 100%);
+    background: -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #ffffff),
+        color-stop(0.5, #fcfcfa),
+        color-stop(0.51, #f6fcef),
+        color-stop(1, #e5eedd)
+    );
+    background: -moz-linear-gradient(top, #ffffff 0%, #fcfcfa 50%, #f6fcef 51%, #e5eedd 100%);
+    background: -o-linear-gradient(top, #ffffff 0%, #fcfcfa 50%, #f6fcef 51%, #e5eedd 100%);
+    background: -ms-linear-gradient(top, #ffffff 0%, #fcfcfa 50%, #f6fcef 51%, #e5eedd 100%);
+    -pie-background: linear-gradient(top, #ffffff 0%, #fcfcfa 50%, #f6fcef 51%, #e5eedd 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.lt-ie9 .white-button {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.white-button:hover {
+    color: #4d4d4f;
+    box-shadow: 0 2px 0 rgba(227, 227, 228, .4) inset,
+                0 -1px 0 rgba(0, 0, 0, .1) inset,
+                0 0 10px rgba(255, 255, 255, .3) inset,
+                0 1px 2px rgba(0, 0, 0, .2);
+    background: #eee;
+    background: linear-gradient(top, #eee, #f0f1f2);
+    background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#f0f1f2));
+    background: -moz-linear-gradient(top, #eee, #f0f1f2);
+    background: -o-linear-gradient(top, #eee, #f0f1f2);
+    background: -ms-linear-gradient(top, #eee, #f0f1f2);
+    -pie-background: linear-gradient(top, #eee, #f0f1f2);
+    text-decoration: none;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.white-button:visited {
+    color: #4d4d4f;
+}
+
+button.white-button::-moz-focus-inner {
+    border: 0;
+}
+
+.lt-ie8 button.white-button, .lt-ie8 button.orange-button, .lt-ie8 button.disabled-button {
+    overflow: visible;
+    height: 30px;
+}
+
+.lt-ie8 button.small-button, .lt-ie8 button.large-button {
+    height: auto;
+}
+
+.white-button.proceed-button {
+    padding: 4px 24px 2px 15px;
+}
+
+.white-button.proceed-button:after, .lt-ie8 .white-button.proceed-button span {
+    margin: 5px 0 0 7px;
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid #51a601;
+    display: inline-block;
+    position: absolute;
+}
+
+.lt-ie8 .white-button.proceed-button {
+    padding-right: 16px;
+}
+
+.lt-ie8 .white-button.proceed-button span {
+    margin-top: -16px;
+}
+
+.white-button.sign-in-button {
+    color: #666;
+    padding: 2px 15px 1px 15px;
+    font-size: 17px;
+    line-height: 27px;
+}
+
+.lt-ie9 .white-button.sign-in-button {
+    padding: 5px 15px 2px 15px;
+}
+
+.white-button.sign-in-button:after, .lt-ie8 .white-button.sign-in-button span {
+    margin: 0 -2px 2px 8px;
+    padding: 0;
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #51a601;
+    display: inline-block;
+}
+
+.lt-ie8 .white-button.sign-in-button {
+    padding-right: 16px;
+}
+
+.lt-ie8 .white-button.sign-in-button span {
+    margin-top: -12px;
+}
+
+.white-button.sign-in-button.active {
+    background: #eee;
+    background: linear-gradient(top, #eee, #f0f1f2);
+    background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#f0f1f2));
+    background: -moz-linear-gradient(top, #eee, #f0f1f2);
+    background: -o-linear-gradient(top, #eee, #f0f1f2);
+    background: -ms-linear-gradient(top, #eee, #f0f1f2);
+    -pie-background: linear-gradient(top, #eee, #f0f1f2);
+}
+
+.white-button.sign-in-button.active:after, .lt-ie8 .white-button.sign-in-button.active span {
+    border-bottom: 5px solid #51a601;
+    border-top: none;
+}
+.white-button.go-button {
+    font-size: 12px;
+    line-height: 16px;
+}
+a.orange-button, button.orange-button, div.orange-button {
+    display: inline-block;
+    position: relative;
+    font: 13px 'DINFamilyBold', sans-serif;
+    line-height: 21px;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    text-transform: lowercase;
+    /*text-shadow: 0px -2px 1px #c76a24;*/
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, .2);
+    padding: 0px 13px 2px 6px;
+    /* box-shadow: 0 1px 1px #7b7c7e;*/
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .4) inset, 0 1px 2px rgba(0, 0, 0, .3);
+    /*border: 1px solid #999b9a;*/
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 4px;
+    background: #ff9046;
+    background: linear-gradient(top, #ff9147 0%, #f58025 50%, #f58025 51%, #fe741f 100%);
+    background: -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #ff9147),
+        color-stop(0.5, #ff8b3d),
+        color-stop(0.51, #f58025),
+        color-stop(1, #fe741f)
+    );
+    background: -moz-linear-gradient(top, #ff9147 0%, #ff8b3d 50%, #f58025 51%, #fe741f 100%);
+    background: -o-linear-gradient(top, #ff9147 0%, #ff8b3d 50%, #f58025 51%, #fe741f 100%);
+    background: -ms-linear-gradient(top, #ff9147 0%, #ff8b3d 50%, #f58025 51%, #fe741f 100%);
+    -pie-background: linear-gradient(top, #ff9147 0%, #ff8b3d 50%, #f58025 51%, #fe741f 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+a.orange-button.large-button, button.orange-button.large-button {
+    text-shadow: 0 -2px 1px rgba(0, 0, 0, .2);
+    font-weight: 500;
+}
+
+.ie8 a.orange-button, .ie8 button.orange-button, .ie8 div.orange-button {
+    font-weight: bold;
+}
+
+.lt-ie9 a.orange-button, .lt-ie9 button.orange-button, .lt-ie9 div.orange-button {
+    border: 1px solid rgb(204, 112, 50);
+}
+
+a.orange-button:hover, button.orange-button:hover, div.orange-button:hover {
+    text-decoration: none;
+    background: #ee8233;
+    background: linear-gradient(#ee8233, #ee7520);
+    background: -webkit-gradient(linear, left top, left bottom, from(#ee8233), to(#ee7520));
+    background: -moz-linear-gradient(top, #ee8233, #ee7520);
+    background: -ms-linear-gradient(#ee8233, #ee7520);
+    -pie-background: linear-gradient(top, #ee8233, #ee7520);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.orange-button.proceed-button {
+    background: #ff9046;
+    background-repeat: no-repeat;
+    background-position: 95% 50%;
+    background: url(/images/template/css/icon_sm_arrow.gif),
+        linear-gradient(#ff9046, #fe751f);
+    background: url(/images/template/css/icon_sm_arrow.gif),
+        -webkit-gradient(linear, left top, left bottom, from(#ff9046), to(#fe751f));
+    background: url(/images/template/css/icon_sm_arrow.gif),
+        -moz-linear-gradient(top, #ff9046, #fe751f);
+    -pie-background: url(/images/template/css/icon_sm_arrow.gif) 95% 50% no-repeat,
+        linear-gradient(top, #ff9046 0%, #fe751f 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.orange-button.proceed-button:hover {
+    background: #ee8233;
+    background-repeat: no-repeat;
+    background-position: 95% 50%;
+    background: url(/images/template/css/icon_sm_arrow.gif),
+        -webkit-gradient(linear, left top, left bottom, from(#ee8233), to(#ee7520));
+    background: url(/images/template/css/icon_sm_arrow.gif),
+        -moz-linear-gradient(top, #ee8233, #ee7520);
+    -pie-background: url(/images/template/css/icon_sm_arrow.gif) 95% 50% no-repeat,
+        linear-gradient(top, #ee8233, #ee7520);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+div.orange-button, div.white-button {
+    cursor: pointer;
+}
+
+/* Disabled Buttons */
+
+.disabled-button, .disabled-button:hover {
+    cursor: default;
+    display: inline-block;
+    position: relative;
+    font: 13px 'DINFamilyBold', sans-serif;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: 1px 1px #ffffff;
+    text-transform: lowercase;
+    padding: 4px 15px 2px 15px;
+    border: 1px solid #a2a4a6;
+    border-radius: 4px;
+    color: #4d4d4f;
+    box-shadow: 0 2px 0 rgba(227, 227, 228, .4) inset,
+                0 -1px 0 rgba(0, 0, 0, .1) inset,
+                0 0 10px rgba(255, 255, 255, .3) inset,
+                0 1px 2px rgba(0, 0, 0, .1);
+    background: #eee;
+    background: linear-gradient(top, #eee, #f0f1f2);
+    background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#f0f1f2));
+    background: -moz-linear-gradient(top, #eee, #f0f1f2);
+    background: -o-linear-gradient(top, #eee, #f0f1f2);
+    background: -ms-linear-gradient(top, #eee, #f0f1f2);
+    -pie-background: linear-gradient(top, #eee, #f0f1f2);
+    text-decoration: none;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+/* Button sizes */
+
+a.small-button, button.small-button {
+    padding: 3px 10px 3px 10px;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+a.large-button, button.large-button {
+    padding: 6px 30px 3px 30px;
+    font-size: 19px;
+    line-height: 30px;
+    font-weight: 500;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+a.large-button-engage:lang(fr-FR) {
+ padding: 6px 0px 3px 0px !important;
+ margin-top: -5px;
+}
+a.xl-button, button.xl-button {
+    font-size: 24px;
+    font-weight: 500;
+    width: 190px;
+    height: 68px;
+}
+
+/* Button modifiers */
+
+.inline-button {
+    display: inline;
+    float: left;
+    margin: 0 12px 0 0;
+}
+
+.cancel-button {
+    float: left;
+    display: block;
+    padding-right: 20px;
+    margin-top: 5px;
+    border-right: 1px solid #666;
+}
+
+.confirm-button {
+    /* these sit to the right of a cancel/nope text link */
+    margin-left: 20px;
+}
+
+.card-button {
+    position: relative;
+}
+
+.card-button span {
+    display: block;
+}
+
+.card-button:after {
+    content: "";
+    width: 140px;
+    height: 100px;
+    position: absolute;
+    background-image: url('/images/buttons/tilted-zipcard.png');
+}
+/* image for de-AT locale */
+.card-button:lang(de):after,
+.card-button:lang(fr):after {
+    width: 122px;
+    height: 87px;
+    background-image: url('/images/buttons/tilted-zipcard-sm.png');
+   }
+
+/* don't show the card if either we're on avancar, or in spanish (because the text is too long to fit around the image) */
+.avancar-page .card-button:after,
+.card-button:lang(es):after,
+.card-button:lang(ca):after {
+    background: none;
+}
+
+.card-button-right {
+    float: right;
+    width: 247px !important;
+    margin-top: 40px;
+}
+
+.card-button-right:after {
+    top: -12px;
+    left: -8px;
+}
+
+.card-button-right span {
+    margin-left: 125px;
+    width: 128px;
+    padding-top: 11px;
+    text-align: left;
+    line-height: 1;
+}
+
+/* The following styles should never be used (.sub-text and .primary-text)
+ * They are only meant to support the two-font-size text on the 'join' button
+ * on the find-cars page
+ */
+.card-button-right span.sub-text, .card-button-right span.primary-text {
+    margin-left: 110px;
+    text-align: center;
+    width: 150px;
+}
+
+.card-button-right span.sub-text {
+    font-size: 13px;
+    padding-top: 13px;
+}
+
+.card-button-right span.primary-text {
+    padding: 0;
+    margin-top: 2px;
+}
+
+.card-button-left {
+    margin-bottom: 12px;
+}
+
+.card-button-left:after {
+    right: -7px;
+    top: -12px;
+}
+
+.card-button-left span {
+    line-height: 1.1;
+    width: 99px;
+    text-align: left;
+    padding-top: 7px;
+}
+
+
+.orange-button-text{font-size:24px !important;
+    word-wrap:break-word;
+    color: #fff;
+    text-align: left !important;
+    min-height: 66px;
+    min-width: 201px;
+    margin-bottom:18px;}
+
+/* this is to fit the text - the de-AT is pretty long */
+.orange-button-text:lang(tr),
+.orange-button-text:lang(de),
+.orange-button-text:lang(fr) {
+		font-size:18px !important;
+}
+
+/* this is to fit the text on two lines - the spanish is pretty long */
+.card-button-left span:lang(es),
+.card-button-left span:lang(ca) {
+    width: 120px;
+}
+
+/* For publishing pages that use these buttons */
+.published .card-button {
+  margin-top: 15px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Navigation */
+
+#nav li a {
+    padding-top: 2px;
+    margin-top: 0;
+    text-transform: lowercase;
+}
+
+#nav ul.nav-main li a {
+    clear: all;
+    float: left;
+}
+
+#nav ul.nav-main li{
+    display: inline;
+    float: left;
+    height: 28px;
+    margin: 0;
+    overflow: visible;
+    padding: 0;
+    position: relative;
+}
+
+#nav ul.nav-main li, #nav ul.nav-main li a {
+    font: 17px DINFamily, sans-serif;
+    line-height: 27px;
+    color: #4d4d4f;
+    padding-top: 5px;
+    white-space: nowrap;
+}
+
+#nav ul.nav-main ul li, #nav ul ul.nav-main li a {
+    font: 13px DINFamily, sans-serif;
+    color: #4d4d4f;
+    padding-top: 2px;
+    text-align: left;
+}
+
+
+#nav a:hover {
+    text-decoration: none;
+}
+/* global nav */
+
+#nav ul.nav-global {
+    bottom: 0px;
+}
+
+/* main nav */
+
+#nav ul.nav-main li a {
+    white-space: nowrap;
+}
+
+#nav ul.nav-main li a.nav-main {
+    padding: 0 16px 0 16px;
+    border: 0;
+    box-shadow: 0 2px 0 0 #48662b;
+    background: white;
+    background-repeat: no-repeat;
+    background-position: left top;
+    background: url(/images/template/css/main-nav-right-border.png) no-repeat,
+        linear-gradient(top, #d8d9da 0%, #ffffff 10%, #ffffff 75%, #d8d9da 100%
+    );
+    background: url(/images/template/css/main-nav-right-border.png) no-repeat,
+         -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #d8d9da),
+        color-stop(0.1, #ffffff),
+        color-stop(0.75, #ffffff),
+        color-stop(1, #d8d9da)
+    );
+    background: url(/images/template/css/main-nav-right-border.png) no-repeat,
+        -moz-linear-gradient(top, #d8d9da 0%, #ffffff 10%, #ffffff 75%, #d8d9da 100%
+    );
+    background: url(/images/template/css/main-nav-right-border.png) no-repeat,
+        -o-linear-gradient(top, #d8d9da 0%, #ffffff 10%, #ffffff 75%, #d8d9da 100%
+    );
+    background: url(/images/template/css/main-nav-right-border.png) no-repeat,
+        -ms-linear-gradient(top, #d8d9da 0%, #ffffff 10%, #ffffff 75%, #d8d9da 100%
+    );
+    -pie-background: url(/images/template/css/main-nav-right-border.png) no-repeat,
+        linear-gradient(top, #d8d9da 0%, #ffffff 10%, #ffffff 75%, #d8d9da 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+#nav ul.nav-main li a.nav-main:hover,
+.reserve-page #nav ul.nav-main li a.nav-reserve,
+.mystuff-page #nav ul.nav-main li a.nav-mystuff,
+.help-page #nav ul.nav-main li a.nav-help,
+.zipster-page #nav ul.nav-main li a.nav-zipster,
+.zipcar-for-me-page #nav ul.nav-main li a.nav-zipcar,
+.how-it-works-page #nav ul.nav-main li a.nav-how-it-works,
+.how-it-works-page #nav ul.nav-main li a.nav-how,
+.find-cars-page #nav ul.nav-main li a.nav-find-cars,
+.rates-page #nav ul.nav-main li a.nav-rates,
+.campus-solutions-page #nav ul.nav-main li a.nav-campus-solutions,
+.case-studies-page #nav ul.nav-main li a.nav-case-studies,
+.get-started-page #nav ul.nav-main li a.nav-get-started,
+.faqs-page #nav ul.nav-main li a.nav-faqs
+{
+    border: 0;
+    box-shadow: 0 2px 0 0 #48662b;
+    background: url(/images/template/css/main-nav-right-border-hover.png) no-repeat,
+        linear-gradient(top, #ced0d2 0%, #dcdddf 20%, #dcdddf 50%, #bec0c2 100%
+    );
+    background: url(/images/template/css/main-nav-right-border-hover.png) no-repeat,
+         -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #ced0d2),
+        color-stop(0.2, #dcdddf),
+        color-stop(0.5, #dcdddf),
+        color-stop(1, #bec0c2)
+    );
+    background: url(/images/template/css/main-nav-right-border-hover.png) no-repeat,
+        -moz-linear-gradient(top, #ced0d2 0%, #dcdddf 20%, #dcdddf 50%, #bec0c2 100%
+    );
+    background: url(/images/template/css/main-nav-right-border-hover.png) no-repeat,
+        -o-linear-gradient(top, #ced0d2 0%, #dcdddf 20%, #dcdddf 50%, #bec0c2 100%
+    );
+    background: url(/images/template/css/main-nav-right-border-hover.png) no-repeat,
+        -ms-linear-gradient(top, #ced0d2 0%, #dcdddf 20%, #dcdddf 50%, #bec0c2 100%
+    );
+    -pie-background: url(/images/template/css/main-nav-right-border-hover.png) no-repeat,
+        linear-gradient(top, #ced0d2 0%, #dcdddf 20%, #dcdddf 50%, #bec0c2 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+#nav ul.nav-main li:first-child a.nav-main {
+    border-radius: 5px 0 0 5px;
+    background: linear-gradient(top, #d8d9da 0%, #ffffff 10%, #ffffff 75%, #d8d9da 100%);
+    background: -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #d8d9da),
+        color-stop(0.1, #ffffff),
+        color-stop(0.75, #ffffff),
+        color-stop(1, #d8d9da)
+    );
+    background: -moz-linear-gradient(top, #d8d9da 0%, #ffffff 10%, #ffffff 75%, #d8d9da 100%);
+    background: -o-linear-gradient(top, #d8d9da 0%, #ffffff 10%, #ffffff 75%, #d8d9da 100%);
+    background: -ms-linear-gradient(top, #d8d9da 0%, #ffffff 10%, #ffffff 75%, #d8d9da 100%);
+    -pie-background: linear-gradient(top, #d8d9da 0%, #ffffff 10%, #ffffff 75%, #d8d9da 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+#nav ul.nav-main li:first-child a.nav-main:hover,
+.reserve-page #nav ul.nav-main li:first-child a.nav-reserve,
+.mystuff-page #nav ul.nav-main li:first-child a.nav-mystuff,
+.help-page #nav ul.nav-main li:first-child a.nav-help,
+.zipster-page #nav ul.nav-main li:first-child a.nav-zipster,
+.zipcar-for-me-page #nav ul.nav-main li:first-child a.nav-zipcar,
+.how-it-works-page #nav ul.nav-main li:first-child a.nav-how-it-works,
+.how-it-works-page #nav ul.nav-main li:first-child a.nav-how,
+.find-cars-page #nav ul.nav-main li:first-child a.nav-find-cars,
+.rates-page #nav ul.nav-main li:first-child a.nav-rates,
+.campus-solutions-page #nav ul.nav-main li:first-child a.nav-campus-solutions,
+.case-studies-page #nav ul.nav-main li:first-child a.nav-case-studies,
+.get-started-page #nav ul.nav-main li:first-child a.nav-get-started
+{
+    border-radius: 5px 0 0 5px;
+    background: linear-gradient(top, #ced0d2 0%, #dcdddf 20%, #dcdddf 50%, #bec0c2 100%);
+    background: -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #ced0d2),
+        color-stop(0.2, #dcdddf),
+        color-stop(0.5, #dcdddf),
+        color-stop(1, #bec0c2)
+    );
+    background: -moz-linear-gradient(top, #ced0d2 0%, #dcdddf 20%, #dcdddf 50%, #bec0c2 100%);
+    background: -o-linear-gradient(top, #ced0d2 0%, #dcdddf 20%, #dcdddf 50%, #bec0c2 100%);
+    background: -ms-linear-gradient(top, #ced0d2 0%, #dcdddf 20%, #dcdddf 50%, #bec0c2 100%);
+    -pie-background: linear-gradient(top, #ced0d2 0%, #dcdddf 20%, #dcdddf 50%, #bec0c2 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+#nav ul.nav-main li:last-child a.nav-main, #nav ul.nav-main li.last a.nav-main {
+    border-radius: 0 5px 5px 0;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+#nav ul.nav-main li a.nav-main span {
+    margin: 0;
+    padding: 0;
+    display: block;
+    color: #4d4d4f;
+    text-shadow: 0 0;
+}
+
+#nav ul.nav-main li a.nav-main span.main-nav-top {
+    position: relative;
+    top: 16px;
+    margin: -14px 0 0 2px;
+}
+
+
+
+/* Navigation tabs */
+
+ul.tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    line-height: 28px;
+}
+
+ul.tabs li {
+    font: 15px DINFamily, sans-serif;
+    font-weight: 500;
+    padding: 0;
+    display: inline-block;
+    background: white;
+    margin: 0 -4px 0 0;
+    bottom: 0;
+    line-height: 24px;
+    text-transform: lowercase;
+}
+
+/* ie7 inline-block workaround */
+.lt-ie8 ul.tabs li {
+    display: inline;
+    padding: 0 6px 0 0;
+}
+
+/* firefox hacks */
+body:not(:-moz-handler-blocked) #nav {
+    top: 66px;
+}
+
+ul.tabs a {
+    position: relative;
+    display: inline-block;
+    color: #f1f2f3;
+    border-radius: 5px 5px 0 0;
+    padding: 4px 15px 2px 15px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+ul.tabs li.active a, ul.tabs li a:hover {
+    color: white;
+}
+
+.ie ul.tabs a {
+    padding: 6px 15px 6px 15px;
+}
+
+.lt-ie9 ul.tabs a {
+    padding-top: 6px;
+}
+
+.lt-ie9 ul.tabs.nav-global a {
+    padding-top: 4px;
+}
+
+ul.tabs li a:after, ul.tabs li a:before {
+    position: relative;
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 10px;
+    z-index: 10;
+    top: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+ul.tabs li a:after {
+    right: -19px;
+}
+
+ul.tabs li a:before {
+    left: -19px;
+}
+
+.lt-ie9 ul.tabs li a:before, .lt-ie9 ul.tabs li a:after, .lt-ie9 ul.tabs.nav-global li a:before {
+    /* ie8 mangles the lower curves anyway */
+    height: 0;
+    display: none;
+}
+
+.ie ul.tabs li a:before, .ie ul.tabs li a:after {
+    /* ie pixel bump */
+    top: 10px;
+}
+
+.ie ul.tabs.nav-global li a:before, .ie ul.tabs.nav-global li a:after {
+    top: 12px;
+}
+
+.ie ul.tabs li {
+    line-height: 16px;
+}
+
+.ie #nav li a {
+    padding-top: 4px;
+}
+
+/* by default don't show initial curve for the first tab */
+ul.tabs li:first-child a:before {
+    height: 0;
+}
+
+/* show initial curve on first nav item in global navigation */
+ul.tabs.nav-global li:first-child a:before {
+    height: 10px;
+}
+
+ul.tabs li:after, ul.tabs.nav-global li:first-child:before {
+    content: "";
+    position: relative;
+    display: inline-block;
+    background: white !important;
+    border-radius: 0 0 4px 4px / 0 0 8px 6px;
+    width: 6px;
+    height: 28px;
+    z-index: 1000;
+    bottom: -10px;
+}
+
+ul.tabs li:last-child:after {
+    width: 8px;
+}
+
+.ie ul.tabs li:after, ul.tabs.nav-global li:first-child:before {
+    /* pixel bump for ie */
+    bottom: -9px;
+}
+
+.ie ul.tabs.nav-global li:first-child:before, .ie ul.tabs.nav-global li:after {
+    bottom: -12px;
+}
+
+ul.tabs.nav-global li {
+    margin: 0 -8px 0 0;
+}
+
+.ie ul.tabs.nav-global li {
+    margin: 0 -13px 0 0;
+}
+
+.ie ul.tabs.nav-global li:last-child {
+    margin: 0 -8px 0 0;
+}
+
+.lt-ie9 ul.tabs.nav-global li {
+    margin-right: -4px;
+}
+
+ul.tabs.nav-global li:after {
+    right: 4px;
+}
+
+ul.tabs.nav-global li:first-child:before {
+    float: left;
+}
+
+.lt-ie9 ul.tabs.nav-global li:before, .lt-ie9 ul.tabs.nav-global li:after {
+    /* TODO: use something other than display none to hide these - affects positioning, I think */
+    display: none;
+}
+
+.ie #nav ul.tabs.nav-global li {
+    margin-left: 6px;
+    line-height: 20px;
+}
+
+.ie #nav ul.tabs.nav-global li:last-child {
+    margin-left: 5px;
+}
+
+
+/* extra padding for member-nav items */
+ul.tabs.nav-members li a {
+    padding: 4px 25px 2px 25px;
+}
+
+ul.tabs.nav-members li a:after {
+    right: -29px;
+}
+
+ul.tabs.nav-members li a:before {
+    left: -29px;
+}
+
+.ie ul.tabs.nav-members li {
+    line-height: 24px;
+}
+
+/* tab gradients */
+
+ul.tabs-gray li a, ul.tabs-grey li a {
+    background: #828486;
+    background: linear-gradient(top, #7f8184 0%, #a2a4a6 5%, #a2a4a6 25%, #828486 40%, #828486 100%);
+    background: -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #7f8184),
+        color-stop(0.05, #a2a4a6),
+        color-stop(0.25, #a2a4a6),
+        color-stop(0.4, #828486),
+        color-stop(1, #828486)
+    );
+    background: -moz-linear-gradient(top, #7f8184 0%, #a2a4a6 5%, #a2a4a6 25%, #828486 40%, #828486 100%);
+    background: -o-linear-gradient(top, #7f8184 0%, #a2a4a6 5%, #a2a4a6 25%, #828486 40%, #828486 100%);
+    background: -ms-linear-gradient(top, #7f8184 0%, #a2a4a6 5%, #a2a4a6 25%, #828486 40%, #828486 100%);
+    -pie-background: linear-gradient(top, #7f8184 0%, #a2a4a6 5%, #a2a4a6 25%, #828486 40%, #828486 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+ul.tabs-gray li.active a, ul.tabs-gray li.active a:hover, ul.tabs-grey li.active a, ul.tabs-grey li a:hover {
+    background: #4d4d4f;
+    background: linear-gradient(top, #4d4d4f 0%, #77787a 5%, #77787a 25%, #4d4d4f 40%, #4d4d4f 100%);
+    background: -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #4d4d4f),
+        color-stop(0.05, #77787a),
+        color-stop(0.25, #77787a),
+        color-stop(0.4, #4d4d4f),
+        color-stop(1, #4d4d4f)
+    );
+    background: -moz-linear-gradient(top, #4d4d4f 0%, #77787a 5%, #77787a 25%, #4d4d4f 40%, #4d4d4f 100%);
+    background: -o-linear-gradient(top, #4d4d4f 0%, #77787a 5%, #77787a 25%, #4d4d4f 40%, #4d4d4f 100%);
+    background: -ms-linear-gradient(top, #4d4d4f 0%, #77787a 5%, #77787a 25%, #4d4d4f 40%, #4d4d4f 100%);
+    -pie-background: linear-gradient(top, #4d4d4f 0%, #77787a 5%, #77787a 25%, #4d4d4f 40%, #4d4d4f 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+ul.tabs-gray li a:before, ul.tabs-grey li a:before, ul.tabs-gray li a:before, ul.tabs-grey li a:after {
+    background: #828486;
+}
+
+ul.tabs-gray li.active a:after, ul.tabs-grey li.active a:after,
+ul.tabs-gray li.active a:before, ul.tabs-grey li.active a:before,
+ul.tabs-gray li a:hover:after, ul.tabs-grey li a:hover:after,
+ul.tabs-gray li a:hover:before, ul.tabs-grey li a:hover:after {
+    background: #4d4d4f;
+}
+
+ul.tabs-green li a {
+    background: #77787a; /* default for older browsers */
+    background: linear-gradient(top, #4d4d4f 0%, #77787a 5%, #77787a 25%, #4d4d4f 40%, #4d4d4f 100%);
+    background: -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #4d4d4f),
+        color-stop(0.05, #77787a),
+        color-stop(0.25, #77787a),
+        color-stop(0.4, #4d4d4f),
+        color-stop(1, #4d4d4f)
+    );
+    background: -moz-linear-gradient(top, #4d4d4f 0%, #77787a 5%, #77787a 25%, #4d4d4f 40%, #4d4d4f 100%);
+    background: -o-linear-gradient(top, #4d4d4f 0%, #77787a 5%, #77787a 25%, #4d4d4f 40%, #4d4d4f 100%);
+    background: -ms-linear-gradient(top, #4d4d4f 0%, #77787a 5%, #77787a 25%, #4d4d4f 40%, #4d4d4f 100%);
+    -pie-background: linear-gradient(top, #4d4d4f 0%, #77787a 5%, #77787a 25%, #4d4d4f 40%, #4d4d4f 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+ul.tabs-green li a:before, ul.tabs-green li a:after {
+    background: #4d4d4f;
+}
+
+ul.tabs-green li.active a:after, ul.tabs-green li.active a:before,
+ul.tabs-green li a:hover:after, ul.tabs-green li a:hover:before {
+    background: #51a601;
+}
+
+ul.tabs-simple {
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+ul.tabs-simple:after {
+    position: absolute;
+    content: "";
+    border-bottom: 1px solid #c6c8ca;
+    z-index: 1;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+}
+
+ul.tabs-simple:before {
+    z-index: 1;
+}
+
+ul.tabs-simple li {
+    position: relative;
+    z-index: 0;
+    /*padding-right: 5px;*/
+    padding: 0 5px 0 0;
+    /*margin: 0 5px;*/
+    background: none;
+}
+
+ul.tabs-simple li:first-child {
+    padding-left: 0;
+}
+
+ul.tabs-simple li.active {
+    z-index: 2;
+}
+
+ul.tabs-simple li a, ul.tabs-simple li a:hover {
+    border: 1px solid #c5c7c9;
+    border-bottom: 1px solid #c6c8ca;
+    color: #de7521;
+    background: #fbfbfb;
+    background: linear-gradient(top, #fcfcfc 0%, #fbfbfb 5%, #fbfbfb 100%);
+    background: -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #fcfcfc),
+        color-stop(0.05, #fbfbfb),
+        color-stop(1, #fbfbfb)
+    );
+    background: -moz-linear-gradient(top, #fcfcfc 0%, #fbfbfb 5%, #fbfbfb 100%);
+    background: -o-linear-gradient(top, #fcfcfc 0%, #fbfbfb 5%, #fbfbfb 100%);
+    background: -ms-linear-gradient(top, #fcfcfc 0%, #fbfbfb 5%, #fbfbfb 100%);
+    -pie-background: linear-gradient(top, #fcfcfc 0%, #fbfbfb 5%, #fbfbfb 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+ul.tabs.tabs-simple li.active a, ul.tabs-simple li.active a:hover {
+    border: 1px solid #cfd1d3;
+    border-bottom: 1px solid #fafcf9;
+    color: #606062;
+    background: #fafbf8;
+    background: linear-gradient(top, #fafcf9 0%, #fafbf8 5%, #fafcf9 100%);
+    background: -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #fafcf9),
+        color-stop(0.05, #fafbf8),
+        color-stop(1, #fafcf9)
+    );
+    background: -moz-linear-gradient(top, #fafcf9 0%, #fafbf8 5%, #fafcf9 100%);
+    background: -o-linear-gradient(top, #fafcf9 0%, #fafbf8 5%, #fafcf9 100%);
+    background: -ms-linear-gradient(top, #fafcf9 0%, #fafbf8 5%, #fafcf9 100%);
+    -pie-background: linear-gradient(top, #fafcf9 0%, #fafbf8 5%, #fafcf9 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+ul.tabs-simple li a:before, ul.tabs-simple li a:after {
+    background: #fbfbfb;
+    left: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+}
+
+ul.tabs-simple li.active a:after, ul.tabs-simple li.active a:before,
+ul.tabs-simple li a:hover:after, ul.tabs-simple li a:hover:before {
+    background: #fafcf9;
+    border-bottom: 1px solid #fafcf9;
+}
+
+ul.tabs-simple li:before, ul.tabs-simple li:after {
+    display: none;
+    background: none !important;
+}
+
+ul.tabs-simple li.active:after {
+    position: absolute;
+    display: inline-block;
+    bottom: 0px;
+    width: 6px;
+    height: 3px;
+    content: "";
+    right: -1px;
+    border-radius: 0 0 0 1px;
+    border-width: 0 0 1px 1px;
+    z-index: -1;
+}
+
+
+/* note selector hacketry to accommodate global nav */
+ul.tabs-green li.active a, ul.tabs-green li a:hover,
+.everybody-page ul.tabs-green.nav-global li#nav-everybody a,
+.business-page ul.tabs-green.nav-global li#nav-biz a,
+.universities-page ul.tabs-green.nav-global li#nav-uni a,
+.member-page ul.tabs-green.nav-global li#nav-member a
+{
+    color: white;
+    background: #51a601; /* default for older browsers */
+    background: linear-gradient(top, #51a601 0%, #7ac337 5%, #7ac337 25%, #51a601 40%, #51a601 100%);
+    background: -webkit-gradient(linear, left top, left bottom,
+        color-stop(0, #51a601),
+        color-stop(0.05, #7ac337),
+        color-stop(0.25, #7ac337),
+        color-stop(0.4, #51a601),
+        color-stop(1, #51a601)
+    );
+    background: -moz-linear-gradient(top, #51a601 0%, #7ac337 5%, #7ac337 25%, #51a601 40%, #51a601 100%);
+    background: -o-linear-gradient(top, #51a601 0%, #7ac337 5%, #7ac337 25%, #51a601 40%, #51a601 100%);
+    background: -ms-linear-gradient(top, #51a601 0%, #7ac337 5%, #7ac337 25%, #51a601 40%, #51a601 100%);
+    -pie-background: linear-gradient(top, #51a601 0%, #7ac337 5%, #7ac337 25%, #51a601 40%, #51a601 100%);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+ul.tabs-green li.active a:after, ul.tabs-green li.active a:before,
+ul.tabs-green li a:hover:after, ul.tabs-green li a:hover:before,
+.everybody-page ul.tabs-green.nav-global li#nav-everybody a:after,
+.everybody-page ul.tabs-green.nav-global li#nav-everybody a:before,
+.business-page ul.tabs-green.nav-global li#nav-biz a:after,
+.business-page ul.tabs-green.nav-global li#nav-biz a:before,
+.universities-page ul.tabs-green.nav-global li#nav-uni a:after,
+.universities-page ul.tabs-green.nav-global li#nav-uni a:before,
+.member-page ul.tabs-green.nav-global li#nav-member a:after,
+.member-page ul.tabs-green.nav-global li#nav-member a:before
+{
+    background: #51a601;
+}
+
+/* Pretty big-numbered lists */
+
+.big-numbered-list {
+    list-style-type: none;
+    margin:0 0 1.5em 0;
+    padding:0;
+    counter-reset: index;
+}
+
+.big-numbered-list > li {
+    list-style-type: none;
+    padding: 30px 155px;
+    border-top: 1px solid #FFF;
+    border-bottom: 1px solid #888;
+    margin: 0;
+    min-height: 2em;
+    position: relative;
+}
+
+.big-numbered-list > li:last-child {
+    border: none;
+}
+
+.big-numbered-list > li:before,
+.big-numbered-list li .num {
+    color: rgb(123,189,89);
+    font-size: 3.7em;
+    font-family: DINFamily, sans-serif;
+    font-weight: 500;
+    text-align: center;
+    display: block;
+    position: absolute;
+    left: 41px;
+    top: 50%;
+    padding: 0; margin: 0;
+    margin-top: -29px;
+    line-height: 1.15em;
+    text-indent: 1px;
+    width: 46px;
+    height: 46px;
+}
+
+.big-numbered-list > li:before {
+    content: counter(index);
+    counter-increment: index;
+    text-shadow: 2px 2px 0px rgb(225,225,225);
+    padding: 5px;
+}
+
+.lt-ie8 .big-numbered-list .num {
+    display: none;
+}
+
+.lt-ie8 .big-numbered-list > li {
+    padding-left: 30px;
+}
+
+.big-numbered-list li .num {
+    border-style: solid;
+    border-width: 5px;
+    border-color: rgb(123,189,89);
+    border-radius: 60px;
+    box-shadow: 3px 3px 2px -1px rgb(225,225,225) , inset 3px 3px 2px -1px rgb(225,225,225);
+    behavior: url(/styles/template/PIE.htc);
+}
+
+.big-numbered-list > li p:last-child {
+    margin: 0;
+}
+
+/* dynamic content buckets */
+
+.callout-new {
+    position: relative;
+    border-color: #a5a8aa;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    margin: 10px 0;
+    padding: 0;
+    background: white;
+    box-shadow: #ccc 0px 2px 2px;
+    behavior: url(/styles/template/PIE.htc);
+}
+
+#nav ul.nav-main li a.nav-main span.main-nav-top:lang(fr-FR) {
+    position: relative;
+    line-height:25px;
+}
+
+@media only screen and (max-width: 640px) {
+        .white-button {
+       	margin-left: -70%;
+        }
+}
+.card-button:lang(tr):after {
+    content: "";
+    width: 142px;
+    height: 90px;
+    position: absolute;
+    background-image: url('/images/buttons/tilted-zipkart.png');
+}
+
+.card-button-left:lang(tr):after {
+    right: -23px;
+    top: -14px;
+}
+
+
+

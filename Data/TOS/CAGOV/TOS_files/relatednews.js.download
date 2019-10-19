@@ -1,0 +1,147 @@
+﻿$(document).ready(function () {
+
+
+    var endpoint = "http://news.ca.gov/CaGovWidgets/FeedData/";
+
+    var newsEndpoint = endpoint + "news";
+    var tweetsEndpoint = endpoint + "tweets";
+    var videoEndpoint = endpoint + "Videos";
+
+    $(".ca-gov-related-news").each(function () {
+        var $news = $(this);
+
+        var $errorTemplate = $news.find("[data-error-template]");
+
+        var $container = $news.first();
+        var $section = $news.find("section");
+        var $template = $news.find("[data-template]");
+
+        var category = $news.attr("data-agency-tag");
+        var type = $news.attr("data-type");
+        var maxPosts = parseInt($news.attr("data-max")) || 5;
+
+        var success;
+        var ajaxEndPoint;
+        var jsonpCallback;
+        switch (type) {
+            case "Tweets":
+                jsonpCallback = "tweetsJSONPCallback";
+                ajaxEndPoint = tweetsEndpoint;
+                window.tweetsJSONPCallback = success = function (json) {
+
+                    json = json.slice(0, maxPosts);
+                    if (json.length) {
+                        json.forEach(function (item) {
+                            var newsEl = $template.clone();
+                            newsEl.find(".headline a").attr("href", item.userScreenNameUrl).text("@" + item.userScreenName);
+                            newsEl.find(".thumbnail img").attr("src", item.profileImageUrl);
+                            newsEl.find(".description p").append(sanitize(item.tweetifiedText));
+                            newsEl.find(".published time").text(formatDate(item.createdAt));
+
+                            $section.append(newsEl.show());
+                        });
+                    } else {
+                        var errmsg = $errorTemplate.clone().show();
+                        errmsg.find(".published").text("No Recent News Tweets");
+                        $section.append(errmsg);
+                    }
+                  
+
+
+                    $(".carousel-tweets").owlCarousel({
+                        items: 1,
+                        nav: true,
+                        navText: [
+                            '<span class="ca-gov-icon-arrow-prev" aria-hidden="true"></span>', '<span class="ca-gov-icon-arrow-next" aria-hidden="true"></span>'
+                        ],
+                        dots: false
+                    });
+                }
+                break;
+            case "Links":
+                ajaxEndPoint = newsEndpoint;
+                jsonpCallback = "linksJSONPCallback";
+                window.linksJSONPCallback = success = function (json) {
+                    json = json.slice(0, maxPosts);
+                    if (json.length) {
+
+                        json.forEach(function (item, i) {
+                            var newsEl = $template.clone();
+                            newsEl.find(".headline a").attr("href", item.link).text(item.title);
+                            newsEl.find(".thumbnail img").attr("src", item.agencyImageUrl);
+                            newsEl.find(".description p").text(item.body);
+                            newsEl.find(".published time").text(formatDate(item.created));
+                            $section.append(newsEl.show());
+                        });
+                    }
+                    else {
+                        var errmsg = $errorTemplate.clone().show();
+                        errmsg.find(".published").text("No Recent News Links");
+                        $section.append(errmsg);
+                    }
+                }
+                break;
+            case "Videos":
+                jsonpCallback = "videosJSONPCallback";
+                ajaxEndPoint = videoEndpoint;
+                window.videosJSONPCallback = success = function (json) {
+                    json = json.slice(0, maxPosts);
+                    if (json.length) {
+                        json.forEach(function (item, i) {
+
+                            var newsEl = $template.clone();
+                            newsEl.find(".owl-video").attr("href", item.url);
+                            $section.append(newsEl.show());
+                        });
+                        $news.find(".news-videos").addClass("carousel owl-carousel carousel-video");
+
+                        $(".news-videos").initCAVideo();
+                    } else {
+                        var errmsg = $errorTemplate.clone().show();
+                        errmsg.find(".published").text("No Recent News Videos");
+                        $section.append(errmsg);
+                    }
+
+
+                }
+                break;
+        }
+
+        $.ajax({
+            url: ajaxEndPoint,
+            jsonp: "callback",
+            jsonpCallback: jsonpCallback,
+            async: true,
+            dataType: "jsonp",
+            cache: true,
+            data: {
+                category: category
+            },
+
+        });
+
+    });
+
+
+    function formatDate(iEpoch) {
+        // Convert epoch time to human readable date
+
+        var objDate = new Date(iEpoch * 1000);
+        var strDate = objDate.toLocaleDateString(); // objDate.toLocaleString();
+        return strDate;
+    };
+
+    function sanitize(sText) {
+        // Remove html tags from a string
+
+        //var re = /<\S[^>]*>/g; // original
+        var re = /<[^a>/][^>]*>/g; // match all tags except <a> tags
+        if (sText) {
+            sText = sText.replace(re, " ");
+        }
+
+        return sText;
+    };
+
+
+});

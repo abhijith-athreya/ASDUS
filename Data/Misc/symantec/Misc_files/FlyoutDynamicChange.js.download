@@ -1,0 +1,57 @@
+var cssObject={ColumnNumChange:function(a,c,d,b){if(d!=b){$(c).removeClass("mega-"+d+"-col");
+$(c).addClass("mega-"+b+"-col")
+}},ColumnCssChange:function(){var g=ObjectVar.CompIdArray;
+if(g!=undefined){g=g.split(",");
+g.shift()
+}else{g=["products","sevices","solutions","support","securitycenter","partner"]
+}for(var b=0;
+b<g.length;
+b++){var h=g.length-b;
+var d=g[b];
+d="#CompId-"+d;
+var c=$("li"+d+".nav-item");
+var f=c.position();
+if(f!="undefined"){var e=$(".menu-wrapper").width()-f.left;
+e=e-c.width()+(cssObject.homePage(c));
+var a=($(".menu-wrapper").width()-c.position().left);
+if((c.hasClass("mega-3-col"))||(c.hasClass("mega-2-col"))){if(c.hasClass("mega-3-col")){if(a<550){$("li"+d+".nav-item .menu").css({right:e+"px"})
+}}else{if(c.hasClass("mega-2-col")){if(a<350){$("li"+d+".nav-item .menu").css({right:e+"px"})
+}}}}}}},ColumnControlFunc:function(b){var d=b;
+var c=b+" .sub-section";
+if(!cssObject.isMobileView()){cssObject.ColumnControlTopPaddingFunc(b);
+var a=cssObject.ColumnControlHeightFunc(c);
+$(c).find(".sub-list").each(function(){$(this).css({height:a+"px"})
+});
+if($(d).height()>(1.5*a)){$(d).css({height:(a+20)+"px"})
+}}},ColumnControlHeightFunc:function(b){var a=0;
+$(b).find(".sub-list").each(function(){if(a<$(this).height()){a=$(this).height()
+}});
+return a
+},checkContainer:function(){if($(".MenuWrapperReadyToGo").is(":visible")){cssObject.ColumnCssChange();
+$(".MenuWrapperReadyToGo").remove()
+}else{setTimeout(cssObject.checkContainer,50)
+}},isMobileView:function(){if($(".main-nav").width()==300){return true
+}return false
+},GetDataFromClientContext:function(){try{function b(){var d=CQ_Analytics.ClientContextMgr.getRegisteredStore("profile");
+d.addListener("update",a)
+}CQ_Analytics.ClientContextUtils.onStoreRegistered("profile",b);
+function a(){ObjectVar.readFromClientContext()
+}}catch(c){console.log("Error in client Context ::"+c);
+ObjectVar.ajaxCall("/bin/symantec/displaystatus?PartnerType=Y")
+}},ColumnControlTopPaddingFunc:function(c){var a="";
+var b=true;
+$(c).find(".sub-list").each(function(d,e){b=true;
+$(e).find("li").each(function(f,g){if(!($(g).hasClass("hide-all")||$(g).hasClass("hide-dt"))){if($(g).hasClass("group")&&b){a="group"
+}b=false
+}})
+});
+if(a=="group"){$(c).find(".sub-list").each(function(d,e){b=true;
+$(e).find("li").each(function(f,g){if(!($(g).hasClass("hide-all")||$(g).hasClass("hide-dt"))){if(!($(g).hasClass("group"))&&b){$(g).css({"padding-top":"30px"})
+}b=false
+}})
+})
+}},homePage:function(a){if($(a).css("margin-left")=="-1px"){return 36
+}return 15
+},};
+jQuery(document).ready(function(){cssObject.checkContainer()
+});

@@ -1,0 +1,2164 @@
+
+var profile = {
+  id:'',
+  password:'',
+  email:'',
+  firstname:'',
+  lastname:'',
+  address:'',
+  address2:'',
+  city:'',
+  state:'',
+  zip:'',
+  DOB:'',
+  phonenumber:'',
+  phonetype:'',
+  emailoptin:'',
+  smsoptin:'',
+  isspanish:''
+};
+
+var email= '';
+var password = '';
+var profileid = '';
+var zip = '';
+var campaign = '';
+var temppass = '';
+var source='';
+
+var islocal = false;
+var localzips = [];
+
+// UAT
+// var epsilonurl = 'https://profileuat2.mcdonalds.com/mcdsglobal/mcdspreferencecenterv2.asmx';
+
+// PRODUCTION
+var epsilonurl = 'https://profile2.mcdonalds.com/mcdspreferencecenterv2.asmx';
+
+
+var emailregex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/im;
+var zipregex= /^\d{5}$/;
+var passwordregex = /^(?=.*[a-zA-Z])(?=.*\d).{7,15}$/;
+var  monthnames= ['','January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var enrollmentsource = '';
+
+$(window).load(function(){
+
+	profileid = getCookie("profileid");
+	if(profileid!='')
+	{
+		showmyprofileheader(profileid);
+	}
+
+  //var ua = $.browser;
+  /*if (ua.msie && ua.version.slice(0,1) == "7" || ua.msie && ua.version.slice(0,1) == "8"  || ua.msie && ua.version.slice(0,1) == "9" || ua.msie && ua.version.slice(0,2) == "10"){
+
+
+  $("#spinner").hide();
+  $("#signin").show();
+  window.scrollTo(0, 0);
+
+    $('#confirmOuter2').show();
+    $('#confirmOuter2').children().show();
+    $('#confirmOuter2 #cboxClose').click(function(e) {
+            $('#confirmOuter2').hide();
+      $('#confirmOuter2').children().hide();
+        });
+    $('#confirmOuter2 .mcdColorboxConfirmNo').click(function(e) {
+            $('#confirmOuter2').hide();
+      $('#confirmOuter2').children().hide();
+        });
+    var popUpWidth = parseInt($('#confirmOuter2 #colorbox').css('width').replace('px', ''));
+    var popUpHeight = parseInt($('#confirmOuter2 #colorbox').css('height').replace('px', ''));
+    $('#confirmOuter2 #colorbox').css('left', "0px");
+    $('#confirmOuter2 #colorbox').css('top', "128px");
+
+    window.scrollTo(0,0);
+  }
+  else{*/
+
+  $("body").on('input',"#updatecurrentpassword, #updatepassword, #updateretypepassword, #updateemail,#updateretypeemail, #updatezip, #updatecurrentpassword, #updateretypeemail", function() { validateupdate(); });
+  $("body").on('input',"#joinemail, #joinzip", function() {validatejoin();});
+  $("body").on('input',"#signinemail, #signinpassword", function() { validatesignin();});
+  $("body").on('input',"#joincompleteemail, #joincompletezip, #joincompletepassword, #joincompleteretypepassword", function() { validatejoincomplete();  });
+  $("body").on('input',"#forgotpasswordemail", function(){ validateforgotpassword();});
+  $("body").on('input',"#resetpasswordpassword, #resetpasswordemail, #resetpasswordretypepassword, #resetpasswordtemppassword", function(){ validateresetpassword();  });
+  $("body").on('input',"#unsubscribeemail", function() { validateunsubscribe();  });
+  $("#topnavupdatebtn").attr("href","javascript:;")
+  $("#topnavupdatebtn").click(function(){ showmyprofile();open_join(); })
+
+
+ $("#joincompletespanish").click(function () {
+   var ischecked =false;
+   if($("#joincompletespanish").is(':checked')){ischecked=true}
+   //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#joincomplete', 'click - joincompletespanish', ischecked.toString()]);
+  });
+
+
+ $(".myprofilespanish").click(function () {
+   var ischecked =false;
+   if($(".myprofilespanish:visible").is(':checked')){ischecked=true}
+   //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#myprofile', 'click - updatespanish', ischecked.toString()]);
+  });
+
+
+ $("#signinremember").click(function () {
+   var ischecked =false;
+   if($("#signinremember").is(':checked')){ischecked=true}
+   //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#signin', 'click - signinremember', ischecked.toString()]);
+  });
+
+
+
+  var op='';
+  var qs = '';
+  var loc = document.location.href;
+  var ref = document.referrer;
+//  console.log("ref: "+ref);
+  var hs = location.hash;
+  qs='';
+  if(loc.indexOf("?") >-1 ){
+    qs = loc.split("?")[1].replace(hs,"");
+  }
+  if(qs=="" && ref!=undefined){
+
+      if(   (ref.indexOf("mcdonalds.com")>-1 ) && ( ref.indexOf("?")>-1 ) ){
+      qs = ref.split("?")[1].replace(hs,"");
+      }
+  }
+
+  if(qs!=""){
+     var vars = qs.split('&');
+      for (var i = 0; i < vars.length; i++) {
+          var pair = vars[i].split('=');
+
+          if (decodeURIComponent(pair[0]) == "profileid") {
+              profile.id= decodeURIComponent(pair[1]).trim();
+          }
+
+          if (decodeURIComponent(pair[0]) == "email") {
+              profile.email= decodeURIComponent(pair[1]).trim();
+          }
+
+          if (decodeURIComponent(pair[0]) == "email_enc") {
+             profile.email= decrypt( decodeURIComponent(pair[1]).trim() );
+          }
+
+          if (decodeURIComponent(pair[0]) == "utm_source") {
+             source = decodeURIComponent(pair[1]).trim();
+          }
+
+          if (decodeURIComponent(pair[0]) == "zip") {
+              profile.zip= decodeURIComponent(pair[1]).trim();
+          }
+
+          if (decodeURIComponent(pair[0]) == "temp") {
+              temppass= decodeURIComponent(pair[1]).trim();
+          }
+
+          if (decodeURIComponent(pair[0]) == "temp_enc") {
+             temppass = decrypt(  decodeURIComponent(pair[1]).trim() );
+          }
+
+
+          if (decodeURIComponent(pair[0]) == "op") {
+              op= decodeURIComponent(pair[1]).trim();
+          }
+
+      }
+  }
+
+  if(source==''){
+  source = ref;
+  }
+  try{
+    ga_id = getCookie("__utma");
+    var cid = ga_id.split(".")[1].toString() + "." + ga_id.split(".")[2].toString()
+    //_gaq.push(['_setCustomVar',1,'clientID',cid,2]);
+
+   }
+  catch(ex){}
+  try{
+      var domain;
+      if (ref.indexOf("://") > -1) { domain = ref.split('/')[2]; }
+      else { domain = ref.split('/')[0];  }
+      domain = domain.split(':')[0];
+    setCookie("_refs", domain);
+  }
+  catch(ex){ }
+
+
+  switch(op){
+    case "unsubscribe":
+      showunsubscribe();
+/*
+      $("#unsubscribeemail").val(profile.email);
+      validateunsubscribe();
+      location.hash="#unsubscribe";
+      $("#unsubscribe").show();
+      break;
+  */
+      break;
+    case "joincomplete":
+      $("#joincompleteemail").val(profile.email);
+      $("#joincompletezip").val(profile.zip);
+
+      filljoincomplete();
+      location.hash="#joincomplete";
+
+
+      $("#joincomplete").show();
+      break;
+    case "resetpassword":
+      $("#resetpasswordemail").val(profile.email);
+      $("#resetpasswordtemppassword").val(temppass)
+      fillresetpassword();
+      location.hash="#resetpassword";
+      $("#resetpassword").show();
+
+
+      break;
+    case "update":
+      showupdate();
+      break;
+    case "updateprofile":
+      showupdate();
+      break;
+
+    default:
+      $("#signinemail").val(profile.email);
+      //location.hash="#signin";
+      fillsignin();
+      $("#signin").show();
+
+      break;
+  }
+
+  var cookieemail = getCookie("email");
+  //var cookiepass = getCookie("pass");
+
+
+  if(cookieemail!=''){
+    cookieemail = encrypt(cookieemail)
+    setCookie("eenc",cookieemail,365)
+    setCookie("email","",0)
+  }
+
+ /* if(cookiepass!=''){
+    cookiepass = encrypt(cookiepass)
+    setCookie("penc",cookiepass,365)
+    setCookie("pass","",0)
+  }*/
+
+  if(cookieemail==''){
+    cookieemail = decrypt(getCookie("eenc"));
+  }
+
+ /* if(cookiepass==''){
+    cookiepass = decrypt(getCookie("penc"));
+  }*/
+
+
+
+  if(cookieemail!=''){// & cookiepass !=''){
+    profile.email = cookieemail;
+    //profile.password = cookiepass;
+
+    $("#signinemail").val(profile.email);
+    //$("#signinpassword").val(profile.password) ;
+    $("#signinremember").attr("checked",true);
+    //validatesignin();
+
+	// signin();
+
+  }
+
+  window.scrollTo(0, 0);
+  $("#spinner").hide();
+  closemodal();
+
+
+if(profile.id!=''){
+//_gaq.push(['_setCustomVar',9,'sessionState','signed-in',1]);
+ }else{
+ //_gaq.push(['_setCustomVar',9,'sessionState','signed-out',1]);
+ }
+
+
+});
+
+
+$(function(){
+  $.getScript( "//use.typekit.net/qlz6ubt.js", function(){try{Typekit.load();}catch(e){}});
+  // check cookie and local storage for email, zip and/or password
+  //GET query
+  $("#mask").insertBefore("#document_wrapper");
+  closemodal();
+  $("#document_wrapper").click(function(){resettimeout();});
+  $("#spinner").insertAfter("#document_wrapper");
+})
+
+var timer = setTimeout(signout, 1000 * 60 * 20)
+function resettimeout(){
+  clearTimeout(timer);
+  timer = setTimeout(signout, 1000 * 60 * 20)
+
+}
+function signout(){
+  profile.id='';
+  profile.email='';
+  profile.password='';
+
+  $("#signinemail").val("");
+  $("#signinpassword").val("");
+
+  showsignin();
+
+}
+
+window.onhashchange = function() {
+    if (location.hash.length > 0) {
+        sect = location.hash;
+        $(".subpane").hide();
+        $("#mask").hide();
+        $("#spinner").hide();
+        $(".pane").hide();
+      //_gaq.push(['_trackPageview', "subscription.html"+sect]);
+        $(sect).show();
+  }
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires+";path=/";
+}
+
+function encrypt(instr){
+    var key = CryptoJS.enc.Hex.parse("25e201bbf3ed39f9aa2809176f7f489025e201bbf3ed39f9");
+    var iv = CryptoJS.enc.Hex.parse("445115");
+    var encrypted = CryptoJS.TripleDES.encrypt(instr, key, {iv: iv, mode:CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7});
+    return encrypted.toString();
+
+}
+
+function decrypt(instr){
+    var key = CryptoJS.enc.Hex.parse("25e201bbf3ed39f9aa2809176f7f489025e201bbf3ed39f9");
+    var iv = CryptoJS.enc.Hex.parse("445115");
+    var decrypted = CryptoJS.TripleDES.decrypt(instr, key, {iv: iv, mode:CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7});
+    return decrypted.toString(CryptoJS.enc.Utf8);
+}
+
+function clean(instr){
+  return instr.replace("'","&#39;").trim();
+}
+function denull(instr){
+  var outstr = instr;
+  if(!instr){
+    outstr = '';
+  }
+  if(instr===null){
+    outstr='';
+  }
+
+  return outstr.trim();
+}
+
+function monthdays(monthelem, dayelem){
+  mn = monthelem.value;
+//  console.log(mn);
+  var ceil = 30;
+  $('#'+dayelem).find('option').remove()
+  $('#'+dayelem).append('<option value="00">Day</option>')
+  if(mn =="02"){ceil=29;}
+  if(mn=="01" || mn=="03" || mn=="05" || mn=="07" || mn=="08" ||  mn=="10" || mn=="12"   ){ceil=31;}
+  if(mn=="00" || mn==""){return}
+  for(var i=1; i<=ceil; i++){
+    selval = i.toString();
+    if(i<10){selval = "0"+i.toString();}
+    $("#"+dayelem).append('<option value="'+selval+'">'+selval+'</option>');
+  }
+}
+
+function validateemail(em){
+  if(emailregex.test($("#"+em).val().trim())){ $("#"+em).removeClass("invalid").addClass("valid");
+    $("#"+em+"err").html("");
+    return true;
+  }
+  else{$("#"+em).removeClass("valid").addClass("invalid");
+    $("#"+em+"err").html("ERROR: Invalid Email (incorrect format, for example abc@123.com)");
+    return false;
+  }
+}
+
+function compareemails(em1,em2){
+  if($("#"+em1).val().trim()==$("#"+em2).val().trim()){$("#"+em1+", #"+em2).removeClass("invalid").addClass("valid");
+    $("#"+em2+"err").html("");
+    return true;
+  }
+  else{$("#"+em1+", #"+em2).removeClass("valid").addClass("invalid");
+    $("#"+em2+"err").html("ERROR: email addressess must match");
+    return false;
+  }
+}
+
+function comparepasswords(pw1,pw2){
+  if($("#"+pw1).val().trim()==$("#"+pw2).val().trim()){$("#"+pw1+", #"+pw2).removeClass("invalid").addClass("valid");
+    $("#"+pw2+"err").html("");
+    return true;
+  }
+  else{$("#"+pw1+", #"+pw2).removeClass("valid").addClass("invalid");
+    $("#"+pw2+"err").html("ERROR: Passwords must match");
+    return false;
+  }
+}
+
+function validatepassword(pw){
+  if(passwordregex.test($("#"+pw).val().trim())){$("#"+pw).removeClass("invalid").addClass("valid");
+    $("#"+pw+"err").html("");
+    return true;
+  }
+  else{$("#"+pw).removeClass("valid").addClass("invalid");
+    $("#"+pw+"err").html("ERROR: Invalid Password; must be 7-15 characters long<br>with at least one number and one letter");
+    return false;
+  }
+}
+function validatezipcode(zp){
+   var thiszip = $("#"+zp).val().trim();
+  if(zipregex.test(thiszip) ){
+    $("#"+zp+"err").html("");
+
+    if(islocal){
+       // test for FL zip code
+      var islocalvalid = false;
+      var i = localzips.length;
+        while (i--) {
+          if (localzips[i].toString() == thiszip.toString() ) {
+            islocalvalid = true;
+          }
+        }
+       console.log(thiszip + ' | ' + islocalvalid)
+       if(!islocalvalid)
+        {
+          $("#"+zp+"err").html("Offer not available in this Zip Code, but sign-up for emails to learn more about news and promos <a href=\"/us/en-us/subscription.html?op=joincomplete&email="+$("#joinemail").val()+"&zip="+thiszip+"\"> here</a>.");
+          return false;
+        }
+        else{
+          $("#"+zp).removeClass("invalid").addClass("valid");
+          return true;
+        }
+      }
+    else{
+
+      $("#"+zp).removeClass("invalid").addClass("valid");
+      return true;
+    }
+  }
+  else{$("#"+zp).removeClass("valid").addClass("invalid");
+
+    $("#"+zp+"err").html("ERROR: Invalid zip code");
+
+    if(thiszip.length<5 ) { $("#"+zp+"err").html("ERROR: Invalid zip code (not enough numbers, for example 12345)") }
+    if(thiszip.length>5 ) { $("#"+zp+"err").html("ERROR: Invalid zip code (too many numbers, for example 12345)") }
+    if(!($(thiszip).isNumeric) ) { $("#"+zp+"err").html("ERROR: Invalid zip code (must be numbers only, for example 12345)") }
+    return false;
+  }
+}
+
+function required(ins, ttl){
+  if($("#"+ins).val().trim()!=''){
+    $("#"+ins).removeClass('invalid').addClass('valid');
+    $("#"+ins+'err').html("");
+    return true;
+  }
+  else
+  {
+    $("#"+ins).removeClass('valid').addClass('invalid');
+    $("#"+ins+'err').html("ERROR: " + ttl+" is required");
+    return false
+  }
+
+}
+
+function validatejoin(){
+  $("#joinerr").html("");
+  var v1 = false;
+  var v2 = false;
+  var v3 = false;
+  var v4 = false;
+  v1 = required("joinzip", "Zip Code");
+  if(v1){v2 = validatezipcode("joinzip");}
+  v3 = required("joinemail", "Email");
+  if(v3){v4 = validateemail("joinemail");}
+  var isvalid = v1 && v2 && v3 && v4
+  if(isvalid){$("#joinsubscribe").unbind("click").click(function(){join();}).removeClass("deactivated").addClass("activated"); }
+  else{$("#joinsubscribe").unbind("click").removeClass("activated").addClass("deactivated");}
+  return (isvalid)
+
+}
+
+function join(){
+
+
+if(validatejoin()){
+
+//  if(isvalid){
+
+    profile.email = $("#joinemail").val();
+    profile.zip = $("#joinzip").val();
+
+    var adate = new moment().format('DD-MMM-YYYY HH:mm:ss');
+
+    var data =  "{'ClientID': 'MCDS',";
+        data += "'FirstName' : '',";
+        data += "'LastName' : '',";
+        data += "'DateOfBirth' : '',";
+        data += "'PhoneNumber' : '',";
+        data += "'PhoneType' : '',";
+        data += "'SMSOptIn' : '',";
+        data += "'EmailAddress' : '"+clean(profile.email.toLowerCase()) +"',";
+        data += "'EmailAddressConfirm' : '"+clean(profile.email.toLowerCase()) +"',";
+        data += "'SpanishOnly' : '',";
+        data += "'Password' : '',";
+        data += "'PasswordConfirm' : '',";
+        data += "'PostalCode' : '"+clean(profile.zip)+"',";
+        data += "'AgeVerification' : 'T',";
+        data += "'TCVerification' : 'T',";
+        data += "'ExternalInfo' : '',";
+        data += "'CultureInfo' : '',";
+        data += "'ActionDate' : '"+adate+"',";
+/*
+        data += "'EnrSrc' : '"+enrollmentsource+"',";
+        data += "'Source' : '"+source+"' }";
+*/
+        data += "'EnrSrc' : '',";
+        data += "'Source' : '' }";
+
+
+    $("#spinner").css("height", $(document).height() +"px");
+    $("#spinner").show();
+
+    //epsilon call
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/PreferenceCenterInitRegistrationV1",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+          $("#spinner").hide();
+
+			// Start:DTM tracker to track SignUP
+			_satellite.track("signUp");
+			// End:DTM tracker to track SignUP
+
+         //       console.log(r);
+
+                if(r.d.Response[0].Type=="ERROR"){
+                  var errid = r.d.Response[0].ErrorDesc[0].Number;
+                  var errstr = r.d.Response[0].ErrorDesc[0].Value + "<br>";
+                  switch(errid){
+                    case '1':
+                      // errstr = 'Oops! Looks like that email is already registered.';
+                      errstr = 'Sorry, this deal is only available for new subscribers.';
+                    break;
+                    case '2':
+                      // errstr = 'Oops! Looks like that email is already registered.';
+                      errstr = 'Sorry, this deal is only available for new subscribers.';
+                    break;
+
+                  }
+                  $("#joinerr").html(errstr+"<br>");
+
+             window.scrollTo(0, 0);
+            //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#join', 'error - subscription.html#join', r.d.Response[0].ErrorDesc[0].Value]);
+                }
+                else{
+            profile.id = r.d.Response[0].Type.ProfileID;
+			setCookie("profileid",profile.id,1);
+            $(".pane").hide();
+              $("#join").hide();
+              $("#join").css("visibility","hidden !important");
+              $("#join").css("display","none !important");
+              $("#join").html("&nbsp;");
+
+              $("#join").css("height","0px !important");
+              $("#join").css("width","0px !important");
+
+            $("#jointhanks").show();
+            location.hash="#jointhanks";
+             window.scrollTo(0, 0);
+          }
+
+            },
+            error: function(r){
+          $("#spinner").hide();
+          $("#joinerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+            //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#join', 'error - subscription.html#join', 'connection error']);
+
+            }
+        });
+  }
+  else{ window.scrollTo(0, 0); }
+}
+function jointhanks(){
+
+  $(".pane").hide();
+
+
+  $("#joincompletezip").val(profile.zip);
+  $("#joincompleteemail").val(profile.email);
+
+
+//$("#preferencecenter").css("background", "#ecedee");
+//$("#preferencecenter").css({background: "#ecedee"});
+//$("body").css("background", "#ecedee");
+//$("body").css({background: "#ecedee"});
+ window.location="/us/en-us/subscription.html?op=joincomplete&email="+profile.email+"&zip="+profile.zip
+
+
+  location.hash="#joincomplete";
+  $("#joincomplete").show();
+   window.scrollTo(0, 0);
+//     location.hash="joincomplete";
+
+}
+
+function validatejoincomplete(){
+  $("joincompleteerr").html("");
+  var v1 = false;
+  var v2 = false;
+  var v3 = false;
+  var v4 = false;
+  var v5 = false;
+  var v6 = false;
+ var v7=false;
+  v1 = required("joincompletezip", "Zip Code");
+  if(v1){v2 = validatezipcode("joincompletezip");}
+  v3 = required("joincompleteemail", "Email");
+  if(v3){v4 = validateemail("joincompleteemail");}
+  v5 = required("joincompletepassword", "Password");
+  if(v5){v6 = validatepassword("joincompletepassword");}
+  if(v6){v7 = comparepasswords("joincompletepassword", "joincompleteretypepassword");}
+
+
+  var isvalid = v1 && v2 && v3 && v4 && v5 && v6 && v7;
+  if(isvalid){$("#joincompletesubscribe").unbind("click").click(function(){joincomplete();}).removeClass("deactivated").addClass("activated"); }
+  else{$("#joincompletesubscribe").unbind("click").removeClass("activated").addClass("deactivated");}
+  return (isvalid)
+
+}
+
+function joincomplete(){
+
+    if(validatejoincomplete()){
+    var isspanish = 'N';
+    if($("#joincompletespanish").is(':checked')){isspanish="Y";
+      //_gaq.push(['_setCustomVar',4,'emailLanguagePreference','Spanish only',1]);
+
+    }
+    else{
+      //_gaq.push(['_setCustomVar',4,'emailLanguagePreference','not Spanish only',1]);
+
+
+    }
+    var DOB = '';
+    var DOBmonth = $('span#joincompletebirthmonth').data('value');
+    if(DOBmonth ==''){DOBmonth = '00';}
+    DOB =  DOBmonth + "-" + "01" +  "-1900" ;
+
+    profile.firstname = $("#joincompletefirst").val();
+    profile.lastname = $("#joincompletelast").val();
+    profile.email = $("#joincompleteemail").val();
+    profile.password = $("#joincompletepassword").val();
+    profile.DOB = DOB;
+    profile.zip = $("#joincompletezip").val();
+
+    var adate = new moment().format('DD-MMM-YYYY HH:mm:ss');
+
+    var data =  "{'ClientID': 'MCDS',";
+        data += "'FirstName' : '"+clean($("#joincompletefirst").val())+"',";
+        data += "'LastName' : '"+clean($("#joincompletelast").val())+"',";
+        data += "'DateOfBirth' : '"+profile.DOB+"',";
+        data += "'PhoneNumber' : '',";
+        data += "'PhoneType' : '',";
+        data += "'SMSOptIn' : '',";
+        data += "'EmailAddress' : '"+clean(profile.email.toLowerCase()) +"',";
+        data += "'EmailAddressConfirm' : '"+clean(profile.email.toLowerCase()) +"',";
+        data += "'SpanishOnly' : '"+isspanish+"',";
+        data += "'Password' : '"+clean(profile.password)+"',";
+        data += "'PasswordConfirm' : '"+clean(profile.password)+"',";
+        data += "'PostalCode' : '"+clean(profile.zip)+"',";
+        data += "'AgeVerification' : 'T',";
+        data += "'TCVerification' : 'T',";
+        data += "'ExternalInfo' : '',";
+        data += "'CultureInfo' : '',";
+        data += "'ActionDate' : '"+adate+"',";
+/*
+        data += "'EnrSrc' : '"+enrollmentsource+"',";
+        data += "'Source' : '"+source+"' }";
+*/
+        data += "'EnrSrc' : '',";
+        data += "'Source' : '' }";
+
+
+//      data += "'CultureInfo':'', 'ExternalInfo':''}";
+
+    $("#spinner").css("height", $(document).height() +"px");
+
+    $("#spinner").show();
+    //epsilon call
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/PreferenceCenterInitRegistrationV1",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+          $("#spinner").hide();
+
+      //          console.log(r);
+
+                if(r.d.Response[0].Type=="ERROR"){
+                  var errid = r.d.Response[0].ErrorDesc[0].Number;
+                  var errstr = r.d.Response[0].ErrorDesc[0].Value + "<br>";
+                  switch(errid){
+                    case '1':
+                      // errstr = 'Oops! Looks like that email is already registered.';
+                      errstr = 'Sorry, this deal is only available for new subscribers.';
+                    break;
+                    case '2':
+                      // errstr = 'Oops! Looks like that email is already registered.';
+                      errstr = 'Sorry, this deal is only available for new subscribers.';
+                    break;
+
+                  }
+                  $("#joincompleteerr").html(errstr+"<br>");
+             window.scrollTo(0, 0);
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#joincomplete', 'error - subscription.html#joincomplete', r.d.Response[0].ErrorDesc[0].Value]);
+
+                }
+                else{
+					// VK
+					// Start:DTM tracker to track SignUP
+					_satellite.track("completeProfile");
+					// End:DTM tracker to track SignUP
+            profile.id = r.d.Response[0].ProfileID;
+			setCookie("profileid",profile.id,1);
+            //_gaq.push(['_setCustomVar',2,'accountID',profile.id,1]);
+
+            showmyprofile();
+          }
+
+            },
+            error: function(r){
+          $("#spinner").hide();
+          $("#joinerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#joincomplete', 'error - subscription.html#joincomplete', 'connection error']);
+
+            }
+
+
+        });
+
+  }
+  else{  window.scrollTo(0, 0);  }
+}
+function showunsubscribe(){
+    $("#unsubscribeemail").val(profile.email);
+    fillunsubscribe();
+    if(profile.email!=''){
+     validateunsubscribe();
+    }
+      $(".pane").hide();
+     location.hash="#unsubscribe";
+      $("#unsubscribe").show();
+// _gaq.push(['_trackPageview', "subscription.html#unsubscribe"]);
+
+}
+
+function validateunsubscribe(){
+  $("#unsubscribeerr").html("");
+  var v1 = false;
+  var v2 = false;
+
+  v1 = required("unsubscribeemail", "Email");
+  if(v1){v2 = validateemail("unsubscribeemail");}
+
+  var isvalid = v1 && v2
+  if(isvalid){$("#unsubscribesubscribe").unbind("click").click(function(){unsubscribe();}).removeClass("deactivated").addClass("activated"); }
+  else{$("#unsubscribesubscribe").unbind("click").removeClass("activated").addClass("deactivated");}
+  return (isvalid)
+
+
+}
+
+function unsubscribe(){
+
+//  var isvalid = true;
+  if(validateunsubscribe()){
+    profile.email = $("#unsubscribeemail").val();
+      var data = "{'ClientID': 'MCDS', ";
+        data+= "'EmailAddress': '"+clean(profile.email.toLowerCase()) +"', ";
+        data+= "'EmailOptOut':'Y', ";
+        data+= "'SMSOptOut':'Y', ";
+        data+= "'CountryCode':'', ";
+        data+= "'OptDate':'', ";
+        data+= "'CultureInfo':'', 'ExternalInfo':''}";
+
+    $("#spinner").css("height", $(document).height() +"px");
+
+      $("#spinner").show();
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/OptOutSubscription",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+          $("#spinner").hide();
+
+			// Start:DTM tracker to track Unsubscribe
+			_satellite.track("unsubscribe");
+			// End:DTM tracker to track Unsubscribe
+
+	   //         console.log(r);
+                if(r.d.Response[0].Type=="ERROR"){
+            $("#unsubscribeerr").html(r.d.Response[0].ErrorDesc[0].Value+"<br>")
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#unsubscribe', 'error - subscription.html#unsubscribe', r.d.Response[0].ErrorDesc[0].Value]);
+
+
+            if(r.d.Response[0].Type.Number==2){ }
+                }
+                else{
+              $(".pane").hide();
+              location.hash="unsubscribethanks";
+              $("#unsubscribethanks").show();
+
+          }
+            },
+            error: function(r){
+          $("#unsubscribeerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+          //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#unsubscribe', 'error - subscription.html#unsubscribe', 'connection error']);
+
+            }
+        });
+
+
+  }
+  else{  window.scrollTo(0, 0);  }
+}
+
+function surveynav(surveypaneid, action){
+      $(".surveypane").hide();
+
+
+      if(action=="next"){
+        switch(surveypaneid){
+
+          case 2:
+          //_gaq.push(['_setCustomVar',5,'survey1',$("input[name=q1]:checked").val(),1]);
+
+            break;
+
+          case 3:
+          //_gaq.push(['_setCustomVar',6,'survey2',$("input[name=q2]:checked").val(),1]);
+            break;
+
+          case 4:
+          //_gaq.push(['_setCustomVar',7,'survey3',$("input[name=q3]:checked").val(),1]);
+            break;
+
+          case 5:
+          //_gaq.push(['_setCustomVar',8,'survey3',$("input[name=q4]:checked").val(),1]);
+            break;
+
+
+          case 6:
+          //_gaq.push(['_setCustomVar',9,'survey3',$("input[name=q5]:checked").val(),1]);
+            break;
+
+
+
+
+          case 7:
+          var q6='';
+          $("#surveypane6 input:checkbox").each(function(){
+            if($(this).is(":checked")){
+              q6+= $(this).val() + ","
+            }
+
+          });
+
+          q6 = q6.replace(/,\s*$/, "");
+          //_gaq.push(['_setCustomVar',10,'survey6',q6,1]);
+            break;
+
+
+          case 8:
+          //_gaq.push(['_setCustomVar',11,'survey3',$("input[name=q7]:checked").val(),1]);
+            break;
+
+
+          case 9:
+          //_gaq.push(['_setCustomVar',12,'survey3',$("input[name=q8]:checked").val(),1]);
+            break;
+
+
+        }
+
+      }
+
+
+      if((surveypaneid==2 && $("input[name=q1]:checked").val() =="a" ) || surveypaneid ==9 ){
+
+
+        //save;
+
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth()+1;
+      var yyyy = today.getFullYear();
+      var hh = today.getHours();
+      var mn = today.getMinutes();
+      var ss = today.getSeconds();
+
+      if(dd<10){dd='0'+dd}
+      if(mm<10){mm='0'+mm}
+      if(hh<10){hh='0'+hh}
+      if(mn<10){mn='0'+mn}
+      if(ss<10){ss='0'+ss}
+
+      var date = mm+'-'+dd+'-'+yyyy+' '+hh+':'+mn+':'+ss;
+
+      var q6='';
+      $("#surveypane6 input:checkbox").each(function(){
+        if($(this).is(":checked")){
+          q6+= $(this).val() + ","
+        }
+
+      });
+
+      q6 = q6.replace(/,\s*$/, "");
+/*
+      _gaq.push(['_setCustomVar',5,'survey1',$("input[name=q1]:checked").val(),1]);
+      _gaq.push(['_setCustomVar',6,'survey2',$("input[name=q2]:checked").val(),1]);
+      _gaq.push(['_setCustomVar',7,'survey3',$("input[name=q3]:checked").val(),1]);
+      _gaq.push(['_setCustomVar',8,'survey4',q4,1]);
+*/
+
+        var data =  "{'ClientID': 'MCDS',";
+      data += "'ProfileID': '"+profile.id +"', ";
+      data += "'SurveyDate': '"+date+"', ";
+      data += "'SurveyPlatform': 'D', ";
+      data += "'SurveyID': 'Survey20160928', ";
+      data += "'AnswerCode1': '"+$("input[name=q1]:checked").val()+"', ";
+      data += "'AnswerCode2': '"+$("input[name=q2]:checked").val()+"', ";
+      data += "'AnswerCode3': '"+$("input[name=q3]:checked").val()+"', ";
+      data += "'AnswerCode4': '"+$("input[name=q4]:checked").val()+"', ";
+      data += "'AnswerCode5': '"+$("input[name=q5]:checked").val()+"', ";
+      data += "'AnswerCode6': '"+q6+"', ";
+      data += "'AnswerCode7': '"+$("input[name=q7]:checked").val()+"', ";
+      data += "'AnswerCode8': '"+$("input[name=q8]:checked").val()+"', ";
+      data += "'AnswerCode9': '', ";
+      data += "'AnswerCode10': '', ";
+        data+= "'CultureInfo':'', 'ExternalInfo':''}",
+
+       data =  data.replace(/undefined/g,'');
+
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/PreferenceCenterSurvey",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+
+			// Start:DTM tracker to track Profile Survey Completion
+			_satellite.track("profilesuveyCompletion");
+			// End:DTM tracker to track Profile Survey Completion
+
+        }
+      });
+
+        $("#surveypane9").show();
+        $("#surveypane9").css("opacity", "1");
+		$("#customerSurveyBox").hide();
+		$("#collapseSurvey").hide();
+
+      }else{
+        $("#surveypane"+surveypaneid).show();
+      }
+}
+
+function resubscribe(){
+
+if(profile.id!='' && profile.password !=''){
+  // epsilon call to get profile, then send back profile with optin
+
+//  if(profile.DOB=='00-00-0000'){profile.DOB='';}
+
+   var data =  "{'ClientID': 'MCDS',";
+      data += "'ProfileID': '"+profile.id +"', ";
+        data += "'FirstName' : '"+ clean(profile.firstname)+"',";
+        data += "'LastName' : '"+ clean(profile.lastname) +"',";
+        data += "'DOB' : '"+profile.DOB+"',";
+        data += "'AddressLine1' : '"+clean(profile.address)+"',";
+
+        data += "'AddressLine2' : '"+clean(profile.address2)+"',";
+        data += "'City' : '"+clean(profile.city)+"',";
+        data += "'State' : '"+profile.state+"',";
+        data += "'PostalCode' : '"+clean(profile.zip)+"',";
+
+        data += "'PhoneNumber' : '',";
+        data += "'PhoneType' : '',";
+        data += "'SMSOptIn' : '',";
+        data += "'SpanishOnly' : '"+profile.isspanish+"',";
+        data += "'Subscriptions': [{'ID':'201410009','OPTSTATUS':'Y'}],"
+
+        data += "'ExternalInfo' : '',";
+        data += "'CultureInfo' : ''}";
+
+
+
+      $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/UpdatePreferenceCenterProfile",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+             $("#spinner").hide();
+
+				// Start:DTM tracker to track PersonalDetail Update
+				_satellite.track("resubscribe");
+				// End:DTM tracker to track PersonalDetail Update
+
+    //         console.log(r);
+             if(r.d.Response[0].Type=="ERROR"){
+                $("#resubscribeerr").html(r.d.Response[0].ErrorDesc[0].Value+"<br>")
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#resubscribe', 'error - subscription.html#resubscribe', r.d.Response[0].ErrorDesc[0].Value]);
+
+              }
+              else{
+
+                $(".pane").hide();
+                location.hash="#myprofile";
+                showmyprofile();
+                window.scrollTo(0, 0);
+              }
+            },
+            error: function(r){
+             $(".resubscribeerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#resubscribe', 'error - subscription.html#resubscribe', 'connection error']);
+
+              window.scrollTo(0, 0);
+            }
+
+        });
+  }
+  else{
+    $(".pane").hide();
+
+     //location.hash="#signin";
+
+    showsignin();
+    window.scrollTo(0, 0);
+  }
+
+
+}
+
+function showupdate(profileid){
+    window.scrollTo(0, 0);
+
+   $(".updateerr").each(function(){
+      $(this).html("")
+   });
+
+
+  if(profile.id=='' && profileid==''){
+    showsignin();
+
+  }else{
+//    $(".pane").hide();
+
+  $(".updateerr").html("");
+
+    $(".subpane").hide();
+     $("#mask").css("height", $(document).height() +"px");
+
+  $("#mask").show();
+//     location.hash="#updateprofile";
+
+    $("#updateprofile").show();
+   // $("#update"+section+"sub").show()
+
+
+
+
+    var data =  "{'ClientID': 'MCDS',";
+        data += "'ProfileID' : '"+((profile.id!='')?profile.id:profileid)+"',";
+        data += "'ExternalInfo':'', 'CultureInfo':''}";
+
+    $("#spinner").css("height", $(document).height() +"px");
+
+    $("#spinner").show();
+    //epsilon call
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/GetPreferenceCenterProfile",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+          $("#spinner").hide();
+
+    //            console.log(r);
+
+                if(r.d.Response[0].Type=="ERROR"){
+
+                  if(r.d.Response[0].Type.Number==2){
+
+                    //
+                  }
+            $("#updateerr").html(r.d.Response[0].ErrorDesc[0].Value+"<br>")
+             window.scrollTo(0, 0);
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#update', 'error - subscription.html#update', r.d.Response[0].ErrorDesc[0].Value]);
+
+
+                }
+                else{
+                  profile.firstname = denull(r.d.Response[0].PROFILE[0].FIRSTNAME);
+                  profile.lastname = denull(r.d.Response[0].PROFILE[0].LASTNAME);
+                  profile.address = denull(r.d.Response[0].PROFILE[0].ADDRESS1);
+                  profile.address2 = denull(r.d.Response[0].PROFILE[0].ADDRESS2);
+                  profile.city =  denull(r.d.Response[0].PROFILE[0].CITY);
+                  profile.state = denull(r.d.Response[0].PROFILE[0].STATE);
+                  profile.zip = denull(r.d.Response[0].PROFILE[0].ZIPCODE);
+				  profile.email = denull(r.d.Response[0].PROFILE[0].EMAILADDRESS);
+  /*
+                  if(r.d.Response[0].PROFILE[0].DOB.indexOf("00-")==0){
+                    profile.DOB = '';
+                  }
+                  else{
+*/
+                    profile.DOB = r.d.Response[0].PROFILE[0].DOB;
+//                  }
+
+
+                  $("#updatefirst").val(profile.firstname);
+                  $("#updatelast").val(profile.lastname);
+                  $("#updateaddressstreet").val(profile.address);
+                  $("#updateaddressstreet2").val(profile.address2);
+                  $("#updateaddresscity").val(profile.city);
+                  $("#updateaddressstate").val(profile.state);
+
+                  $("#updatezip").val(profile.zip);
+                  $("#updateemailemail").html(profile.email);
+
+                  $("#updateemail").val('');
+                  $("#updateretypeemail").val('');
+
+
+                  $("#updatecurrentpassword").val(profile.password);
+                  $("#updatepasswordemail").html(profile.email);
+                  $("#updatepassword").val('');
+
+                  $("#updateretypepassword").val('');
+
+
+                  try{
+                    dobarr = profile.DOB.split("-");
+					var mnstr = '';
+					if(dobarr[0]=='00' || dobarr[0]=='' ){mnstr='';}
+                    else{mnstr = monthnames[parseInt(dobarr[0],10)] }
+                     $("#updatebirthmonthval").html( mnstr);
+					$("#updatebirthmonth").attr('data-value', dobarr[0]);
+                  }
+
+                  catch(ex){}
+                    fillupdate();
+
+                  validateupdate();
+          }
+            },
+            error: function(r){
+          $("#spinner").hide();
+          $("#updateerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+          //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#update', 'error - subscription.html#update', 'connection error']);
+
+            }
+
+        });
+     }
+
+}
+
+function showsignin(){
+  fillsignin();
+    $(".pane").hide();
+        //location.hash="#signin";
+
+    $("#signin").show();
+
+}
+
+function validateupdate(){
+  $(".updateerr").each(function(){ $(this).html(""); });
+  $("#updateerr").html("");
+  var v1 = false;
+  var v2 = false;
+  var v3 = false;
+  var v4 = false;
+  var v5 = false;
+  var v6 = false;
+  var v7 = false;
+  var v8 = false;
+  var v9 = false;
+  var v10 = false;
+  var v11 = false;
+  var v12 = false;
+
+  v1 = required("updatezip", "Zip Code");
+  if(v1){v2 = validatezipcode("updatezip");}
+
+  if($("#updateemail").val()!='' || $("#updateretypeemail").val()!=''){
+    v3=true;
+     if(v3){v4 = validateemail("updateemail");}
+     if(v4){v5 = validateemail("updateretypeemail");}
+     if(v5){v6 = compareemails("updateemail", "updateretypeemail");}
+  }else {v3=true;v4=true;v5=true;v6=true;}
+    v7=true;
+  if( $("#updatepassword").val()!='' ||  $("#updateretypepassword").val()!=''){
+
+    v8=true;
+    if(v8){v9 = validatepassword("updatepassword");}
+    v10=true
+    if(v10){v11 = validatepassword("updatepassword");}
+    if(v11){ v12 = comparepasswords("updatepassword", "updateretypepassword")};
+
+  }else{v8=true;v9=true;v10=true;v11=true;v12=true;}
+
+
+  var isvalid = v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8 && v9 && v10 && v11 && v12;
+  if(isvalid){$("#updateeditemail ,#updateeditname ,#updateeditaddress ,#updateeditpassword").removeClass("deactivated").addClass("activated").unbind("click").click(function(){updateprofile();}); }
+  else{$("#updateeditemail, #updateeditname, #updateeditaddress, #updateeditpassword", "#updateeditaddress").removeClass("activated").addClass("deactivated").unbind("click");}
+  return (isvalid)
+
+}
+ var iscomplete = true;
+function updateprofile(){
+
+
+  if(validateupdate()){
+    var isspanish = 'N';
+    if($(".myprofilespanish:visible").is(':checked')){
+	isspanish="Y";
+	//_gaq.push(['_setCustomVar',4,'emailLanguagePreference','Spanish only',1]);
+	}else{
+	//_gaq.push(['_setCustomVar',4,'emailLanguagePreference','not Spanish only',1]);
+	}
+
+	var DOB = '';
+    var DOBmonth = '';
+	DOBmonth = $('#updatebirthmonth').data('value');
+    if(DOBmonth ==''){DOBmonth = '00';}
+    DOB =  DOBmonth + "-" + "01" +  "-1900" ;
+    $("#spinner").css("height", $(document).height() +"px");
+    $("#spinner").show();
+    if($("#updateemail").val() != ''  &&   ($("#updateemail").val() != profile.email)){
+
+      var data = "{'ClientID': 'MCDS',"
+          data+= "'ProfileID': '"+profile.id +"', ";
+          data+= "'EmailAddress': '"+ clean($("#updateemail").val().toLowerCase()) +"', ";
+          data+= "'EmailAddressConfirm': '"+clean($("#updateemail").val().toLowerCase()) +"', ";
+          data+= "'CultureInfo':'', 'ExternalInfo':''}",
+
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/ChangePreferenceCenterEmail",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+            $("#spinner").hide();
+
+
+
+			console.log(r.d.Response[0].Type);
+
+            if(r.d.Response[0].Type=="ERROR"){
+              var errid = r.d.Response[0].ErrorDesc[0].Number;
+              console.log(r.d.Response[0].ErrorDesc[0].Number);
+              var errstr = r.d.Response[0].ErrorDesc[0].Value + "<br>";
+              switch(errid){
+                  case '4':
+                    // errstr = 'Oops! Looks like that email is already registered.';
+                    errstr = 'Sorry, this deal is only available for new subscribers.';
+
+                  break;
+
+              }
+              $(".updateerr").each(function(){ $(this).html(errstr+"<br>"); });
+              //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#update', 'error - subscription.html#update', errstr]);
+              iscomplete = false;
+            }
+            else{
+				profile.email = $("#updateemail").val();
+				// VK
+				// Start:DTM tracker to track Change Email
+				_satellite.track("changeEmail");
+				// End:DTM tracker to track Change Email
+			}
+            console.log("changeemail iscomplete:"+iscomplete);
+            closesubpane();
+            },
+            error: function(r){
+                $("#spinner").hide();
+                $(".updateerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+                 //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#update', 'error - subscription.html#update', 'connection error']);
+                iscomplete = false;
+            }
+        });
+      }else{
+        if( $("#updatepassword").val()!='' && ( $("#updatepassword").val() != profile.password)  ){
+          var data = "{'ClientID': 'MCDS',"
+              data+= "'ProfileID': '"+profile.id +"', ";
+              data+= "'OldPassword': '"+ clean(profile.password) +"', ";
+              data+= "'NewPassword': '"+ clean($("#updatepassword").val()) +"', ";
+              data+= "'NewPasswordConfirm': '"+ clean($("#updatepassword").val()) +"', ";
+              data+= "'CultureInfo':'', 'ExternalInfo':''}",
+
+          $.ajax({
+              type: "POST",
+              method: "POST",
+              url: epsilonurl + "/ChangePreferenceCenterPassword",
+              data: data,
+              contentType: "application/json",
+              dataType: "json",
+              success: function (r) {
+                $("#spinner").hide();
+
+				// Start:DTM tracker to track Change password
+				_satellite.track("changepwd");
+				// End:DTM tracker to track Change password
+
+				console.log(r.d.Response[0].Type);
+                if(r.d.Response[0].Type=="ERROR"){
+                  $(".updateerr").html(r.d.Response[0].ErrorDesc[0].Value+"<br>")
+                  //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#update', 'error - subscription.html#update', r.d.Response[0].ErrorDesc[0].Value]);
+
+                  iscomplete = false;
+                }else{
+                  profile.password = $("#updatepassword").val();
+                  closesubpane();
+                }
+
+              },
+              error: function(r){
+                $("#updateerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+                //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#update', 'error - subscription.html#update','connection error']);
+
+                window.scrollTo(0, 0);
+
+                iscomplete = false
+              }
+
+            });
+
+        }else{
+
+          var data =  "{'ClientID': 'MCDS',";
+              data += "'ProfileID': '"+profile.id +"', ";
+              data += "'FirstName' : '"+ clean( $("#updatefirst").val() )+"',";
+              data += "'LastName' : '"+ clean($("#updatelast").val())+"',";
+              data += "'DOB' : '"+DOB+"',";
+              data += "'AddressLine1' : '"+clean($("#updateaddressstreet").val() )+"',";
+              data += "'AddressLine2' : '"+clean($("#updateaddressstreet2").val())+"',";
+              data += "'City' : '"+clean($("#updateaddresscity").val())+"',";
+              data += "'State' : '"+clean($('#updateaddressstate').data('value'))+"',";
+              data += "'PostalCode' : '"+clean($("#updatezip").val())+"',";
+              data += "'PhoneNumber' : '',";
+              data += "'PhoneType' : '',";
+              data += "'SMSOptIn' : '',";
+              data += "'SpanishOnly' : '"+isspanish+"',";
+              // data += "'Subscriptions': [{'ID':'201410009','OPTSTATUS':'Y'}],"
+              data += "'Subscriptions': [],";
+              data += "'ExternalInfo' : '',";
+              data += "'CultureInfo' : ''}";
+
+
+
+              $.ajax({
+                    type: "POST",
+                    method: "POST",
+                    url: epsilonurl + "/UpdatePreferenceCenterProfile",
+                    data: data,
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (r) {
+                      $("#spinner").hide();
+
+						// Start:DTM tracker to track PersonalDetail Update
+						_satellite.track("updatePIDetails");
+						// End:DTM tracker to track PersonalDetail Update
+
+                      if(r.d.Response[0].Type=="ERROR"){
+                        $(".updateerr").html(r.d.Response[0].ErrorDesc[0].Value+"<br>")
+                        //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#update', 'error - subscription.html#update', r.d.Response[0].ErrorDesc[0].Value]);
+
+                        iscomplete = false;
+                      }else{
+                        profile.firstname = $("#updatefirst").val();
+                        profile.lastname = $("#updatelast").val();
+                        profile.address = $("#updateaddressstreet").val();
+                        profile.address2 = $("#updateaddressstreet2").val();
+                        profile.city = $("#updateaddressscity").val();
+                        profile.state = $("#updateaddressstate").val();
+
+                        profile.DOB = DOB;
+                        console.log("iscomplete: " + iscomplete);
+                        closesubpane();
+
+                      }
+                    },
+                    error: function(r){
+                      $(".updateerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+                      //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#update', 'error - subscription.html#update', 'connection error']);
+
+                     window.scrollTo(0, 0);
+                     iscomplete = false
+                    }
+
+                });
+            }
+
+
+
+
+//  else{  window.scrollTo(0, 0);  }
+      }
+    }
+}
+
+function closesubpane(){
+          $(".subpane").hide();
+          $("#mask").hide();
+
+          showmyprofile();
+         window.scrollTo(0, 0);
+
+}
+
+function showaddress(){
+  fillupdate();
+  $(".pane").hide();
+   window.scrollTo(0, 0);
+    location.hash="#updateaddress";
+
+  $("#updateaddress").show();
+ //_gaq.push(['_trackPageview', "subscription.html#updateaddress"]);
+
+}
+
+function closemodal(){
+    $(".subpane").hide();
+    $("#mask").hide();
+    showmyprofile();
+   window.scrollTo(0, 0);
+}
+
+function showmyprofileheader(profileid){
+
+  if(profileid==''){
+    showsignin();
+
+  }else{
+    $(".pane").hide();
+     window.scrollTo(0, 0);
+
+   $(".joinupdateProfile").show();
+   $(".joinpreference").text("update");
+   $(".emaildropDownInner").hide();
+   $(".emaildropDownConfirm").hide();
+// _gaq.push(['_trackPageview', "subscription.html#myprofile"]);
+
+    var data =  "{'ClientID': 'MCDS',";
+        data += "'ProfileID' : '"+profileid+"',";
+        data += "'ExternalInfo':'', 'CultureInfo':''}";
+    $("#spinner").css("height", $(document).height() +"px");
+
+    $("#spinner").show();
+    //epsilon call
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/GetPreferenceCenterProfile",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+          $("#spinner").hide();
+      //          console.log(r);
+                if(r.d.Response[0].Type=="ERROR"){
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#myprofile', 'error - subscription.html#myprofile', r.d.Response[0].ErrorDesc[0].Value]);
+
+                  if(r.d.Response[0].Type.Number==2){      }
+                  $("#myprofileerr").html(r.d.Response[0].ErrorDesc[0].Value+"<br>")
+                   window.scrollTo(0, 0);
+
+                }
+                else{
+                  profile.firstname = denull(r.d.Response[0].PROFILE[0].FIRSTNAME);
+                  profile.lastname = denull(r.d.Response[0].PROFILE[0].LASTNAME);
+                  profile.address = denull(r.d.Response[0].PROFILE[0].ADDRESS1);
+                  profile.address2 = denull(r.d.Response[0].PROFILE[0].ADDRESS2);
+                  profile.city =  denull(r.d.Response[0].PROFILE[0].CITY);
+                  profile.state = denull(r.d.Response[0].PROFILE[0].STATE);
+                  profile.zip = denull(r.d.Response[0].PROFILE[0].ZIPCODE);
+                  profile.DOB = denull(r.d.Response[0].PROFILE[0].DOB);
+				  profile.email = denull(r.d.Response[0].PROFILE[0].EMAILADDRESS);
+                  profile.isspanish = denull(r.d.Response[0].PROFILE[0].SPANISHONLY);
+                  if(profile.isspanish=="Y"){$(".myprofilespanish").attr('checked', true);}
+                  else{$(".myprofilespanish").attr('checked', false);}
+                  $(".myprofilename").html(profile.firstname + " " +profile.lastname);
+                  if(profile.firstname!=""){$(".myprofileheadername").html(", " + profile.firstname);}
+                    var add ='';
+                  if(profile.address !=''){add+=profile.address + "<br>";}
+                  if(profile.address2 !=''){add+=profile.address2+"<br>";}
+                  if(profile.city !=''){add+=profile.city + ", ";}
+                  if(profile.state !=''){add += profile.state + " ";}
+                  if(profile.zip !=''){add+= profile.zip;}
+                  $(".myprofileaddress").html(add);
+                  $(".myprofileemail").html(profile.email);
+                    dobarr = profile.DOB.split("-");
+
+                    var mnstr = '';
+                    if(dobarr[0]=='00' || dobarr[0]=='' ){mnstr='';}
+                    else{mnstr = monthnames[parseInt(dobarr[0],10)] }
+
+                    var dystr = '';
+                    if( dobarr[1]=='00' ||  dobarr[1]==''){dystr='';}
+                    else{dystr = dobarr[1]}
+
+
+                     $(".myprofiledob").html(mnstr);
+
+                }
+            },
+            error: function(r){
+          $("#spinner").hide();
+          $("#myprofileerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#myprofile', 'error - subscription.html#myprofile','connection error']);
+
+          }
+     });
+  }
+}
+
+function showmyprofile(){
+
+  if(profile.id==''){
+    showsignin();
+
+  }else{
+    $(".pane").hide();
+     window.scrollTo(0, 0);
+      location.hash="#myprofile";
+
+   $("#myprofile").show();
+   $(".joinupdateProfile").show();
+   $(".joinpreference").text("update");
+   $(".emaildropDownInner").hide();
+   $(".emaildropDownConfirm").hide();
+
+   $(".slides").css("display", "none");
+   $(".btn.btn-red.survey-start").click(function(){
+     $(".slides").show();
+     $(".survey-intro-slide").hide();
+   });
+
+// _gaq.push(['_trackPageview', "subscription.html#myprofile"]);
+
+    var data =  "{'ClientID': 'MCDS',";
+        data += "'ProfileID' : '"+profile.id+"',";
+        data += "'ExternalInfo':'', 'CultureInfo':''}";
+    $("#spinner").css("height", $(document).height() +"px");
+
+    $("#spinner").show();
+    //epsilon call
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/GetPreferenceCenterProfile",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+          $("#spinner").hide();
+      //          console.log(r);
+                if(r.d.Response[0].Type=="ERROR"){
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#myprofile', 'error - subscription.html#myprofile', r.d.Response[0].ErrorDesc[0].Value]);
+
+                  if(r.d.Response[0].Type.Number==2){      }
+                  $("#myprofileerr").html(r.d.Response[0].ErrorDesc[0].Value+"<br>")
+                   window.scrollTo(0, 0);
+
+                }
+                else{
+                  profile.firstname = denull(r.d.Response[0].PROFILE[0].FIRSTNAME);
+                  profile.lastname = denull(r.d.Response[0].PROFILE[0].LASTNAME);
+                  profile.address = denull(r.d.Response[0].PROFILE[0].ADDRESS1);
+                  profile.address2 = denull(r.d.Response[0].PROFILE[0].ADDRESS2);
+                  profile.city =  denull(r.d.Response[0].PROFILE[0].CITY);
+                  profile.state = denull(r.d.Response[0].PROFILE[0].STATE);
+                  profile.zip = denull(r.d.Response[0].PROFILE[0].ZIPCODE);
+                  profile.DOB = denull(r.d.Response[0].PROFILE[0].DOB);
+				  profile.email = denull(r.d.Response[0].PROFILE[0].EMAILADDRESS);
+                  profile.isspanish = denull(r.d.Response[0].PROFILE[0].SPANISHONLY);
+                  if(profile.isspanish=="Y"){$(".myprofilespanish:visible").attr('checked', true);}
+                  else{$(".myprofilespanish:visible").attr('checked', false);}
+                  $(".myprofilename").html(profile.firstname + " " +profile.lastname);
+                  if(profile.firstname!=""){$(".myprofileheadername").html(", " + profile.firstname);}
+                    var add ='';
+                  if(profile.address !=''){add+=profile.address + "<br>";}
+                  if(profile.address2 !=''){add+=profile.address2+"<br>";}
+                  if(profile.city !=''){add+=profile.city + ", ";}
+                  if(profile.state !=''){add += profile.state + " ";}
+                  if(profile.zip !=''){add+= profile.zip;}
+                  $(".myprofileaddress").html(add);
+                  $(".myprofileemail").html(profile.email);
+                    dobarr = profile.DOB.split("-");
+
+                    var mnstr = '';
+                    if(dobarr[0]=='00' || dobarr[0]=='' ){mnstr='';}
+                    else{mnstr = monthnames[parseInt(dobarr[0],10)] }
+
+                    var dystr = '';
+                    if( dobarr[1]=='00' ||  dobarr[1]==''){dystr='';}
+                    else{dystr = dobarr[1]}
+
+
+                     $(".myprofiledob").html(mnstr);
+
+                }
+            },
+            error: function(r){
+          $("#spinner").hide();
+          $("#myprofileerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#myprofile', 'error - subscription.html#myprofile','connection error']);
+
+          }
+     });
+  }
+}
+
+function validatesignin(){
+  $("#signinerr").html("");
+  var v1 = false;
+  var v2 = false;
+  var v3 = false;
+  var v4 = false;
+  v1 = required("signinpassword", "Password");
+  if(v1){v2 = validatepassword("signinpassword");}
+  v3 = required("signinemail", "Email");
+  if(v3){v4 = validateemail("signinemail");}
+  var isvalid = v1 && v2 && v3 && v4
+  if(isvalid){$("#signinsubscribe").unbind("click").click(function(){signin();}).removeClass("deactivated").addClass("activated"); }
+  else{$("#signinsubscribe").unbind("click").removeClass("activated").addClass("deactivated");}
+  return (isvalid)
+
+}
+
+function signin(){
+
+  if(validatesignin()){
+     $("#spinner").css("height", $(document).height() +"px");
+
+    $("#spinner").show();
+    profile.password = $("#signinpassword").val() ;
+    profile.email = $("#signinemail").val();
+
+    //epsilon call
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/PreferenceCenterLogin",
+            data: "{'ClientID': 'MCDS', 'EmailAddress': '"+profile.email.toLowerCase() +"', 'Password': '"+profile.password+"', 'CultureInfo':'', 'ExternalInfo':''}",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+          $("#spinner").hide();
+
+
+		  //                console.log(r);
+                if(r.d.Response[0].Type=="ERROR"){
+                    //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#signin', 'error - subscription.html#signin', r.d.Response[0].ErrorDesc[0].Value]);
+
+                    var errid = r.d.Response[0].ErrorDesc[0].Number;
+                    var errstr = r.d.Response[0].ErrorDesc[0].Value + "<br>";
+                    switch(errid){
+                      case '1':
+                        // errstr = 'Oops! Looks like that email is already registered.';
+                        errstr = 'Sorry, this deal is only available for new subscribers.';
+                      break;
+                      case '2':
+                        // errstr = 'Oops! Looks like that email is already registered.';
+                        errstr = 'Sorry, this deal is only available for new subscribers.';
+                      break;
+
+                      case '3':
+                        errstr +="<br><a onclick=\"showforgotpassword();forgotpassword();\" href=\"javascript:;\">Reset your password now</a>";
+                      break;
+                      case '4':
+                        //
+                      break;
+                    }
+                    $("#signinerr").html(errstr);
+                }
+
+                else{
+
+                  profile.id = r.d.Response[0].ProfileID;
+				  // VK
+				  // Start:DTM tracker to track Login
+					console.log("adsjfgdsakfjg");
+					_satellite.track("signIn");
+					// End:DTM tracker to track Login
+                  //_gaq.push(['_setCustomVar',2,'accountID',profile.id,1]);
+                  //_gaq.push(['_setCustomVar',9,'sessionState','signed-in',1]);
+            if($("#signinremember").is(':checked')){
+                //cookie
+                //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#signin', 'click - subscription.html#signin', 'remember me']);
+                setCookie("eenc",encrypt(profile.email),365);
+                //setCookie("penc",encrypt(profile.password),365);
+
+            }
+            else{
+                setCookie("eenc","",0);
+                //setCookie("penc","",0);
+            }
+			setCookie("profileid",profile.id,1);
+            showmyprofile();
+          }
+         },
+            error: function(r){
+          $("#spinner").hide();
+          $("#signinerr").html("We're sorry there was an error processing your request.  Please try again later.");
+                //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#signin', 'error - subscription.html#signin', 'connection error']);
+
+        }
+
+      });
+  }
+  else{ window.scrollTo(0, 0); }
+}
+
+function showforgotpassword(){
+      if($("#signinemail").val()!=''){
+         $("#forgotpasswordemail").val($("#signinemail").val());
+         validateforgotpassword();
+      }
+     $(".pane").hide();
+//       $("#forgotpasswordemail").val(email);
+  location.hash="#forgotpassword";
+      $("#forgotpassword").show();
+  fillforgotpassword();
+
+// _gaq.push(['_trackPageview', "subscription.html#forgotpassword"]);
+
+     window.scrollTo(0, 0);
+}
+
+function showresetpassword(){
+    $(".pane").hide();
+  location.hash="#resetpassword";
+    $("#resetpassword").show();
+  fillresetpassword();
+
+ //_gaq.push(['_trackPageview', "subscription.html#resetpassword"]);
+
+}
+
+function validateforgotpassword(){
+  var v1 = false;
+  var v2 = false;
+  v1 = required("forgotpasswordemail", "Email");
+  if(v1){v2 = validateemail("forgotpasswordemail");}
+  var isvalid = v1 && v2
+  if(isvalid){$("#forgotpasswordsubscribe").unbind("click").click(function(){forgotpassword();}).removeClass("deactivated").addClass("activated"); }
+  else{$("#forgotpasswordsubscribe").unbind("click").removeClass("activated").addClass("deactivated");}
+  return (isvalid)
+
+}
+
+function forgotpassword(){
+  if(validateforgotpassword()){
+     profile.email = $("#forgotpasswordemail").val().toString();
+     $("#spinner").css("height", $(document).height() +"px");
+
+      $("#spinner").show();
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/ResetPreferenceCenterPassword",
+            data: "{'ClientID': 'MCDS', 'EmailAddress': '"+clean(profile.email.toLowerCase()) +"', 'CultureInfo':'', 'ExternalInfo':''}",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+          $("#spinner").hide();
+
+			// Start:DTM tracker to track Reset password
+			_satellite.track("resetPwd");
+			// End:DTM tracker to track Reset password
+
+			//console.log(r);
+                if(r.d.Response[0].Type=="ERROR"){
+            $("#forgotpassworderr").html(r.d.Response[0].ErrorDesc[0].Value+"<br>")
+                       //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#forgotpassword', 'error - subscription.html#forgotpassword', r.d.Response[0].ErrorDesc[0].Value]);
+
+            if(r.d.Response[0].Type.Number==2){ }
+                }
+                else{
+                 $("#mask").css("height", $(document).height() +"px");
+
+                  $("#mask").show();
+				  $("#forgotPasswordConfirm").on("click",function(){closeconfirmmask();});
+                  $("#mask").on("click",function(){closeconfirmmask();});
+                  $("#forgotpasswordconfirm").show();
+
+
+          }
+           },
+            error: function(r){
+          $("#signinerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+
+        //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#forgotpassword', 'error - subscription.html#forgotpassword','connection error']);
+            }
+        });
+
+   }
+}
+
+function validateresetpassword(){
+  var v1=false;
+  var v2=false;
+  var v3=false;
+  var v4=false;
+  var v5=false;
+  var v6=false;
+  var v7=false;
+
+  v1 = required("resetpasswordtemppassword", "Password");
+  if(v1){v2 = validatepassword("resetpasswordtemppassword");}
+  v3 = required("resetpasswordpassword", "Password");
+  if(v3){v4 = validatepassword("resetpasswordpassword");}
+  if(v4){v5 = comparepasswords("resetpasswordpassword", "resetpasswordretypepassword");}
+  v6 = required("resetpasswordemail", "Email");
+  if(v6){v7 = validateemail("resetpasswordemail");}
+
+
+  var isvalid = v1 && v2 && v3 && v4 && v5 && v6 && v7;
+  if(isvalid){$("#resetpasswordsubscribe").unbind("click").click(function(){resetpassword();}).removeClass("deactivated").addClass("activated"); }
+  else{$("#resetpasswordsubscribe").unbind("click").removeClass("activated").addClass("deactivated");}
+  return (isvalid)
+
+
+}
+
+function resetpassword(){
+  if(validateresetpassword()){
+    $("#spinner").css("height", $(document).height() +"px");
+
+          $("#spinner").show();
+          profile.password = $("#resetpasswordtemppassword").val();
+          profile.email = $("#resetpasswordemail").val();
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/PreferenceCenterLogin",
+            data: "{'ClientID': 'MCDS', 'EmailAddress': '"+profile.email.toLowerCase() +"', 'Password': '"+profile.password+"', 'CultureInfo':'', 'ExternalInfo':''}",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+          $("#spinner").hide();
+
+        //        console.log(r);
+                if(r.d.Response[0].Type=="ERROR"){
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#resetpassword', 'error - subscription.html#resetpassword', r.d.Response[0].ErrorDesc[0].Value]);
+
+                  errstr = r.d.Response[0].ErrorDesc[0].Value+"<br>";
+                  if(r.d.Response[0].ErrorDesc[0].Number=='3'){
+                    $("#forgotpasswordemail").val($("#resetpasswordemail").val());
+                    errstr +="<a onclick=\"forgotpassword()\" href=\"javascript:;\">Reset your password now</a><br>";
+                  }
+                  $("#resetpassworderr").html(errstr);
+                 window.scrollTo(0, 0);
+                }
+                else{
+                  profile.id = r.d.Response[0].ProfileID;
+				  setCookie("profileid",profile.id,1);
+                  doreset();
+            }
+         },
+            error: function(r){
+          $("#spinner").hide();
+
+          $("#signinerr").html("We're sorry there was an error processing your request.  Please try again later.");
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#resetpassword', 'error - subscription.html#resetpassword', 'connection error']);
+
+            }
+
+        });
+   }
+
+}
+
+function doreset(){
+      var data = "{'ClientID': 'MCDS',"
+          data+= "'ProfileID': '"+profile.id +"', ";
+          data+= "'OldPassword': '"+ clean($("#resetpasswordtemppassword").val()) +"', ";
+          data+= "'NewPassword': '"+ clean($("#resetpasswordpassword").val()) +"', ";
+          data+= "'NewPasswordConfirm': '"+ clean($("#resetpasswordpassword").val()) +"', ";
+          data+= "'CultureInfo':'', 'ExternalInfo':''}",
+
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/ChangePreferenceCenterPassword",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (r) {
+
+          $("#spinner").hide();
+
+			// Start:DTM tracker to track Change password
+			_satellite.track("changepwd");
+			// End:DTM tracker to track Change password
+
+			//          console.log(r);
+                if(r.d.Response[0].Type=="ERROR"){
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#resetpassword', 'error - subscription.html#resetpassword', r.d.Response[0].ErrorDesc[0].Value]);
+
+            $("#resetpasswordeerr").html(r.d.Response[0].ErrorDesc[0].Value+"<br>")
+                }
+                else{
+            profile.password = $("#resetpasswordpassword").val();
+//            $(".pane").hide();
+//            $("#myprofile").show();
+
+              showmyprofile();
+
+             window.scrollTo(0, 0);
+                }
+            },
+            error: function(r){
+          $("#resetpassworderr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+           window.scrollTo(0, 0);
+           //_gaq.push(['_trackEvent', 'http://www.mcdonalds.com/us/en/subscription.html#resetpassword', 'error - subscription.html#resetpassword', 'connection error']);
+
+            }
+
+        });
+    }
+
+function closeconfirmmask(){
+  $("#mask").hide();
+  closemodal();
+  showresetpassword();
+}
+
+function trackjoin(issubmit){
+  trackfield(["joinemail","joinzip"],"join", issubmit);
+}
+
+function trackhome(issubmit){
+  trackfield(["joinemail","joinzip"],"home", issubmit);
+}
+
+function trackjoincomplete(issubmit){
+  trackfield(["joincompleteemail","joincompletezip", "joincompletefirst", "joincompletelast", "joincompletebirthmonth","joincompletepassword", "joincompleteretypepassword"],"joincomplete", issubmit);
+}
+function tracksignin(issubmit){
+  trackfield(["signinemail","signinpassword"],"signin", issubmit);
+}
+function trackforgotpassword(issubmit){
+  trackfield(["forgotpasswordemail"],"forgotpassword", issubmit);
+
+}
+function trackresetpassword(issubmit){
+  trackfield(["resetpasswordemail","resetpasswordtemppassword","resetpasswordpassword","resetpasswordretypepassword"],"resetpassword", issubmit);
+}
+function trackupdatename(issubmit){
+  trackfield(["updatefirst", "updatelast"],"updateprofile", issubmit);
+}
+function trackupdateaddress(issubmit){
+  trackfield(["updateaddressstreet","updateaddressstreet2","updateaddresscity", "updateaddressstate","updatezip"],"updateprofile", issubmit);
+}
+function trackupdatepassword(issubmit){
+
+  trackfield(["updatecurrentpassword", "updatepassword","updateretypepassword"],"updatepassword", issubmit)
+}
+
+function trackupdateemail(issubmit){
+  trackfield(["updateemail", "updateretypeemail"],"updateprofile", issubmit);
+}
+
+function trackupdatedob(issubmit){
+  trackfield(["updatebirthmonth"],"updateprofile", issubmit);
+}
+
+function trackunsubscribe(issubmit){
+  trackfield(["unsubscribeemail"],"unsubscribe", issubmit);
+}
+
+function filljoin(){
+  fillfield(["joinemail","joinzip"],"join");
+}
+
+function fillhome(){
+  fillfield(["joinemail","joinzip"],"home");
+}
+
+function filljoincomplete(){
+  fillfield(["joincompleteemail","joincompletezip", "joincompletefirst", "joincompletelast", "joincompletebirthmonth","joincompletepassword", "joincompleteretypepassword"],"joincomplete");
+}
+function fillsignin(){
+  fillfield(["signinemail","signinpassword"],"signin");
+}
+function fillforgotpassword(){
+  fillfield(["forgotpasswordemail"],"forgotpassword");
+
+}
+function fillresetpassword(){
+  fillfield(["resetpasswordemail","resetpasswordtemppassword","resetpasswordpassword","resetpasswordretypepassword"],"resetpassword");
+}
+
+function fillupdate(){
+
+ fillupdatename();
+ fillupdateaddress();
+ fillupdatepassword();
+ fillupdateemail();
+ fillupdatedob();
+}
+
+function fillupdatename(){
+  fillfield(["updatefirst", "updatelast"],"updateprofile");
+}
+function fillupdateaddress(){
+  fillfield(["updateaddressstreet","updateaddressstreet2","updateaddresscity", "updateaddressstate","updatezip"],"updateprofile");
+}
+function fillupdatepassword(){
+
+  fillfield(["updatecurrentpassword", "updatepassword","updateretypepassword"],"updatepassword")
+}
+
+function fillupdateemail(){
+  fillfield(["updateemail", "updateretypeemail"],"updateprofile");
+}
+
+function fillupdatedob(){
+  fillfield(["updatebirthmonth"],"updateprofile");
+}
+
+function fillunsubscribe(){
+  fillfield(["unsubscribeemail"],"unsubscribe");
+}
+
+var f=[];
+function fillfield(fieldarr, section){
+  $.each(fieldarr, function(key, value){
+   f[value] = $("#"+value).val();
+
+
+  });
+
+}
+
+function trackfield(fieldarr, section, issubmit){
+  var uri = "subscription.html#" + section;
+  $.each(fieldarr, function(key, value){
+
+    if(section=="home"){uri= "home.html";}
+
+    if(!issubmit){
+      if(f[value] != $("#"+value).val() ){
+
+//        console.log(f[value]+ ' : ' + $("#"+value).val()  )
+       //_gaq.push(['_trackEvent', uri, value, 'abandon']);
+
+      }
+
+    }
+
+
+    if( $("#"+value).val()!=''){
+     //_gaq.push(['_trackEvent', uri, value, 'true']);
+   }
+    else{
+     //_gaq.push(['_trackEvent', uri, value, 'false']);
+    }
+  });
+}
+
+window.beforeunload = function(){
+
+  if( $("#join").css("display")=="block" ){trackjoin(false);}
+  if( $("#joincomplete").css("display")=="block" ){trackjoincomplete(false);}
+  if( $("#signin").css("display")=="block" ){tracksignin(false);}
+
+  if( $("#updatenamesub").css("display")=="block" ){trackupdatename(false);}
+  if( $("#updateaddresssub").css("display")=="block" ){trackupdateaddress(false);}
+  if( $("#updatepasswordsub").css("display")=="block" ){trackupdatepassword(false);}
+  if( $("#updatedobsub").css("display")=="block" ){trackupdatedob(false);}
+  if( $("#updateemailsub").css("display")=="block" ){trackupdateemail(false);}
+
+  if( $("#unsubscribe").css("display")=="block" ){trackunsubscribe(false);}
+  if( $("#forgotpassword").css("display")=="block" ){trackforgotpassword(false);}
+  if( $("#resetpassword").css("display")=="block" ){trackresetpassword(false);}
+
+  return false;
+
+}
+
+$('ul#joincompletebirthmonthlist li a').on('click', function(e){
+    $('span#joincompletebirthmonth').text($(this).text());
+	var datevar = $(this).data('value');
+	$('span#joincompletebirthmonth').attr('data-value', datevar);
+	e.preventDefault();
+});
+$('ul#updatebirthmonthlist li a').on('click', function(e){
+    $('span#updatebirthmonth').text($(this).text());
+	var datevar = $(this).data('value');
+	$('span#updatebirthmonth').attr('data-value', datevar);
+	e.preventDefault();
+});
+$('ul#updateaddressstatelist li a').on('click', function(e){
+    $('span#updateaddressstate').text($(this).text());
+	var statevar = $(this).data('value');
+	$('span#updateaddressstate').attr('data-value', statevar);
+	e.preventDefault();
+});
+// END PREF CENTER JS

@@ -1,0 +1,698 @@
+var $$FSR = {
+  'enabled': true,
+  'frames': false,
+  'sessionreplay': true,
+  'auto': true,
+  'encode': true,
+  'version': '18.2.2',
+  'files': '/trigger/',
+  // The 'swf_files' attribute needs to be set when foresee_transport.swf is not located at 'files'
+  //'swf_files': '/some/other/location/'
+  'id': '9ecqcddcZyRh26YzoW2Yvw==',
+  'definition': 'foresee_surveydef.js',
+  'swf': {
+    'fileName': 'foresee_transport.swf',
+    'scriptAccess': 'always'
+  },
+  'worker': 'foresee_worker.js',
+  'embedded': false,
+  'replay_id': 'lg.com',
+  'site_id': 'lg.com',
+  'attach': false,
+  'renderer': 'W3C',
+  // or "ASRECORDED"
+  'layout': 'CENTERFIXED',
+  // or "LEFTFIXED" or "LEFTSTRETCH" or "CENTERSTRETCH"
+  'triggerDelay': 0,
+  'heartbeat': true,
+  'enableAMD': false,
+  'pools': [{
+    'path': '.',
+    'sp': 100 // CHANGE ONLY WHEN INCLUDING SESSION REPLAY
+  }],
+  'sites': [{
+    'path': /\w+-?\w+\.(com|org|edu|gov|net|co\.uk)/
+  },
+  {
+    'path': '.',
+    'domain': 'default'
+  }],
+  'storageOption': 'cookie',
+  'nameBackup': window.name,
+  'iframeHrefs': ["frameWorker.html"],
+  'acceptableorigins': []
+};
+
+$$FSR.FSRCONFIG = {};
+
+(function (config) {
+
+  var FSR, supports_amd = !! config.enableAMD && typeof(_4c.global["define"]) === 'function' && !! _4c.global["define"]["amd"];
+
+  if (!supports_amd) FSR = window.FSR;
+  else FSR = {};
+/*
+ * ForeSee Survey Def(s)
+ */
+  FSR.surveydefs = [{
+    name: 'mobile_web',
+    section: 'search_product',
+    platform: 'phone',
+    repeatdays: 90,
+    invite: {
+      when: 'onentry',
+      dialogs: [
+        [{
+          reverseButtons: false,
+          headline: "We'd welcome your feedback.",
+          blurb: "Can we email or text later a brief customer satisfaction survey so we can improve your mobile experience?",
+          attribution: "Conducted by ForeSee.",
+          declineButton: "No, thanks",
+          acceptButton: "Yes, I'll help",
+          locale: "en"
+        }],
+        [{
+          reverseButtons: false,
+          headline: "Thank you for helping!",
+          blurb: "Please provide your e-mail address or phone number. After your visit we/'ll send you a link to the survey. Text messaging rates apply.<br /><br />",
+          attribution: "Conducted by ForeSee.",
+          declineButton: "Cancel",
+          acceptButton: "email/text me",
+          locale: "en",
+          mobileExitDialog: {
+            support: "b",
+            //*e for email only, s for sms only, b for both
+            inputMessage: "email or Phone Number",
+            emailMeButtonText: "email me",
+            textMeButtonText: "text me",
+            fieldRequiredErrorText: "Enter a phone number or email address",
+            invalidFormatErrorText: "Format should be: name@domain.com or 123-456-7890"
+          }
+        }]
+      ]
+    },
+    pop: {
+      when: 'later'
+    },
+    criteria: {
+      sp: 3,
+      lf: 1
+    },
+    include: {
+      urls: ['QR=YES', '/product', 'search']
+      //placeholder for QR, product and search
+    }
+  },
+  {
+    name: 'mobile_web',
+    section: 'main',
+    platform: 'phone',
+    repeatdays: 90,
+    invite: {
+      when: 'onentry',
+      dialogs: [
+        [{
+          reverseButtons: false,
+          headline: "We'd welcome your feedback.",
+          blurb: "Can we email or text later a brief customer satisfaction survey so we can improve your mobile experience?",
+          attribution: "Conducted by ForeSee.",
+          declineButton: "No, thanks",
+          acceptButton: "Yes, I'll help",
+          locale: "en"
+        }],
+        [{
+          reverseButtons: false,
+          headline: "Thank you for helping!",
+          blurb: "Please provide your e-mail address or phone number. After your visit we/'ll send you a link to the survey. Text messaging rates apply.<br /><br />",
+          attribution: "Conducted by ForeSee.",
+          declineButton: "Cancel",
+          acceptButton: "email/text me",
+          locale: "en",
+          mobileExitDialog: {
+            support: "b",
+            //*e for email only, s for sms only, b for both
+            inputMessage: "email or Phone Number",
+            emailMeButtonText: "email me",
+            textMeButtonText: "text me",
+            fieldRequiredErrorText: "Enter a phone number or email address",
+            invalidFormatErrorText: "Format should be: name@domain.com or 123-456-7890"
+          }
+        }]
+      ]
+    },
+    pop: {
+      when: 'later'
+    },
+    criteria: {
+      sp: 60,
+      lf: 1
+    },
+    include: {
+      urls: ['.']
+    }
+  },
+  {
+    name: 'browse-tablet',
+    platform: 'tablet',
+    repeatdays: 90,
+    invite: {
+      when: 'onentry',
+      dialogs: [
+        [{
+          reverseButtons: false,
+          headline: "We'd welcome your feedback!",
+          blurb: "Can we email or text you later a brief customer satisfaction survey so we can improve your tablet experience?",
+          attribution: "Conducted by ForeSee.",
+          declineButton: "No, thanks",
+          acceptButton: "Yes, I'll help"
+        }],
+        [{
+          reverseButtons: false,
+          headline: "Thank you for helping!",
+          blurb: "Please provide your email address or mobile number (US and CA only). After your visit we'll send you a link to the survey. Text Messaging rates apply.",
+          attribution: "ForeSee's <a class='fsrPrivacy' href='//www.foresee.com/privacy-policy.shtml' target='_blank'>Privacy Policy</a>",
+          declineButton: "Cancel",
+          acceptButton: "email/text me",
+          mobileExitDialog: {
+            support: "b",
+            //e for email only, s for sms only, b for both
+            inputMessage: "email or mobile number",
+            emailMeButtonText: "email me",
+            textMeButtonText: "text me",
+            fieldRequiredErrorText: "Enter a mobile number or email address",
+            invalidFormatErrorText: "Format should be: name@domain.com or 123-456-7890"
+          }
+        }]
+      ]
+    },
+    pop: {
+      when: 'later'
+    },
+    criteria: {
+      sp: 75,
+      lf: 2
+    },
+    include: {
+      urls: ['lg.com/us', 'usstore.lg.com']
+    }
+  },
+  {
+    name: 'browse',
+    section: 'purchase',
+    platform: 'desktop',
+    repeatdays: 90,
+    invite: {
+      when: 'onentry'
+    },
+    pop: {
+      when: 'later',
+      what: 'qualifier'
+    },
+    criteria: {
+      sp: 100,
+      lf: 1
+    },
+    include: {
+      urls: ['id=ThankYouPage']
+    }
+  },
+  {
+    name: 'browse',
+    section: 'oled',
+    platform: 'desktop',
+    repeatdays: 90,
+    invite: {
+      when: 'onentry'
+    },
+    pop: {
+      when: 'later',
+      what: 'qualifier'
+    },
+    criteria: {
+      sp: 100,
+      lf: 1
+    },
+    include: {
+      urls: ['/us/oled-tvs', '/us/tvs/lg-55EG9600-oled-4k-tv', '/us/tvs/lg-65EG9600-oled-4k-tv', '/us/tvs/lg-77EG9700-oled-tv', '/us/tvs/lg-55EF9500-oled-tv', '/us/tvs/lg-65EF9500-oled-4k-tv', '/us/tvs/lg-77EG9900-oled-tv', '/us/tvs/lg-65EC9700-oled-tv', '/us/tvs/lg-55EC9300-oled-tv', '/us/tvs/lg-55EA8800-oled-tv', '/us/tvs/lg-55EA9800-oled-tv', 'modelName=55EG9600', 'modelName=65EG9600', 'modelName=77EG9700', 'modelName=65EC9700', 'modelName=55EC9300', 'modelName=55EA8800', '/us/experience-tvs/oled-tv', '/us/experience-tvs/oled-tv/what-is-oled-tv.jsp', '/us/experience-tvs/oled-tv/oled-display.jsp', '/us/experience-tvs/oled-tv/oled-design.jsp']
+    }
+  },
+  {
+    name: 'browse',
+    section: 'mylg',
+    platform: 'desktop',
+    repeatdays: 90,
+    invite: {
+      when: 'onentry'
+    },
+    pop: {
+      when: 'later',
+      what: 'qualifier'
+    },
+    criteria: {
+      sp: 100,
+      lf: 1
+    },
+    include: {
+      urls: ['/support/mylg']
+    }
+  },
+  {
+    name: 'browse',
+    section: 'support',
+    platform: 'desktop',
+    repeatdays: 90,
+    invite: {
+      when: 'onentry'
+    },
+    pop: {
+      when: 'later',
+      what: 'qualifier'
+    },
+    criteria: {
+      sp: 35,
+      lf: 3
+    },
+    include: {
+      urls: ['/support']
+    }
+  },
+  {
+    name: 'browse',
+    section: 'us_main',
+    platform: 'desktop',
+    repeatdays: 30,
+    //updated to 30 on 9-16
+    invite: {
+      when: 'onentry'
+    },
+    pop: {
+      when: 'later',
+      what: 'qualifier'
+    },
+    criteria: {
+      sp: 100,
+      lf: 3
+    },
+    include: {
+      urls: ['lg.com/us', 'usstore.lg.com']
+    }
+  }];
+
+/*
+ * ForeSee Properties
+ */
+  FSR.properties = {
+    //repeatdays: 90,
+
+    repeatoverride: false,
+
+    altcookie: {
+      name: 'IPERCEPTIONS_526',
+      domain: 'lg.com',
+      path: '/',
+      value: 'IPRCEPTIONS_526_COOKIE',
+      persistent: false
+
+    },
+
+    language: {
+      locale: 'en'
+    },
+
+    exclude: {
+      cookies: [{
+        name: 'IPERCEPTIONS_526',
+        value: 'IPRCEPTIONS_526_COOKIE'
+      }]
+    },
+
+    ignoreWindowTopCheck: false,
+
+    ipexclude: 'fsr$ip',
+
+    mobileHeartbeat: {
+      delay: 60,
+      /*mobile on exit heartbeat delay seconds*/
+      max: 3600 /*mobile on exit heartbeat max run time seconds*/
+    },
+
+    invite: {
+
+      // For no site logo, comment this line:
+      siteLogo: "sitelogo.gif",
+
+      //alt text fore site logo img
+      siteLogoAlt: "",
+
+      /* Desktop */
+      dialogs: [
+        [{
+          reverseButtons: false,
+          headline: "We'd welcome your feedback!",
+          blurb: "Thank you for visiting our website. You have been selected to participate in a brief customer satisfaction survey to let us know how we can improve your experience.",
+          noticeAboutSurvey: "The survey is designed to measure your entire experience, please look for it at the <u>conclusion</u> of your visit.",
+          attribution: "This survey is conducted by an independent company ForeSee, on behalf of the site you are visiting.",
+          closeInviteButtonText: "Click to close.",
+          declineButton: "No, thanks",
+          acceptButton: "Yes, I'll give feedback",
+          error: "Error",
+          warnLaunch: "this will launch a new window"
+        }]
+      ],
+
+      exclude: {
+        urls: ['usstore.lg.com(?!(.)*ThankYouPage(.)*)', 'sign-in.jsp', 'join-my-lg.jsp', 'support-message.jsp', 'forgot-username-password.jsp'],
+        referrers: [],
+        userAgents: [],
+        browsers: [],
+        cookies: [],
+        variables: []
+      },
+      include: {
+        local: ['.']
+      },
+
+      delay: 0,
+      timeout: 0,
+
+      hideOnClick: false,
+
+      hideCloseButton: false,
+
+      css: 'foresee_dhtml.css',
+
+      hide: [],
+
+      hideFlash: false,
+
+      type: 'dhtml',
+      /* desktop */
+      // url: 'invite.html'
+      /* mobile */
+      url: 'invite-mobile.html',
+      back: 'url'
+
+      //SurveyMutex: 'SurveyMutex'
+    },
+
+    tracker: {
+      width: '690',
+      height: '415',
+
+      // Timeout is the normal between-page timeout
+      timeout: 10,
+
+      // Fast timeout is when we think there's a good chance we've closed the browser
+      fasttimeout: 4,
+
+      adjust: true,
+      alert: {
+        enabled: true,
+        message: 'The survey is now available.'
+      },
+      url: 'tracker.html'
+    },
+
+    survey: {
+      width: 690,
+      height: 600
+    },
+
+    qualifier: {
+      footer: '<div id=\"fsrcontainer\"><div style=\"float:left;width:80%;font-size:8pt;text-align:left;line-height:12px;\">This survey is conducted by an independent company ForeSee,<br>on behalf of the site you are visiting.</div><div style=\"float:right;font-size:8pt;\"><a target="_blank" title="Validate TRUSTe privacy certification" href="//privacy-policy.truste.com/click-with-confidence/ctv/en/www.foreseeresults.com/seal_m"><img border=\"0\" src=\"{%baseHref%}truste.png\" alt=\"Validate TRUSTe Privacy Certification\"></a></div></div>',
+      width: '690',
+      height: '500',
+      bgcolor: '#333',
+      opacity: 0.7,
+      x: 'center',
+      y: 'center',
+      delay: 0,
+      buttons: {
+        accept: 'Continue'
+      },
+      hideOnClick: false,
+      css: 'foresee_dhtml.css',
+      url: 'qualifying.html'
+    },
+
+    cancel: {
+      url: 'cancel.html',
+      width: '690',
+      height: '400'
+    },
+
+    pop: {
+      what: 'survey',
+      after: 'leaving-site',
+      pu: false,
+      tracker: true
+    },
+
+    meta: {
+      referrer: true,
+      terms: true,
+      ref_url: true,
+      url: true,
+      url_params: false,
+      user_agent: false,
+      entry: false,
+      entry_params: false
+    },
+
+    events: {
+      enabled: true,
+      id: true,
+      codes: {
+        purchase: 800,
+        items: 801,
+        dollars: 802,
+        followup: 803,
+        information: 804,
+        content: 805
+      },
+      pd: 7,
+      custom: {}
+    },
+
+    previous: false,
+
+    analytics: {
+      google_local: false,
+      google_remote: false
+    },
+
+    cpps: {
+      screenWidth: {
+        init: 0,
+        source: 'function',
+        value: function () {
+          return window.innerWidth || document.documentElement.clientWidth;
+          // || document.body.clientWidth;
+        }
+      },
+      screenHeight: {
+        init: 0,
+        source: 'function',
+        value: function () {
+          return window.innerHeight || document.documentElement.clientHeight;
+          // || document.body.clientHeight;
+        }
+      },
+      mylg: {
+        source: 'url',
+        init: 'N',
+        patterns: [{
+          regex: '/support/mylg',
+          value: 'Y'
+        }]
+      },
+      Twinwash: {
+        source: 'url',
+        init: 'N',
+        patterns: [{
+          regex: '/us/twinwash-suite',
+          value: 'Y'
+        }]
+      },
+      pageName_last: {
+        source: 'variable',
+        name: 's.pageName'
+      },
+      campaign: {
+        source: 'variable',
+        name: 's.campaign'
+      },
+      OLED: {
+        source: 'url',
+        init: 'N',
+        patterns: [{
+          regex: '/us/oled-tvs',
+          value: 'Y'
+        },
+        {
+          regex: '/us/tvs/lg-55EG9600-oled-4k-tv',
+          value: 'Y'
+        },
+        {
+          regex: '/us/tvs/lg-65EG9600-oled-4k-tv',
+          value: 'Y'
+        },
+        {
+          regex: '/us/tvs/lg-77EG9700-oled-tv',
+          value: 'Y'
+        },
+        {
+          regex: '/us/tvs/lg-55EF9500-oled-tv',
+          value: 'Y'
+        },
+        {
+          regex: '/us/tvs/lg-65EF9500-oled-4k-tv',
+          value: 'Y'
+        },
+        {
+          regex: '/us/tvs/lg-77EG9900-oled-tv',
+          value: 'Y'
+        },
+        {
+          regex: '/us/tvs/lg-65EC9700-oled-tv',
+          value: 'Y'
+        },
+        {
+          regex: '/us/tvs/lg-55EC9300-oled-tv',
+          value: 'Y'
+        },
+        {
+          regex: '/us/tvs/lg-55EA8800-oled-tv',
+          value: 'Y'
+        },
+        {
+          regex: '/us/tvs/lg-55EA9800-oled-tv',
+          value: 'Y'
+        },
+        {
+          regex: 'modelName=55EG9600',
+          value: 'Y'
+        },
+        {
+          regex: 'modelName=65EG9600',
+          value: 'Y'
+        },
+        {
+          regex: 'modelName=77EG9700',
+          value: 'Y'
+        },
+        {
+          regex: 'modelName=65EC9700',
+          value: 'Y'
+        },
+        {
+          regex: 'modelName=55EC9300',
+          value: 'Y'
+        },
+        {
+          regex: 'modelName=55EA8800',
+          value: 'Y'
+        },
+        {
+          regex: '/us/experience-tvs/oled-tv',
+          value: 'Y'
+        },
+        {
+          regex: '/us/experience-tvs/oled-tv/what-is-oled-tv.jsp',
+          value: 'Y'
+        },
+        {
+          regex: '/us/experience-tvs/oled-tv/oled-display.jsp',
+          value: 'Y'
+        },
+        {
+          regex: '/us/experience-tvs/oled-tv/oled-design.jsp',
+          value: 'Y'
+        }]
+      },
+      WTB: {
+        source: 'url',
+        init: 'N',
+        patterns: [{
+          regex: '/products/wtb',
+          value: 'Y'
+        }]
+      },
+      OMTR_BEACON: {
+        source: 'function',
+        value: function getAABeacon() {
+          function getQueryValue(args, str) {
+            var res = "",
+                strb = str.split('&');
+            for (var p = 0; p < strb.length; p++) {
+              var bts = strb[p].split('=');
+              for (var h = 0; h < args.length; h++) {
+                if (args[h] == bts[0]) {
+                  res += bts[0] + '=' + bts[1] + '&';
+                  break;
+                }
+              }
+            }
+            if (res.substr(res.length - 1) == '&') {
+              res = res.substr(0, res.length - 1);
+            }
+            return res;
+          }
+          var whitelist = ['AQB', 'mid', 'aid', 'vid', 'fid', 'AQE'],
+              foundSrc = '';
+          for (var p in window) {
+            if ((p.substring(0, 4) == 's_i_') && (window[p].src)) {
+              var src = window[p].src;
+              if (src.indexOf('/b/ss/') >= 0) {
+                foundSrc = src;
+                break;
+              }
+            }
+          }
+          // TODO: also loop through document.images just in case
+          if (!foundSrc && window.document.images) {
+            for (var image_num = 0; image_num < window.document.images.length; image_num++) {
+              var src = window.document.images[image_num].src;
+              if (src.indexOf('/b/ss/') >= 0) {
+                foundSrc = src;
+                break;
+              }
+            }
+          }
+          if (!foundSrc && localStorage) {
+            return (localStorage.getItem("fsr_om") || "");
+          }
+
+          var mainURL = foundSrc.substring(0, foundSrc.indexOf('?')),
+              query = foundSrc.substring(foundSrc.indexOf('?') + 1),
+              filteredQuery = '';
+          filteredQuery = getQueryValue(whitelist, query);
+          if (s && s.trackingServerSecure) {
+            var mainURL = "https://" + s.trackingServerSecure + foundSrc.substring(foundSrc.indexOf('/b/ss/'), foundSrc.indexOf('?')),
+                query = foundSrc.substring(foundSrc.indexOf('?') + 1),
+                filteredQuery = '';
+            filteredQuery = getQueryValue(whitelist, query);
+          }
+          var finalval = mainURL + '?' + filteredQuery;
+          try {
+            if (finalval && finalval.length > 0) {
+              localStorage.setItem("fsr_om", finalval);
+            } else {
+              finalval = localStorage.getItem("fsr_om") || "";
+            }
+          } catch (e) {}
+          return finalval;
+        }
+      }
+    },
+
+    mode: 'first-party'
+  };
+  FSR.CPPS.set('cxreplayaws', 'true');
+  if (supports_amd) {
+    define(function () {
+      return FSR
+    });
+  }
+
+})($$FSR);

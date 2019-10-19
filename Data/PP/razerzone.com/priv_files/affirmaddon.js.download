@@ -1,0 +1,19 @@
+$('.affirm').on('touchend click', function(e) {
+		$(".worldpay-order-info").hide();
+		$(".worldpay-order-info1").hide();
+		$(".paypal-order-info").hide();
+		$(".affirm-order-info").show();
+		$('#silentThirdSubmitButton').prop("disabled", true);
+		$('#silentThirdSubmitButton').css('display','none !important');
+		 $('#placeOrderButton').prop("disabled", true);
+		 $('#placeOrderButton').css('display','none !important');
+		var globalMessages = $(".checkout-headline");
+		$('#silentOrderSubmitButton').prop("disabled", true);
+		  $('#silentOrderSubmitButton').css('display','none !important');
+		  $('#affirmButton').prop("disabled", false);
+		  $('#affirmButton').show();
+		  globalMessages.html("");
+		  $("div.worldpay-order-info").hide();
+		  $("div.affirm-order-info").show();
+
+	});

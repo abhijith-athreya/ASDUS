@@ -1,0 +1,12 @@
+define([], function() {
+
+    var dynamicMenu = {}
+
+    if (typeof mobJSONObj !== "undefined") {
+        dynamicMenu.news = mobJSONObj.newsPanelTags;
+        dynamicMenu.solutions = mobJSONObj.solutionsTags;
+        dynamicMenu.resources = mobJSONObj.resourcesTags;
+    }
+
+    return dynamicMenu
+})

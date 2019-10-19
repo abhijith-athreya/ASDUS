@@ -1,0 +1,7 @@
+
+RightNow.namespace('Custom.Widgets.search.GSSimpleSearch');Custom.Widgets.search.GSSimpleSearch=RightNow.Widgets.extend({constructor:function(){this._searchField=this.Y.one(this.baseSelector+"_SearchField");if(!this._searchField)return;if(this.data.attrs.label_hint){this._searchField.on("focus",this._onFocus,this);this._searchField.on("blur",this._onBlur,this);}
+if(this.data.attrs.initial_focus&&this._searchField.focus){this._searchField.focus();}
+this.Y.Event.attach("click",this._onSearch,this.baseSelector+"_Submit",this);},_onSearch:function(){if(this.Y.UA.ie){var parentForm=this.Y.one(this.baseSelector+"_SearchForm");if(parentForm&&window.external&&"AutoCompleteSaveForm"in window.external){window.external.AutoCompleteSaveForm(parentForm);}}
+var searchString=(this._searchField.get("value")===this.data.attrs.label_hint)?"":this._searchField.get("value");searchString=RightNow.Url.addParameter(this.data.attrs.report_page_url,"kw",searchString);searchString=RightNow.Url.addParameter(searchString,"search",1);searchString=RightNow.Url.addParameter(searchString,"session",RightNow.Url.getSession());RightNow.Url.navigate(searchString);},_onFocus:function(){if(this._searchField.get("value")===this.data.attrs.label_hint)
+this._searchField.set("value","");},_onBlur:function(){if(this._searchField.get("value")==="")
+this._searchField.set("value",this.data.attrs.label_hint);}});

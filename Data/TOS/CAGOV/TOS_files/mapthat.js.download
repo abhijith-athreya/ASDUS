@@ -1,0 +1,131 @@
+﻿
+(function ($) {
+
+    if (typeof location.origin === 'undefined')
+        location.origin = location.protocol + '//' + location.host;
+
+
+    $.fn.loadMapThat = function (func) {
+        // Iterate over each object in collection
+        return this.each(function () {
+
+            // Save a reference to the element
+
+            var $el = $(this);
+
+            var url = $el.attr("data-ajax-url");
+
+            var agencyName = $el.attr("data-agency");
+            var agencyId = $el.attr("data-agency-id");
+            var serviceName = $el.attr("data-service");
+            var categories = $el.attr("data-categories");
+            var search = $el.attr("data-search");
+            var mapThatId = $el.attr("data-map-suffix");
+
+            var idAcrossGeo = $el.attr('data-geo-id');
+
+            var useDetailsEndpoint = $el.attr("data-use-endpoint");
+            var mapId = $el.attr("data-map-id");
+
+            var facets = $el.attr('data-facets');
+            var lat, lng;
+
+            var geoCookie = getCookie("cagov__geo");
+            lat = window._cagov_newlat || getParameterByName("lat", geoCookie);
+            lng = window._cagov_newlng || getParameterByName('lng', geoCookie);
+
+            if (window._cagov_newlat) {
+                map = undefined;
+            }
+            var listItemDetailsCall, infoWindowDetailsCall;
+
+            if (useDetailsEndpoint == "true") {
+                listItemDetailsCall = location.origin + "/api/sitecore/LocationSearch/GetLocationDetail";
+                    infoWindowDetailsCall = location.origin + "/api/sitecore/LocationSearch/GetLocationDetail";
+            }
+                 
+            $.ajax({
+                url: url, type: "POST",
+                data: {
+                    searchInput: { SearchWord: search, AgencyName: agencyName, AgencyId: agencyId,  serviceName: serviceName, Categories: categories }
+                },
+                success:
+                    function (response) {
+                        
+                        $.ajax({
+                            url: "http://api.mapthat.io/V3/EmbedFeaturesFromWidget", type: "POST",
+                            data: {
+                                apiKey: "0689a7b3-7f61-486a-8eef-14c7c78077ea",
+                                mapProvider: "google",
+                                googleAPIKey: "AIzaSyDCJ1JhDx1uhywC3mYY6SYhG-463yH6o94",
+                                features: JSON.stringify([{ "type": "geojson", "geometry": response }]),
+                                loadMapLib: !(typeof google === 'object' && typeof google.maps === 'object'), searchControl: true,
+                                embedList: true,
+                                embedItemDetails: true,
+                                idProperty: idAcrossGeo,
+                                mapId: mapId,
+                                facets: facets,
+                                suffixId: mapThatId,
+                                useClusters: true,
+                                useViewportFilter: true,
+                                listItemDetailsCall: listItemDetailsCall,
+                                infoWindowDetailsCall: infoWindowDetailsCall,
+                                userLat: lat,
+                                userLng: lng
+                            },
+                           
+                            error: function(xhr,status, error) {
+                                
+                            },
+
+                            success: function() {
+                                if (func) {
+                                    func();
+                                    $(window).on('mapthat_list_item_details_loaded', function (e) {
+                                       
+                                        var details = $("#mapthat_item_details_" + mapThatId).clone().attr('style', '');
+                                        details.attr("id", '');
+                                       $("#" + e.itemId).fadeOut(300, function() {
+                                            $(this).html(details).fadeIn(200);
+                                        })
+                                    });
+                                }
+                            }
+                        });
+                    },
+                error: function (xhr) { }
+            });
+        });  
+    }
+
+    function getCookie(sKey) {
+        if (!sKey) {
+            return null;
+        }
+        return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+    }
+
+    function getParameterByName(name, url) {
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)", "i"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+    
+}(jQuery));
+
+
+$(document).ready(function () {
+
+    var landing = $("[data-locations-landing]");
+    landing.find(".loading-spinner").show();
+    landing.loadMapThat(function() {
+        landing.find(".loading-spinner").fadeOut(300);
+    });
+
+   
+   
+
+});

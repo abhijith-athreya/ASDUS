@@ -1,0 +1,115 @@
+/**
+ * jQuery behaviors for the Press Center Home Page News block
+ */
+(function($) {
+
+    Drupal.behaviors.news_press = {
+        attach : function(context, settings) {
+            $('#pc_home_page_news_block input[type=radio]', context).click(
+                function() {
+                    $('#pc_home_page_news_block label').removeClass('active');
+                    //$('#pc_home_page_news_block input[type=radio]').removeAttr('checked');
+                    $(this).next('label').addClass('active');
+                    $('#pc_home_page_news_block_current_page').val(1);
+                    $(this).addClass('active');
+                    $(this).attr('checked', 'checked');
+                    fetchNews($(this).val(), 1);
+                    
+                    return true;
+                });
+            
+            $('#pc_home_page_news_block label', context).click(
+                function() {
+                	var id = $(this).attr('for');
+                    $('#' + id).click();	
+    		});
+
+            $('#pc_home_page_news_block form#pager', context).submit(
+            	function() {
+            		$('#pc_home_page_news_block_current_page').trigger('change');
+            		return false;
+            	});
+            
+            $('#pc_home_page_news_block_current_page', context).change(
+            	function (){
+            		var desiredPage = parseInt($(this).val());
+            		var totalPages = parseInt($('#pc_home_page_news_block_total_pages').val());
+            		if (1 > desiredPage || desiredPage > totalPages) {
+            			alert('invalid page specified');
+            			return;
+            		}
+            		
+            		var network = $('#pc_home_page_news_block input[type=radio]:checked').val();
+            		
+            		fetchNews(network, $(this).val());
+            		
+            		return false;
+            	});
+            
+            $('#pc_home_page_news_block_previous', context).click(
+            	function(){
+            		var currentPage = parseInt($('#pc_home_page_news_block_current_page').val());
+            		
+            		if (currentPage > 1) {
+                		var network = $('#pc_home_page_news_block input[type=radio]:checked').val();
+            			fetchNews(network, currentPage - 1);
+            		}
+            		
+            		return false;
+            	});
+            
+            $('#pc_home_page_news_block_next', context).click(
+           		function(){
+           			var currentPage = parseInt($('#pc_home_page_news_block_current_page').val());
+           			var totalPages = parseInt($('#pc_home_page_news_block_total_pages').html());
+           			
+           			if (currentPage < totalPages) {
+               			var network = $('#pc_home_page_news_block input[type=radio]:checked').val();
+           				fetchNews(network, currentPage + 1);
+           			}
+           			
+           			return false;
+           		});
+            
+            var fetchNews = function(network, page) {
+                $.ajax({type: 'GET',
+            	    url: '/news/ajax-fetch/' + network + '/' + page,
+            	    success: updateNews,
+            	    dataType: 'json'
+            	});
+            }
+
+            var updateNews = function(response) {
+            if(response.total_pages != 0) {
+            	$('#no_articles').hide();
+            	$('#pager').show();
+            	$('#pc_home_page_news_block_current_page').val(response.current_page);
+            	$('#pc_home_page_news_block_total_pages').val(response.total_pages);
+            	$('#pc_home_page_news_block_total_pages').html(response.total_pages);
+            } else {
+            	$('#no_articles').show();
+            	$('#pager').hide();
+            }
+            	
+            	$('#pc_home_page_news_block_content').html(response.data);
+            	
+            	if(response.current_page == 1) {
+            		$('#pc_home_page_news_block_previous').addClass('disable');
+            	} else {
+            		$('#pc_home_page_news_block_previous').removeClass('disable');
+            	}
+            	
+            	if(response.current_page == response.total_pages) {
+            		$('#pc_home_page_news_block_next').addClass('disable');
+            	} else {
+            		$('#pc_home_page_news_block_next').removeClass('disable');
+            	}
+            }
+            
+            // Run the fetch to flick IE (wtf, this is dumb)
+            fetchNews('all', 1);
+
+            return false;
+        }
+    };
+}(jQuery));

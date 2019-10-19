@@ -1,0 +1,784 @@
+/************ TAGX dynamic tags ************************/
+
+(function() {
+var tagger = new TAGX.Tagger();
+TAGX.config = {};
+var data = {"page":{"url":{"path":"/content/help/rights/privacy/policy/privacy-policy.html"}},"sourceApp":"nyt-noSourceApp","static":{"env":{"domain_event_tracker":"et.nytimes.com"}},"propensity":{},"user":{"watSegs":""},"asset":{"type":""},"TAGX":{"ID":"467a3f662dc3776a48d496ec628e9932","L":{"sessionIndex":"1","sessionStart":"1500322282661","isNewSession":"0","lastRequest":"1500322489720","prevRequest":"1500322485121","adv":"1","a7dv":"1","a14dv":"1","a21dv":"1","activeDays":"[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]","firstReferrer":"","firstLanding":"https://www.nytimes.com/","firstSeen":"1500322282661","browserSession":"1","pageIndex":"8","totalSessionTime":"207059","avgSessionTime":"202460"}},"agentID":"99e0c1ff8ffd73fced22eab91eddafba4e4e0e582d7c1771ef90c4b09d5bf7c6"};
+var foldl=function(c,d,a){if(1>a.length)return d;var b=a.shift();return foldl(c,c(d,b),a)},getData=function(c,d){return foldl(function(a,b){try{if(void 0===a[b]){if(!0===d){if(""===b)return a;a[b]={};return a[b]}return""}!0===d&&"object"!==typeof a[b]&&(a[b]={});return a[b]}catch(c){return""}},data,c.split("."))};TAGX.data={get:getData,set:function(c,d){var a=c.split("."),b=a.pop();getData(a.join("."),!0)[b]=d}};
+TAGX.datalayerReady=true;TAGX.EventProxy.trigger("TAGX:dataLayer:ready",{});
+(function () {
+
+    var utils = TAGX.Utils;
+
+    /* utility functions copied from tagx-js.
+     * could be removed from here once deployed in tagx-js,
+     * but should confirm they have not diverged.
+     */
+
+    utils.isEmptyValue = function(value) {
+        return (typeof value === 'undefined' || value === null || value === '');
+    };
+
+    utils.getValue = function(val, defVal, retNullStr) {
+        var argLen = arguments.length;
+        var value = val;
+        var defaultValue = '';
+        var returnNullString = false;
+        if (argLen === 2) {
+            returnNullString = defVal;
+        } else if (argLen === 3) {
+            defaultValue = defVal;
+            returnNullString = retNullStr;
+        }
+        if (utils.isEmptyValue(value)) {
+            if (utils.isEmptyValue(defaultValue)) {
+                return (returnNullString === true ? 'null' : '');
+            } else {
+                return defaultValue.toLowerCase ? defaultValue.toLowerCase() : defaultValue;
+            }
+        }
+        if (typeof value === 'object') {
+            if (value instanceof Array) {
+                return value.join('|').toLowerCase();
+            } else {
+                return utils.stringifyJson(value);
+            }
+        }
+        return value.toLowerCase ? value.toLowerCase() : value;
+    };
+
+    utils.mergeObjects = function(target, source, skip) {
+        var k;
+        for (k in source) {
+            if (source.hasOwnProperty(k)) {
+                if (!utils.isEmptyValue(source[k]) &&
+                    (utils.isEmptyValue(target[k]) || skip !== true)) {
+                    target[k] = source[k];
+                }
+            }
+        }
+    };
+
+    utils.wordCountSize = function (count) {
+      if (count < 100) {
+          return 'BLURB_Under_100';
+      } else if (count < 400) {
+          return 'SUPER_SHORT_100_399';
+      } else if (count < 800) {
+          return 'SHORT_400_799';
+      } else if (count < 1200) {
+          return 'MEDIUM_800_1199';
+      } else if (count < 1600) {
+          return 'LONG_1200_1600';
+      } else {
+          return 'HEAVE_Over_1600';
+      }
+    };
+
+    // we often pass the whole query string to GA; it sometimes includes an
+    // email address. sending email addresses to GA violates GA's PII policy.
+    // this function takes a query string, and returns the query string with
+    // key/value pairs of the form *email=user@domain.tld replaced with
+    // *email=email_block
+    // 
+    // some real life examples (w/ PII redacted!):
+    //  - bt_email=user%40domain.tld&bt_ts=xxxxxx&referer=
+    //  - email=user@domain.tld&id=xxxxxxxx&group=nl&product=mm
+    //  - exit_uri=http%3a%2f%2fmobile.nytimes.com%2f&email=user%40domain.tld
+    //
+    utils.redactEmailAddressesFromQueryString = function(queryString) {
+      if(queryString && typeof queryString === 'string') {
+        return queryString.split('&').map(function(queryStringEntry) {
+          return queryStringEntry.replace(/email=.+(@|%40).+\..+/, 'email=email_block');
+        }).join('&');
+      }
+      else {
+        return queryString;
+      }
+    };
+
+    /* end utility functions copied from tagx-js
+     */
+
+    var url, qsMap, sourceApp, urlparts, nytm_v, dim21_asset_type, query_fix;
+    var getMetaTag = utils.getMetaTag;
+    var asset_url = "";
+    var subs = "";
+    if ('string' === typeof subs) {
+        if (subs === '') {
+            subs = [{}];
+        }
+        else {
+            try { subs = JSON.parse(subs); }
+            catch (err) { console.error('Error parsing "user.subscription.subscriptions"', err); subs = [{}]; }
+        }
+    }
+    if ((!Array.isArray(subs)) || subs.length === 0) {
+        subs = [{}];
+    }
+    var getUid = function() {
+        var uid = "";
+        var td = TAGX.data.get("TAGX");
+        if (uid === 0 || !uid || uid === 1) {
+            if (td.L && td.L.uid) {
+                return td.L.uid;
+            }
+            return null;
+        } else {
+            return uid;
+        }
+    };
+    var isEmptyValue = TAGX.Utils.isEmptyValue;
+    var zeroPadding = function (val) {
+        return (val < 10 ? '0' + val : val);
+    };
+    var pdateFormat = function(date) {
+        var match;
+        if (date instanceof Date) {
+            return [date.getFullYear(), zeroPadding(date.getMonth() + 1), zeroPadding(date.getDate())].join('-');
+        } else if (typeof date === 'string' && (match = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/.exec(date)) && match.length === 7) {
+            return match.splice(1, 3).join('-');
+        }
+        return '';
+    };
+    var ptimeFormat = function (dtStr) {
+        var match;
+        if (typeof dtStr === 'number') {
+            var date = new Date(dtStr);
+            return [
+                pdateFormat(date),
+                [zeroPadding(date.getHours()), zeroPadding(date.getMinutes())].join(':')
+            ].join(' ');
+        }
+        else if (typeof dtStr === 'string' && (match = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/.exec(dtStr)) && match.length === 7) {
+            return [pdateFormat(dtStr), match.splice(1, 2).join(':')].join(' ');
+        }
+        return '';
+    };
+    var getSubscriberSince = function() {
+        var date;
+        var int = (typeof subs[0].purchaseDate === 'number') ? subs[0].purchaseDate : undefined;
+        if (typeof subs[0].purchaseDate === 'string') {
+            int = parseInt(subs[0].purchaseDate, 10);
+        }
+        if (typeof int === 'number') {
+            date = new Date(int);
+        }
+        return pdateFormat(date);
+    };
+    var getValue = TAGX.Utils.getValue;
+    try {
+        qsMap = utils.QsTomap();
+        sourceApp = getMetaTag('sourceApp');
+        urlparts = (function (url) {
+            return [url[0], (url[1] ? url[1].split('#')[0] : '')];
+        })(window.location.href.split('?'));
+        nytm_v = (function (nytmv) {
+            return nytmv && nytmv.hasOwnProperty('v') ? nytmv.v : '';
+        })(utils.getMeterValue('v'));
+        dim21_asset_type = (function (asset_type) {
+            if (asset_type === 'SectionFront' &&
+                /(international|www|mobile)\.(stg\.)?nytimes\.com\/(index\.html)?$/.test(asset_url)) {
+                return 'nyt_homepage';
+            }
+            return asset_type;
+        })("");
+        query_fix = (function () {
+            if (sourceApp === 'nyt-search' && !isEmptyValue(location.hash) && /^#\//.test(location.hash)) {
+                return '?q=' + location.hash.split('/')[1];
+            }
+            return '';
+        })();
+        var canonical_url = (asset_url || urlparts[0]);
+        var ga_location = canonical_url + query_fix;
+
+        // DATG-972
+        if(qsMap.hasOwnProperty('gclid')) {
+            ga_location += (ga_location.indexOf('?') > -1 ? '&' : '?') + 'gclid=' + qsMap['gclid'];    
+        }
+        
+        // DATG-988
+        if(qsMap.hasOwnProperty('dclid')) {
+            ga_location += (ga_location.indexOf('?') > -1 ? '&' : '?') + 'dclid=' + qsMap['dclid'];    
+        }
+        
+        var targetedSourceApp = function() {
+            if([
+                'nyt-v5',
+                'nyt4',
+                'nytv',
+                'blogs',
+                'nytcooking',
+                'NYT-Well',
+                'SEG',
+                'games-crosswords',
+                'myaccount',
+                'nyt-search',
+                'MOPS',
+                'mow',
+                'HD'
+            ].indexOf(sourceApp) > -1) {
+                return sourceApp;
+            }
+            else {
+                return '';
+            }
+        }
+
+        TAGX.GoogleAnalyticsConfig = TAGX.GoogleAnalyticsConfig || {};
+    
+        TAGX.GoogleAnalyticsConfig.Level1 = function() {
+            var base = {
+                id: "UA-58630905-1",
+                // tracker: 'c3p0',
+                createOptions: {
+                    cookieName: 'walley',
+                    cookieDomain: '.nytimes.com',
+                    name: 'r2d2'
+                },
+                fieldObject: {
+                    transport: 'beacon',
+                    location: ga_location,
+                    dimension1: canonical_url,
+                    dimension11: getValue("", qsMap.contentCollection, true),
+                    dimension42: getValue(getMetaTag('sourceApp'), 'nyt4', true),
+                    dimension51: targetedSourceApp(),
+                    dimension60: getUid() || 'null',
+                    dimension62: getValue("", true),
+                    dimension63: getValue("99e0c1ff8ffd73fced22eab91eddafba4e4e0e582d7c1771ef90c4b09d5bf7c6", true),
+                    dimension64: getValue(false, true),
+                    dimension65: getValue("anon", true),
+                    dimension2: TAGX.Utils.redactEmailAddressesFromQueryString(urlparts[0] + (urlparts[1] ? '?' + urlparts[1] : '')),
+                    dimension6: getValue("", qsMap.module, true), //Referring_Module
+                    dimension7: getValue("", qsMap.pgtype, true), //Referring_Page_Type
+                    dimension8: getValue("", qsMap.region, true), //Referring_Region
+                    dimension59: getUid(),
+                    dimension61: getValue(nytm_v, true),
+                    dimension66: getValue(753, true),
+                    dimension67: getValue("", true), //Is_News_Subscriber
+                    dimension68: getValue(getMetaTag('channels'), true), //Channels
+                    contentGroup1: getValue("", getMetaTag('CG'), true).toLowerCase(),
+                    contentGroup2: getValue("", getMetaTag('SCG'), true).toLowerCase(),
+                    contentGroup3: getValue(getMetaTag('PT'), true).toLowerCase(),
+                    contentGroup4: getValue(getMetaTag('PST'), true).toLowerCase(),
+                    dimension3: TAGX.Utils.redactEmailAddressesFromQueryString(getValue(urlparts[1], true)),
+                    dimension5: /^paidpost/.test(window.location.hostname) ? 1 : 0,
+                    dimension20: getValue("", true),
+                    dimension22: getValue(ptimeFormat(""), ptimeFormat(getMetaTag('ptime')), true),
+                    dimension129: getValue(new Date().getHours(), true),
+                    dimension130: getValue(TAGX.Utils.getCookie('NYT-wpAB'), ''),
+                    dimension133: getValue(TAGX.data.get('TAGX.ID'), ''),
+                    dimension121: getValue("" + "", true), //Print_section
+                    dimension92: getValue(subs[0].offerChainId, true),
+                    dimension95: getValue(getSubscriberSince(), true),
+                    dimension96: getValue(subs[0].bundle, true),
+                    dimension128: getValue(TAGX.Utils.getCookie('nyt.np.https-everywhere'), true), // flag for https internal opt-in
+                    dimension72: getValue("", qsMap.mccr, true), 
+                    dimension73: getValue("", qsMap.mcdt, true),
+                    dimension119: getValue("", true)    
+                }
+            };
+            
+            TAGX.Utils.mergeObjects(base.fieldObject, {});
+            if (typeof getUid() === 'number' && getUid() !== 0) {
+                base.createOptions.userId = getUid();
+            }
+            return base;
+        }
+    
+        TAGX.GoogleAnalyticsConfig.Level2 = function() {
+            var base = TAGX.GoogleAnalyticsConfig.Level1();
+            TAGX.Utils.copyObj(base.fieldObject, {
+                dimension4: getValue(getMetaTag('CG'), true),
+                dimension10: getValue(null, true),
+                dimension13: getValue(null, true),
+                dimension14: getValue("", true),
+                dimension15: getValue("earned", true),
+                dimension16: getValue(null, true),
+                dimension17: getValue("", getMetaTag('articleid'), true),
+                dimension18: getValue("", getMetaTag('byl').replace(/^[Bb]y /, ''), true),
+                dimension19: getValue("", getMetaTag('hdl'), true),
+                dimension21: getValue(dim21_asset_type, getMetaTag('PT'), true),
+                dimension23: getValue("", getMetaTag('CG'), true),
+                dimension25: getValue("", getMetaTag('SCG'), true),
+                dimension9: getValue(document.referrer.split('?')[0], true), //Referring_Page
+                dimension12: getValue(getMetaTag('SCG'), true),
+                dimension43: getValue("", getMetaTag('des'), true),
+                dimension44: getValue("", getMetaTag('org'), true),
+                dimension45: getValue("", getMetaTag('per'), true),
+                dimension46: getValue("", getMetaTag('geo'), true),
+                dimension24: getValue("", true),
+                dimension38: getValue("", true),
+                dimension39: getValue("", getMetaTag('tom'), true),
+                dimension40: getValue("", getMetaTag('cre'), true),
+                dimension50: getValue(getMetaTag('PST'), true), //Page SubType
+                dimension32: getValue("", true), // Collection_Name
+                dimension33: getValue("", true), // Collection_Name
+                dimension81: getValue("", true),
+                dimension135: getValue("", true),
+                dimension52: getValue(getMetaTag('applicationName'), true),
+                dimension53: getValue("", true)
+            });
+            return base;
+        };
+    
+        TAGX.GoogleAnalyticsConfig.Level3 = function() {
+            var base = TAGX.GoogleAnalyticsConfig.Level2();
+            TAGX.Utils.copyObj(base.fieldObject, {
+                dimension26: getValue("", true), //Publish_Year_Web
+                dimension27: getValue("", true), //Publish_Date_Web
+                dimension28: getValue("", true), //Publish_Day_of_Week_Web
+                dimension29: getValue("", true), //Publish_Time_of_Day
+                dimension30: getValue("", true), //Publish_Last_Update_Web
+                dimension48: getValue("", true), //Publish_Month_Web
+                // sprint 69 (BX-6594)
+                dimension31: getValue(TAGX.$('*[data-total-count]').last().data('totalCount'), true), //Character_Count
+                dimension34: getValue("", getMetaTag('tone'), true), //Content_Tone
+                dimension36: getValue("", getMetaTag('slug'), true), //Slug
+                dimension37: getValue("", true), //Word_Count
+                dimension101: getValue("", true) //Multi-lingual_asset
+            });
+            return base;
+        };
+    
+    
+    } catch (e) {
+        url = '//' + "et.nytimes.com" + '/pixel?' + utils.mapToQs({
+            subject: 'ga-debug',
+            url: window.location.href,
+            payload: utils.stringifyJson({
+                error: {
+                    message: e.message || 'unknown error',
+                    stack: e.stack || 'no stack trace available'
+                }
+            }),
+            doParse: utils.stringifyJson(['payload'])
+        });
+        TAGX.$('<img>').css({'border-style':'none'}).attr({height:1,width:1,src:url}).appendTo('body');
+    }
+})();
+
+
+// Tags
+tagger.define("page.dom.custom", function (callback) {
+    TAGX.$.domReady(function () {
+        callback(function (params, callback) {
+            var tagCtx = this;
+            if (params.length > 0) {
+                TAGX.$(TAGX).one(params[0], function (eventData, eventData2) {
+                    if (typeof tagCtx.eventsData === 'undefined') {
+                        tagCtx.eventsData = {};
+                    }
+                    tagCtx.eventsData[params[0]] = eventData2 || eventData || {};
+                    callback(true);
+                });
+            }
+        });
+    });
+}
+);tagger.tag('adx-ab-allocation proxy').repeat('many').condition(function (callback) { TAGX.Ops.on.call(this, "page.dom.custom", ["abtest"], callback); }).run(function() {var event = (this.eventsData ? this.eventsData.abtest : null);
+if (event) {
+    new NYTD.EventTracker().track(event);
+    if (event.module !== null) {
+        event.module = null;
+    } 
+}
+});tagger.tag('ET Module Impressions').repeat('many').condition(function (callback) { TAGX.Ops.on.call(this, "page.dom.custom", ["module-impression"], callback); }).run(function() {var evtData = this.eventsData['module-impression'];
+var moduleName = evtData.module.toLowerCase();
+	
+if (moduleName !== "ad") {
+
+	var priorityObj = {
+		gateway: 1,
+		growl : 1,
+        notification : 1
+	};
+	if(priorityObj.hasOwnProperty(moduleName)) {
+		evtData.priority = true;
+	}
+
+	NYTD.pageEventTracker.addModuleImpression(evtData);	
+}
+});tagger.tag('ET Module Interactions').repeat('many').condition(function (callback) { TAGX.Ops.on.call(this, "page.dom.custom", ["module-interaction"], callback); }).run(function() {/* ET module interactions tag */
+var evtData = this.eventsData["module-interaction"];
+
+var moduleData = ('string' === typeof evtData.moduleData ? JSON.parse(evtData.moduleData) : evtData.moduleData)
+
+var moduleName = moduleData.module;
+var eventName = ('string' === typeof moduleData.event_name ? moduleData.event_name : moduleData.eventName);
+	//console.log(moduleName);
+if ((moduleName || '').toLowerCase() !== 'ad' && (eventName || '').toLowerCase() !== 'heartbeat-page-depth'
+    && moduleName !== 'PaidPostDriver') {
+    if (evtData) {
+        if(!evtData.tagxId) {
+            evtData.tagxId = TAGX.data.get('TAGX.ID');
+        }
+        evtData.webActiveDays = TAGX.data.get('TAGX.L.adv');
+        evtData.webActiveDaysList = TAGX.data.get('TAGX.L.activeDays');
+        
+    }
+    (new NYTD.EventTracker()).track(evtData);
+}
+});tagger.tag('ET Proxy Page View Tracking').repeat('many').condition(function (callback) { TAGX.Ops.on.call(this, "page.dom.custom", ["track-page-view"], callback); }).run(function() {/* tracking page view via the proxy */
+var datum = this.eventsData["track-page-view"];
+if(datum) {
+    // move // moduleData out of the way
+    if(JSON) {
+        var mData = JSON.parse(datum.moduleData), attr;
+        for(attr in mData) {
+            if(mData.hasOwnProperty(attr) && !datum.hasOwnProperty(attr)) {
+                datum[attr] = mData[attr];
+            }
+        }
+    } else {
+        // rename it to event data for now
+        datum.eventData = datum.moduleData;
+    }
+    delete datum.moduleData;
+    var extras = {
+        sendMeta: true,
+        useFieldOverwrites: true,
+        buffer: false,
+        collectClientData: true
+    }
+    datum.totalTime = 0;
+    NYTD.EventTracker().track(datum, extras);
+}
+});tagger.tag('iFramed NYT Page').run(function() {/* if this page is not the top document it should not be counted as a site wide page */
+if (window.top != window.self) {
+    var exceptions = {
+        "/regilite": 1
+    };
+    var setSubject = function() {
+        var defValue = "iframedNYTpage";
+        if (exceptions.hasOwnProperty( TAGX.data.get('page.url.path') ) || TAGX.data.get('sourceApp') === "nyt-fb-native-external-iframe") {
+            defValue = "page";
+        }
+        return defValue;
+    };
+    NYTD = window.NYTD || {};
+    NYTD.EventTrackerPageConfig = NYTD.EventTrackerPageConfig || {};
+    NYTD.EventTrackerPageConfig.event = NYTD.EventTrackerPageConfig.event || {};
+    TAGX.Utils.copyObj(NYTD.EventTrackerPageConfig.event, {
+        siteWide: {
+            value: 0
+        },
+        subject: {
+            value: setSubject()
+        },
+        instant: {
+            value: true
+        }
+    });
+}
+});tagger.tag('NYT SSO').run(function() {(function () {
+    // cache tools
+    var meta = TAGX.Utils.getMetaTag;
+
+    // record social sign on click
+    TAGX.$(document).on('mousedown', '.oauth-ew5_btn, .oauth-button', function (e) {
+
+        var el = TAGX.$(this);
+        var elHtml = el.html();
+
+        // find out which provider was used
+        var provider = 'Unknown';
+        if (elHtml.indexOf('Google') !== -1) {
+            provider = 'Google';
+        }
+
+        if (elHtml.indexOf('Facebook') !== -1) {
+            provider = 'Facebook';
+        }
+
+        var data = {
+            'module': 'social-signon',
+            'version': provider,
+            'action': 'signon',
+            'pgType': meta('PT')
+        };
+
+        TAGX.EventProxy.trigger('SocialSignOn', data, 'interaction');
+    });
+
+    // switch from login to regi or vice versa
+    TAGX.$(document).on('mousedown', 'a.log-in, .login-modal .registration-modal-trigger, .registration-modal .login-modal-trigger', function (e) {
+
+        var el = TAGX.$(this);
+
+        // find out which action
+        var action;
+        elHtml = el.html();
+        if (elHtml.indexOf('Create') !== -1 || elHtml.indexOf('Sign Up') !== -1 || elHtml.indexOf('Register') !== -1) {
+            action = 'switchtoregi';
+        } else {
+            action = 'switchtologin';
+        }
+
+        var data = {
+            'module': 'social-signon',
+            'version': 'NYTimes',
+            'action': action,
+            'pgType': meta('PT')
+        };
+
+        TAGX.EventProxy.trigger('NYTimesSignOn', data, 'interaction');
+    });
+
+    // traditional login and regi
+    TAGX.$(document).on('mousedown', '#main .loginButton, #main .login-button, .login-modal .login-button, .registration-modal .register-button', function (e) {
+
+        var el = TAGX.$(this);
+
+        // find out which action
+        var action;
+        elHtml = el.html();
+
+        if (elHtml.indexOf('CREATE') !== -1 || elHtml.indexOf('Create') !== -1) {
+            action = 'register';
+        } else {
+            action = 'login';
+        }
+
+        var data = {
+            'module': 'social-signon',
+            'version': 'NYTimes',
+            'action': action,
+            'pgType': meta('PT')
+        };
+
+        // capture newsletters if regi
+        if (action === 'register') {
+            var newsletters = [];
+            TAGX.$('.registrationForm input[type="checkbox"]:checked').each(function (element, index) {
+                var el = TAGX.$(element);
+                newsletters.push(el.val());
+            });
+            data.mData = newsletters.toString();
+        }
+
+        TAGX.EventProxy.trigger('NYTimesSignOn', data, 'interaction');
+    });
+})();
+});tagger.tag('Global - Krux control tag').run(function() {var script = document.createElement("script");
+var html = "window.Krux||((Krux=function(){Krux.q.push(arguments)}).q=[]);" +
+    "(function(){ var k=document.createElement('script');k.type='text/javascript';k.async=true;var m,src=(m=location.href.match(/\bkxsrc=([^&]+)\b/))&&decodeURIComponent(m[1]); k.src='https://cdn.krxd.net/controltag?confid=HrUwtkcl'; var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(k,s); })();";
+TAGX.$(script).attr({
+    "class": "kxct",
+    "data-id": "HrUwtkcl",
+    "data-version": "async:1.7",
+    "type": "text/javascript"
+});
+script.text = html;
+TAGX.$("head").append(script)
+});tagger.tag('GA Config - Web').run(function() {try {
+    TAGX.config = TAGX.config || {};
+    TAGX.config.GoogleAnalytics = TAGX.GoogleAnalyticsConfig.Level3();
+} catch (e) {
+    // this could be refactored into a function on TAGX.Utils, but leaving it for now
+    // since we have a template injection here, and we're not having to update this block
+    // much, in practice
+    var url = '//' + TAGX.data.get('static.env.domain_event_tracker') + '/pixel?' + TAGX.Utils.mapToQs({
+        subject: 'ga-debug',
+        url: window.location.href,
+        payload: TAGX.Utils.stringifyJson({
+            error: {
+                message: e.message || 'unknown error',
+                stack: e.stack || 'no stack trace available'
+            }
+        }),
+        doParse: TAGX.Utils.stringifyJson(['payload'])
+    });
+    TAGX.$('<img>').css({'border-style':'none'}).attr({height:1,width:1,src:url}).appendTo('body');
+}
+});tagger.tag('Update ET with TAGX.ID').run(function() {if (NYTD && NYTD.pageEventTracker) {
+    NYTD.pageEventTracker.updateData({tagxId:TAGX.data.get('TAGX.ID')});
+    NYTD.pageEventTracker.shortCircuit();
+}
+});tagger.tag('Facebook audience development pixel - sitewide').run(function() {if (typeof TAGX.useGlobal === 'function' && TAGX.useGlobal('facebook')) return;
+
+function encodeString(str) {
+    var FNV1_32A_INIT = 0x811c9dc5;
+    var hval = FNV1_32A_INIT;
+    for (var i = 0; i < str.length; ++i) {
+        hval ^= str.charCodeAt(i);
+        hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+    }
+    return hval >>> 0;
+}
+
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '592202027582499');
+
+fbq('track', 'Purchase', {
+    ad: parseInt(TAGX.data.get('TAGX.L.adv')),
+    articleId: TAGX.Utils.getMetaTag('articleid'),
+    fbk: localStorage.getItem("kxsegs") || '',
+    pScore: TAGX.data.get( 'propensity.p'),
+    aScore: TAGX.data.get( 'propensity.a'),
+    sourceApp: TAGX.Utils.getMetaTag('sourceApp'),
+    watSegs: TAGX.data.get("user.watSegs"),
+    fbBrowser: /\/FBIOS/i.test(navigator.userAgent),
+    content_ids: [encodeString(window.location.pathname)],
+    content_type: 'product',
+    content_category: TAGX.Utils.getMetaTag('dfp-ad-unit-path'),
+    userAgent: navigator.userAgent,
+    value: 0,
+    currency: 'USD'
+}); 
+
+});tagger.tag('ET Page Interactions').repeat('many').condition(function (callback) { TAGX.Ops.on.call(this, "page.dom.custom", ["page-interaction"], callback); }).run(function() {var eData = this.eventsData["page-interaction"];
+if(eData) {
+    delete eData.module; // to prevent confussion.
+    NYTD.pageEventTracker.updateData(eData);
+    if ((eData.depth && typeof eData.depth === 'number') || eData.priority === true) { // ideally we get priority flag in the event
+        delete eData.priority; // to prevent confussion
+        NYTD.pageEventTracker.shortCircuit();  
+    }
+}
+});tagger.tag('GA pageview').run(function() {var tracker, createOptions, tracker2;
+var ga_cfg = (TAGX.config ? TAGX.config.GoogleAnalytics : null);
+var debugThruET = (TAGX.config ? TAGX.config.GoogleAnalyticsDebug : false);
+function trigger (name) {
+    if (!debugThruET) {
+        return;
+    }
+    TAGX.$(TAGX).trigger('ga-steps', { name: name });
+}
+if (window.top == window.self || TAGX.data.get('sourceApp') == "nyt-fb-native-external-iframe") {
+    trigger('ga_loaded');
+    if (ga_cfg && ga_cfg.id) {
+        tracker = ga_cfg.tracker || 'ga';
+        tracker2 = (ga_cfg.createOptions && ga_cfg.createOptions.name ? ga_cfg.createOptions.name + '.' : '');
+        createOptions = ga_cfg.createOptions || '.nytimes.com';
+        (function(i,s,o,g,r,a,m){i.GoogleAnalyticsObject=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js',tracker);
+    
+        window[tracker]('create', ga_cfg.id, createOptions);
+        if (ga_cfg.fieldObject) {
+          window[tracker](tracker2 + 'set', ga_cfg.fieldObject);
+        }
+        window[tracker](tracker2 + 'send', 'pageview');
+        trigger('ga_fired');
+    }
+    trigger('ga_done');
+}
+});tagger.tag('GA Outbound Clicks').run(function() {var ga_cfg = (TAGX.config ? TAGX.config.GoogleAnalytics : null);
+var tracker = ga_cfg ? ga_cfg.tracker || 'ga' : 'ga';
+var tracker2 = (ga_cfg.createOptions && ga_cfg.createOptions.name ? ga_cfg.createOptions.name + '.' : '');
+var $ = TAGX.$;
+
+$(document.body).on("click", "a", function (e) {
+    if (!/nytimes|nytco/.test(e.currentTarget.hostname)) {
+        window[tracker](tracker2+'send', 'event', 'out_bound_clicks', 'out_bound_click', $(e.currentTarget).text().trim() + '|' + e.currentTarget.href);
+    }
+});
+});tagger.tag('GA Share Tools Tracking').run(function() {'use strict';
+
+var utils = TAGX.Utils;
+
+// This function comes from "GA newsletter event tracking"
+var trackEvent = (function () {
+    var tracker, tracker2;
+    var ga_cfg = (TAGX.config ? TAGX.config.GoogleAnalytics : null);
+    if (ga_cfg && ga_cfg.id) {
+        tracker = ga_cfg.tracker || 'ga';
+        tracker2 = (ga_cfg.createOptions && ga_cfg.createOptions.name ? ga_cfg.createOptions.name + '.' : '');
+        return function (category, action, label, non_interaction, cus_met) {
+            var cmObj;
+            var args = [tracker2 + 'send', 'event', category, action, label];
+            if (non_interaction) {
+                cmObj = TAGX.Utils.copyObj(cmObj || {}, {nonInteraction: 1});
+            }
+            if (cus_met) {
+                cmObj = cmObj || {};
+                cmObj['metric' + cus_met] = 1;
+            }
+            if (cmObj) {
+                args.push(cmObj);
+            }
+            window[tracker].apply(window, args);
+        };
+    }
+    return function () {
+        console.debug('event ignored because there\'s no config/id');
+    };
+})();
+
+
+function shareName (name) {
+   switch (name) {
+      case "Share-facebook":
+         return "facebook";
+      case "Share-email":
+         return "email";
+      case "Share-twitter":
+         return "twitter";
+      case "Share-pinterest":
+         return "pinterest";
+      case "Share-linkedin":
+         return "linkedin";
+      case "Share-google":
+         return "google";
+      case "Share-reddit":
+         return "reddit";
+      default:
+         return name;
+   }
+}
+
+function actionName (action) {
+   if (action.match(/^Share-/)) {
+      return "share: " + shareName(action);
+   } else {
+      switch (action) {
+         case "ArticleTool-save":
+            return "save";
+         default: return action;
+      }
+   }
+}
+
+TAGX.EventProxy.on('share-tools-click', function (dataObj) {
+   var articleTitle = utils.getMetaTag('hdl');
+   switch (dataObj['region']) {
+      case "Masthead":
+         if (dataObj['eventName'] == "Share-ShowAll") {
+            trackEvent('Share tools | Masthead', 'tools menu click', articleTitle, true);
+         } else {
+            trackEvent('Share tools | Masthead', 'Share: ' + shareName(dataObj['eventName']), articleTitle, true);
+         }
+         break;
+      case "ToolsMenu":
+         trackEvent('Share tools | Masthead', 'Tools menu: ' + actionName(dataObj['eventName']), articleTitle, true);
+         break;
+      case "Body":
+         if (dataObj['eventName'] == "Share-ShowAll") {
+            trackEvent('Share tools | Body', 'tools menu click', articleTitle, true);
+         } else {
+            trackEvent('Share tools | Body', 'Share: ' + shareName(dataObj['eventName']), articleTitle, true, 'share ' + shareName(dataObj['eventName']));
+         }
+         break;
+      case "ToolsMenu":
+         break;
+   }
+});
+
+});tagger.tag('[DATG-1401] LivePerson Chat on Help and Member Center').run(function() {// BEGIN LivePerson Monitor (via TagX)
+window.lpTag=window.lpTag||{};if(typeof window.lpTag._tagCount==='undefined'){window.lpTag={site:'17743901'||'',section:lpTag.section||'',autoStart:lpTag.autoStart===false?false:true,ovr:lpTag.ovr||{},_v:'1.6.0',_tagCount:1,protocol:'https:',events:{bind:function(app,ev,fn){lpTag.defer(function(){lpTag.events.bind(app,ev,fn);},0);},trigger:function(app,ev,json){lpTag.defer(function(){lpTag.events.trigger(app,ev,json);},1);}},defer:function(fn,fnType){if(fnType==0){this._defB=this._defB||[];this._defB.push(fn);}else if(fnType==1){this._defT=this._defT||[];this._defT.push(fn);}else{this._defL=this._defL||[];this._defL.push(fn);}},load:function(src,chr,id){var t=this;setTimeout(function(){t._load(src,chr,id);},0);},_load:function(src,chr,id){var url=src;if(!src){url=this.protocol+'//'+((this.ovr&&this.ovr.domain)?this.ovr.domain:'lptag.liveperson.net')+'/tag/tag.js?site='+this.site;}var s=document.createElement('script');s.setAttribute('charset',chr?chr:'UTF-8');if(id){s.setAttribute('id',id);}s.setAttribute('src',url);document.getElementsByTagName('head').item(0).appendChild(s);},init:function(){this._timing=this._timing||{};this._timing.start=(new Date()).getTime();var that=this;if(window.attachEvent){window.attachEvent('onload',function(){that._domReady('domReady');});}else{window.addEventListener('DOMContentLoaded',function(){that._domReady('contReady');},false);window.addEventListener('load',function(){that._domReady('domReady');},false);}if(typeof(window._lptStop)=='undefined'){this.load();}},start:function(){this.autoStart=true;},_domReady:function(n){if(!this.isDom){this.isDom=true;this.events.trigger('LPT','DOM_READY',{t:n});}this._timing[n]=(new Date()).getTime();},vars:lpTag.vars||[],dbs:lpTag.dbs||[],ctn:lpTag.ctn||[],sdes:lpTag.sdes||[],ev:lpTag.ev||[]};lpTag.init();}else{window.lpTag._tagCount+=1;}
+// END LivePerson Monitor
+});tagger.tag('Optimizely Misc. Section Fronts').run(function() {if ( typeof optimizely === "undefined" ) {
+    //load optimizely section front code if there's no hard coded optimizely
+    var optly_env = document.location.href.indexOf(".stg.nytimes.com") > -1 ? ".js" : "_prod.js";
+    TAGX.Utils.includeFile("https://cdn.optimizely.com/public/3013110282/s/section_front"+optly_env, false, "body", true, "loaded:optimizely_article"+optly_env);
+}
+});tagger.tag('[VENDOR] Yahoo Dot Pixel').run(function() {(function(w,d,t,r,u){w[u]=w[u]||[];w[u].push({'projectId':'10000','properties':{'pixelId':'10005754'}});var s=d.createElement(t);s.src=r;s.async=true;s.onload=s.onreadystatechange=function(){var y,rs=this.readyState,c=w[u];if(rs&&rs!="complete"&&rs!="loaded"){return}try{y=YAHOO.ywa.I13N.fireBeacon;w[u]=[];w[u].push=function(p){y([p])};y(c)}catch(e){}};var scr=d.getElementsByTagName(t)[0],par=scr.parentNode;par.insertBefore(s,scr)})(window,document,"script","https://s.yimg.com/wi/ytc.js","dotq");
+});
+if (typeof TAGX.setTaggerReady === "function") { TAGX.setTaggerReady(); } else { TAGX.taggerReady=true; }
+})();

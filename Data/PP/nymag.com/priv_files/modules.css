@@ -1,0 +1,5959 @@
+/*~  Parametric Search Band at top of pages
+----------------------------------------------------------------------*/
+
+/* Hack to prevent unexpected behavior when clicking on dropdowns */
+
+#parametric-search-band .pulldown_specifier, #parametric-search-band .movies-search-form input {
+	position: relative;
+}
+
+#parametric-search-band {
+	width:963px;
+	background: #66ccff;
+	padding: 0 0 4px 0;
+	border: 1px solid #fff;
+	clear: both;
+	overflow: visible;
+	height: 34px;
+}
+
+body.movies #parametric-search-band {height:46px;}
+
+#parametric-search-band .movies-search-form form, #parametric-search-band .art-search-form {
+	margin: 0;
+	padding: 0;
+	float: left;
+	background: #66ccff;
+}
+
+#parametric-search-band .movies-search-form {
+   padding: 6px 5px 4px;
+   position: relative;
+}
+
+#parametric-search-band .art-search-form {
+   padding: 7px 5px 0;
+}
+
+/*
+#parametric-search-band	.content {
+	background: #66ccff;
+	margin: 0;
+	padding: 2px;
+	height: 25px;
+}
+*/
+#parametric-search-band	.content .art-search-form .title {
+	padding: 0 20px 0 0;
+	background: #66ccff;
+	float: left;
+}
+
+#parametric-search-band .content .movies-search-form .title {
+	background: #66ccff;
+	float: left;
+	padding: 0 3px 0 0;
+}
+
+/* Hacks to override default styles */
+
+#parametric-search-band ul, #parametric-search-band ul li   {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#parametric-search-band p.yahoo_calendar, #parametric-search-band .date-range-search {
+	margin:0;
+	padding:0;
+}
+
+#parametric-search-band form ul li, #parametric-search-band .art-search-form ul li {
+	float: left;
+	line-height: 22px;
+	padding: 0 8px 0 0;
+}
+
+#parametric-search-band .art-search-form #calendar_container {
+	position: relative;
+}
+
+#parametric-search-band .art-search-form #Calendar_event_date_calendar  {
+	position: absolute;
+	background: #fff;
+	top: 20px;
+	left: 0px;
+	z-index: 1000;
+	overflow: visible;
+}
+
+#parametric-search-band .art-search-form .yui-calcontainer {
+	position:relative;
+}
+
+#parametric-search-band .art-search-form .yahoo_calendar table.yui-calendar y2007 td {
+	background:#fff;
+}
+
+#parametric-search-band form ul li, #parametric-search-band .art-search-form ul li .date-range-search{
+	margin-top: 0px;
+}
+
+#parametric-search-band img, #parametric-search-band .movies-search-form img {
+	padding: 0;
+	margin: 0;
+	border: none;
+}
+
+
+#parametric-search-band form ul li.calendar {
+	/* display: none; */
+	padding: 6px 3px;
+}
+
+#parametric-search-band .all {
+	float: left;
+	margin-left: 8px;
+	padding-top: 6px;
+}
+
+#parametric-search-band .all ul, #parametric-search-band .all ul li,
+#parametric-search-band .all ul, #parametric-search-band .all ul li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	line-height: 16px;
+}
+
+
+/* Font styles for dropdowns */
+
+#parametric-search-band form ul li.first select,
+#parametric-search-band form ul li select,
+#parametric-search-band #taxoInput {
+	font-size: 10px;
+	font-style: normal;
+	color: #1f638a;
+}
+
+#parametric-search-band .date-range-search-text {
+	margin: 2px;
+	font-weight: bold;
+	color: #00779F;
+	font-size: 11px;
+}
+
+/* Styles to control placement, width, and height of dropdown elements*/
+#parametric-search-band form ul li.first select {
+	width: 350px;
+	height: 260px;
+}
+
+#parametric-search-band #taxoInput {
+	width: 200px;
+}
+
+#parametric-search-band .content .movies-search-form #taxoList {
+	position: absolute;
+	top: 20px;
+	left: 0;
+	z-index: 1000;
+}
+
+#parametric-search-band .content .movies-search-form #byName_widgets {
+	position: relative;
+}
+
+/* Background and border styles for form elements*/
+
+#parametric-search-band #taxoInput,
+#parametric-search-band .content form select,
+#parametric-search-band .content form select option.first_option,
+#parametric-search-band .content form ul li input,
+#parametric-search-band form ul li.calendar input,
+#parametric-search-band .art-search-form ul li .date-range-search input {
+	background-color: #d0eefa;
+
+}
+
+#parametric-search-band .content .movies-search-form #byName_widgets option,
+#parametric-search-band .content .movies-search-form #byLocation_widgets option,
+#parametric-search-band .content form select option {
+	background-color: #fff;
+}
+
+
+/* Specific style for Movies search band */
+
+#parametric-search-band .movies-search-form form, #parametric-search-band .movies-search-form fieldset{
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+#parametric-search-band form {
+	margin: 0;
+	padding: 0;
+}
+
+#parametric-search-band .art-search-form form fieldset, #parametric-search-band .art-search-form form,
+#parametric-search-band .art-search-form ul, #parametric-search-band .art-search-form ul li {
+	float: left;
+}
+
+#parametric-search-band .movies-search-form form ul li.first {
+	padding: 3px 2px 0 8px;
+}
+
+#parametric-search-band .movies-search-form form ul li {
+	float: left;
+	line-height: 22px;
+	background: url(https://images.nymag.com/images/2/graphics/07/culture/vertical-rule.gif) no-repeat scroll 100% 100%;
+	padding: 0 8px 0 6px;
+	margin: 0;
+	display: block;
+}
+
+#parametric-search-band .content .movies-search-form .title {
+	background: url(https://images.nymag.com/images/2/graphics/07/culture/vertical-rule.gif) no-repeat scroll 100% 100%;
+	padding: 5px 8px 0 0;
+}
+
+#parametric-search-band .movies-search-form form ul li.first {
+	background: none;
+}
+
+#parametric-search-band .content .movies-search-form #pulldown_container {
+	display: none;
+}
+
+#parametric-search-band .movies-search-form .search-by-header {
+	font: 10px Arial, Helvetica, sans-serif;
+	text-transform: uppercase;
+	font-weight: bold;
+	color: #666666;
+	display: block;
+	position: relative;
+}
+
+#parametric-search-band .all {
+	color: #006699;
+	float: left;
+	font-weight: bold;
+	margin: 3px 0pt 0pt 7px;
+	padding-top: 0px;
+}
+
+#parametric-search-band .all ul li a {
+	background: url("https://images.nymag.com/gfx/ico/white-right-arrow.gif") no-repeat scroll 100% 50%;
+	font-size:12px;
+	font-weight:bold;
+	padding-right:8px;
+}
+
+#parametric-search-band .movies-search-form form ul li.go-button,
+#parametric-search-band .movies-search-form form ul li.trigger-button {
+	padding: 0;
+	margin: 0;
+}
+
+#parametric-search-band .movies-search-form form ul li.trigger-button {
+	background: none;
+}
+
+#parametric-search-band .movies-search-form form ul li.trigger-button img {
+	border:none;
+	margin:0;
+	padding:0;
+}
+
+#parametric-search-band .movies-search-form form ul li.trigger-button .pulldown_specifier {
+	display:block;
+	margin:15px 8px 0 0;
+	padding:0;
+}
+
+#parametric-search-band .movies-search-form form ul li.go-button input {
+	display: block;
+	margin: 15px 8px 0 0;
+	padding: 0;
+}
+
+/* Specific styles for Popular Drop-down */
+
+#parametric-search-band .art-search-form .popular-dropdown {
+	background: url(https://images.nymag.com/images/2/graphics/07/culture/arrow-blue-down.gif) no-repeat scroll 0pt 35%;
+	float:right;
+	color: #006699;
+	font-weight: bold;
+	padding: 0 5px 0 1.8em;
+ 	margin:4px 0pt 0pt 5px;
+	visibility: hidden; /* Hidden temporarily */
+ }
+
+.callout {
+	background: #fff;
+	border: 2px solid #3399cc;
+	position: absolute;
+	right: 112px;
+	top: 220px;
+	padding: 10px;
+	z-index: 10;
+}
+
+/* Specific positioning for movie theater search call out */
+.listing-head .callout {
+	position: absolute;
+	right: 680px;
+	top: 350px;
+}
+/* End Specific positioning for movie theater search call out */
+
+.callout .col-1 {
+	float: left;
+	margin-right: 14px;
+}
+
+.callout .col-2 {
+	float: left;
+}
+
+.callout .subhead {
+	text-transform: uppercase;
+	line-height: 1.7;
+}
+
+.callout ul, .callout ul li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.callout ul li {
+	background: url(https://images.nymag.com/images/2/bullet-gray.gif) no-repeat scroll 0pt 0.5em;
+	line-height: 1.5;
+	margin-bottom: 0.2em;
+	padding-left: 0.7em;
+}
+
+
+/*~  Parametric Search Band in Right Column of Pages
+----------------------------------------------------------------------*/
+
+#parametric-search-box {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVQAAABNCAMAAADO4mxgAAAAMFBMVEX////+/v79/f34+Pj19fX7+/vu7u7y8vLl5eXd3d3p6enh4eHZ2dnV1dXs7OzQ0NCmdkrqAAAF0klEQVR42u3V0arkKhBA0WgSYzTt/f+/vXRbMMJGp4xJTh+YetiEfmoWJTVN03/T9K751BZd0bnoUun27ivXoelPj4D6d/ey8d1Ydv9TX/Z4N5R9vZuKuqJb2Q/Bgs7oitpPTdEMeq3qS6F6VFR3tapHA1TT8bSqUE5QrXqyv0nVVVUrno+o6j3bqkdFda+oRqj6eLeq3pOq8Py1qkEKTyk8qfr6RtVXWarSM8EzwPMR1UX6BXdqhiQ9qeo6VWHrT6k6hSoKz/tVX52qh6MqPEPNs6UaOlW3AdWxO8XCU6VKT7Uq6tWqiapSreosfUL11al6UNUVnjeoJik8peotRa+9U6/cB1WjWjV0qm7SU6qvEVW9JwvPiupeUY1SeHp4Sluq7g7VV9+deuVaeHbaHk3Vva1KT7VqoureUl2OPk/WfmpyC9XX9KlGdWbh2VTdoVo2BnRA1d2saqEqlBNUrVqVniOqoU81nFLdqCr9LtUjt6m651ZUY1GqeqiGXKimCFWUnuzcqWqgWn/7LDxvVvVq1SRtekoVqrBdb1elJwvPimq8QzUOq0qfUD1yoUrbPbepGpuqHhVPNNEzwhNd9pYnux5Xqh5s2xOqaFtVDNnQqxqbqrSteaKaO3Xkmk9t0U7VnW17OnhKtapJOqy6K1RRW9QI4jWqe1mFbcyFbVs1qFUduuXCk533M6oGqgdVjVZV7xlRqvqKakDFE3UenqhKdVd4KlT1u7qv8GzaxuXvqv5B1SW2PNl1V799qhqqQrJTNSpUfVM15EI1haaqv1SVhWdbdc+1RU+pRoWqb6qGsvQM8ES3tmo8r2qLmlzcqT33ItWoUPVFaRv0qqHiKaUn2/TUqwrilaoxV6Hq2dJTVNmKZ00VXdqq0nHVHKrSk4VkU9VL1aoOnmWpGuBJVa9WjTerWkjmqlTpycITqgmFp15VSk92lao9qWqoCkOVKjwVtiEXqimxhSG65dKTpSRVK7Xx76px+tSgp1R9rlo1SOFZlqoJnig92dkrPakqNUWFUj7peUbVq1Qh2anq9KpBreq/RxWSLD2LUjXlOjZLsk1PacuTXX2fJ1Vjp6pH66qQHFB1ufQsS0+WklRFr1L1NpeSelUYsvSErWPpqVcNfaqslcKzqJ+KmlyqtgtJaVsVhqhzjYokuySFajjlSVVpiTisSk+1aipLz7L0dE3PpPBEu7e0pjqdVw3sXCskWXpK4YlSlaUnu6I6VSDCs6IKwz5VGKIud6sVkmhpyM6pT5W1QasapqIGtahaNdVKT5aeZekpbaqi8NSoSg06STtVV22TWtUpVDcUnig8G11/QBWlIdpWpSG7LZBEl9ym7ewUqlKtp6Xn8K4mTSmJVj1ZeipUZ5aeinZuqQxVU1mLqlVdu/SslZ4sVZvVq1rUSFuqqeywqiursIVhpZBslIbsKj2lipaIaVjVVduUlCok2bantOmpqN5zXNXlrurSs1Z6tkvPWqmqrnWKLUXdhBrUomrVLXfWFJ5q21ndtVe1qGHBd7EqJTtVl9xO1Vmq8EQVnv2qVU+qsnDTlJK16j1ZenbWXqpK262sRU+pLvpSsrPrOVXUSOGJbhMLyYtUl7IdtgOe0gFPqKLgq3uOqy7sKdsZVXlqqt/STtXxXV1y197qPdmm50DtMrqletWlrK10HSkkVb3ekzVSparMUis877Cd0V7VFb3ak23BPa9KSbbfk/1J1eUOVQvDkVJytJTs93xQdWbXa7rmXqRq0Z9SnWu1tY5LsleqsqbSXtV5ataoa0eF14F2S9JT17+T4Ycnbde7S71xzy9TXdG7VS1LzxtU5XPYdq3VanqppLoGPefJrlNnzalafW8wpKS+3UA5T9s+r2pGPL9elbb6Wguxb/SUWUdqxgu37sLweU+q/qitRXs9DTvu+eDbt5qa62ty7V2dFNUz2enm6t3Gqze8sU+omrLmJztJn1A101e13+rb+kV/Z3jMV/Tf/JtfM/8DnTbNgIEH2nwAAAAASUVORK5CYII=) no-repeat;
+	margin: 0 9px 0 10px;
+	padding: 16px 10px;
+}
+#parametric-search-box header{
+	background-position: 50% 0;
+	background-repeat: no-repeat;
+	height: 18px;
+	width: 100%;
+}
+.art-sf header{
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAASCAMAAADxL8XvAAAAMFBMVEUAAAAPDw8QEBAPDw8PDw8QEBAPDw8PDw8QEBAQEBAQEBAPDw8QEBAPDw8QEBARERHdGVfjAAAAD3RSTlMAd7tEEcwiZu7dmVWIM6qcdtqsAAACu0lEQVR42r2V27arIAxFCQk3Ufn/vz1mRcDu1tankzGKCeYygWDd/5XI8bHvJkNltmfyQ1ZN9jHueHm12iHq2EyyJ3HUpsDLVI1jU9mJRobcuE0hb35kqTQMySkfkx7x6VBzUDUyNYbQYVH7CMsv81YESpcgT2CDKfeweAVXmBZfh4pcJ5G/3Vn4TF1lBc8QegC7YVnfYe3BsU3C/XiU/A4L+QVLgyJmTSzlLLZq3ZQN1l56QavZURDCdsDmpMZ6TIvihyiLHVGFqxq77ChjC32HJaKjClHSViYUElLtCrs0SO9e1hGw7JsNs7VpNs65yq0C1nOzwdZAY/8FrkWX7WjA7i5cYFNSlZamsN4vxDV4ZQ2hcirpAhvsLOOAVYsewKazYSh+ga3qKqNxvYG3QJQGLNHluCmrFdvm3BJwpOUCe0TumvXkCThGYaII2ER0AwsEtAZRAmwk4j+wq7qywTIIV8zndAIy8/IC2wTVyAk+URpwvV8L8oPHJEjHg/8NrKOLN2DxcsKWhl+HNW+WbMq5s9778gLr3QnLuRNe7xfhdvSd1fTrLSw2GrCTlm5gcRveYN0WoGQZbfARtmsuTtiesQw6pb2D1bHDRuaaUfYGlsoLLBjLxsxWkx7CyoAFGkQ6HcafsKCqAoLtBhZQ84L1Mdjd3DtgjJ9hw982kPEPUK+waXsEu7gIghtYZYJrGbAIjjhPP0E+92wTqAnzPbUIFmrf/QVU3jsz15FKLWKtZ2szqqp6tDueo25T0HBRnMAnLNjWbcAG3lHpO6wrZGobrCBDToyw7IzMtIBuXW8Ktdnup47USGKJwzkbR/AlUfoFW/E9XfdvsGSMz2HrLezaZ+kdNmB2VkAA2wSZa8rBF2K43MBKQT89gAVSYXcLW2GgUMYkYCloV4h7IMzy02VzD0Weu3Kc+gaGfzx9TTCN3y91AAAAAElFTkSuQmCC);
+}
+.classical-sf header{
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATcAAAASCAMAAAAJ6mkxAAAAMFBMVEUAAAAPDw8PDw8QEBAPDw8PDw8QEBAQEBAPDw8QEBAQEBAQEBAPDw8PDw8QEBARERH6a0daAAAAD3RSTlMAd0S7IhHuzGbdiJkzVarJ1pNaAAAEq0lEQVR42p2Yi5KsKgxFCU9RlP//29sh0Y1g93guVUOFxw6wJiC0+T+plD86WDtaSMGGN0NA9ybB9dvkrX/vt8yyxV1p5epH4aexg5JrTUd1VFtShWXbictYa0zVdZar2hzWT80WWQUJPGkKrta4nCVpjY64MMmiETFcS73UQu9Eqn15Qgl9pYfk2p9IVZ4ns7IKMiZF1bZEjqfyHD9dfRG3I7dWimztZwdY4HZgQZBM3LZW9uAmKXFplkkO1y+4JTF+cXPKLWT4SjDZmcJxiLcJHLjlR25KJhhBkyMPeVrgtmBBkEzcwke21kojt7qaBxmJeKnvuRXO029uVblt8AXZwA3pKzeeXgyOPa7sZtf6eM3znJnrrJB4RN+gk9WOkPSeZHk5gJuN17bxvSzIktLOzb3rtS3YZ12gj1wOOnvuS63DIdxW5sUnik6yjcdVjkuezSJ+IRu4EZExnmjhY4/aSIHYAretaYkzdnbWe/0fKbfDpOpgSWyQ9LKGs15y84SwKGfZsaDlBBn6BRb3rq2E16oLFCViVyO17MLNuiqZTPKK6JW4xKRz01nIwG1Z2KStMjfnNrJ7cowtpd0uealYwyO3XQJ4OzdyYviwdEoWi4Nk5hZ0U5YycjsgA7edxXbkRpW+clsEPZH/wS0xN4ld5QbZxY2o248UueT5H74lw2au+Lg1ZAyjXy3JeZB008nnEJZOiWRxPDIkMzeTzpNlG7glyMCNh+ldt/qc6uJceeYWROgCL8Q39wsRuF1+SeNE/EImrKy1241bbS2OTND/2Dpww3ZCGHothijuF1gDt0EycVtYFxv1cudWR1mu8gfX4CmFmRs+xUnWqUpwU78XNxJekMkozrl84+aMcrNRZ/I93jyR5cM6mqzjlyRxFmA9xRskvSc9vEXHjQO3QbZx5RxvLXlrQ8dtIVJuAEfP3NTvyA0y7NNnbmoZf3GL4/lm9cC/QoujV7zDunPj7C6BJ8MNuTHaqK7DPo2jjDK43c+3bTjfOD+5eWv3yGb8xm25cVta5xWyt9wCvgtP3BAiK08tSfmA9fBdgGTgxseK1wYzcHOjjDQw5u+CpW/cGqA9JLbLzA1HAb4LpDlkysr7Z25p3KfrxE29O9KDm3eIXFdg6ZQCFtdJBm7uuij7ids6ykg5wjXuIT+5bXpz+cLNZOW2YPqDDExmbrYGve3e7lZ7/niQa2c4aqWQeUl6kPOa7MH7DJZPPHyQuwQxkl7SedL3ht0ry4pbznurbXm5jbSxf+XWu95w78W92V67eRcMbQjP7jW2z0mWKHGMK2c4lBtkv7mZTGKiTzrPFzxRxMJz8ewByw0v1mx6SedJ/+sxS7e63N5ZxyxzSbnB9fTOQnF8iWVplpFv76z1rN0wt072F7e9PX/WA31K1Df2X9ySgaVTumax/+AWdICW+9u7PjxwW4UbXP8Lt/0rt/2sDRHcIFObukuG7TrxXSq5zEFOFzj2v4Uf3IjXvAZzWeBmKNaad/ODmymZL8vh4Lxbt+PGmdsu3OD6FTfHnTKaJ242Sa3+jkTpY0P2Jtnp10D/p7CoBhaS9S9/GPWQvkhw/S4FW97/xjnJ/gPtUJxivBYYigAAAABJRU5ErkJggg==);
+}
+.entertainment-sf header{
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASgAAAASCAMAAADfT7NUAAAAMFBMVEUAAAAPDw8QEBAPDw8PDw8QEBAQEBAPDw8PDw8QEBAQEBAQEBAPDw8PDw8QEBARERFQ1xPaAAAAD3RSTlMAd7tEIu7MZhGI3ZlVM6pObqQFAAAD/ElEQVR42uWYW5PsKAiABbzFJM3//7c7IGS0uz3Hh63ah6WqE2i52J/iJBP+P0K07VrvR40Uu1LwkUO+/hqIiK7yI2g6gFpydRl0cj2fNEYzhIDqIPm/JcS3BHulZY5qz5lDScwpz740VUjBoiL+GIfGV4nPSdRIwKQCKCW+LwbwGhTugFIpb6Ds/g4KJ1BwrkHhNqjLhteg3KTa+InPrioFg0C43FGBFqBUtkGlGRTp/fgAxTMoXIPibVCvn2tLfwYF3Tqf4XBrK3wD5bIGFZPGgVSn1DcKMucIzAeKlZjDobOLTVy7DjazVMQ8BBR4W4SaWVLMCWPr4waZNkuLHDJ2hSGzVr8F1Ohb+orVziZfYkVRb7JSCvkTFACEEAGKHF1QtRKIJj4mqCmqZLD1OsB+NiH3S6BOQBrddDJQqCZJxDnvAQhTQjesEXC3tAh5Xs+soF4hM86+5mdbq7LBayEYKIF2jaBK0awnCyjEE+jKfa3zRaWVN1AMw2zzAhQw/IK6tPUmULlv6/gBKjuoQXBRehNU695Q/gTqYm8GA1XsTwbEBxTA0GKQxIp8h3DmIGqbQb0YEA/RVbSRCCCKTQVAK7fMBfFWPWHSwxygKKgIQIE5v2R6MyhPqEZ6NhVull6AOnr/lsn3HdQhFvZiSqfaIlXLSkTnBIp1BOHHk6zpB1Ai4Hpj/Ty2Bnhly2lSHhNNOR2Q3eeE6AeU4MTN0gtQNdkcZl8H5ckclB+f0KNy7VkRsU2gMBgoSlb5AxTRrfop1gpUJKq2o+QSJ1DSNcUMBzUkVAO6Ll6r0mtQum09853VOdUFKE32AcpJwaL1HJRrIc6gyu9BUZag8BzPKPGDCZRPrc2gygjqUl1DFqXXoOQKnlmapnsvQEEbQZWkrRiJLtXSLqg6gyIgn21cgyIYQOl1AtXYpE6g4giKxClryKL0JijmHBTsawXK1s2fZvx6Vd2Kt8OJ8Tuo/N56XsVnG9oSVAjvoKj+gqrPK8g1gQptBCXH06khi9LboDjqHsYVqGKgiiGy4DPoetAE4RMUcVW1PD40PPXd6VkJeB5GD4Fwvj1wplt/rNRTM3Y2tfZFjllG65wwJj/tTw3ZKx28PNcfyOCZdWMq9dHX1+mUUQMVPdYpa/vHv4AKDbq6foU5fmfLrn55hem324fC+JqC+C0h6nf6UdkqLTKUhyezSxl8aZwiZjX87HRQfo7+DdQlwMPxWoO69kBdSc/EDVCeEJ2vh6xL74PKYQnqMFA1fYK6PCn8UkByJw0rKWMDaeIFKMo7oPSerh1QlEdQmfMClHrugwJxPuoa1GWg+r9ZICsDlLFGYUeIavg3JEqe/1Lu7QnEgUylW27/AL9HmEDq7HCsAAAAAElFTkSuQmCC);
+}
+.newsletter-sf header{
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF4AAAAoCAMAAABAd72AAAAAYFBMVEUAAAAAu/AAu/AAtu0Au+8Au/AAvPEAm8f///8AAAAASmFk1vfz/P+d5vrm+f4AKDYwyfTB7/yw6/vR8/0AqNiO4vkAhaxBzfUAdZdR0vYPwPIAWXUgxfN33PgAPE8AtOdQk1iUAAAABnRSTlMA8dQnXaK4C+EKAAACpUlEQVR4Xu2WaW8bQQiG04u5r71P5///ywKeeooqO2nTfPMreUAL+8AQY+UFPkkvrI/hn/gn3nfuw8R89uMdfKf1+hH04bqotQ538K6GXPinWziNeoA/tI5oNq89zLEc76PO7gxjRmes+HvDgV7rXC+Bh6OCEU93Zq5+bFcB5BkPcF0AODXLXb0+uAx38JRwXotUfOaret1Tl7rKkztyN/7Wc2T8+mCtmFbo6EHgNeNX/UvbKvGni1ofhJ8l/rvEQ9R+Cwhm/CrxuY+Reve96B6hmWpk8sYzlNiu8OWbxI8I9ViC3qr4kfHtdmj+xBe8EnmsE276KvD0XqSG/w4fCj93Es/6IfDgKZ5v+Pk9eFZmvC9dOA8xfoHvNLM41z3CB4HnBCeXvo1fbp4jZyVw/aYitOGb3Xz9Oo5F61nixfgbftPab3WDvVsjvkfP+ow71fAbTTgHrTvGrzN7K0bHEDqamxg/NBUdbhtMigxjbRVfZ9h2daXkoy3GA/zJq9GWdG74o+Gz52CBiuffkYaX9N/xR4Gq3PV9yNxrKV3XhQ22rjtrWuj7wv7c9xkDsUCO3lNZL0eP+E8T7+1n0ht+sHafXsl7VXTaCWBZ0Nl3/rQMDoHa7aLQRw0A074rmCxJLNUNr8zFmkT8JVHQIJpzJ6OUmVoGhehpsgktGsQrs+wL4pOxttElXsFATEgEa3hAQBIZ9EkW69RSVGxiyGLk773EM28yuxV4ZYwSGWZhf1lq91jnYtLwNj7t1NdCbsPD5SIyKDRguzYZ9O2ycPCS3sBPajcKLcpW/EWpgaqIDA6lpBhmdqVeYVrU/hbemDQRkuYzXPHGsLEig0MDxTAVT5oTmukhHqhRFJ2veJAdlGIziAy4moGNQtEfGQ9+9vwP+f/gn/ifYPxzo23JOTQAAAAASUVORK5CYII=);
+}
+.nightlife-sf header{
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAO0AAAASCAMAAACAV6lxAAAAMFBMVEUAAAAPDw8QEBAPDw8PDw8PDw8QEBAPDw8QEBAQEBAQEBAPDw8PDw8QEBAQEBARERH4pOR5AAAAD3RSTlMAd7tEIhHMZu7diFUzmaq1hlKRAAADJ0lEQVR42r2Xi3LjIAxFEQJj/Ij+/283uhZQ8GPSzrbMlMpIV9IhMUPcfxtbdL8/AoePY+N2liVfx6LLl8K3s5iCQaSz93hQH8149I7li4elDZIabMtMo9ciMGxFGyplohrT3AlLDe4ae5O8Y+cF+ipTPhLGIK8lLmm5rVtHA62V/2XaySIeaL3RxixF32RAMRL2t5+t44FWetogA+3yG7SbztMzrRjtXt3OZGdajGdanpEk+XeGECfRf8j9ii9sKsptCZWjyKyWX0QozGrh7T68SgTJq3hZV0obiwatalmZI/qltLaf6S2yZH1jAU0wUprsTEtEzgWipK8zRVQitRqtbfRC1i7+ZS1TOlV3mz3LMRGU1L4hKA3JWrzsYqNlC3KlDAFhPWgZ8b6U6hvDDmR4uMkabUrIuovSer8Tr5PHtk4rp5xG2ukrbdQV/iktSfWy0ANtsnOIwj2tNbZoYqNtskpLZBWQfNanIJtz++TUzCOtLF9o+aBlIt2zdjRq2gSiQMQ3tDlL9b6EvF/uaKO911ErBdAmop7WGvMHLRCrzLIy897RCjxeCzDWl442C/4G2nIqSB21aQ/rihajeM1/Q1sPrimWeK7JhsZASwdlL2Px3ueO1rrTV98qd7Q71D+kTURPtMxbRxuI2MpUXLqjRWMjbS8DCV3TmuVCR5suaSed82bFb2l99Zrv1WjT6b3VmaxMYF5x8M53tKmjTQhemuxT2tjRBtWeT6lj/jYtU/Uy8S0t5jViT7cT7dDYUr/CfpCBMIRr2unqm+xyT+typXXfpoWvdf9MuzsA8Yl2aCwZ5yBrJJe0LBFmqjHbLEK7JQ3Tcdjp87KhKkpIYASUS8Icyr2E1HHErC7u6uOj8ni7gFNw87AyaH5FeueCxi/oFsmGxkyrdid7pHWZDrO/OS6WdLw54rOA6/BwPSGgLGO4OQL37ubYkvm6kms8tWto1xj23+xO9ky74u62vHradaB19Ke06y3tWlbjPNBCZjY1FM8lCE2mefKZuIW085fc8IuPfpsWwJndDW1rzH7x0QSQIvtkMMePwoL7gxF5+/yX/0n2D/UUcjb3lakbAAAAAElFTkSuQmCC);
+}
+.theater-sf header{
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN0AAAASCAMAAADopCtJAAAAMFBMVEUAAAAPDw8PDw8QEBAPDw8QEBAQEBAPDw8PDw8QEBAQEBAQEBAPDw8PDw8QEBARERHrYVClAAAAD3RSTlMARHe7Zu7MESKImd0zVaq36r4zAAADGUlEQVR42s2W7ZLkIAhFAT+jSXz/t90AbTCT2Jv9MVVr1dgQuTRngrbwnw/E97Frusm8O8cCkJ+THYvdbDbI6YfMjmwBOb88BKBBMIZ0OxbUxGRa1z5iH1oLUXKb8pIgQFdROCTuUJmMeaihDJJaHumQ2r/SiRvmdIPtZ3SbPprSmYsiV5XJpPT2QRDWSYN8odse6XQtvaELM7r9mGv4Tkfq5WZIKnugszGnC56TLK3RWg9rT5GzrbBI7ly1wmD/04Wr5W65hKhNnQjkQdvYkowxg6ytSmdJvEBBKtrZm3hFKtkFSWV3OiICyESetyMl+SZia6Rz2HQioGYzyGMpEgHy4fRFdE2nS4jaaHRi2h4kLXOH2NyYRB9LvIwkXmV21jmTGZ33krU0pnOuEG7RMVyMG/rq39JR40qk9/kFlDtdD8FzawWY0FV5OUT+G93GXjobxQ2yk45o6EAK7OW2ApQIbNaT7hBJXZkIgaRaZ3Q1Nu/cKvXxYgQkylKYJxpDxA6OG9jP6Bbdlv6S5CcdB6mNHOcHmWZFxHKha9KUjiCdewJsCN14Epx0Vp9rLZ+e0+6zELMFbkaXgkVYkoGuNv0DHM8bk0mUc65e6Bx86LB3zXu6jJj4UAnSIXij6yH67njKI93ZE1zQGvU1pAldYfNGZzLrzCe6bkGe0N32XdFNle3FXOksRLN41RodjhkRtX6a0FG90AlUXU32ki69pUOS0n2nW+50SEan84yutaiZ9hmdUNiporPJOlHOz3TROvMVnTxDWPppE43OlD/pMM3oWobCETM6hhCvnnSjzCp/pMOWxPQj3dI3S5ZDP+1MkVOxn+p0TIvE8bmbw+cljiGaZRW6hn2xcTKSvC4B50XOXoYkQJ9f/cKrna7w6qq2yf5CB5XUHGKoZwQnBt5vYuO9C6Gp25UPF6n1ekL1m9hwE7UkOCZwUZx+e1DbZH+j2+RutOy/RbcF+Tn/ThdhSreIM8phlFFX8RAB6gPSUB+iq8Q9/gt0+hm2KR1F7rg0p9vEEX3QImCQvRiICX5x5O/p1/ffjvmn7A/XOGr3HLeaGAAAAABJRU5ErkJggg==);
+}
+
+#parametric-search-box fieldset ul {
+	padding: 0;
+}
+#parametric-search-box fieldset li {
+	background-color: #fff;
+	border: 1px solid #dfdfdf;
+	border-left: 2px solid #ffe400;
+	border-radius: 0px 4px 4px 0;
+	cursor: pointer;
+	float: left;
+	font: 14px Arial, Helvetica, sans-serif;
+	list-style: none;
+	margin: 0 0 7px 0;
+	padding: 0 0 0 5px;
+	width: 147px;
+}
+#parametric-search-box fieldset li:nth-child(odd) {
+	margin-right: 12px;
+}
+#parametric-search-box fieldset li:hover {
+	background-color: #ffe400;
+	transition: background-color ease .2s;
+}
+#parametric-search-box fieldset input {
+	list-style: none;
+	margin: 0;
+}
+#parametric-search-box fieldset label {
+	cursor: pointer;
+    display: inline-block;
+    padding: 9px 5px 9px 4px;
+    width: 123px;
+}
+#parametric-search-box .xtra-contain {
+	border-top: 1px dotted #dfdfdf;
+	padding-top: 8px;
+}
+#parametric-search-box #dates-sf {
+	display: inline-block;
+	width: 165px;
+	vertical-align: top;
+}
+#parametric-search-box #search-scope-date {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAIAAADZ8fBYAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2hpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpEMTcwRDBCNDNCMjA2ODExODIyQUZCQjYzQjE5MEZERiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpDQUM4QzhGRTJBQ0YxMUUzOTYwNzlENEI2MDdGMzFDNCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpDQUM4QzhGRDJBQ0YxMUUzOTYwNzlENEI2MDdGMzFDNCIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChNYWNpbnRvc2gpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NzdDQzdGRDMyMjIwNjgxMTgyMkFCQ0YxMjc3NDFDQTkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RDE3MEQwQjQzQjIwNjgxMTgyMkFGQkI2M0IxOTBGREYiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5jJhgKAAAAe0lEQVR42mK4f//+fxoAJgbagFFzR80dNZd+5rLgl37+/PmdO3dwyaqoqEhKSpJjLlDbiRMndu7ciSnl7u5ua2tLfjgEBgYCjcA0FChOafiiGU3QUBAgvvxdt25deno6kCRGMQNJ5frp06eJVMkwWl+Mmjtq7pA3FyDAAA5SaJqYIq+xAAAAAElFTkSuQmCC) no-repeat 124px 3px;
+	border: 1px solid #dfdfdf;
+	border-radius: 4px;
+	cursor: pointer;
+	font: bold 13px Arial, Helvetica, sans-serif;
+	padding: 10px 7px 9px 11px;
+	width: 155px;
+	-webkit-appearance: none;
+    -moz-appearance: none;
+}
+#parametric-search-box .cp {
+	font: bold 13px Arial, Helvetica, sans-serif;
+	cursor: pointer;
+	display: inline-block;
+	padding: 10px 0;
+	width: 125px;
+	vertical-align: top;
+}
+#parametric-search-box label {
+	cursor: pointer;
+}
+#parametric-search-box .search-submit {
+	text-align: center;
+}
+#parametric-search-box #img-search {
+	background-color: #fff;
+	border: 1px solid #888;
+	border-radius: 3px;
+	cursor: pointer;
+	font: bold 12px/12px Arial, Helvetica, sans-serif;
+	margin: 0 auto;
+	padding: 10px 12px 9px;
+	text-transform: uppercase;
+}
+#parametric-search-box #img-search:hover {
+	background-color: #f3f3f3;
+	transition: background-color ease .2s;
+}
+
+
+/*~  "Entertainment specific" module styles
+----------------------------------------------------------------------*/
+body.section-3column #section-content #entertainment-modules .row  {
+	width: 160px;
+	float: none;
+}
+
+body.section-3column #section-content #entertainment-modules .row .column {
+	margin: 0pt;
+	width: auto;
+}
+
+#entertainment-modules .module, #top-10-stripped .module {
+	background: #fff;
+	padding: 12px 11px 4px;
+	border-bottom: 8px solid #ECEAE8;
+	margin-bottom: 8px;
+	border: 1px solid #ccc;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#agenda-calendar .module {
+	background: none;
+}
+
+#entertainment-modules .module p.border-bottom {
+	border-bottom: 1px dotted #ccc;
+	margin: 4px 0;
+	padding: 7px 0;
+	text-align: center;
+}
+
+#entertainment-modules .module p.border-bottom-top {
+	border-bottom: 1px dotted #ccc;
+	border-top: 1px dotted #ccc;
+	margin: 4px 0;
+	padding: 7px 0;
+	text-align: center;
+}
+
+
+/* code for narrow, top 10 list on Agenda index page*/
+
+#agenda-calendar .top-10-list {
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 0;
+}
+
+#agenda-calendar .top-10-list ol {
+	margin-left: 0;
+	margin-top: -10px;
+	padding-top: 0;
+}
+
+#agenda-calendar .top-10-list.module li.even {
+	background:none;
+	list-style-position:outside;
+}
+
+#agenda-calendar .top-10-list.module li.odd {
+	background:none;
+	list-style-position:outside;
+}
+
+
+#agenda-calendar .top-10-list ol li img {
+	display: none;
+}
+
+#agenda-calendar .top-10-list .head h3 {
+	display: none;
+}
+
+#content #content-layout #agenda-calendar .top-10-list h4 {
+	margin: 0pt 0pt 13px 0px;
+	display:block;
+}
+
+
+/*~  "Generic" module style
+----------------------------------------------------------------------*/
+
+.module {
+	background: url("https://images.nymag.com/images/2/bg-hatch.gif");
+	padding: 12px 11px 4px;
+	border-bottom: 8px solid #ECEAE8;
+	margin-bottom: 8px;
+	border: 1px solid #FFF;
+	line-height: 1.5em;
+	font-size: 11px;
+}
+
+#content .module .head img {
+	border: none;
+}
+
+.module .head {
+	text-align: center;
+}
+
+.module h3 cite, .module h4 cite {
+	display: block;
+}
+
+.module ul a {
+	font-weight: normal;
+}
+
+.module .head h3 {
+	margin: 0px 0pt 5px;
+	padding: 0pt 0pt 8px;
+	background: url("https://images.nymag.com/images/2/bg-border-beveled.gif") repeat-x 0 100%;
+}
+
+.module p {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.module p.more {
+	font-weight: bold;
+	text-align: center;
+}
+
+.module .content h4 {
+	font: bold 1.1em Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin: 0 0 6px;
+	padding: .3em 0;
+	text-align: center;
+}
+
+.module .content ul.column h4 {
+	font: bold 1.1em Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin: 0 0 6px;
+	padding: .3em 0;
+	text-align: left;
+}
+
+.module .content h4 a cite {
+	display: block;
+	font-style: normal;
+	margin: .7em 0 .1em;
+}
+
+.module .content a:hover cite {
+	text-decoration: underline;
+}
+
+.module ul, .module ul li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.module ul {
+	margin-bottom: 1em;
+}
+
+.module ul li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .5em;
+	font: normal 1em/1.1 Arial, Helvetica, Verdana, Geneva, sans-serif;
+	padding-left: .7em;
+	margin-bottom: .2em;
+	line-height: 1.4;
+}
+
+.module ul li.more {
+	font-weight: bold;
+}
+
+.module .banded {
+	background: none;
+	border: 1px solid #E5E6E6;
+	border-width: 1px 0;
+	clear: both;
+	font: bold .9em Georgia, Garamond, Times, "Times New Roman", serif;
+	margin: .5em 0;
+	padding: 6px 4px;
+	text-transform: uppercase;
+}
+
+.module p.border-bottom {
+	border-bottom: 1px solid #ECEAE8;
+	margin: 4px 0;
+	padding: 7px 0;
+	text-align: center;
+}
+
+.module p.border-bottom-top {
+	border-bottom: 1px solid #ECEAE8;
+	border-top: 1px solid #ECEAE8;
+	margin: 4px 0;
+	padding: 7px 0;
+	text-align: center;
+}
+
+#content-secondary .module p.border-bottom img, #content-secondary .module p.border-bottom-top img, #content-secondary .module img.check {
+	border: none;
+}
+
+.module h6.sub {
+	font: normal 10px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin: 0 0 5px;
+	text-align: left;
+	text-transform: uppercase;
+}
+
+.module blockquote {
+	font: italic 11px/1.4 Georgia, Garamond, Times, "Times New Roman", serif;
+	margin: 0 auto 1.5em;
+	width: 140px;
+}
+
+
+#sponsor-directory .sponsor {
+	background:none;
+	margin:0;
+	padding:0;
+	border:none;
+}
+
+#sponsor-directory .sponsor .head h3 {
+	background:transparent url(https://images.nymag.com/images/2/bg-sponsor-directory.gif) no-repeat scroll 50% 0pt;
+
+	height:9px;
+	margin:0pt;
+	padding:0pt;
+	text-indent:-1000em;
+}
+
+/*
+	Related Modules
+*/
+#related-modules {
+	border: 1px solid #E5E6E6;
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	padding: 10px 12px 0;
+}
+
+#related-modules .related-wrap {
+	border: 1px solid #D2D2D2;
+	padding: 10px 12px 0;
+}
+
+#main #related-modules .content {
+	padding: 0;
+}
+
+#main #related-modules .block {
+	margin: 10px 0 0;
+}
+
+#main #related-modules .first-block {
+	margin-top: -10px;
+}
+#main #related-modules .block .content {
+	padding: 0 0 15px;
+}
+
+#related-modules dl.story dt {
+	font-size: 11px;
+}
+
+#related-modules .interview-unit dl.story {
+	font-family: Georgia, Garamond, Times, "Times New Roman", serif;
+}
+
+#related-modules dl.story p.more {
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin-top: .5em;
+	margin-bottom: 1.5em;
+}
+
+#related-modules .interview-unit dl.story dt {
+	font-size: 12px;
+}
+
+#related-modules h3.first {
+	margin-top: 10px;
+}
+
+#related-modules h3 img {
+	border: none;
+}
+
+#related-modules .first {
+	position: relative;
+	top: -10px;
+}
+
+#related-modules .first h4.banded {
+	margin-top: 0;
+	border-top: none;
+}
+
+#related-modules h4.banded {
+	color: #891313;
+	font-family: Arial, Helvetica, Verdana, Geneva, sans-serif;
+	font-size: 11px;
+	padding: 6px 0;
+	margin: 0 0 15px;
+}
+
+#related-modules h5.info {
+	font-size: 9px;
+}
+
+#related-modules .interview-unit h5.info {
+	font-size: 10px;
+}
+
+#content h5.sec {
+	font-size: 11px;
+	margin: 0;
+	padding: 0;
+}
+
+#related-modules .content .content ul.bullet {
+	font-size: 11px;
+	margin: 0;
+	padding: 0;
+}
+
+#related-modules ul.bullet li {
+	margin-bottom: 3px;
+}
+
+#related-modules .column ul.bullet li {
+	margin-left: -10px;
+}
+
+#related-modules ul.options a {
+	font-weight: bold;
+}
+
+#related-modules ol {
+	font-weight: bold;
+	padding-left: 15px;
+	margin-left: 5px;
+	margin-top: 0;
+}
+
+#related-modules ol li {
+	margin-bottom: 3px;
+	padding: 0;
+}
+
+#related-modules li a {
+	font-weight: normal;
+}
+
+#content #section #related-modules .block .column ul.bullet {
+	margin-left: 10px;
+}
+
+#content #section #related-modules .block .col-1 {
+	width: 50%;
+	margin-right: 0;
+}
+
+#content #section #related-modules .block .col-2 {
+	margin-right: 0;
+}
+
+#related-modules .feature {
+	margin-bottom: 15px;
+}
+
+#related-modules .feature img {
+	float: right;
+	margin: 0 0 10px 20px;
+}
+
+#related-modules h5.info {
+	margin: 15px 0 4px;
+}
+
+#related-modules .feature dl,
+#related-modules .feature dd {
+	margin: 0;
+}
+
+#related-modules .feature dl {
+	line-height: 1.4;
+}
+
+#related-modules .feature dt {
+	font-weight: bold;
+}
+
+#related-modules .feature ul {
+	clear: both;
+}
+
+#related-modules .feature ul.bullet li {
+	background-position: 0 3px;
+	margin: 0 0 3px;
+}
+/*
+	Top 10 striped Box Office movies list
+*/
+
+.top-10-list ol {
+	font-weight: bold;
+	margin: 10px 0 0 -5px;
+	padding-left:7px;
+	line-height: 1.6em;
+}
+
+.top-10-list ol li.top-pick a{
+	font: bold 15px Arial, Helvetica, sans-serif;
+}
+
+.top-10-list li a {
+	font-weight: normal;
+}
+
+.top-10-list p.note {
+	margin-top: 5px;
+}
+
+.top-10-list .content ol li img.check {
+	border:none;
+	background:inherit;
+}
+
+#content #content-layout #content-primary-wrap .top-10-list .module {
+	background: #fff;
+	padding: 12px 2px 4px 4px;
+	border-bottom: 8px solid #ECEAE8;
+	margin-bottom: 8px;
+	border: 1px solid #ccc;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.top-10-list .head h3 {
+	text-align: left;
+	background: url(https://images.nymag.com/images/2/graphics/07/entertainment/horiz-dotted-rule-dark.gif) repeat-x scroll 0pt 75%;
+	margin-bottom:10px;
+}
+
+.top-10-list li.odd {
+	background-color: #FFF;
+	background: url(https://images.nymag.com/images/2/graphics/07/entertainment/horiz-dotted-rule-light.gif) repeat-x scroll 0pt 100%;
+	list-style-position: inside;
+}
+
+.top-10-list li.even {
+	background: #f9f9f9 url(https://images.nymag.com/images/2/graphics/07/entertainment/horiz-dotted-rule-light.gif) repeat-x scroll 0pt 100%;
+	list-style-position: inside;
+}
+
+
+/*
+	Recently reviewed
+*/
+#content-secondary .recently-reviewed .review {
+	background: url("https://images.nymag.com/images/2/bg-border-beveled.gif") repeat-x 100% 0;
+	margin: 0 0 10px;
+}
+
+.recently-reviewed .head h3 {
+	margin: 0px 0pt 5px;
+	padding: 0pt 0pt 8px;
+	background: none;
+}
+
+.recently-reviewed h5, .recently-reviewed h6 {
+	text-align: center;
+}
+
+#content-secondary .recently-reviewed .head h5 {
+	margin: 10px 0;
+}
+
+.recently-reviewed h4 p {
+	display: block;
+}
+
+.recently-reviewed h6 {
+	background: url("https://images.nymag.com/images/2/bg-border-beveled.gif") repeat-x 0 100%;
+	padding: 7px 0;
+	margin: 4px 0;
+}
+
+.recently-reviewed .content {
+	padding-bottom: 10px;
+}
+
+.recently-reviewed .content p {
+	margin-top: 0;
+}
+
+.recently-reviewed .content dt {
+	font-size: 12px;
+	text-align: center;
+	margin-bottom: 2px;
+}
+
+#content .recently-reviewed .content dt img {
+	border: 1px solid #CCCECE;
+	display: block;
+	margin-bottom: 3px;
+}
+
+.recently-reviewed .content dd {
+	color: #000;
+	margin: 0;
+}
+
+.recently-reviewed .content dt a {
+	font-weight: bold;
+}
+
+#content-secondary .recently-reviewed img {
+	border: none;
+}
+
+.recently-reviewed .content ul, .recently-reviewed .content ul li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.recently-reviewed .content ul li {
+	font: normal 11px/1.4 Arial, Helvetica, Verdana, Geneva, sans-serif;
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 7px;
+	padding-left: 7px;
+}
+
+/*
+	Recent Stories
+*/
+
+#content-secondary .recent-stories {
+	margin: 0 0 10px;
+}
+
+.recent-stories .content {
+	margin: 0;
+}
+
+.recent-stories .content .story {
+	background: url("https://images.nymag.com/images/2/bg-border-beveled.gif") repeat-x;
+	margin-bottom: 20px;
+}
+
+.recent-stories .content h5 {
+	background: url("https://images.nymag.com/images/2/bg-border-beveled.gif") repeat-x 0 100%;
+	padding: 7px 0;
+	margin: 0 0 7px;
+	text-align: center;
+}
+
+#content .recent-stories .content h5 img {
+	border: none;
+}
+
+.recent-stories h6 {
+	font: bold 12px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	text-align: center;
+	margin: 0 0 6px;
+}
+
+#content .recent-stories ul li {
+	background-image:url(https://images.nymag.com/images/2/bullet-gray.gif);
+}
+
+.recent-stories h6 a cite {
+	display: block;
+	font-style: normal;
+	margin: .7em 0 .2em;
+}
+
+.recent-stories h6 a:hover cite {
+	text-decoration: underline;
+}
+
+.recent-stories p {
+	margin-top: 0;
+}
+
+#content .recent-stories ul a {
+	font-weight: normal;
+}
+
+.recent-stories ol {
+	font-weight: bold;
+	padding-left: 7px;
+	margin-left: 15px;
+}
+
+.recent-stories ol li a {
+	font-weight: normal;
+}
+
+/*
+	Calendars
+*/
+#calendar {
+	margin: 0 -1px 30px;
+}
+
+#calendar .head h4 {
+	border-bottom: 1px solid #E5E6E6;
+	font-size: 1.7em;
+	margin: 0 0 8px;
+	padding-bottom: 8px;
+}
+
+#calendar #all-calendars-link {
+	position: absolute;
+	left: -500em;
+}
+
+#calendar .head img {
+	border: none;
+}
+
+#calendar .content {
+	margin: 0;
+	padding: 8px 0 0;
+}
+
+#calendar .content p.note {
+	color: #666;
+	font-style: normal;
+	margin-bottom: 8px;
+}
+
+#calendar .content p.splash {
+	margin: 0 0 4px;
+}
+
+/* Calendar navigation */
+#calendar-nav, #calendar-nav li, #calendar-nav-restaurants, #calendar-nav-restaurants li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#calendar-nav, #calendar-nav-restaurants {
+	margin-bottom: 5px;
+}
+
+#calendar-nav li, #calendar-nav-restaurants li {
+	float: left;
+	margin: 0 2px 0 0;
+	text-align: center;
+	width: 37px;
+}
+
+#calendar-nav li.last, #calendar-nav-restaurants li.last {
+	margin-right: 0;
+}
+
+#calendar-nav li a, #calendar-nav-restaurants li a {
+	background: #7E7E7E url("https://images.nymag.com/images/2/nav-calendar-bottom.gif") no-repeat 0 100%;
+	color: #FFF;
+	display: block;
+	padding-top: 32px;
+	min-height: 1px;
+	text-decoration: none;
+}
+
+#calendar-nav li a:hover {
+	background-color: #B7B9BB;
+}
+
+#calendar-nav li.current a {
+	background-color: #900;
+}
+
+#calendar-nav-restaurants li a:hover {
+	background-color: #B7B9BB;
+}
+
+#calendar-nav-restaurants li a {
+	background: #7E7E7E url("https://images.nymag.com/images/2/nav-calendar-bottom.gif") no-repeat 0 100%;
+	color: #FFF;
+	display: block;
+	padding-top: 32px;
+	min-height: 1px;
+	text-decoration: none;
+}
+
+#calendar-nav li a span, #calendar-nav-restaurants li a span {
+	background: url("https://images.nymag.com/images/2/nav-calendar-top.gif") no-repeat;
+	display: block;
+	margin-top: -32px;
+	padding: .4em 0 0;
+	text-transform: uppercase;
+}
+
+#calendar-nav li.last a span cite, #calendar-nav-restaurants li.last a span cite {
+	background: url("https://images.nymag.com/images/2/arrow-all.gif") no-repeat 50% 100%;
+	font-style: normal;
+	padding-bottom: 11px;
+}
+
+#calendar-nav li acronym, #calendar-nav-restaurants li acronym {
+	display: block;
+}
+
+table.calendar {
+	border-bottom: 1px solid #F5F4F0;
+	border-collapse: collapse;
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	clear: left;
+	width: 100%;
+}
+
+table.calendar caption, table.calendar tr.even {
+	background: #F5F4F0;
+}
+
+table.calendar td.color {
+	background: #F5F4F0;
+	border-top: 2px solid #FFF;
+}
+
+table.calendar caption {
+	color: #868585;
+	font-weight: bold;
+	margin: 0 1px;
+	padding: 3px 0 3px 5px;
+	text-align: left;
+}
+
+#calendar table.calendar caption {
+	margin-top: 8px;
+	margin-bottom: -6px;
+}
+
+#calendar #all-calendars table.calendar caption {
+	margin-bottom: 0;
+}
+
+#calendar table.calendar caption a.more {
+	background: url("https://images.nymag.com/images/2/arrow-more.gif") no-repeat 100% 50%;
+	color: #1F63B8;
+	float: right;	/* Odd Gecko positioning bug doesn't let us position: these links... */
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	padding-right: .8em;
+	margin-right: 5px;
+	text-transform: none;
+}
+
+table.calendar caption.note {
+	text-transform: uppercase;
+}
+
+table.calendar tbody th, table.calendar tbody td {
+	padding: 5px 0;
+	vertical-align: top;
+}
+
+table.calendar tbody th {
+	font-weight: normal;
+	padding: 4px 2px 4px 5px;
+	text-align: left;
+	white-space: nowrap;
+}
+
+table.calendar tbody td {
+	padding-left: 5px;
+}
+
+table.calendar tbody th.full {
+	width: 100%;
+}
+
+table.full {
+	margin: 0 -2px;
+}
+
+#calendar ul.options {
+	padding-left: 8px;
+}
+
+/* All calendar tables are contained here */
+#all-calendars {
+	clear: left;
+}
+
+/*
+	Wide-format column layout
+*/
+body.ad-column-300 .module .row, body.section-3col-splash .module .row, body.fixed_right_column .module .row {
+	margin-bottom: 1em;
+	clear: both;
+}
+
+body.ad-column-300 .module .column, body.section-3col-splash .module .column, body.fixed_right_column .module .column {
+	float: left;
+	margin: 0;
+	padding: 0;
+	width: 157px;
+}
+
+body.ad-column-300 .module .col-1, body.section-3col-splash .module .col-1, body.fixed_right_column .module .col-1 {
+	margin-right: 2%;
+	float: right;
+}
+/*-  Section modules
+----------------------------------------------------------------------*/
+#section .column .block {
+	margin-bottom: 22px;
+}
+
+#section .column .ad-adjacent {
+	margin-top: -10px;
+}
+
+#section .column .ad-block {
+	margin-bottom: 0;
+}
+
+.generic-top form p {
+	/* fix for odd Safari margin bug */
+	margin-bottom: 0;
+}
+
+/* "Story" lists */
+
+#section ul.bullet li {
+	background-image: url(https://images.nymag.com/images/2/bullet-gray.gif);
+}
+
+#section-content ul.bullet li {
+	background-image: url(https://images.nymag.com/images/2/bullet-gray.gif);
+}
+
+#story dl.story {
+	clear: both;
+}
+
+#lead .feature dl.story {
+	clear: none;
+}
+
+dl.story {
+	margin: 0 0 1.5em;
+	padding: 0;
+}
+
+dl.story dt {
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 17px;
+	margin: 0;
+	padding: 0;
+}
+
+dl.story dt.sec {
+	font-size: 18px;
+	font-weight: normal;
+	line-height: 21px;
+}
+
+dl.story dt img {
+	border: 1px solid #CCCECE;
+	float: right;
+	margin-bottom: 7px;
+	margin-left: 23px;
+}
+
+dl.story dt img.left {
+	float: left;
+}
+
+#content dl.story dt img.check {
+	border: none;
+	float: none;
+	margin: 0;
+}
+
+dl.story dt img.up {
+	margin-top: -1em;
+}
+
+dl.story dd {
+	font-size: 11px;
+	line-height: 1.4;
+	margin: 0;
+	padding:0; /* IA 6/17 - added zero padding */
+}
+
+dl.story dd p {
+	margin-top: 0;
+	margin-bottom: 0; /* IA 6/17 - added zero bottom margin */
+}
+
+dl.story dd p.info {
+	color: #656565;
+	font-family: Arial, Helvetica, Verdana, Geneva, sans-serif;
+}
+
+dl.story dd.byline {
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin-bottom: 2px;
+}
+
+dl.story dd ul.options {
+	margin-top: .5em;
+	margin-bottom: 0;  /* IA 6/17 - added zero bottom margin */
+}
+
+.alt-story dl.story, .alt-story dl.story dt {
+	font-family: Arial, Helvetica, Verdana, Geneva, sans-serif;
+	font-size: 11px;
+}
+
+dl.story span.date {
+	color: #666;
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+}
+
+dl.tight dt img {
+	margin-top: -14px;
+}
+
+ul.serial-stories, ul.serial-stories li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.serial-stories {
+	border-top: 1px solid #FFF;
+	margin: 0 0 20px;
+}
+
+#lead ul.serial-stories {
+	margin: 14px 0 0;
+}
+
+ul.serial-stories li {
+	clear: right;
+	float: left;
+	width: 100%;
+	padding: 20px 0 0;
+}
+
+ul.banded-stories {
+	border-bottom: 1px solid #EFEDEB;
+}
+
+ul.banded-stories li.last {
+	border-bottom: none;
+}
+/*
+	Calendar without dates (Calendar_NoDates_A&E, Calendar_NoDates_Movies)
+*/
+#content .calendar-no-dates h4.banded {
+	margin-bottom: 4px;
+}
+
+/* Timestamped lists */
+dl.timed, dl.timed dd {
+	margin: 0;
+	text-align: center;
+}
+
+dl.timed {
+	line-height: 1.3;
+	margin-top: 14px;
+}
+
+dl.timed dt, dl.timed dd.time {
+	display: inline;
+	font-size: 1em;
+	margin: 0;
+}
+
+dl.timed dt {
+	font-style: italic;
+}
+
+dl.timed dd.time {
+	border-left: 1px solid #000;
+	padding-left: .5em;
+	margin-left: .3em;
+	text-transform: lowercase;
+}
+
+dl.timed dd {
+	font-size: 1.1em;
+	margin-bottom: 1.4em;
+}
+
+dl.timed p {
+	margin: 0 0 1em;
+}
+
+/* "Dated" list */
+dl.dated, dl.dated dd {
+	margin: 0;
+	text-align: center;
+}
+
+dl.dated {
+	line-height: 1.3;
+	margin: .4em 0;
+}
+
+dl.dated dt {
+	color: #C69C6D;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+dl.dated dd {
+	margin: 0 0 .7em;
+}
+
+/* "Action" links */
+p.action {
+	line-height: 1.6;
+	margin: 0 0 2em;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+p.action a {
+	text-decoration: underline;
+}
+
+p.action a:hover {
+	text-decoration: none;
+}
+
+ul.action, ul.action li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.action {
+	font-weight: bold;
+	line-height: 1.4;
+	margin: 1em 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+/* Faces list */
+dl.faces, dl.faces dd {
+	margin: 0;
+}
+
+dl.faces {
+	line-height: 1.3;
+	margin: 1em auto 0;
+	position: relative;
+	width: 115px;
+}
+
+dl.faces dt {
+	color: #8A7B62;
+	font-weight: bold;
+	margin-bottom: .3em;
+	text-transform: uppercase;
+}
+
+dl.faces dt img {
+	border: 1px solid #CCCECE;
+	display: block;
+	margin-bottom: 5px;
+}
+
+dl.faces dd {
+	font: bold 1.1em Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin-bottom: 1.5em;
+}
+
+dl.faces a i {
+	display: block;
+	height: 116px;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 116px;
+}
+
+/* Content Promo list */
+dl.promo, dl.promo dd {
+	margin: 0;
+}
+
+dl.promo {
+	line-height: 1.3;
+	margin: 1em auto 0;
+	position: relative;
+	width: 158px;
+}
+
+dl.promo dt {
+	color: #8A7B62;
+	font-weight: bold;
+	margin-bottom: .3em;
+	text-transform: uppercase;
+}
+
+dl.promo dt img {
+	border: 1px solid #CCCECE;
+	display: block;
+	margin-bottom: 5px;
+}
+
+dl.promo dd {
+	font: bold 1.1em Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin-bottom: 1.5em;
+}
+
+dl.promo a i {
+	display: block;
+	height: 80px;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 157px;
+}
+
+/* "Section" heading (banded headline) */
+.module .section {
+	border: 1px solid #000;
+	border-width: 1px 0;
+	font-size: 1em;
+	letter-spacing: .15em;
+	margin: 0;
+	padding: .5em 0 .4em;
+	text-transform: uppercase;
+}
+
+/* Image + caption */
+.module p.thumb {
+	font: bold 1.1em Arial, Helvetica, Verdana, Geneva, sans-serif;
+	text-align: center;
+	margin: 0 0 1em;
+}
+
+.module p.thumb img {
+	display: block;
+	margin: 0 auto 1.5em;
+}
+
+/*
+	Lists
+*/
+ul.bullet, ul.bullet li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.bullet li {
+	background: url("https://images.nymag.com/images/2/bullet-black.gif") no-repeat 0 .6em;
+	padding-left: 7px;
+}
+
+ul.bullet li a {
+	font-weight: bold;
+}
+
+#content ul.bullet img {
+	border: none;
+	float: none;
+	margin: 0;
+}
+
+ul.ruled {
+	border-top: 1px solid #EFEDEB;
+}
+
+ul.ruled li {
+	background-position: 0 .75em;
+	border-bottom: 1px solid #EFEDEB;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+
+ul.byline,
+ul.byline li {
+	list-style: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+body.section-4col #section .col-2 ul.ruled {
+	margin: 0 -8px;
+}
+
+body.section-4col #section .col-2 ul.ruled li {
+	background-position: 8px 50%;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+ul.byline {
+	margin:0;
+	padding:0;
+	display: inline;
+}
+
+ul.byline li {
+	display: inline;
+}
+
+ul.byline li.by {
+	color: #000;
+	margin-right: 1em;
+}
+
+ul.byline li.by {
+	text-transform:capitalize;
+}
+
+ul.byline li.by a {
+	font-weight: bold;
+}
+
+ul.byline li.date {
+	color: #A2A2A2;
+}
+
+ul.options,
+ul.options li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.options {
+	font: normal 1em Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin: 1em 0 1.5em;
+}
+
+ul.options li {
+	display: inline;
+}
+
+ul.options li {
+/* IA 6/17 - was:
+	border-right: 1px solid #1A1A1A;
+	padding: 0 .3em 0 0;
+	margin-right: .1em;  */
+	border-right: 1px solid #CBCBCB;
+	display: inline;
+	padding: 0 .35em 0 0;
+	margin-right: .16em;
+}
+
+ul.options li.last {
+	border-right: 0;
+	padding-right: 0;
+	margin-right: 0;
+}
+
+ul.options-sm {
+	font-size: 10px;
+}
+
+ul.options-med {
+	font-size: 11px;
+}
+
+/*
+	Listings
+*/
+h2.list-head {
+	border-bottom: 1px solid #F0F0F0;
+	font-size: 16px;
+	margin: 0 0 8px;
+	padding: 0 0 4px;
+}
+
+.listing-nav ul, .listing-nav ul li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.listing-nav {
+	border: 1px solid #F0F0F0;
+	border-width: 1px 0;
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin: 10px 0;
+	padding: 1px 0;
+}
+
+.listing-nav ul {
+	background: #F5F4F0;
+	padding: 6px 1px;
+	text-align: center;
+}
+
+.listing-nav ul li {
+	border-left: 1px solid #1A1A1A;
+	display: inline;
+	padding: 0 .2em 0 .4em;
+}
+
+.listing-nav ul li.first {
+	border-left: 0;
+	padding-left: 0;
+}
+
+.listing-set, .listing-set li, .listing-set ul {
+	list-style: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+.listing-set {
+	margin-top: 0;
+	margin-bottom: 50px;
+	color: #222;
+}
+
+.listing-set li {
+	margin-bottom: 10px;
+}
+
+.listing-full li {
+	margin-bottom: 20px;
+}
+
+.listing-full li.multiheader {
+    margin-bottom: 0px;
+}
+
+.listing-set li.divider {
+	border-top: 1px solid #E6E6E6;
+	margin-top: 25px;
+}
+
+.listing-set li li {
+	margin-bottom: 0;
+}
+
+.listing-set .number {
+	float: left;
+	font-size: 38px;
+	font-weight: bold;
+	line-height: 30px;
+	margin: 0 5px 10px 0;
+	padding: 0;
+}
+
+.listing-set dl, .listing-set dd {
+	margin: 0;
+}
+
+.listing-set dl {
+	font-size: 13px;
+	font-weight: normal;
+	line-height: 1.54;
+}
+
+.listing-set dt {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.listing-set dt img {
+	float: left;
+	margin: 0 10px 5px 0;
+}
+
+.listing-set p {
+	margin: .5em 0;
+}
+
+.listing-set p.address {
+	font: italic 1em Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin: 2px 0;
+}
+
+#content .listing-set p.note { /* Extra specificity needed to override "#main p.note" rule */
+	clear: none;
+	font-style: normal;
+	margin: 2px 0;
+	text-transform: uppercase;
+}
+
+.listing-set ul.notes {
+	margin-bottom: 10px;
+}
+
+.listing-set ul.notes li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .6em;
+	font-size: 11px;
+	padding-left: 7px;
+}
+
+.listing-set ul.notes li cite {
+	font-style: normal;
+	font-weight: bold;
+}
+
+.listing-set h4 {
+	font-size: 14px;
+	margin: 5px 0;
+}
+
+.listing-set h5 {
+	font: bold 10px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin: 0;
+}
+
+/*
+	Guides
+*/
+.module-guides {
+	background: #FCFCFC url("https://images.nymag.com/images/2/bg-hatch.gif");
+	font: bold 11px Arial, Helvetica, sans-serif;
+	padding: 8px 10px 2px;
+	margin: 0 0 7px;
+}
+
+.module-guides .head {
+	background: url("https://images.nymag.com/images/2/bg-border-beveled.gif") repeat-x 0 100%;
+	padding-bottom: 1px;
+	margin-bottom: 1px;
+	text-align: center;
+}
+
+#content .module-guides .head img {
+	border: none;
+}
+
+.module-guides .content ul, .module-guides .content li {
+	list-style: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+.module-guides .content ul {
+	margin: 0 0 10px;
+}
+
+.module-guides .content li {
+	border-bottom: 1px solid #E9E9E9;
+	font-weight: bold;
+	padding: 4px 0;
+	text-align: center;
+}
+
+.module-guides .content li.first {
+	padding-top: 0;
+}
+
+.module-guides .content a b {
+	color: #C00;
+}
+
+/*
+	Feature Modules
+*/
+.module-feature {
+	background: #FCFCFC url("https://images.nymag.com/images/2/bg-hatch.gif");
+	font: normal 11px Arial, Helvetica, sans-serif;
+	padding: 8px 10px 2px;
+	margin: 0 0 7px;
+}
+
+.module-feature .head {
+	background: url("https://images.nymag.com/images/2/bg-border-beveled.gif") repeat-x 0 100%;
+	padding-bottom: 1px;
+	margin-bottom: 1px;
+	text-align: center;
+}
+
+.module-feature .head h5 {
+	/* background: url("https://images.nymag.com/images/2/home/06/10/week3/halloween_header.gif") no-repeat 50% 0; */
+	/* text-indent: -1000px; */
+	display: block;
+	height: 32px;
+	margin: 0 0 4px;
+	padding: 0;
+}
+
+.module-feature .content p {
+	padding: 0;
+	margin: 7px 0;
+}
+
+.module-feature .content p.head {
+	text-align: center;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.module-feature .content p.subhead {
+	font-size: 12px;
+}
+
+.module-feature .content p.teaser {
+	font-size: 12px;
+	text-align: left;
+	font-weight: bold;
+}
+
+.module-feature .content ul, .module-feature .content li {
+	list-style: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+.module-feature .content ul {
+	margin: 0 0 10px;
+}
+
+.module-feature .content li {
+	background: url("https://images.nymag.com/images/2/bullet-black.gif") no-repeat 0 50%;
+	font-weight: bold;
+	padding: 3px 4px;
+	text-align: left;
+}
+
+/*
+	Best of NY splash
+*/
+#bony-splash {
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	padding-top: 20px;
+}
+
+#bony-splash ul.pick, #bony-splash li.pick {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#bony-splash li.pick {
+	float: left;
+	margin-right: 14px;
+	height: 360px;
+	width: 175px;
+}
+
+#bony-splash li.pick dt img {
+	border: none;
+}
+
+#bony-splash li.pick dl, #bony-splash li.pick dd {
+	margin: 0;
+}
+
+#bony-splash li.pick dd {
+	margin-top: -28px;
+}
+
+#bony-splash li.pick dd p {
+	line-height: 1.4;
+}
+
+#bony-splash li.pick dd ul.bullet li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .4em;
+	margin-bottom: .2em;
+}
+
+/*
+	Best of NY Directories (Neighborhood, A-Z, etc.)
+*/
+.bony-section {
+	clear: both;
+	margin: 1em 0;
+}
+
+.bony-section .row {
+	font-family: Arial, Helvetica, Verdana, Geneva, sans-serif;
+}
+
+.bony-section .column {
+	float: left;
+	width: 48%;
+}
+
+#content .bony-section h5 {
+	font-size: 11px; /* Needed to override inheritance */
+	margin: 0;
+}
+
+.bony-section ul, .bony-section ul li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.bony-section ul {
+	margin: 0 0 1em;
+	font-size: 11px;
+}
+
+.bony-section ul li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .6em;
+	padding-left: 7px;
+}
+
+.bony-nav-alpha {
+	border: 1px solid #EFEDEB;
+	border-width: 1px 0;
+	clear: both;
+	padding: 2px 0;
+}
+
+.bony-nav-alpha ul, .bony-nav-alpha ul li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.bony-nav-alpha ul li {
+	display: inline;
+	font-size: 14px;
+	margin-left: 9px;
+	text-transform: uppercase;
+}
+
+.bony-nav-alpha ul li.first {
+	margin-left: 0;
+}
+
+/*
+	Fall Preview 07
+
+#fp-splash {
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	padding-top: 20px;
+}
+
+#fp-splash ul.pick, #fp-splash li.pick {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#fp-splash li.pick {
+	float: left;
+	margin-right: 14px;
+	height: 250px;
+	width: 175px;
+}
+
+#fp-splash li.pick dt img {
+	border: none;
+}
+
+#fp-splash li.pick dl, #fp-splash li.pick dd {
+	margin: 0;
+}
+
+#fp-splash li.pick dd {
+	margin-top: -28px;
+}
+
+#fp-splash li.pick dd p {
+	line-height: 1.4;
+}
+
+#fp-splash li.pick dd ul.bullet li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .4em;
+	margin-bottom: .2em;
+}
+*/
+
+/*
+	"Order This Issue Today"
+*/
+.module-order-issue {
+	padding: 12px 11px 5px;
+}
+
+.module-order-issue .head {
+	text-align: center;
+}
+
+#content .module-order-issue .head img, #content .module-order-issue .content .columns-2 .col-2 img {
+	border: none;
+}
+
+body.ad-column-300 .module-order-issue .content .columns-2 .col-1, body.fixed_right_column .module-order-issue .content .columns-2 .col-1 {
+	float: right;
+	width: 150px;
+}
+
+.module-order-issue .content .columns-2 .col-2 {
+	line-height: 1.3;
+}
+
+body.ad-column-300 .module-order-issue .content .columns-2 .col-2, body.fixed_right_column .module-order-issue .content .columns-2 .col-2 {
+	margin-right: 175px;
+	padding-top: 45px;
+}
+
+/*
+	Expand-collapse-list like on BONY 2007 section pages - can be used elsewhere as well
+
+.expand-collapse-list {
+	width: 100%;
+}
+
+.expand-collapse-list h3 {
+	border-top: 1px solid #E6E6E6;
+	font: bold .95em Georgia, Garamond, Times, "Times New Roman", serif;
+	margin: .4em 0 0;
+	padding: .6em 0;
+	text-transform: uppercase;
+}
+
+.expand-collapse-list h3, .expand-collapse-list h3 a {
+	color: #000;
+}
+
+.expand-collapse-list h3 a {
+	background: url("https://images.nymag.com/fashion/fashionshows/images/2/ico-minus.gif") no-repeat 2px 50%;
+	display: block;
+	padding-left: 18px;
+}
+
+.expand-collapse-list .closed h3 a {
+	background-image: url("https://images.nymag.com/fashion/fashionshows/images/2/ico-plus.gif");
+}
+
+.expand-collapse-list .row {
+	border-top: 1px solid #E6E6E6;
+	padding-top: .4em;
+}
+
+.expand-collapse-list .closed .row {
+	display: none;
+}
+
+.expand-collapse-list .column ul, .expand-collapse-list .column li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.expand-collapse-list .column {
+	float: left;
+	padding-right: 10px;
+}
+
+.expand-collapse-list .column ul li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 6px .5em;
+	font: 11px Arial, Helvetica, sans-serif;
+	color: #1F638A;
+	line-height: 1.5em;
+}
+
+#content .expand-collapse-list .column li a img {
+	border: none;
+}
+
+*/
+
+/*
+	Expand/collapse list on section pages
+*/
+.expand-collapse-list h3 {
+	border-top: 1px solid #E6E6E6;
+	font: bold 10px Georgia, Garamond, Times, "Times New Roman", serif;
+	margin: .4em 0 0;
+	padding: .6em 0;
+	text-transform: uppercase;
+}
+
+.expand-collapse-list h3, .expand-collapse-list h3 a {
+	color: #000;
+}
+
+.expand-collapse-list h3 a {
+	background: url("https://images.nymag.com/fashion/fashionshows/images/2/ico-minus.gif") no-repeat 2px 50%;
+	display: block;
+	padding-left: 18px;
+}
+
+.expand-collapse-list .closed h3 a {
+	background-image: url("https://images.nymag.com/fashion/fashionshows/images/2/ico-plus.gif");
+}
+
+.expand-collapse-list .row {
+	border-top: 1px solid #E6E6E6;
+	padding-top: .4em;
+}
+
+.expand-collapse-list .closed .row {
+	display: none;
+}
+
+.expand-collapse-list ul.column, .expand-collapse-list ul.column li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.expand-collapse-list ul.column {
+	float: left;
+	width: 47%;
+}
+
+.expand-collapse-list ul.column li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 6px .5em;
+	padding-left: 18px;
+	font: 11px Arial, Helvetica, sans-serif;
+	color: #1F638A;
+	line-height: 1.5em;
+}
+
+#content .expand-collapse-list ul.column li a img {
+	border: none;
+}
+
+/*
+	Video Look Book CMS page and include file for archive videos
+*/
+
+#lookbook-video-archive {
+	border-top: solid #7f7f7f 1px;
+	padding: 0;
+	margin: 5px 0;
+	position: relative;
+	border-bottom: solid #000 1px;
+	float: left;
+	width: 100%;
+}
+
+#lookbook-video-archive img {
+	border: none;
+}
+
+#lookbook-video-archive ul {
+	float: left;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#lookbook-video-archive ul li {
+	float: left;
+	list-style: none;
+	padding: 0 2px 2px;
+	margin: 0;
+}
+
+#lookbook-video-archive .header {
+	padding: 3px 0;
+
+	font: bold 10px Georgia, "Times New Roman", Times, serif;
+	text-transform: capitalize;
+}
+
+#lookbook-video-archive .header a.all {
+	position: absolute;
+	left: 490px;
+	font: normal 11px Arial, Helvetica, sans-serif;
+}
+
+#lookbook-video-player {
+	text-align: center;
+}
+
+#lookbook-video-player .video {
+	border: solid #7f7f7f 1px;
+	padding: 4px;
+	width: 430px;
+	margin: 10px auto 15px auto;
+}
+
+/* Sales & Bargains Page */
+
+#lead-sb {
+	margin-top: 7px;
+	width: 100%;
+	clear: left;
+}
+
+#lead-sb .head {
+	border-bottom: double;
+	padding: 25px 0pt 50px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+#lead-sb .head .col-1 {
+	float: left;
+	width: 300px;
+	margin-right: 0;
+}
+
+#lead-sb .head .col-1 cite {
+	font: normal 38px/1.1 Georgia, "Times New Roman", Times, serif;
+	border-right: 1px solid #000;
+	padding-right: 15px;
+}
+
+#lead-sb .head .col-2 {
+	float: left;
+	width: 200px;
+	padding-left: 15px;
+	margin: 0;
+}
+
+#lead-sb .head .col-2 dl.more {
+	margin: 0;
+	padding: 0;
+	float: left;
+}
+
+#lead-sb .head .col-2 dl.more dt {
+	font: 9px Georgia, "Times New Roman", Times, serif;
+	font-style: italic;
+	line-height: 1.5;
+}
+
+#lead-sb .head .col-2 dl.more dd {
+	margin: 0;
+	padding-left: 20px;
+	background: url(https://images.nymag.com/images/2/graphics/redesign06/shopping/yellow_arrow.gif) no-repeat 0 50%;
+	text-transform: capitalize;
+	font: 16px/1.2 normal Georgia, "Times New Roman", Times, serif;
+}
+
+#lead-sb .content {
+	position: relative;
+	padding-bottom: 30px;
+	width: 100%;
+}
+
+#lead-sb .content .col-1 {
+	float: left;
+	margin-right: 2%;
+	width: 65%;
+	font: 13px Georgia, "Times New Roman", Times, serif;
+	line-height: 1.3em;
+}
+
+#lead-sb .content .col-2 {
+	float: right;
+	margin: 0;
+	width: 30%;
+	padding: 0;
+	vertical-align: top;
+}
+
+#lead-sb .content ul, #lead-sb .content ul li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#lead-sb .content ul li {
+	padding: 8px 0;
+}
+
+#lead-sb .content ul li em {
+	font-style: italic;
+	font-weight: bold;
+	font-size: 19px;
+}
+
+#lead-sb .content ul li a.details {
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 11px;
+}
+
+#navigation-sb {
+	clear: both;
+	padding: 0 0 25px;
+	margin: 18px 0 5px;
+	border-bottom: solid 1px #000;
+	border-top: solid 2px #000;
+}
+
+#navigation-sb ul, #navigation-sb ul li {
+	float: left;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#navigation-sb ul {
+	text-align: center;
+	padding: 5px 20px 10px 70px;
+}
+
+#navigation-sb ul li {
+	border-left: 1px solid #000;
+	padding: 0 .5em;
+}
+
+#navigation-sb ul li.first {
+	border-left: none;
+}
+
+#navigation-sb ul li a {
+	display: block;
+	text-decoration: none;
+	color: #000;
+	font: 11px Georgia, "Times New Roman", Times, serif;
+}
+
+#navigation-sb ul li a:hover {
+	background: #ed1475;
+	color: #fff;
+}
+
+#story table.calendar-sb {
+	clear: both;
+}
+
+table.calendar-sb {
+	margin: 15px 0;
+	width: 90%;
+}
+
+table.calendar-sb tr {
+	margin: 10px 0;
+}
+
+table.calendar-sb th {
+	width: 20%;
+	font: bold 20px Georgia, "Times New Roman", Times, serif;
+	text-align: left;
+	vertical-align: top;
+}
+
+table.calendar-sb th cite {
+	border-bottom: solid 8px #ffe400;
+	padding-bottom: 4px;
+	color: #000;
+}
+
+table.calendar-sb th cite a {
+	text-decoration: none;
+}
+
+table.calendar-sb td {
+	padding: .5em 0;
+	text-align: left;
+	vertical-align: top;
+	font-size: 11px;
+}
+
+table.calendar-sb td cite {
+	padding-right: 5px;
+	font: 10px/1.1em Georgia, "Times New Roman", Times, serif;
+	color: #545454;
+	font-weight: bold;
+	font-style: normal;
+	border-right: solid 1px #000;
+}
+
+#newsletter-spotlight table {
+	margin-bottom: 15px;
+	padding: 0;
+}
+
+#newsletter-spotlight table ul, #newsletter-spotlight table ul li {
+	list-style: none;
+	padding-left: 10px;
+	margin: 0;
+}
+
+#newsletter-spotlight table td.text-field, #newsletter-spotlight table td.image {
+	padding-left: 10px;
+	padding-bottom: 10px;
+}
+
+#newsletter-spotlight table td.text-field {
+	padding-top: 5px;
+}
+
+/*  --------------
+	Money Issue Flash feature 2006/10/27
+	--------------
+*/
+
+div#nynut-calculator	{
+	padding-left: 8px;
+	background:url(https://images.nymag.com/images/2/graphics/features/06/calculator_strip.gif) repeat-y left;
+}
+
+div#nynut-wrapper	{
+	border-top: 4px solid #000;
+	border-right: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+}
+
+/*
+	Double-column lead split into two columns for Flash unit (homepage for Influentials lead, 5/08/06)
+*/
+
+#lead-double-split {
+	background: #FFF;
+	font-size: 11px;
+	border-bottom: 8px solid #ECEAE8;
+	margin: 0 -12px 0 -13px;
+	padding: 10px 8px 20px;
+	position: relative;
+}
+
+#lead-double-split .left {
+	margin: 0;
+	padding: 0;
+	width: 198px;
+	background-color: #FFF;
+}
+
+#lead-double-split .right {
+	margin: 0;
+	padding: 0;
+	width: 549px;
+	left: 198px;
+	background-color: #FFF;
+}
+
+#lead-double-split .right .head h1 {
+	margin: 0;
+	padding: 0;
+}
+
+#lead-double-split .right .head h1 img {
+	border: none;
+	position: absolute;
+	left: 198px;
+	top: 85px;
+	padding: 0;
+}
+
+#lead-double-split .right .content {
+	position: absolute;
+	left: 198px;
+	top: 85px;
+	padding: 0;
+}
+
+#content #lead-double-split .right .content .column {
+	float: left;
+	margin: 0;
+}
+
+#content #lead-double-split .right .content .col-1 {
+	margin-right: 20px;
+	width: 255px;
+}
+
+#content #lead-double-split .right .content .col-2 {
+	width: 250px;
+}
+
+#lead-double-split .right .content h2 {
+	color: #414141;
+	font: bold 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin: 0 0 5px;
+}
+
+#lead-double-split .right .content h3.splash {
+	font-size: 28px;
+	font-weight: normal;
+	margin: 0;
+}
+
+#lead-double-split .right .content dt img {
+	margin-left: 0;
+}
+
+#lead-double-split .right .content dd {
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	line-height: 1.4;
+}
+
+#lead-double-split .right ul.bordered {
+	border-top: 1px solid #CCC;
+}
+
+#lead-double-split .right ul.bordered li {
+	background: none;
+	float: left;
+	border-bottom: 1px solid #CCC;
+	width: 50%;
+	padding: 0;
+}
+
+#lead-double-split .right ul.bordered li a {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 50%;
+	padding-left: 7px;
+}
+
+.lead-vertical {
+	font-size: 11px;
+	line-height: 1.5;
+}
+
+.lead-vertical p.image {
+	margin: 0 0 8px;
+}
+
+.lead-vertical p {
+	margin-bottom: 0;
+}
+
+.lead-vertical ul.options {
+	margin-top: .5em;
+}
+
+.lead-vertical h5.info {
+	margin: 8px 0;
+}
+
+.lead-vertical .feature h5.info {
+	margin: 0 0 5px;
+}
+
+.lead-vertical .feature dt {
+	font-size: 23px;
+	font-weight: normal;
+	line-height: 1.13;
+	margin: 0 0 4px;
+}
+
+.lead-vertical .feature dt a {
+	color: #232323;
+	font-weight: bold;
+}
+
+.lead-vertical .feature dt a.full {
+	color: #1F638A;
+}
+
+.lead-vertical .feature dt.alt {
+	color: #454545;
+}
+
+/*
+	Full page two column Double lead Box used on /guides/holidays/index.html
+*/
+
+#lead-full-feature-box {
+	font-size: 11px;
+	margin: 0 0 0 0;
+	padding: 0 5px 5px 0;
+	width: 960px;
+	height: 275px;
+	position: relative;
+}
+
+#lead-full-feature-box .flash {
+	margin: 0;
+	padding: 0;
+}
+
+#lead-full-feature-box .content {
+	position: absolute;
+	left: 420px;
+	top: 10px;
+	padding: 0 2px 0 0;
+	float: right;
+}
+
+#content #lead-full-feature-box .content .column {
+	float: left;
+	margin: 0;
+}
+
+#content #lead-full-feature-box .content .col-1 {
+	margin-right: 10px;
+	width: 220px;
+}
+
+#content #lead-full-feature-box .content .col-1 p {
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	line-height: 1.4;
+}
+
+#content #lead-full-feature-box .content .col-2 {
+	width: 300px;
+}
+
+#lead-full-feature-box .content dt img {
+	margin-left: 10px;
+}
+
+#lead-full-feature-box .content dt {
+	font: bold 13px Georgia, "Times New Roman", Times, serif;
+	line-height: 1.4;
+}
+
+#lead-full-feature-box .content dd {
+	font: normal 11px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	line-height: 1.4;
+}
+
+
+/*
+	Full-column lead (/news/features/influentials/ lead)
+*/
+#lead-full {
+	background: #FFF;
+	border-bottom: 8px solid #ECEAE8;
+	margin: 0 -12px 0 -13px;
+	padding: 10px 8px 20px;
+	position: relative;
+	width: 920px;
+}
+
+#lead-full .head h1 {
+	margin: 0;
+	padding: 0;
+}
+
+#lead-full .head h1 img {
+	border: none;
+}
+
+/* Lead for Best Lawyers */
+
+#lead .col-1 h2 img, #lead h3 img {
+	float: right;
+}
+
+#lead h2 img {
+	margin-left: 15px;
+	margin-top: 10px;
+}
+
+#lead h2.ruled {
+	border-bottom: 1px solid #E5E6E6;
+	font: bold 10px Georgia, Garamond, Times, "Times New Roman", serif;
+	margin: 20px 0 5px;
+	padding-bottom: 5px;
+	position: relative;
+	text-transform: uppercase;
+	text-align: left;
+}
+
+/* Silo Lead
+----------------------------------------------------------------------
+*/
+
+#silo {
+	background-color:#FFF;
+	background-image: url("");
+	width: 408px;
+	height: 255px;
+	position: relative;
+	left: 0;
+	top: 8px;
+	z-index: 0;
+	border: 0px solid #fff;
+	margin: 0px 0 0px;
+	padding: 0px;
+}
+
+
+#silo h2.splash {
+	font-size: 21px;
+	font-weight: normal;
+	line-height: 1.5em;
+}
+
+/*Used to make the siloed image on the background image a link using <i></i> tags in the HTML*/
+#silo h2.splash a i {
+	display: block;
+	height: 253px;
+	position: absolute;
+	left: 10px;
+	top: 1px;
+	width: 350px;
+}
+
+#silo h2.splash em {
+	font-size: 32px;
+	font-weight: bold;
+	line-height: 1em;
+}
+
+#silo .content {
+	position: absolute;
+	padding: 0;
+	width: 18em;
+	margin-left: 15px;
+	font-size: 11px;
+	font-weight: normal;
+	line-height: 1.5em;
+}
+
+/* End Silo Lead
+----------------------------------------------------------------------
+*/
+
+/* Flash Lead
+----------------------------------------------------------------------
+*/
+
+#flash {
+	height: 255px;
+	position: relative;
+	left: 0;
+	top: 2px;
+	z-index: 0;
+	margin: 0px 0 0px;
+	padding: 0px;
+}
+
+#flash .content {
+	position: absolute;
+	padding: 0;
+	width: 18em;
+	margin-left: 0px;
+}
+
+/*Used to make the siloed image on the background image a link using <i></i> tags in the HTML
+#silo h2.splash a i {
+	display: block;
+	height: 253px;
+	position: absolute;
+	left: 195px;
+	top: 1px;
+	width: 195px;
+}
+*/
+
+/* End Flash Lead
+----------------------------------------------------------------------
+*/
+
+/*For image overlay --
+
+*/
+
+#homepage-lead .silo {
+	position: absolute;
+	left: 11px;
+	top: 10px;
+	z-index: 50;
+	border: 5px dotted #999;
+}
+
+#homepage-lead .silo h2 {
+	color: #414141;
+	font: bold 26px Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin: 0 0 5px;
+}
+
+#homepage-lead h2.silo em {
+	font-size: 34px;
+	font-weight: bold;
+}
+
+#homepage-lead .silo img {
+	border: none;
+	position: absolute;
+	left: 0;
+	top: 8px;
+	z-index: 0;
+}
+
+/* When want a different color text for the lead, change here
+
+#homepage-lead .content * {
+        color: #000;
+}
+
+*/
+
+/*
+	Fashion Week Lead
+*/
+#lead-fashion-wk {
+	border-bottom: 7px solid #EBEAE8;
+	margin: -14px -12px 0 -13px;
+}
+
+#lead-fashion-wk .inner {
+	border: 1px solid #D2D2D2;
+	padding: 0 10px;
+}
+
+#lead-fashion-wk img {
+	border: none;
+}
+
+#lead-fashion-wk h1 {
+	margin: 17px 0 0;
+}
+
+#content #lead-fashion-wk .block {
+	margin: 0;
+}
+
+
+/*~  My Fashion: Spring 2007
+----------------------------------------------------------------------*/
+/*
+	Homepage lead (version a, left)
+*/
+#lead-myfashion {
+	background: #FFF url("https://images.nymag.com/images/2/1px-black.gif") repeat-x 0 100%;
+	font: normal 1.1em Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin-bottom: 8px;
+	padding-left: 7px;
+	position: relative;
+}
+
+#lead-myfashion .head {
+	padding: 7px 0;
+}
+
+#lead-myfashion .head h1 {
+	margin: 0;
+}
+
+/* Today's shows */
+#todays-shows {
+	/* padding-top: 160px;  comment out for ie and ff */
+	margin-left: 159px;
+    margin-top:160px;   /* uncomment for ff and IE7 */
+}
+
+body.fashion.splash #ufoDemo #todays-shows  {
+	margin-left:0;
+	padding-top:30px;
+	padding-bottom: 80px;
+	position: relative;
+	border-bottom: 1px solid #222222;
+}
+
+#todays-shows .head {
+	margin-top: -160px;
+}
+
+body.fashion.splash #ufoDemo #todays-shows .head {
+	margin-top: 0px;
+}
+
+#todays-shows .head, #todays-shows .content {
+
+	padding-left: 7px;
+}
+
+#todays-shows h2, #todays-shows h3 {
+	margin: 0;
+}
+
+div#todays-shows .head h2{
+	border-bottom:1px solid #CCC;
+	padding-bottom: 5px;
+	letter-spacing: .06em;
+	width:265px;
+}
+
+div#todays-shows h2 a, div#fashion-heads ul li.more a span {
+	font:100 10px Georgia, "Times New Roman", Times, serif;
+	text-transform:uppercase;
+	font-style:normal;
+}
+
+#todays-shows .content {
+	padding-right: 170px;
+}
+
+#todays-shows h3 {
+	font: bold 19px Georgia, Garamond, Times, "Times New Roman", serif;
+	margin-top: 0;
+	margin-bottom: 12px;
+	line-height: 1.1;
+}
+
+/* Main image (right-/top-aligned) */
+#todays-shows h3 img {
+	bottom: 96px;
+	margin: 0;
+	position: absolute;
+	right: 0;
+	z-index: 100;
+}
+
+body.fashion.splash #todays-shows h3 img {
+	bottom: 0px;
+}
+
+#todays-shows table {
+	border-collapse: collapse;
+	margin-bottom: 25px;
+	width: 100%;
+}
+
+#todays-shows td {
+	border-top: 1px dotted #CACACA;
+	text-align: left;
+}
+
+#todays-shows caption {
+	font-weight: bold;
+	padding: .2em 0;
+}
+
+#todays-shows td {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .7em;
+	padding: .2em 0 .2em 7px;
+	width: 50%;
+}
+
+#todays-shows td img {
+	vertical-align: baseline;
+}
+
+#todays-shows a.more {
+	font-weight: bold;
+}
+
+/* Bottom Filmstrip */
+
+#filmstrip {
+	background: transparent url(https://images.nymag.com/images/2/dash-blue.gif) repeat-x;
+	background-position:top;
+	margin:0;
+	padding:5px 0;
+}
+
+
+#filmstrip td {
+	width:80px;
+	height:80px;
+	cursor:pointer;
+}
+
+#filmstrip td img{
+	margin:0; padding:0;
+}
+
+#filmstrip tr {
+	height:80px;
+}
+
+#filmstrip p{
+	font: normal 10px Georgia, "Times New Roman", Times, serif;
+	line-height:13px;
+}
+
+#filmstrip p.videos, #filmstrip p.looks{
+	font-weight: bold;
+}
+
+#filmstrip p b{
+	display:block;
+	text-transform:uppercase;
+}
+
+#filmstrip span{
+	font-size:11px;
+}
+
+#filmstrip td div {
+	font: bold 10px Georgia, "Times New Roman", Times, serif;
+	/*display:none;*/
+}
+
+.hoverState div{
+	display:block;
+	position:relative;
+	top:-80px;
+	margin-bottom:-80px;
+	cursor:pointer;
+	text-align:center;
+	background-color:#FF3399;
+	color:#FFF;
+	height:80px;
+}
+
+.hoverState div a{
+	color:#FFF;
+	margin:0;
+	padding:0;
+}
+
+.hoverState div p{
+	margin:0;
+	padding:7px 2px;
+}
+
+.hoverState a:hover {
+	color:#FFF;
+	background-color:#FF3399;
+	margin:0;
+	padding:0;
+}
+
+.hoverState .looks{
+	background-color:#FF3399;
+	color:#FFFFFF;
+}
+
+.hoverState .videos{
+	background-color:#FF3399;
+	color:#FFFFFF;
+}
+
+.regularState div{
+	display:none;
+	cursor:pointer;
+	margin:0;
+	padding:0;
+}
+
+.looks {
+	border:1px solid #CCC;
+	color:#FF3399;
+	padding:13px 5px;
+	margin:0;
+}
+
+.videos{
+	padding:14px 5px;
+	margin:0;
+	color:#FFF;
+	background-color:#000;
+}
+
+
+/* Left-hand promo */
+#fashion-promo-l1 {
+	position: absolute;
+	left: 7px;
+	top: 57px;
+}
+
+/* Left-hand Show & Talk promo */
+#show-talk-promo {
+	position: absolute;
+	left: -21px;
+	top: 33px;
+	width: 180px;
+	height: 208px;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	font: normal 16px Georgia, Garamond, Times, "Times New Roman", serif;
+	font-style: normal;
+}
+
+#show-talk-promo.long {
+	height: 230px;
+}
+
+#show-talk-promo i, #show-talk-promo em	{
+	font-style: normal;
+}
+
+#show-talk-promo.harriet-amy  {
+	background: url(https://images.nymag.com/images/2/home/07/fashion_lede/promo_ha.gif) no-repeat;
+}
+
+#show-talk-promo a {
+	display:block;
+	padding: 94px 1px 0 27px;
+	margin-bottom: 3px;
+	line-height: .95;
+	letter-spacing: .9px;
+	color:#c06;
+	text-indent: -.5em;
+}
+
+h3#show-talk-promo.fug-girls a {
+	background: url(https://images.nymag.com/images/2/fashion/08/fashionweek_live/fug-girls.gif) no-repeat;
+	line-height: 20px;
+	font-size:16px;
+}
+
+/* Bottom list */
+#fashion-heads {
+	background: url("https://images.nymag.com/images/2/dash-blue.gif") repeat-x;
+	font: bold 1em Georgia, Garamond, Times, "Times New Roman", serif;
+	position: relative;
+	z-index: 50;
+}
+
+#fashion-heads ul, #fashion-heads li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#fashion-heads ul {
+	float: left;
+	padding: 10px 0;
+	width: 447px;
+}
+
+#fashion-heads li {
+	float: left;
+	padding: .13em 0;
+	width: 180px;
+}
+
+#fashion-heads li.even {
+	float: right;
+}
+
+#fashion-heads li a {
+	background: url("https://images.nymag.com/images/2/arrow-double-right.gif") no-repeat 0 .35em;
+	display: block;
+	padding-left: 10px;
+}
+
+#fashion-heads ul li.more a span {
+	background-color:#FFE440;
+	font-weight:normal;
+	letter-spacing: .1em;
+}
+
+/* #fashion-heads p {
+	bottom: 0;
+	left: 198px;
+	margin: 0;
+	position: absolute;
+}
+ */
+#fashion-heads li img {
+	bottom: -2px;
+	left: 190px;
+	margin: 0;
+	position: absolute;
+}
+
+#fashion-heads ul li.more a img{
+	position: static;
+	top: 0;
+	left: 0;
+}
+
+
+/*
+	Fashion Homepage lead ("Meanwhile...", right)
+*/
+
+div#meanwhile	{
+	background-color:#fff;
+	padding: 9px;
+	font-size: 17px;
+	line-height: 1;
+}
+
+div#meanwhile a	{
+	color:#1f638a;
+}
+
+div#meanwhile ul	{
+	margin: 5px 0 0;
+	padding:0;
+	list-style:none;
+}
+
+div#meanwhile li	{
+	margin:0;
+	padding:.35em 2px;
+	border-bottom: 1px solid #ccc;
+}
+
+div#meanwhile li.last	{
+	border-bottom: none;
+}
+
+div#meanwhile li a b, div#meanwhile li a strong	{
+	color: #b7060d;
+	font-weight: bold;
+	letter-spacing: -.03em;
+}
+
+div#meanwhile li.feature	{
+	border-bottom: 1px solid #000;
+	padding:.2em 1px .6em;
+}
+
+div#meanwhile li.feature a	{
+	font-size: 28px;
+	color: #000;
+}
+
+
+
+/*
+	Fashion Homepage lead (version a, right)
+*/
+#lead-myfashion-a-2 {
+	background: #FFF url("https://images.nymag.com/images/2/home/07/fashion_lede/title-fashion-week-right-dt.gif") no-repeat 0 7px;
+	margin: 0 0 8px;
+	padding-top: 1px;
+	width: 346px;
+	height: 261px;
+	position: relative;
+	top: 0;
+}
+
+#lead-myfashion-a-2 h3#fashion-topright-1, #lead-myfashion-a-2 h3#fashion-topright-2, #lead-myfashion-a-2 h3#fashion-topright-3 {
+	position: absolute;
+	top: 63px;
+	margin: 0;
+	padding: 0;
+	height: 195px;
+}
+
+#lead-myfashion-a-2 h3 img {
+	margin: 0;
+}
+
+#lead-myfashion-a-2 h3 a {
+	display:block;
+}
+
+#lead-myfashion-a-2 h3 a:hover {
+	border-bottom: 4px solid #CC0066;
+}
+
+#lead-myfashion-a-2 h3#fashion-topright-1 {
+	left: 4px;
+}
+
+#lead-myfashion-a-2 h3#fashion-topright-2 {
+	left: 116px;
+	width: 114px;
+	padding: 0 1px;
+	background: url(https://images.nymag.com/images/2/home/07/fashion_lede/topright_vert_stitch.gif) repeat-y;
+}
+
+#lead-myfashion-a-2 h3#fashion-topright-3 {
+	left: 230px;
+}
+
+/*
+	Homepage lead (version b, left)
+*/
+#lead-myfashion-b-1 {
+	background: #FFF;
+	font: normal 1.1em Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin-bottom: 8px;
+	padding-left: 7px;
+	position: relative;
+}
+
+#lead-myfashion-b-1 .head {
+	background: url("https://images.nymag.com/images/2/dash-blue.gif") repeat-x 0 100%;
+	padding: 7px 0;
+}
+
+#lead-myfashion-b-1 .head h1 {
+	margin: 0;
+}
+
+#lead-myfashion-b-1 div#show-talk-feed 	{
+	position: absolute;
+	margin: 0;
+	top: 62px;
+	right: 2px;
+	width: 196px;
+	height: 225px;
+	overflow: hidden;
+	background: url(https://images.nymag.com/images/2/home/07/fashion_lede/title-show-talk-feed.gif) no-repeat;
+	text-align:center;
+}
+
+#lead-myfashion-b-1 h3#show-talk-feed-hed 	{
+	margin: 0;
+	padding: 0;
+	text-indent: -1000em;
+	height: 55px;
+	width: 194px;
+	overflow: hidden;
+}
+
+#lead-myfashion-b-1 div#show-talk-feed, #lead-myfashion-b-1 div#show-talk-feed h5	{
+	font: bold 11px Georgia, Garamond, Times, "Times New Roman", serif;
+	line-height: 1.2;
+}
+
+#lead-myfashion-b-1 div#show-talk-feed-date 	{
+	margin: 0;
+	padding: 10px 0 4px 0;
+	color:#898989;
+}
+
+#lead-myfashion-b-1 div#show-talk-feed h5	{
+	margin: 0 6px;
+	padding: 7px 0 8px 0;
+	background: url(https://images.nymag.com/images/2/home/07/fashion_lede/show-talk-feed-rule.gif) no-repeat bottom center;
+}
+
+#lead-myfashion-b-1 div#show-talk-feed h5.last	{
+	background: none;
+}
+
+#lead-myfashion-b-1 div#complete-coverage	{
+	position: absolute;
+	top: 295px;
+	left: 415px;
+}
+
+/*
+	Fashion Homepage lead (version b, right)
+
+*/
+
+#lead-myfashion-b-2 {
+	background: #FFF url("https://images.nymag.com/images/2/home/07/fashion_lede/title-fashion-week-right.gif") no-repeat 0 7px;
+	border-bottom: 1px solid #000;
+	font: normal 1.1em Arial, Helvetica, Verdana, Geneva, sans-serif;
+	margin-bottom: 8px;
+	padding-top: 63px;
+	position: relative;
+}
+
+#lead-myfashion-b-2 .head {
+	background: url("https://images.nymag.com/images/2/dash-blue.gif") repeat-x;
+	padding: 6px 9px 15px;
+}
+
+#lead-myfashion-b-2 h2, #lead-myfashion-b-2 h3 {
+	margin: 0;
+}
+
+#lead-myfashion-b-2 .content {
+	margin-left: 9px;
+	margin-right: 73px;
+}
+
+#lead-myfashion-b-2 h3 {
+	font: bold 2em/1.1 Georgia, Garamond, Times, "Times New Roman", serif;
+	margin: 0 0 .7em;
+}
+
+#lead-myfashion-b-2 h3 img {
+	bottom: 0;
+	position: absolute;
+	right: 0;
+	z-index: 50;
+}
+
+#lead-myfashion-b-2 table {
+	border-collapse: collapse;
+	margin-bottom: 17px;
+	position: relative;
+	width: 261px;
+	z-index: 100;
+}
+
+#lead-myfashion-b-2 td {
+	border-top: 1px dotted #CACACA;
+	text-align: left;
+}
+
+#lead-myfashion-b-2 caption {
+	font-weight: bold;
+	padding: .2em 0;
+}
+
+#lead-myfashion-b-2 td {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .7em;
+	padding: .2em 7px;
+	white-space: nowrap;
+	width: 50%;
+}
+
+#lead-myfashion-b-2 td img {
+	vertical-align: baseline;
+}
+
+/*
+	Fashion Week Highlights
+*/
+
+#blog #fashion-highlights {
+	font-size:11px;
+}
+
+#fashion-highlights {
+	border: 3px solid #FFF;
+}
+
+#fashion-highlights .block {
+	background: url("https://images.nymag.com/images/2/bg-hatch.gif");
+	border: 1px solid #D2D0CE;
+	padding: 0 6px 12px;
+}
+
+#fashion-highlights .head {
+	padding: 6px 0;
+}
+
+#fashion-highlights h2 {
+	background: #FFE400;
+	margin: 0;
+	padding: 7px 0 5px;
+	text-align: center;
+}
+
+#fashion-highlights h3 {
+	border: 1px solid #7F7F7F;
+	border-width: 1px 0;
+	clear: both;
+	font: bold 10px Georgia, Garamond, Times, "Times New Roman", serif;
+	text-transform: uppercase;
+	margin: 0 0 8px;
+	position: relative;
+	padding: 7px 0;
+}
+
+#fashion-highlights h3 a.more {
+	font: normal 11px/1.0 Arial, Helvetica, sans-serif;
+	position: absolute;
+	right: 0;
+	text-transform: none;
+}
+
+#fashion-highlights h3 img {
+	vertical-align: middle;
+	margin-bottom: 1px;
+}
+
+#fashion-highlights ul,
+#fashion-highlights li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* Latest */
+#fashion-highlights .latest {
+	margin-bottom: 14px;
+}
+
+#fashion-highlights .latest li {
+	background: url("https://images.nymag.com/images/2/home/07/fashion/slashes.gif") no-repeat 100% 50%;
+	display: inline;
+	font: normal 22px/1.2 Georgia, Garamond, Times, "Times New Roman", serif;
+	padding-right: 28px;
+	margin-right: -3px;
+}
+
+#fashion-highlights .latest li.last {
+	background: none;
+	padding-right: 0;
+	margin-right: 0;
+}
+
+/* Photos */
+#fashion-highlights .photos li {
+	float: left;
+	font-weight: bold;
+	line-height: 1.4;
+	margin-bottom: 1em;
+	margin-right: 7px;
+	width: 104px;
+}
+
+#fashion-highlights .photos li.last {
+	margin-right: 0;
+}
+
+#fashion-highlights .photos li em {
+	background: #FFE400;
+	font-style: normal;
+}
+
+#fashion-highlights .photos a:hover em {
+	text-decoration: underline;
+}
+
+#fashion-highlights .photos i {
+	display: block;
+	height: 65px;
+	margin-bottom: 5px;
+	overflow: hidden;
+	text-align: center;
+}
+
+#fashion-highlights .photos li img {
+	position: relative;
+	left: -9px;
+	top: -12px;
+}
+
+/* Readers rate the looks */
+#fashion-highlights .rate a {
+	margin-right: 24px;
+}
+
+#fashion-highlights .rate a.last {
+	border: none;
+	margin-right: 0;
+}
+
+/* Blog */
+#fashion-highlights .blog li {
+	font-weight: bold;
+	line-height: 1.1;
+	margin-bottom: 0.7em;
+}
+
+#fashion-highlights .blog p {
+	margin: 0;
+}
+
+/*
+	Hottest Discussions
+*/
+#hottest-discussions {
+	padding: 6px 12px 12px;
+}
+
+#hottest-discussions h2 {
+	/* missing -->  background: url("https://images.nymag.com/images/2/home/07/fashion/balloon.gif") no-repeat; */
+	border-bottom: 1px solid transparent;
+	font: bold 11px Georgia, Garamond, Times, "Times New Roman", serif;
+	margin: 0 5px 0 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+#hottest-discussions h2 b {
+	/* missing --> background: url("https://images.nymag.com/images/2/home/07/fashion/balloon.gif") no-repeat 100% 0; */
+	display: block;
+	font-size: 1.0em;
+	position: relative;
+	right: -5px;
+	padding: 1em 5px 1.5em 0;
+	margin-bottom: 16px;
+}
+
+#hottest-discussions ol,
+#hottest-discussions li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#hottest-discussions li {
+	clear: left;
+	line-height: 1.4;
+	margin-bottom: .3em;
+	margin-left: 18px;
+}
+
+#hottest-discussions i {
+	background: #F3EC63;
+	float: left;
+	margin-left: -18px;
+}
+
+#hottest-discussions a {
+	font-weight: bold;
+}
+
+#hottest-discussions a b {
+	font-weight: normal;
+}
+
+
+
+/*
+	Most Popular Stories - also maintained in /section/home/home.css
+*/
+
+#mostpopular {
+	padding: 12px 0 0 0;
+	border-top: 1px solid #e1e1e1;
+	border-left: 1px solid #d7d7d7;
+	border-bottom:none;
+}
+
+#mostpopular h2, #mostpopular div.tab h3 {display: none;}
+
+
+
+#content-secondary #mostpopular	{
+	background: url("https://images.nymag.com/gfx/bg/bg-hatch.gif") repeat;
+	border: 1px solid #FFF;
+	margin-bottom: 8px;
+}
+
+#mostpopular .tabs {
+	padding-top: 30px;
+	background: url("https://images.nymag.com/gfx/sect/home/mostpopular-h2.gif") 0 5px no-repeat;
+	border-bottom:none;
+}
+
+#mostpopular.blog-comments .tabs {
+	padding-top: 10px;
+	background: none;
+}
+
+#mostpopular.sitewide .tabs {
+	padding-top: 25px;
+	background: url("https://images.nymag.com/gfx/mod/mostpopular-sitewide-h2.gif") -4px 0 no-repeat;
+}
+
+#mostpopular.blog-comments .tabs {
+	padding-top: 25px;
+	background: url("https://images.nymag.com/gfx/mod/mostpopular-blogs-h2.gif") -4px 0 no-repeat;
+}
+
+#mostpopular .tab  {
+	background: #fff;
+	padding: 8px 0 5px 12px;
+}
+
+#mostpopular h4 {
+	font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
+	width: 84px;
+	margin: 0 auto;
+	padding: 0;
+	text-align: center;
+	background-color: #ededed;
+	text-transform: uppercase;
+	font-weight: normal;
+	font-size: 10px;
+	font-size:8.5px;
+}
+
+#mostpopular h5 {
+	font-size: 11px;
+    margin: 0 0 0 12px;
+    padding: 0 0 4px 0;
+    text-transform: uppercase;
+	background: transparent url("https://images.nymag.com/gfx/px/dotted-border-001.gif") left bottom repeat-x;
+}
+
+#mostpopular ul.tabNav {
+	background: transparent url("https://images.nymag.com/gfx/px/tab-border-bottom.gif") repeat-x left bottom;
+	padding: 0 0 4px 7px;
+	margin: 0;
+}
+
+#mostpopular.sitewide ul.tabNav {
+	padding: 0 0 4px 12px;
+}
+
+#mostpopular.blog-comments ul.tabNav {
+	padding: 0 0 2px 12px;
+}
+
+#mostpopular ul.tabNav li {
+	background: transparent;
+	display: inline;
+	margin: 0;
+	list-style: none;
+}
+
+#mostpopular ul.tabNav li a {
+	background: #f5f5f5;
+	border: 1px solid #c1c1c1;
+	margin-right: .3em;
+	padding: 3px 6px;
+	font-weight: bold;
+}
+
+#mostpopular.blog-comments ul.tabNav li a {
+	font-size: 11px;
+}
+
+#mostpopular ul.tabNav a:hover {
+	color: #C00;
+	outline:none;
+}
+
+#mostpopular ul.tabNav a.selected,
+#mostpopular ul.tabNav a.selected a:hover { /* Extra specificity's needed to override the red color */
+	background: #fff;
+	border-bottom: none;
+	color: #333;
+	cursor: text;
+	padding-bottom: 4px;
+	text-decoration: none;
+	outline:none;
+}
+
+#mostpopular ol, #most-commented ul {
+	padding: 0 0 7px 1px;
+	margin: 0;
+	/*background: transparent url("https://images.nymag.com/gfx/px/dotted-border-001.gif") 1em 0 repeat-x;*/
+}
+
+#mostpopular ol li, #most-commented ul li {
+	/*background: transparent url("https://images.nymag.com/gfx/px/dotted-border-001.gif") left bottom repeat-x;*/
+	margin: 0 0 0 12px;
+	padding: 5px 0 5px 5px !important;
+	line-height: 1.2em;
+	display: list-item !important;
+}
+
+#mostpopular ol li a, #mostpopular ul li a {
+	font-weight: bold;
+}
+
+#mostpopular ol li,
+#mostpopular ul li{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+#mostpopular ol li.last,
+#mostpopular ul li.last {
+	background:none;
+}
+
+#mostpopular .vulture-list ol {
+	padding-bottom:3px;
+}
+
+#mostpopular ol li a span,
+#mostpopular ul li a span {
+    font-size:1em !important;
+}
+
+#most-commented ul .tout strong {
+        background: url("https://images.nymag.com/gfx/sect/home/chat-bubble.gif") no-repeat 50% 50%;
+	font-weight:normal;
+}
+
+#most-commented ul {
+	list-style-type:none;
+	padding:0;
+	margin:0 10px 10px 0;
+}
+
+#most-commented ul li { position:relative; padding:5px 0pt 5px 5px; margin-left:16px; }
+
+#most-commented ul span.num {
+	position:absolute;
+	top:5px;
+	width:13px;
+	left:-15px;
+}
+#mostpopular p.sponsor {padding: 0 0 6px 30px; background-color:#fff; margin:-11px 0 0 0;}
+#mostpopular p.sponsor a {background:#fff url("https://images.nymag.com/gfx/bg/most-popular-sponsored-by.gif") 0 0 no-repeat; display:block;padding-left:198px;}
+
+
+/* MOST-POPULAR REDESIGN */
+
+#most-popular {
+	border-top: 1px solid #e1e1e1;
+	border-left: 1px solid #d7d7d7;
+	border-bottom:none;
+	padding-top: 30px;
+	background: url("https://images.nymag.com/gfx/sect/home/mostpopular-h2.gif") 0 5px no-repeat;
+}
+
+#most-popular h3, #mostpopular h3 {display: none;}
+
+
+
+#content-secondary #most-popular	{
+	background: url("https://images.nymag.com/gfx/bg/bg-hatch.gif") repeat;
+	border: 1px solid #FFF;
+	margin-bottom: 8px;
+}
+
+#most-popular .tabs {
+	background: transparent url("https://images.nymag.com/gfx/px/tab-border-bottom.gif") repeat-x left bottom;
+	padding: 0 0 4px 7px;
+	margin: 0;
+}
+
+#most-popular .tabs li {
+	background: transparent;
+	display: inline;
+	margin: 0;
+	list-style: none;
+}
+
+#most-popular .tabs li.ui-tabs-selected a, #most-popular .tabs li a:hover {
+	background: #fff;
+	border: 1px solid #c1c1c1;
+	border-bottom: none;
+	color: #333;
+	cursor: text;
+	padding: 3px 6px 4px 6px;
+	text-decoration: none;
+	outline: none;
+}
+
+#most-popular.blog-comments .tabs {
+	padding-top: 10px;
+	background: none;
+}
+
+#most-popular.sitewide .tabs {
+	padding-top: 25px;
+	background: url("https://images.nymag.com/gfx/mod/mostpopular-sitewide-h2.gif") -4px 0 no-repeat;
+}
+
+#most-popular.blog-comments .tabs {
+	padding-top: 25px;
+	background: url("https://images.nymag.com/gfx/mod/mostpopular-blogs-h2.gif") -4px 0 no-repeat;
+}
+
+#most-popular .tab  {
+	background: #fff;
+	padding: 8px 0 5px 12px;
+}
+
+#most-popular h4 {
+	font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
+	width: 84px;
+	margin: 0 auto;
+	padding: 0;
+	text-align: center;
+	background-color: #ededed;
+	text-transform: uppercase;
+	font-weight: normal;
+	font-size: 10px;
+	font-size:8.5px;
+}
+
+#most-popular h5 {
+	font-size: 11px;
+    margin: 0 12px 0 15px;
+    padding: 0 0 4px 0;
+    text-transform: uppercase;
+	background: transparent url("https://images.nymag.com/gfx/px/dotted-border-001.gif") left bottom repeat-x;
+}
+
+#most-popular ul.tabNav {
+	background: transparent url("https://images.nymag.com/gfx/px/tab-border-bottom.gif") repeat-x left bottom;
+	padding: 0 0 4px 7px;
+	margin: 0;
+}
+
+#most-popular.sitewide ul.tabNav {
+	padding: 0 0 4px 12px;
+}
+
+#most-popular.blog-comments ul.tabNav {
+	padding: 0 0 2px 12px;
+}
+
+#most-popular ul.tabNav li {
+	background: transparent;
+	display: inline;
+	margin: 0;
+	list-style: none;
+}
+
+#most-popular ul.tabNav li a {
+	background: #f5f5f5;
+	border: 1px solid #c1c1c1;
+	margin-right: .3em;
+	padding: 3px 6px;
+	font-weight: bold;
+}
+
+#most-popular.blog-comments ul.tabNav li a {
+	font-size: 11px;
+}
+
+#most-popular ul.tabNav a:hover {
+	color: #C00;
+	outline:none;
+}
+
+#most-popular ul.tabNav a.selected,
+#most-popular ul.tabNav a.selected a:hover { /* Extra specificity's needed to override the red color */
+	background: #fff;
+	border-bottom: none;
+	color: #333;
+	cursor: text;
+	padding-bottom: 4px;
+	text-decoration: none;
+	outline:none;
+}
+
+#most-popular ol, #most-commented ul {
+	padding: 0 0 7px 1px;
+	margin: 0 12px 0 15px;
+	/*background: transparent url("https://images.nymag.com/gfx/px/dotted-border-001.gif") 1em 0 repeat-x;*/
+}
+
+#most-popular ol li, #most-commented ul li {
+	background: transparent url("https://images.nymag.com/gfx/px/dotted-border-001.gif") left bottom repeat-x;
+	margin: 0 0 0 30px;
+	padding: 5px 0 5px 5px;
+	line-height: 1.2em;
+}
+
+#most-popular ol li a, #most-popular ul li a {
+	font-weight: bold;
+}
+
+#most-popular ol li,
+#most-popular ul li{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+#most-popular ol li.last,
+#most-popular ul li.last {
+	background:none;
+}
+
+#most-popular .vulture-list ol {
+	padding-bottom:3px;
+}
+
+#most-popular ol li a span,
+#most-popular ul li a span {
+    font-size:1em !important;
+}
+
+#tab-viewewed, #mostpopular .tab{
+	background:#fff;
+	border: 0px solid #EDEDEB;
+	border-top: none;
+	padding: 8px 12px 1px;
+}
+
+#tab-viewed ul, #mostpopular .tab ul{
+	padding: 0;
+	margin: 0 0 7px 0;
+}
+
+#tab-viewed li, #mostpopular .tab li{
+	border-bottom: 1px dotted #D4D3CE;
+    color: #090909;
+    display: block;
+    font-family: Arial,sans-serif;
+    font-size: 1.0em;
+    line-height: 1.25em;
+    padding: 8px 1px 7px 15px;
+    position: relative;
+}
+
+#tab-viewed li:last-child, #mostpopular .tab li:last-child {
+	border-bottom: 0 none;
+}
+
+#tab-viewed small, #mostpopular .tab small{
+	font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
+	margin-left: 104px;
+	padding: 0 7px;
+	text-align: center;
+	background-color: #ededed;
+	text-transform: uppercase;
+	font-weight: normal;
+	font-size: 8.5px;
+}
+
+#tab-viewed .num, #mostpopular .tab .num{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	position: absolute;
+	width: 13px;
+	left: 1px;
+	top: 8px;
+}
+
+
+/* Fashion Fall 07 Blog Shortcuts unit (horizontal)*/
+
+#blog #fashion_week_shortcuts {
+	background-color: #fff;
+	margin-top: 7px;
+	padding: 2px;
+	font: 11px Arial, Helvetica, sans-serif;
+}
+
+#blog #fashion_week_shortcuts #wrapper {
+	text-align: center;
+	font-size: 11px;
+	background: url("https://images.nymag.com/daily/fashion/images/stripebg.gif") repeat 100% 100%;
+	border: 1px solid #a6b5c0;
+	padding: 3px;
+}
+
+#blog #fashion_week_shortcuts #head {
+	background: url("https://images.nymag.com/daily/fashion/images/fashionwk_shortcuts_hed.gif") no-repeat 50% 50%;
+	margin: 0pt;
+	padding: 25px 6px 25px 0pt;
+}
+
+#blog #fashion_week_shortcuts #head .dropdown-blog-right-module {
+	float: right;
+	margin-top: -20px;
+	text-align: right;
+}
+
+#blog #fashion_week_shortcuts #links {
+	clear: both;
+	text-align: center;
+	padding: 10px 0pt 3px;
+	color: #1f638a;
+	font: 11px/1.2em Arial, Helvetica, sans-serif;
+}
+
+#blog #fashion_week_shortcuts #links a {
+	padding: 0 2px;
+}
+
+#blog #fashion_week_shortcuts #links .line1 {
+	border-bottom: 1px dashed #bccdd7;
+	padding-bottom: 2px;
+}
+
+#blog #fashion_week_shortcuts #links .line2 {
+	padding-top: 2px;
+}
+
+#blog #fashion_week_shortcuts #login-state {
+	border-top: 1px dashed #f9bde0;
+	border-bottom: 1px dashed #f9bde0;
+	margin: 8px 0;
+}
+
+#blog #fashion_week_shortcuts #login-state a {
+	color: #ff0066;
+	font: bold 11px/1.2em Arial, Helvetica, sans-serif;
+	text-align: center;
+	padding: 3px 0;
+}
+/*
+	Newsletter, new for Fashion, Fall 07
+*/
+#additional .feature-newsletter, #blog .feature-newsletter {
+background: url("https://images.nymag.com/images/2/graphics/07/fashion/newsletter/newsletter_signup_bg.gif") no-repeat 50% 50%;
+	margin: 3px 3px 4px 4px;
+	padding: 5px 4px 4px 7px;
+}
+
+#additional .feature-newsletter h2, #blog .feature-newsletter h2 {
+	visibility: hidden;
+}
+
+#blog .feature-newsletter .content {
+	padding: 0;
+	margin: 0;
+}
+
+#additional .feature-newsletter input, #blog .feature-newsletter input  {
+	vertical-align: center;
+	background-color: #fffacc;
+	margin: 0 7px 5px 110px;
+}
+
+#additional .feature-newsletter input img, #blog .feature-newsletter input img {
+	vertical-align: center;
+	float: right;
+}
+
+#additional .feature-newsletter input.text, #blog .feature-newsletter input.text {
+	width: 150px;
+}
+
+#additional input.text, #blog input.text  {
+	width: 70%;
+}
+
+#additional .feature select, #blog .feature select {
+	width: 95%;
+}
+
+
+/*-  Popup window
+----------------------------------------------------------------------*/
+body.popup #wrap {
+	margin: 0;
+	max-width: 100%;
+	width: 100%;
+}
+
+body.popup #head {
+	margin: 0 13px;
+}
+
+body.popup #head h1 {
+	border-bottom: 1px solid #DBDBDB;
+	font: normal 28px/1.2 Georgia, Garamond, Times, "Times New Roman", serif;
+	position: relative;
+	margin: 0;
+	padding: 15px 0;
+}
+
+body.popup #head h1 a {
+	font: bold 11px/1.5 Arial, Helvetica, Verdana, Geneva, sans-serif;
+	position: absolute;
+	right: 0;
+	top: 50%;
+}
+
+body.popup #nav {
+	float: right;
+	margin-top: 1.5em;
+}
+
+body.popup #nav a {
+	background-repeat: no-repeat;
+	display: block;
+	line-height: 20px;
+	padding: 0 0 5px 25px;
+}
+
+body.popup #nav a#tool-print {
+	background-image: url("https://images.nymag.com/images/2/tool-print.gif");
+}
+
+body.popup #head ul, body.popup #head ul li {
+	font-weight: bold;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+body.popup #head ul {
+	margin-top: 1.5em;
+}
+
+table.photos {
+	background: #DBDBDB;
+	margin-top: 1.5em;
+	clear: both;
+}
+
+table.photos td {
+	background: #FFF;
+	text-align: center;
+	padding: 8px;
+}
+
+
+/* Mini Blog Feeds (homepage and arts section pages) */
+
+body.home .module.daily_feed	{
+	background: #fff;
+}
+
+.module.daily_feed .content, .daily_feed .content	{
+	text-align: center;
+}
+
+.module.daily_feed h3, .module.daily_feed h4, .module.daily_feed h5, .module.daily_feed h4 a, .daily_feed h3, .daily_feed h4, .daily_feed h5, .daily_feed h4 a {
+	font: normal 10px/1.2em Georgia, "Times New Roman", Times, serif ;
+	margin: 0px;
+	padding: 0px;
+}
+
+.module.daily_feed h4, .module.daily_feed h4 a, .daily_feed h4, .daily_feed h4 a {
+	color:#000;
+	font-style: italic;
+	display: inline;
+}
+.module.daily_feed h5, .daily_feed h5 {
+	display: inline;
+	text-transform:lowercase;
+}
+.module.daily_feed h3, .daily_feed h3 {
+	font-size: 11px;
+	/* font-weight: bold;
+	letter-spacing: -0.01em;
+	line-height: 20px;
+	padding: 4px 0pt 6px; */
+}
+
+.module.daily_feed .entry, .daily_feed .entry {
+	margin-bottom: 0;
+    padding:7px 0pt;
+	background: transparent url(https://images.nymag.com/images/2/graphics/layout/borders/dotted-border-001.gif) repeat-x scroll 0 0;
+}
+
+.module.daily_feed .head img, .daily_feed .head img {
+	margin-bottom: 5px;
+}
+
+.module.daily_feed .head.second {
+	border-top: 1px solid #DDD;
+	padding-top:8px;
+	margin-top: 2px;
+}
+
+.module.daily_feed h5.read-all, .daily_feed h5.read-all {
+	display: block;
+	padding: 1px 0 9px;
+	text-transform: none;
+}
+
+.module.daily_feed h5.read-all a, .daily_feed h5.read-all a {
+	text-decoration: underline;
+}
+
+.module.daily_feed h5.read-all a:hover {
+	text-decoration: none;
+}
+
+
+/* Mini Blog Feeds (unique styles for Entertainment section pages) */
+
+.daily_feed.entertainment div.entry.latest h3	{
+	font-size: 18px;
+	font-weight: bold;
+	line-height: 20px;
+	letter-spacing: -.01em;
+	padding: 4px 0 6px;
+}
+
+.daily_feed.entertainment div.entry.latest p	{
+	font-size: 11px;
+	line-height: 17px;
+	text-align: left;
+	margin: 0;
+	padding: 0 0 9px;
+}
+
+.daily_feed.entertainment div.entry {
+	background: transparent url(https://images.nymag.com/images/2/graphics/layout/borders/dotted-border-001.gif) repeat-x scroll 0 0;
+	padding: 7px 0;
+	margin-bottom: 0;
+}
+
+.daily_feed.entertainment div.entry.latest {
+	background: transparent none repeat-x scroll 0 0;
+	padding: 0;
+}
+.daily_feed.entertainment h3 {
+	font-size: 13px;
+	font-weight: bold;
+	line-height: 17px;
+	margin-top: 1px;
+}
+
+.daily_feed.entertainment	{
+	padding-bottom: 7px;
+	/* border-bottom: 1px solid #666666; */
+	background: url(https://images.nymag.com/images/2/graphics/layout/borders/rule-4px-CBCBCB_2-1-1.gif) repeat-x bottom;
+	margin-bottom: 8px;
+}
+
+.daily_feed.entertainment h5.read-all {
+	background: transparent url(https://images.nymag.com/images/2/graphics/layout/borders/dotted-border-001.gif) repeat-x scroll 0 0;
+	padding-top: 7px;
+}
+
+.daily_feed.entertainment h5.read-all a {
+	background-color: #FFEC49 ;
+}
+
+.daily_feed.entertainment h5.read-all a:hover {
+	background-color: #222222 ;
+	color: #FFFFFF;
+}
+
+/* Sponsor box on Arts and Events section page and search results */
+
+.event-sponsor-tout {
+	padding: 6px 0;
+	font: normal 11px Arial, Helvetica, sans-serif;
+	text-align:center;
+	border: none;
+	background: #F5F4F0;
+}
+
+.event-sponsor-tout em{
+	font-style: italic;
+	color: #891313;
+}
+
+.event-sponsor-tout img {
+	padding: 4px 0;
+	border: none;
+}
+
+/* ----------- Section page modules, for pages with body class body.section-3column -- new Culture structure */
+
+body.section-3column #section-content {
+	font-size: 11px;
+}
+
+#section-content .feature p.image	{
+	margin-bottom:.8em;
+	padding-bottom: 0;
+	display:block;
+}
+
+/*  Alternate rectangle ad treatment */
+
+body.section-3column #section #advertising-bg {
+	margin:-9px 0 9px;
+	overflow:visible;
+	padding-top: 4px;
+	padding-bottom: 11px;
+	border-top: 1px solid #CBCBCB;
+	border-bottom: 1px solid #CBCBCB;
+	text-align:center;
+}
+
+body.section-3column #section #advertising-bg h5 {
+	background:transparent url(https://images.nymag.com/images/2/graphics/layout/advertisement-elderkin.gif) no-repeat scroll 50% 0;
+	height:12px;
+	margin: 0px;
+	padding: 0px;
+	line-height: 2px;
+}
+
+body.section-3column #section #advertising-bg .content table {
+	margin:0 auto;
+}
+
+/*  Tweaking the first h4.banded style to prevent it from bleeding through the yahoo calendar widget*/
+
+body.section-3column .static-banded h4.banded {
+	position:static;
+}
+
+body.section-3column .static-banded h4.banded a {
+	display:inline;
+	position:static;
+	float:right;
+
+	/*margin-top:-14px;*/
+}
+
+
+/*  Tweaking the h4.banded style */
+
+body.section-3column h4.banded {
+	padding: 5px 3px;
+	/* letter-spacing: .1em; */
+}
+
+body.section-3column h4.banded a.more {
+	letter-spacing: normal;
+}
+
+body.section-3column h4.banded cite {
+	letter-spacing: normal;
+	font-weight: normal;
+	font-style: italic;
+	text-transform:none;
+	color:#888888;
+}
+
+/* Lead 01 */
+
+.lead-01 .feature dt {
+	font-size: 27px;
+	font-weight: normal;
+	line-height: 1;
+	margin: -3px 0 4px;
+}
+
+.lead-01 .feature dt a {
+	color: #232323;
+}
+
+#content .section-lede-02 .content dt a {
+	color: #232323;
+}
+
+.lead-01 .feature p, .section-lede-02 dl.story dd p {
+	font-size: 14px;
+}
+
+.lead-01 .feature p .byline, .section-lede-02 .byline {
+	font: 11px/1.7 Georgia, Garamond, "Times New Roman", Times, serif;
+	font-style:italic;
+	font-weight: bold;
+	color: #666666;
+}
+
+/* section-lede-02 */
+.section-lede-02 dl.story dt img {
+	float: left;
+	margin: 0pt 9px 0pt 0pt;
+}
+
+.section-lede-02 dl.story dt.sec, section-lede-02 dl.story dt.sec a {
+	color: #232323;
+	font-size: 27px;
+	line-height: 28px;
+	font-weight: normal;
+}
+
+.section-lede-02 dl.story dt.sec	{
+	margin-bottom: 2px;
+}
+
+
+
+/* section-two-column-list */
+.section-two-column-list ul, .section-two-column-list ul li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.section-two-column-list ul li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .5em;
+	font: 1em/1.1;
+	padding-left: .7em;
+	margin-bottom: .2em;
+	line-height: 1.4;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.section-two-column-list.strong ul li {
+	font-weight: bold;
+}
+
+.section-two-column-list ul li.more {
+	background: url("https://images.nymag.com/images/2/arrow-more.gif") no-repeat 0 .5em;
+	font-size: 1em/1.1;
+	padding-left: .7em;
+	margin-bottom: .2em;
+	line-height: 1.4;
+}
+
+#section #section-content .section-two-column-list .content .column { /* IA 6/17 - increased specificity and changed width to 47% */
+	margin: 0;
+	width: 47%;
+}
+
+#section #section-content .section-two-column-list .content .column.col-1 { /* IA 6/17 - added right margin to first column */
+	margin-right: 4%;
+}
+
+
+/* section-two-column-stories -- for right-hand column */
+.content-secondary .section-two-column-stories-list .stories-primary {
+	border-right: none;
+	float: left;
+	margin: 0pt;
+	padding-right: 4px;
+	width: 40%;
+}
+
+.content-secondary .section-two-column-stories-list .stories-secondary {
+	width: 50%;
+	float: right;
+	padding: 0;
+	margin: 0;
+}
+
+.content-secondary .section-two-column-stories-list .stories-secondary a  {
+	font-size: 18px;
+	font-weight: normal;
+	line-height: 21px;
+}
+
+.content-secondary .section-two-column-stories-list .stories-secondary ul, .content-secondary .section-two-column-stories-list .stories-secondary ul li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.content-secondary .section-two-column-stories-list .stories-secondary ul li {
+	margin-top: 5px;
+}
+
+.content-secondary .section-two-column-stories-list .stories-secondary ul li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .5em;
+	padding-left: .7em;
+	margin-bottom: .2em;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.content-secondary .section-two-column-stories-list .stories-secondary ul li a {
+	line-height: 1.2;
+	font-size: 11px;
+}
+
+/* compact-stories */
+.section-compact-stories dl.story dt img {
+	float: left;
+	margin: 0pt 8px 0pt 0pt;
+}
+
+.section-compact-stories dl.story dt img.right {
+	float: right;
+	margin: 0pt 0 0pt 8px;
+}
+
+
+/* section-triple-photo */
+.section-triple-photo ul, .section-triple-photo ul li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: block;
+}
+
+.section-triple-photo img {
+	display: block;
+	margin: 0 0 3px 0;
+}
+
+.section-triple-photo ul li {
+	float: left;
+	width: 30.5%;
+	text-align: center;
+	margin-right: 4%;
+}
+
+.section-triple-photo ul li.last {
+	margin-right: 0;
+}
+
+.section-triple-photo ul li a {
+	font-weight: bold;
+}
+
+.section-triple-photo ul li, .section-triple-photo ul.media li {
+	line-height: 13px;
+}
+
+/* specifics for section-triple-photo-media */
+
+.lines {
+	background: url(https://images.nymag.com/images/2/graphics/layout/bg/ent-3col-media-borders.gif) repeat-y scroll 50%;
+}
+
+.section-triple-photo ul.media li {
+	float: left;
+	width: 30.5%;
+	text-align: center;
+	margin-right: 4%;
+}
+
+.section-triple-photo ul.media li.last {
+	margin-right: 0;
+}
+
+.section-triple-photo ul.media li a {
+	font-weight: normal;
+	font-size: 12px;
+	text-align: left;
+}
+
+.section-triple-photo ul.media li span.title {
+	font-weight: bold;
+}
+
+/* section-two-large */
+
+.section-two-large ul {
+	list-style: none;
+	padding: 0;
+	margin: 0pt -10px 0pt -8px;
+	display: block;
+}
+
+.section-two-large ul li {
+	float: left;
+	padding: 0pt 8px;
+	text-align: left;
+	width: 45%;
+	list-style: none;
+	margin: 0;
+	display: block;
+	font: 11px Arial, Helvetica, sans-serif;
+}
+
+.section-two-large ul li a {
+	font-weight: bold;
+	color:#222222;
+}
+
+.section-content.critics-pick .byline-major i {
+	background-color: #FFEC49;
+	text-transform: capitalize;
+	letter-spacing: normal;
+}
+
+.section-two-large ul li.first {
+	border-right: 1px solid #e1e1e1;
+	padding-right: 8px;
+}
+
+
+/* section-one-large */
+
+.section-one-large dl.story {
+	margin-bottom: 0;
+}
+
+.section-one-large dl.story dd p {
+	margin-bottom: 0;
+	margin-top: 0;
+	display: inline;
+}
+
+.section-one-large dl.story dt img {
+	float: left;
+	margin-left: 0;
+	margin-right: 5px;
+}
+
+/* .section-one-large .module-list {
+	border: 1px #990000 solid;
+	display: inline;
+}*/
+
+.module-list ul, .module-list ul li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.module-list ul li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .5em;
+	font-size: 1em/1.1;
+	padding-left: .7em;
+	margin-bottom: .2em;
+	line-height: 1.4;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.list-name {
+	text-transform: capitalize;
+	color: #999;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+/* section-two-column-stories */
+
+.section-two-column-stories .stories-primary, .section-two-column-stories-list .stories-primary {
+	border-right: 1px solid #e1e1e1;
+	float: left;
+	margin: 0pt;
+	padding-right: 8px;
+	width: 55%;
+}
+
+.section-two-column-stories .stories-secondary, .section-two-column-stories-list .stories-secondary {
+	width: 40%;
+	float: right;
+	padding: 0;
+	margin: 0;
+}
+
+.section-two-column-stories .stories-primary a, .section-two-column-stories .stories-secondary a {
+	font-size: 19px;
+	line-height: 1.1em;
+}
+
+.section-two-column-stories-list .stories-primary a  {
+	font-size: 14px;
+	line-height: 1.1em;
+}
+
+.section-two-column-stories .stories-primary a {
+	font-weight: bold;
+}
+
+/* Section-two-column-stories- with list */
+
+.section-two-column-stories-list .stories-primary a, .section-two-column-stories-list .stories-secondary a  {
+	font-size: 16px;
+	line-height: 1.1em;
+	font-weight: bold;
+}
+
+.section-two-column-stories-list .stories-secondary ul, .section-two-column-stories-list .stories-secondary ul li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.section-two-column-stories-list .stories-secondary ul li {
+	margin-top: 5px;
+}
+
+.section-two-column-stories-list .stories-secondary ul li {
+	background: url("https://images.nymag.com/images/2/bullet-gray.gif") no-repeat 0 .5em;
+	padding-left: .7em;
+	margin-bottom: .2em;
+	line-height: 1.2em;
+}
+
+.section-two-column-stories-list .stories-secondary ul li a {
+	line-height: 1.2;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+/* culture section page package treatments */
+
+#section .column .package-01 .block, body.section-3column .content-secondary .package-01 .block {
+	margin-bottom:0;
+}
+
+#section .column .package-01 h4, #section .column .package-01 h4.banded, .content-secondary .package-01 h4.banded {
+	margin:-2px 0 6px;
+	font-weight: normal;
+	border-top: 0;
+	border-style: dashed;
+	font-family: Arial, Helvetica, sans-serif;
+	padding: 3px 2px;
+}
+
+#section .column .package-01, .content-secondary .package-01 {
+	margin-bottom:16px;
+
+}
+
+#section .column .package-01 .section-two-column-list ul li {
+	/*font-weight: bold;*/
+}
+
+/* styles used cross-modules on Culture/Entertainment section pages */
+
+.byline {
+	font: 11px bold Arial, Helvetica, sans-serif;
+}
+
+.byline-major, .subsection-major {
+	text-transform: uppercase;
+	color: #000;
+	font-family: Arial, Helvetica, sans-serif;
+	letter-spacing: 1px;
+}
+
+.padding-top {
+	padding-top: 11px;
+}
+
+/* Styles used on search result pages for events
+
+Catherine you can determine where you want these styles to go I put them in all here temporarily.
+
+ */
+
+.events-search-results {
+	background: #fff;
+}
+
+.events-search-results .search-header {
+	margin:0 0 8px 0;
+	padding:0 0 3px 0;
+	border-bottom:1px solid #d7d7d7;
+	text-align: center; /* IA - 6/20 */
+}
+
+.events-search-results .search-header img {
+	margin: 0 3px 0 0;
+	padding:0;
+}
+
+.events-search-results .search-header a {
+	font-size:11px;
+}
+
+.events-search-results #search-results-navigation h3{
+	margin:0;
+	padding:0;
+	border:none;
+}
+
+.events-search-results #search-results-navigation h3,
+.events-search-results .listing-results th.col-sorted {
+	background-color:  #999999;
+}
+
+.events-search-results #search-results-navigation ul li.info,
+.events-search-results #search-results-navigation ul li li.info {
+	color: #66ccff;
+	font-weight:bold;
+}
+
+.events-search-results .results-container .listing-sortby {
+	border-top:none;
+}
+
+.events-search-results .results-container .header {
+	margin-bottom:2px;
+}
+
+.events-search-results #search-history {
+	margin:0 0 8px;
+	padding:0;
+	border:none;
+}
+
+.events-search-results #search-history td{
+	white-space:nowrap;
+}
+
+.events-search-results #search-history table{
+	border-bottom: 1px solid #d7d7d7;
+}
+
+
+/*-  Agenda content
+----------------------------------------------------------------------*/
+#agenda-mini-unit {
+	margin: 16px;
+}
+
+/*
+	Agenda module unit
+*/
+.module-agenda {
+	font-size: 10px;
+	clear: left;
+	padding-top: 6px;
+}
+
+#content .module-agenda img {
+	border: none;
+}
+
+.module-agenda a {
+	color: #05A7D4;
+}
+
+/* Main title */
+.module-agenda h2 {
+	border-bottom: 3px solid #000;
+	margin: 0 0 8px;
+}
+
+.module-agenda .date-stamp {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: normal;
+	float: right;
+	position: relative;
+	left: 0pt;
+	top: -46px;
+}
+
+/* Optional left-hand header */
+.module-agenda h3.side {
+	float: left;
+	margin: 0;
+	display: inline;
+}
+
+/* Listing */
+ul.agenda-calendar,
+ul.agenda-calendar li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.agenda-calendar {
+	border-left: 1px solid #000;
+	padding-left: 10px;
+	margin-bottom: 16px;
+}
+
+.wrap ul.agenda-calendar {
+	margin-left: 30px;
+}
+
+ul.agenda-calendar li.event {
+	position: relative;
+}
+
+/* Event title */
+ul.agenda-calendar p.title {
+	background: url("https://images.nymag.com/images/2/graphics/07/agenda_modules/dotted.gif") repeat-x 0 100%;
+	font: normal 2.1em Georgia, "Times New Roman", Times, serif; /* IA - 6/21 was 2.3em */
+	margin: 0 0 6px;
+	padding-bottom: 1px;
+	overflow: hidden;
+}
+
+ul.agenda-calendar li.event.spotlighted p.title {
+	font-weight: bold;
+}
+
+ul.agenda-calendar p.title img {
+	float: right;
+}
+
+ul.agenda-calendar li.event:hover p.title,
+ul.agenda-calendar li.ie-hover p.title {
+	background: none;
+	border-bottom: 1px solid #000;
+	padding-bottom: 0;
+}
+
+ul.agenda-calendar p.title i {
+	color: #000;
+	clear: both;
+	font-size: 0.78260869565em;
+	font-style: normal;
+	font-weight: bold;
+}
+
+ul.agenda-calendar li.event.spotlighted p.title i {
+	font-size: 1em;
+}
+
+ul.agenda-calendar p.title a {
+	display: block;
+	padding-bottom: 6px;
+}
+
+ul.agenda-calendar p.title a img {
+	display: block;
+	margin-bottom: 5px;
+}
+
+/* "More" link */
+ul.agenda-calendar li.more {
+	font: normal 1.2em Georgia, "Times New Roman", Times, serif;
+}
+
+/* Popup menu */
+ul.agenda-calendar .info {
+	position: absolute;
+	left: -1000em;
+	margin-top: -1px;
+	width: 264px;
+	z-index: 100;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+ul.agenda-calendar li.event:hover .info,
+ul.agenda-calendar li.ie-hover .info {
+	left: auto;
+	right: -7px;
+}
+
+ul.agenda-calendar .info .wrap {
+	background: url("https://images.nymag.com/images/2/graphics/07/agenda_modules/bg-info.png") no-repeat 100% 0;
+	border-left: 3px solid #000;
+	padding-right: 7px;
+}
+
+ul.agenda-calendar .info .wrap div {
+	background: #FFF url("https://images.nymag.com/images/2/graphics/07/agenda_modules/dots-gray.gif") repeat-x;
+	padding: 9px 6px 1px 8px;
+}
+
+ul.agenda-calendar .info .f {
+	background: url("https://images.nymag.com/images/2/graphics/07/agenda_modules/bg-info.png") no-repeat 0 100%;
+	height: 7px;
+}
+
+/* for homepage mini-unit */
+#home-wrapper-mini-agenda-unit {
+	background: #FFFFFF none repeat scroll 0% 50%;
+	margin-bottom: 8px;
+	padding: 2px 0pt;
+}
+
+/* Event info */
+ul.agenda-calendar .info h3 {
+	font-size: 1em;
+	font-weight: normal;
+	margin: 0 0 10px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+ul.agenda-calendar .info h3 em {
+	background-color: #FFEB3E;
+	font-style: normal;
+	letter-spacing: .03em;
+	text-transform: uppercase;
+}
+
+ul.agenda-calendar .info dl {
+	line-height: 1.3;
+	margin: 0;
+}
+
+ul.agenda-calendar .info p {
+	margin-top: 0;
+}
+
+ul.agenda-calendar .info dt {
+	font-size: 1.9em;
+	font-weight: bold;
+	line-height: 1.1;
+}
+
+ul.agenda-calendar .info dt a {
+	color: #000;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+ul.agenda-calendar .info dt a img {
+	float: right;
+	margin-left: 6px;
+}
+
+ul.agenda-calendar .info dd {
+	font-size: 1.1em;
+	line-height: 1.4;
+	margin: 0;
+}
+
+ul.agenda-calendar .info dd.venue {
+	color: #898989;
+	font-weight: bold;
+}
+
+ul.agenda-calendar .info img {
+	display: block;
+	margin-bottom: 6px;
+}
+
+/* "Beyond [X]" block */
+.module-agenda .beyond {
+	background: url("https://images.nymag.com/images/2/graphics/07/agenda_modules/beyond-bg.gif") repeat-x 0 100%;
+	height: 53px;
+	width:332px;
+	position:relative;
+}
+
+.module-agenda .beyond p {
+	margin: 0;
+	padding: 0;
+}
+
+.module-agenda .beyond .section {
+	background: url("https://images.nymag.com/images/2/graphics/07/agenda_modules/beyond-rounded_corner.gif") no-repeat;
+	text-align: right;
+	padding-right:6px;
+	width: 242px;
+}
+
+.module-agenda .beyond .section a{
+	display:block;
+}
+
+.module-agenda .sponsor {
+	background: #FFF url("https://images.nymag.com/gfx/sect/entertainment/agenda-sponsored-by-90x44.gif") no-repeat top left;
+	position:absolute;
+	left:242px;
+	width: 100px;
+	height: 50px;
+}
+
+.module-agenda .sponsor a {
+	display:block;
+	margin-left:6px;
+}
+
+.module-agenda .sponsor img {
+	position:relative;
+	top:10px;
+	left: 4px;
+	padding-right:10px;
+}
+
+/* Subscription form */
+.module-agenda .newsletters {
+	padding:0 10px 8px;
+	background:none;
+	height:64px;
+	/*border-bottom:1px solid #00B7F1;*/
+}
+.module-agenda .newsletters .head h3 {
+	background:url(/gfx/sect/entertainment/newsletter.gif) top left no-repeat;
+	display:block;
+	float:left;
+	width: 88px;
+	height:64px;
+	text-indent: -999em;
+	margin-right:8px;
+}
+.module-agenda .newsletters .content p{
+	padding-top:6px;
+	margin-bottom: 7px;
+	font: normal 11px Arial, Helvetica, sans-serif;
+	line-height:14px;
+	color:#222;
+}
+.module-agenda .newsletters .content .signup {
+	position: relative;
+}
+.module-agenda .newsletters .content .signup input {
+	display:inline;
+	margin:0 1px 0 0;
+	padding: 3px 3px 2px 3px;
+	color:#C0C0C0;
+	font: normal 11px Arial, Helvetica, sans-serif;
+	border: 1px solid #c0c0c0;
+}
+.module-agenda .newsletters .content .signup input#btn-newsletters-single {
+	margin: 6px 0 0 0 ;
+}
+.module-agenda .newsletters .content .signup img#btn-newsletters-single {
+	bottom: 0;
+	height: auto;
+	margin: auto;
+	position: absolute;
+	right: -130px;
+	top: 0;
+	width: auto;
+}
+
+
+/* HOME and main ENTERTAINMENT section page module styles */
+
+.todays-agenda ul.agenda-calendar {
+	border-left:none;
+	margin-bottom:10px;
+	padding-left:0;
+}
+
+ul.agenda-calendar .preview-info h3 {
+	font-size: 1em;
+	font-weight: normal;
+	margin: 0 0 1px;
+	font-family: Arial, Helvetica, sans-serif;
+	padding-bottom: 0;
+	color:#666666;
+}
+
+ul.agenda-calendar .preview-info h3 em {
+	background-color: #FFEB3E;
+	font-style: normal;
+	letter-spacing: .03em;
+	text-transform: uppercase;
+	color:#222222;
+}
+
+.todays-agenda ul.agenda-calendar p.title	{
+	padding-top: 0;
+}
+
+/* Default styles for Image Maps used in Article and section pages */
+
+.image-map-main ul#img-map {
+	padding: 0;
+	margin: 0;
+	list-style-type:none;
+	position: relative;
+}
+
+.image-map-main ul#img-map li {
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	overflow:visible;
+}
+
+.image-map-main ul#img-map li a {
+	display: block;
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	overflow:visible;
+}
+
+.image-map-main ul#img-map li a img {
+	border: 0;
+	margin: 0;
+}
+
+.image-map-main ul#img-map li a:hover {
+	margin: 0;
+	padding:0;
+	border-bottom: 2px dotted #19abe5;
+}
+
+/*----- Runway Rankings Module ------ */
+
+	div#runwayRankMod ul, div#runwayRankMod h2, div#runwayRankMod form{
+		padding:0;
+		margin:5px 0 0 13px;
+	}
+
+	#runwayRankMod select{
+		padding:0;
+		font-family:Arial, Helvetica, sans-serif;
+		font-size:11px;
+		margin-bottom:5px;
+	}
+
+	#runwayRankMod form{
+		padding-top:3px;
+		padding-bottom:5px;
+		margin-bottom:5px;
+	}
+
+	#runwayRankMod{
+		margin:0;
+		padding:0;
+		border:1px solid black;
+	}
+
+	div#runwayRankMod a, div#runwayRankMod li{
+		font-family:Georgia, "Times New Roman", Times, serif;
+		font-weight:bold;
+		margin:0;
+		list-style:none;
+	}
+
+	#runwayRankMod a{
+		color:#ff008d;
+		font-size:11px;
+		text-decoration:none;
+		font-style:normal;
+	}
+
+	#runwayRankMod li{
+		font-style:italic;
+		font-size:14px;
+		line-height:16px;
+	}
+
+	#runwayRankMod h1{
+		background-color:#000;
+		height:27px;
+		margin:0;
+		padding:0;
+	}
+
+	#runwayRankMod img{
+		margin:7px 0 0 7px;
+	}
+
+	#runwayRankMod h2{
+		font-family:Arial, Helvetica, sans-serif;
+		font-size:14px;
+		font-weight:bold;
+		margin-top:7px;
+	}
+
+	#runwayRankMod hr{
+		background-color:#ffffff;
+		color:#FFFFFF;
+		height:1px;
+		border:0;
+		border-bottom:1px dashed #CCC;
+	}
+/* --------------- end runway rankings -----------------*/
+
+/*
+	GENERIC PAGINATION STYLES
+*/
+
+.pagination ul {
+	float:right;
+	display:inline;
+	}
+
+.pagination ul li {
+	display: inline;
+	font: bold 11px Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	}
+
+.pagination ul li a {
+	border-left: 1px solid #e0e0de;
+	float: left;
+	padding: .45em .63333em;
+	}
+
+.pagination ul li a:hover {
+	background-color: #1f638a;
+	color: #fff;
+	text-decoration: none;
+	}
+
+.pagination ul li.hellip a {
+	border-left: 0;
+	padding: .35em 0;
+	color: #888;
+	margin: 0 3px;
+	}
+
+.pagination ul li.hellip a:hover {
+	cursor: default;
+	background-color: #fff;
+	color: #888;
+	}
+
+.pagination ul.nextpages li.last a {border-left: 0;}
+
+.pagination ul.morepages li.last a:hover,
+.pagination ul.nextpages li.first a:hover {
+	background-color: #1f638a;
+	color: #fff;
+	background-image: none;
+	}
+
+.pagination ul li.first a, .pagination ul.morepages li.pager-2 a {border-left: 0;}
+.pagination ul li.current a {
+	background-color: #e0e0de;
+	color: #000;
+	}
+
+.pagination ul li.current a:hover,
+.pagination ul.morepages li.current a:hover,
+.pagination ul.nextpages li.current a:hover {
+	background-color: #e0e0de;
+	color: #000;
+	cursor: default;
+	text-decoration: none;
+	}
+
+.pagination ul li.prev a {
+	background: #fff url("https://images.nymag.com/gfx/mod/arrow-l-3x5-256490.gif") no-repeat 10% 50%;
+	padding: .25em .55em .25em 1em;
+	border-left: 0;
+	margin-top: .18em;
+	}
+
+.pagination ul li.prev a:hover {background: #1f638a url("https://images.nymag.com/gfx/mod/arrow-l-3x5-fff.gif") no-repeat 10% 50%;}
+
+.pagination ul li.prev a.nolink {
+	background: #fff url("https://images.nymag.com/gfx/mod/arrow-l-3x5-dee2e4.gif") no-repeat 10% 50%;
+	padding: .25em .55em .25em 1em;
+	color: #dee2e4;
+	}
+
+.pagination ul li.prev a.nolink:hover {
+	cursor: default;
+	text-decoration: none;
+	}
+
+.pagination ul li.next a {
+	background: #fff url("https://images.nymag.com/gfx/mod/arrow-r-3x5-256490.gif") no-repeat 90% 55%;
+	border: 1px solid;
+	border-color: #d4d4d4 #888 #888 #d4d4d4;
+	padding: .18em 1em .18em .4em;
+	margin: .13em 0 0 4px;
+	}
+
+.pagination ul li.next a:hover {
+	background: #1f638a url("https://images.nymag.com/gfx/mod/arrow-r-3x5-fff.gif") no-repeat 90% 55%;
+	color: #fff;
+	border-color: #1f638a;
+	}
+
+.pagination ul li.next a.nolink {
+	background: #fff url("https://images.nymag.com/gfx/mod/arrow-r-3x5-dee2e4.gif") no-repeat 90% 50%;
+	padding: .25em 1em .25em .55em;
+	color: #dee2e4;
+	border-width: 0;
+	margin: .1666em 0 0 4px;
+	}
+
+.pagination ul li.next a.nolink:hover {
+	cursor: default;
+	text-decoration: none;
+	}
+
+/*
+	Google Adsense
+*/
+
+body
+{
+	padding: 0;
+	margin: 0;
+}
+
+.container {
+	font-family: Arial;
+	font-size: 11px;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - */
+
+div#google_ad_horizontal_text .googleads ul { width:930px; margin: 0 auto; }
+div#google_ad_horizontal_text .googleads ul li{ width:200px; margin-right:25px; }
+
+
+.google-bottom {
+	background:#FFFFFF none repeat scroll 0%;
+	padding: 18px 10px 10px 10px;
+	font-family: Arial;
+	font-size: 11px;
+	margin: 0;
+}
+.google_ad_image, .google_ad_flash {text-align: center;	padding: 10px 0;}
+
+.google-vertical {
+    white-space: normal;
+	margin: 12px 0 0 0;
+	font-size: 11px;
+	font-family: Arial;
+	background-color: #FFF; /*IE6 patch exists*/
+}
+
+.google-bottom .head {
+	color: #CCC;
+	padding: 5px 12px 5px 12px;
+	background-color: #544F49;
+}
+.google-bottom .adContainer .head { background: #fff; }
+
+.google-vertical .head {
+	color: #CCC;
+	padding: 5px 5px 5px 5px;
+	background-color: #544F49;
+}
+.google-vertical .adContainer .head { background: #fff; }
+
+.googleads {background: #FFF;}
+
+.google-bottom .head h4 {font-weight: normal;margin: 0;}
+
+.google-vertical .head h4 {font-weight: normal;	margin: 0;}
+
+.right {float: right;}
+
+.left {float: left;}
+
+.google-bottom .head a {color: #CCC; text-decoration: none;}
+
+.google-vertical .head a { color: #CCC;	text-decoration: none;}
+
+.google-bottom .head a:hover { color: #CCC; text-decoration: underline; }
+
+.google-vertical .head a:hover {color: #CCC; text-decoration: underline;}
+
+.google-bottom .head hr { display: none; }
+
+.google-vertical .head hr {	display: none; }
+
+.bottom-divider {
+	border-top: 9px solid #eceae8;
+	clear: both;
+	background-color: #fff;
+}
+
+.googleads {
+	clear: both;
+	padding: 10px;
+	color: #666666;
+	height: 1%;
+}
+
+.googleads-expandable {
+	padding: 5px;
+	font-size: 20px;
+	text-align: center;
+}
+
+.googleads-expandable a {color: #3C6583;text-decoration: none;}
+.googleads-expandable a small {color: #555;}
+
+.googleads-expandable a:hover {color: #3C6583; text-decoration: none;}
+
+.googleads ul  {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.googleads strong {letter-spacing: -0.01em;}
+.google-bottom .googleads li  {float: left;	width: 24%;}
+
+.google-vertical .googleads li {margin: 10px 1px 10px 1px;}
+.googleads li div {margin-right: 15px;}
+
+.googleads li a {
+	color: #3C6583;
+	letter-spacing: 0.5pt;
+	text-decoration: none;
+	display: inline;
+}
+
+.google-bottom .googleads li a {
+	color: #3C6583;
+	letter-spacing: 0.5pt;
+	text-decoration: none;
+	display: inline;
+	margin-right: 45px;
+}
+
+.googleads li a strong {color: #3C6583; padding-bottom:5px;}
+.googleads li p {margin:3px 0; padding:0; line-height:13px;}
+
+.googleads a small {color: #555;}
+.google-vertical .googleads li a {
+	color: #3C6583;
+	letter-spacing: 0.5pt;
+	text-decoration: none;
+	display: block;
+	margin-right: 5px;
+}
+.googleads li a:hover {color: #3C6583; text-decoration: none;}
+.googleads br {clear: both;}
+.google-bottom br {clear: both;}
+#google_ad_horizontal_text .googleads ul li {display:inline;}
+
+.google-bottom #ad-728x90-1,
+.google-bottom #ad-728x90-2 {padding:10px 126px 0;border-top:5px solid #EBEAE8;}
+
+/* }--== Travelscream module styles ==--{ */
+	#content-secondary .travelscream{border:none;}
+	div.travelscream table {margin:2px auto;}
+	body.travel #content-secondary #travelscreamwide { display: block !important; }
+
+	/* Narrow travelscream box
+
+	#content-secondary .travelscream .content {
+		padding:0;
+	}
+
+	#content-secondary .travelscreamcont img.header {
+		border-bottom:1px solid #eceae8;
+		padding-right:10px;
+		padding-bottom:7px;
+		margin:12px 0 7px 2px;
+	}
+
+	#content-secondary .travelscreamcont tr td {
+		vertical-align:top;
+	}
+
+	#content-secondary .travelscreamcont tr td a img {
+		margin-top:5px;
+		border:none;
+	}
+
+	#content-secondary .travelscreamcont tr td a span {
+		font-weight:bold;
+	}
+
+	#content-secondary .travelscream {
+		background:none;
+		background-color:#fff;
+		border:1px solid #777;
+	}
+
+	#content-secondary .travelscreamcont .ts_pds_layout1_header1 table td {padding: 4px;}
+	*/
+
+	/* Wide travelscream box
+
+	#travelscream {
+		padding:0;
+	}
+
+	#travelscream .travelscreamcont tr td a img {
+		border:medium none;
+		margin-top:1px;
+	} */
+/* }--== END TRAVELSCREAM MODULE ==--{ */
+
+
+.module .head h3 {
+	font-family: "Helvetica Condensed", "Arial Narrow", Arial, sans;
+	font-size: 14px;
+	color: #000;
+}
+
+/*** INTERACTIVE SCROLLING SKIN AD UNIT CODE ***/
+.homepageContainer {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	margin: 0 0 0 -490px;
+	padding: 0;
+	width: 980px;
+	height: 3070px;
+	clear: both;
+}
+
+.interactiveScrollingSkin #ad-custom-splash,
+.interactiveScrollingSkin #pushdown {
+	display: block !important;
+	position: relative;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 0;
+	-webkit-transition: height 0.3s ease-in-out;
+	-moz-transition: height 0.3s ease-in-out;
+	-ms-transition: height 0.3s ease-in-out;
+	transition: height 0.3s ease-in-out;
+}
+
+.transition-3s {
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-ms-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+}
+
+.scrollingSkin900x200Left,
+.scrollingSkin900x200Right {
+	float: left;
+	margin: 0;
+	padding: 0;
+	width: 50%;
+	height: 100%;
+}
+
+.scrollingSkin1320x287Left,
+.scrollingSkin1320x287Right {
+	position: absolute;
+	top: -173px;
+	right: 50%;
+	margin: 0;
+	padding: 0;
+	width: 660px;
+	height: 287px;
+	z-index: -1;
+}
+
+.scrollingSkin1320x287Right {
+	right: auto;
+	left: 50%;
+}
+
+.scrollingSkinTopLeft,
+.scrollingSkinMiddleRight,
+.scrollingSkinBottomLeft {
+	position: fixed;
+	margin: 0;
+	padding: 0;
+	top: 230px;
+	filter: alpha(opacity=0);
+	opacity: 0;
+	z-index: -99999;
+}
+
+.scrollingSkinMiddleRight {
+	margin-left: 810px;
+}
+
+.scrollingSkinBottomLowerLeft {
+	top: 550px;
+}
+
+.peakOutLeft,
+.peakOutLeft2,
+.peakOutRight,
+.peakOutRight2,
+.peakOutRight3 {
+	z-index: 1;
+}
+
+.peakOutLeft {
+	-webkit-transform: translate(-160px, 0);
+	-moz-transform: translate(-160px, 0);
+	transform: translate(-160px, 0);
+}
+
+.peakOutRight {
+	-webkit-transform: translate(170px, 0);
+	-moz-transform: translate(170px, 0);
+	transform: translate(170px, 0);
+}
+
+.peakOutRight3 {
+	-webkit-transform: translate(185px, 0);
+	-moz-transform: translate(185px, 0);
+	transform: translate(185px, 0);
+}
+
+.scrollingSkinTopLeftLink,
+.scrollingSkinMiddleRightLink,
+.scrollingSkinBottomLeftLink {
+	position: absolute;
+	bottom: 10px;
+	left: -10px;
+	margin: 0;
+	padding: 11px;
+	font: 700 11px/1 Helvetica, Arial, sans-serif;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: #fff;
+	background: rgb(75, 134, 79);
+	background: rgba(75, 134, 79, 0.9);
+	border: none;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.scrollingSkinMiddleRightLink {
+	left: auto;
+	right: -10px;
+	background: rgb(0, 0, 0);
+	background: rgba(0, 0, 0, 0.9);
+}
+
+.scrollingSkinTopLeftLink:hover,
+.scrollingSkinTopLeftLink:active,
+.scrollingSkinBottomLeftLink:hover,
+.scrollingSkinBottomLeftLink:active {
+	background: rgb(97, 174, 116);
+	background: rgba(97, 174, 116, 0.9);
+	text-decoration: none !important;
+}
+
+.scrollingSkinMiddleRightLink:hover,
+.scrollingSkinMiddleRightLink:active {
+	background: rgb(190, 24, 24);
+	background: rgba(190, 24, 24, 0.9);
+	text-decoration: none !important;
+}
+
+.scrollingSkinAllUnitsCloseButton {
+	position: fixed;
+	display: block;
+	top: 80px;
+	margin-left: 1030px;
+	width: 20px;
+	height: 20px;
+	background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAoCAYAAAD+MdrbAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QzQ2REYwNkZGM0FDMTFFMkIwN0RBMjU1MTZDM0JGOUUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QzQ2REYwNzBGM0FDMTFFMkIwN0RBMjU1MTZDM0JGOUUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpDNDZERjA2REYzQUMxMUUyQjA3REEyNTUxNkMzQkY5RSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpDNDZERjA2RUYzQUMxMUUyQjA3REEyNTUxNkMzQkY5RSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PvOGhM4AAAFuSURBVHja3JY9coMwEIVh7ZIqFQdwlTO4F7fwAVIFilSuXLlgXPkuhFukT3pXaaAnux5pRpH1s6thUkQzi5Yd9I1A7yGVy7IUa7YtXbqu22Gn+r6/5oKQ8YLdO+j7N4xGF3NhDXEM8Iwx50AtGI0/34H4qp/YHaVQB3YkjpmhGOqDUR3sh7jQEOwByIHGYF5gDJqCUStjwtb6PGFUGDeMOgZLAi3oxSq9hmDBV3aaStzzgc43u3IkBQKdDRxJgURnHJ2CRLQcKEhgHChIYSnoXYdSWET8g5nhVw7MM9OioBlStG1bmTwncHxNfbn2JgXFyu3vgLTyGI2nLveyJaMD5pVVp/wg8rJHk7MlkVnkZY7A2V6WuCXp5RzrhaCbaZqyfayU+h7H8QPTPcYz5k+gT1yDNvdJmz3rx0Asc7YRQ32wX4sigYZgvrNNEhqDBTd6Z9VpY7/peq03fS8senIwMnAHherso8j/+x/+CDAAIrKF91VwlKsAAAAASUVORK5CYII=) center top no-repeat;
+	border: none;
+	cursor: pointer;
+	filter: alpha(opacity=0);
+	opacity: 0;
+	-webkit-transition: opacity 0.3s ease-in-out;
+	-moz-transition: opacity 0.3s ease-in-out;
+	-ms-transition: opacity 0.3s ease-in-out;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.scrollingSkinAllUnitsOpen {
+	background-position: center bottom;
+}
+
+.peakOutLeft,
+.peakOutRight,
+.peakOutRight3,
+.revealAllUnitsButton {
+	filter: alpha(opacity=100);
+	opacity: 1.0;
+}
+
+.scrollingSkinLightbox {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: #000;
+	filter: alpha(opacity=0);
+	opacity: 0;
+	z-index: -99999;
+}
+
+.scrollingSkinLightboxReveal {
+	filter: alpha(opacity=80);
+	opacity: 0.8;
+	z-index: 99999999;
+}
+
+.scrollingSkinVideobox {
+	position: fixed;
+	top: 90px;
+	left: 50%;
+	margin: 0 0 0 -480px;
+	padding: 30px;
+	width: 900px;
+	height: 505px;
+	background: #000;
+	filter: alpha(opacity=0);
+	opacity: 0;
+	z-index: -99999;
+}
+
+.scrollingSkinVideoboxReveal {
+	filter: alpha(opacity=100);
+	opacity: 1.0;
+	z-index: 9999999999;
+}
+
+.scrollingSkinLightboxCloseButton {
+	position: absolute;
+	top: -17px;
+	right: -17px;
+	width: 34px;
+	height: 34px;
+	background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2hpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpGRTczQTVFRjNBMjA2ODExODIyQUFBODRDQzMxMTBDRCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo2MjVENzQ2QUYwQTgxMUUyQTMyQUY4NUE2QzJCRkNERCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo2MjVENzQ2OUYwQTgxMUUyQTMyQUY4NUE2QzJCRkNERCIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChNYWNpbnRvc2gpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEVEQ0QwQkUyMTIwNjgxMTgyMkE5OTYyMkVENjFGMjMiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RkU3M0E1RUYzQTIwNjgxMTgyMkFBQTg0Q0MzMTEwQ0QiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5ifb60AAADZUlEQVR42ryYQUtqURDHT5EimNIm1CAlKMyCWrqIvkUQKKRbd71FvEXQQnDVonZtjTB48CL6DPEWbQMtUQgTU3EjpiAG+eZ/OSeu93k955q+gUE5njvzc+6ZuTN3JhKJMIuyT7pL6iVdNfxWJK2R3pP+UjGWyWS0zxlFkABpgjTearU8zWaTdbtd9v7+PrDJ5XIxh8PBFhYWmNvtrtPSb9KL6+vrrJnhfr+vBOIgPfr4+Eg2Gg328vLCqtUq6/V6I6ntdjvz+XxseXlZ+7TZbKe0fEJA3XFAoohCvV7feXp6Ym9vb2wcWVxcZFtbW8zj8fzh0clYATmkKJzlcjlWKBSkEZAJIrS2tsY2NjYQnR8Ec24EmTWDeHh4YNls9tsQENiALdiEbfrzh8Y9RpCogHh9fWWTFtjUwUTNQHAwE7gd04DQw8AHfBGMYxhIEgcTZ2LaAh/whYw0gmxSuI4eHx8nciZUzgwyEWUhGo0G9CAJ1AfUChVBbUDxMgrW5ufnlWygHHB/CT3IXrlcVjKANLy9vWXpdHoABt+xdnl5qQyDAolqLUD2UbYRERWIq6srzVEwGPyCERBYg6rCwCd80+3ZB8gunh2ys4HbISCECBgBoV9XgYFP+AYDQLx4gMmk3W6zSqXyz7qIglGen5+1a2TCfXsBsmp8ig4T7InH4yyfz0v33t3dsePjY6Vzwn2vzlpJOxUYKxCjSvy3ZX19fWhqTxREnx1mos8mqyBFlYtUIMaB4XuKAKmhvZOJ6BuGnQmzM/P5+Sm1y33XAHKPHhPNiyx9Y7HYgFNxMI0HGN8PDg5Yp9ORNkzwrTXb6NBIa4FAAH9ZqlSk+jc3N/1UKjWwTiHW1qFOp1PJFnzCN6I9x+HSKysrP0ulklJhQ2SMxUqkNm6HLBJC0FzzTv8ray7Q5C4tLSkZMKuYgFGFgD88NuBbD1KipvYkFApJz8okBD7Q2WPMoAEra6wjp2j58YSdtsAHHy9OhhU0PH0u0PL7/f6pQcA2fPAZp2tWWTOYO8Lh8FRgYBO2+WwzMGjNDdl/ThtxwRmq3rQHrFEgAqaxvb2d8Hq9O2iqVftZoyATkQRmI6cQlSE8iQ4fbR36WitDONUmLU2RkUiGcYdwvWzybnvP4muJNI9C6buvJf7bi5q/AgwA5T0IdRk001AAAAAASUVORK5CYII=) center center no-repeat;
+	border: none;
+	cursor: pointer;
+}
+
+.scrollingSkinLightboxCloseButton:hover,
+.scrollingSkinLightboxCloseButton:active {
+	filter: alpha(opacity=70);
+	opacity: 0.7;
+}
+
+.scrollingSkinLightboxJump {
+	position: absolute;
+	bottom: 5px;
+	left: 0;
+	padding: 0;
+	width: 100%;
+	height: 15px;
+	font: 400 12px/1 Helvetica, Arial, sans-serif;
+	color: #fff;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.scrollingSkinLightboxJump:hover,
+.scrollingSkinLightboxJump:active {
+	text-decoration: underline;
+}

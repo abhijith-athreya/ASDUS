@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!-- saved from url=(0116)https://assets.adobedtm.com/b1e0f2f1c887c13d5a8d850fc709d9f680d2011c/scripts/satellite-5938289164746d5067004ee1.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"></head><body>
+    <script>
+      (function(){
+        function escapeForHtml(str){
+          if (!str) return str
+          return str
+            .replace(/\&/g, '&amp;')
+            .replace(/\</g, '&lt;')
+            .replace(/\>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#x27;')
+            .replace(/\//g, '&#x2F;')
+        }
+
+        var regexChars = /[.*+?^${}()|[\]\\]/g;
+        function escapeForRegex(str) {
+          return str.replace(regexChars, "\\$&");
+        }
+
+        function parseQueryString(){
+          var ret = {}, parts = location.search.substring(1).split('&');
+          for (var i = parts.length; i--;) {
+            var vardef = parts[i].split('='), varname = vardef[0], value = vardef[1];
+            ret[varname] = unescape(value);
+          }
+          return ret;
+        }
+
+        var queryParams = parseQueryString();
+
+        var markup = "<script type='text/javascript'>\n// Conversion Name: McDonalds Proper Landing Page\n// INSTRUCTIONS \n// The Conversion Tags should be placed at the top of the <BODY> section of the HTML page. \n// In case you want to ensure that the full page loads as a prerequisite for a conversion \n// being recorded, place the tag at the bottom of the page. Note, however, that this may \n// skew the data in the case of slow-loading pages and in general not recommended. \n//\n// NOTE: It is possible to test if the tags are working correctly before campaign launch \n// as follows:  Browse to http://bs.serving-sys.com/Serving/adServer.bs?cn=at, which is \n// a page that lets you set your local machine to 'testing' mode.  In this mode, when \n// visiting a page that includes an conversion tag, a new window will open, showing you \n// the data sent by the conversion tag to the MediaMind servers. \n// \n// END of instructions (These instruction lines can be deleted from the actual HTML)\nvar ebRand = Math.random()+'';\nebRand = ebRand * 1000000;\n//<![CDATA[ \ndocument.write('<scr'+'ipt src=\"HTTPS://bs.serving-sys.com/Serving/ActivityServer.bs?cn=as&amp;ActivityID=672239&amp;rnd=' + ebRand + '\"></scr' + 'ipt>');\n//]]>\n</scr"+"ipt>\n<noscript>\n<img width=\"1\" height=\"1\" style=\"border:0\" src=\"HTTPS://bs.serving-sys.com/Serving/ActivityServer.bs?cn=as&amp;ActivityID=672239&amp;ns=1\"/>\n</noscript>";
+
+        for (var name in queryParams){
+          var regex = new RegExp('%' + escapeForRegex(name) + '%', 'ig');
+          markup = markup.replace(regex, 
+            escapeForHtml(queryParams[name]));
+        }
+
+        document.write(markup)
+      })();
+    </script><script type="text/javascript">
+// Conversion Name: McDonalds Proper Landing Page
+// INSTRUCTIONS 
+// The Conversion Tags should be placed at the top of the <BODY> section of the HTML page. 
+// In case you want to ensure that the full page loads as a prerequisite for a conversion 
+// being recorded, place the tag at the bottom of the page. Note, however, that this may 
+// skew the data in the case of slow-loading pages and in general not recommended. 
+//
+// NOTE: It is possible to test if the tags are working correctly before campaign launch 
+// as follows:  Browse to http://bs.serving-sys.com/Serving/adServer.bs?cn=at, which is 
+// a page that lets you set your local machine to 'testing' mode.  In this mode, when 
+// visiting a page that includes an conversion tag, a new window will open, showing you 
+// the data sent by the conversion tag to the MediaMind servers. 
+// 
+// END of instructions (These instruction lines can be deleted from the actual HTML)
+var ebRand = Math.random()+'';
+ebRand = ebRand * 1000000;
+//<![CDATA[ 
+document.write('<scr'+'ipt src="HTTPS://bs.serving-sys.com/Serving/ActivityServer.bs?cn=as&amp;ActivityID=672239&amp;rnd=' + ebRand + '"></scr' + 'ipt>');
+//]]>
+</script><script src="./ActivityServer.bs"></script></body></html>

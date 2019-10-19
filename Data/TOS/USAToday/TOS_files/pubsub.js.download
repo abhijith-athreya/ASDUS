@@ -1,0 +1,2 @@
+define(["underscore","backbone"],function(t,n){"use strict";var e=t.extend({},n.Events);e.attach=function(n,e){t.each(n,t.bind(function(t,n){this.on(n,t,e)},this))},e.unattach=function(n,e){t.each(n,t.bind(function(t,n){this.off(n,t,e)},this))};var r=e.trigger;return e.trigger=function(t){try{r.apply(e,arguments)}catch(n){console.error('PubSub trigger "'+t+'" threw exception: ',n.stack||n.stacktrace||n.message)}return e},e});
+//# sourceMappingURL=pubsub.js.map

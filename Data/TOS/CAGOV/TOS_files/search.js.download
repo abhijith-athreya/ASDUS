@@ -1,0 +1,641 @@
+﻿$(document).ready(function () {
+
+   
+
+    // Remove inline styles
+    $('#faq-accordion').find('[style]').attr('style', '');
+
+    function shouldFireSearch(searchStr) {
+        return true;
+       // return searchStr && searchStr.length >= 3;
+    }
+
+    $(".clear-container").on('click', function () {
+        $(this).siblings().find("[name='search']").val('').trigger('change').trigger('keyup');
+    })
+
+    var FADETIME = 200;
+    // keep around some way to tell if an ajax call is in flight
+    var searchRequest;
+    /**
+     *  Directory Search
+     */
+    $("#search_directory_container").each(function () {
+        var $directoryContainer = $(this);
+
+
+        // hold on to our element which will be updated from our ajax calls
+        var $searchForm = $("#search_directory_form");
+
+        /**
+        * Helper for directory searching
+        */
+        function submitDirectoryForm(e) {
+            var formUrl = $searchForm.attr("data-ajax-action");
+            makeDirectoryRequest(formUrl);
+            e.preventDefault();
+            
+            var searchStr = $("#search_directory_input").val();
+            // copy our value into the input used in the actual form request
+            $('#search_directory_input_hidden').val(searchStr);
+
+            // Stop our links from navigating away
+            e.preventDefault();
+            return false;
+        }
+
+        $('.toggle-more').toggleMore(false);
+
+        // Monitor our input and take action on user search input
+        $directoryContainer.on('keyup', "#search_directory_input", debounce(function (e) {
+            e.preventDefault();
+
+            var searchStr = $(this).val();
+
+            // copy our value into the input used in the actual form request
+            $('#search_directory_input_hidden').val(searchStr);
+
+            // only fire search after sucfficent length
+            if (shouldFireSearch(searchStr)) {
+
+                var formUrl = $searchForm.attr("data-ajax-action");
+
+                makeDirectoryRequest(formUrl);
+            }
+
+
+        }, 200));
+
+
+        // Take action when a user enters or press the submit button
+        $directoryContainer.on('click', ".submit-container", submitDirectoryForm);
+
+      
+        // Take action when a user selects a sort option
+        $directoryContainer.on('change', "select#sort", submitDirectoryForm);
+
+        // Take action when a user selects or deselects a filter button
+        $directoryContainer.on('click', "#search_directory_filters .btn-row .btn,  #search_directory_pagination a", function (e) {
+
+            var hrefVal = $(this).attr("data-ajax-url");
+            makeDirectoryRequest(hrefVal);
+           
+
+            // Stop our links from navigating away
+            e.preventDefault();
+            return false;
+        });
+        $directoryContainer.on('click', ".filter-toggle", function (e) {
+            $(this).toggleClass("active");
+          
+        });
+
+        $(window).bind('popstate', function (event) {
+            var oldUrl = event.originalEvent.state
+           
+            if (oldUrl) {
+                window.location.href = oldUrl;
+            }
+
+
+        });
+
+
+        /**
+         * Helper for directory searching
+         */
+        function makeDirectoryRequest(url) {
+
+            if (searchRequest && searchRequest.state() === 'pending') {
+                searchRequest.abort();
+            }
+
+
+            var $results = $("#search_directory_results");
+            
+
+            function fire() {
+           
+                searchRequest = $.ajax({
+                    url: url,
+                    cache: false,
+                    data: $searchForm.serialize(),
+                    success: function (html) {
+
+                        if (supports_history_api()) {
+                            if (typeof location.origin === 'undefined')
+                                location.origin = location.protocol + '//' + location.host;
+
+                            var queryStr = $searchForm.serialize()
+                            var urlParams = url.split("?")[1];
+                            if (urlParams) {
+                                urlParams = queryStringToHash(urlParams);
+                                var formParams = queryStringToHash(queryStr);
+                                for (var i in urlParams) {
+                                    if (urlParams[i] === "") {
+                                        // test[i] === undefined is probably not very useful here
+                                        delete urlParams[i];
+                                    }
+                                }
+                                $.extend(formParams, urlParams);
+
+                                queryStr = $.param(formParams).replace(/%2B/g, '+');
+                            }
+
+                            var addUrl = location.origin + location.pathname + "?" + queryStr;
+                           
+                            
+                          
+                            history.pushState(addUrl, null, addUrl );
+                        }
+
+
+                        hideLoader($directoryContainer);
+                        $searchForm.html(html).find('.toggle-more').toggleMore(false);
+
+                        if ($searchForm.find(".filter-group").hasClass('in')) {
+                            $directoryContainer.find(".filter-toggle").addClass("active");
+                        } else {
+                            $directoryContainer.find(".filter-toggle").removeClass("active");
+                        }
+                    }
+                });
+            }
+
+            $results.fadeOut(FADETIME, function () {
+                showLoader($directoryContainer);
+                fire();
+            });
+
+        }
+    });
+
+
+    /**
+     *  Home Page Tabbed Search
+     */
+
+    $("[data-search-override='true']").each(function () {
+        var $inputToFocus = $(this).find("input");
+        // remove any old event handlers and override 
+        $("#nav-item-search").off('click').on('click', function () {
+
+            $inputToFocus.focus().trigger('focus');
+        });
+
+    });
+
+    $(".search-results-container").each(function () {
+        var $section = $(this);
+        var mapThatOverride = false;
+        // get our selectors which we append onto our general element selectors per componenet
+        var searchId = $section.attr("data-search-id");
+        var searchSel = "[data-search-id='" + searchId + "']";
+
+        // General Top Lvl Components
+        //-------------------------------
+        var $tabs = $section.find("[data-tabs]");
+        var $searchContent = $section.find("[data-tab-content]");
+        var $searchInput = $("input" + searchSel);
+
+        // Per Tab Components
+        //--------------------
+
+        var $currentTabBtn, $currentForm, $currentContent;
+
+        function updateTabComponents(selector) {
+            if (selector) {
+                $currentTabBtn = $tabs.find('[data-target="' + selector + '"]');
+                $currentContent = $searchContent.find(selector);
+            } else {
+                $currentTabBtn = $tabs.find(".active");
+                $currentContent = $searchContent.find(".active");
+            }
+            if ($currentContent.attr("data-mapthat-override")) {
+                mapThatOverride = true;
+            } else {
+                mapThatOverride = false;
+            }
+            $('.toggle-more').toggleMore(false);
+            $currentForm = $currentContent.find("form");
+            
+        }
+
+        $(".search-container .close-search").on('click', function() {
+            $("[data-locations-landing]").loadMapThat();
+        });
+
+        updateTabComponents();
+
+        $(window).on('mapthat_list_loaded', function (e) {
+            var msg = 'No results found for "' + $searchInput.val() + '"';
+        
+            if ($section.find(".mapthat-list-item").length == 0) {
+                $section.find(".mapthat-list-no-results").html('<p class="search-result-stats">' + msg + '</p>');
+            }
+        });
+
+
+        // Update our vars per a user changing tabs
+        $tabs.find("li a").on('click', function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+            var selector = $(this).attr("data-target");
+
+            updateTabComponents(selector);
+
+            $("#quick-search-tab").val($currentTabBtn.attr("data-tab-name"));
+
+            fireSearch();
+        });
+
+        // anytime our user searches we need to then make our ajax requests with 
+        // the new search string
+        $searchInput.keyup(debounce(function (e) {
+           
+            e.preventDefault();
+            updateTabComponents();
+            // make our request using the updated values
+            fireSearch();
+        }, 200));
+
+
+        function fireMap() {
+            showLoader($section);
+            var $map = $section.find("[data-locations]");
+            $currentContent.find("[data-ajax-container]").show();
+            $map.attr("data-search", $searchInput.val());
+            $map.loadMapThat(function () {
+                hideLoader($section);
+            });
+        }
+
+        updateTabComponents();
+
+        if (mapThatOverride) {
+            fireMap();
+
+        }
+
+        // Main Helper function to fire off our ajax requests
+        function fireSearch() {
+
+
+            // We need to stop the world in terms of our requests and updating
+            // any pending ajax's need to be canceld and we need to then stop loading event handlers
+            if (searchRequest && searchRequest.state() === 'pending') {
+                searchRequest.abort();
+            }
+
+
+          
+            var url = $currentContent.attr("data-ajax-url");
+
+            function fire() {
+                showLoader($section);
+                $currentContent.find("[data-ajax-container]");
+                searchRequest = $.ajax({
+                    url: url,
+                    data: {
+                        search: $searchInput.val(),
+                        tab: $currentTabBtn.attr("data-tab-name")
+                    },
+                    cache: false,
+                    success: function (html) {
+                        hideLoader($section);
+                        $currentContent.find("[data-ajax-container]").empty().html(html).show();
+                        $('.toggle-more').toggleMore(false);
+                    }
+                });
+            }
+
+            var searchStr = $searchInput.val();
+            // only fire search after sucfficent length
+            if (shouldFireSearch(searchStr)) {
+               
+
+                if (mapThatOverride) {
+
+                    fireMap();
+                    return;
+                }
+                fire();
+               
+            } else {
+                hideLoader($section);
+                $currentContent.find("[data-ajax-container]").hide();
+            }
+         
+        }
+    });
+
+
+    /**
+     *  Full Search Page
+     */
+    $("[data-search-container][data-search-id]").each(function () {
+        var $section = $(this);
+
+        var mapThatOverride = false;
+        // get our selectors which we append onto our general element selectors per componenet
+        var searchId = $section.attr("data-search-id");
+        var searchSel = "[data-search-id='" + searchId + "']";
+
+        // General Top Lvl Components
+        //-------------------------------
+        var $tabs = $section.find("[data-tabs]");
+        var $filters = $section.find("[data-tab-filters]");
+        var $searchContent = $section.find("[data-tab-content]");
+        var $searchInput = $("input" + searchSel);
+
+
+        // Per Tab Components
+        //--------------------
+
+        var $currentTabBtn, $currentFilter, $currentForm, $currentContent, $hiddenInput;
+        function updateTabComponents(selector) {
+            if (selector) {
+                $currentTabBtn = $tabs.find('[data-target="' + selector + '"]');
+                $currentFilter = $filters.find(".tab-pane" + selector);
+                $currentContent = $searchContent.find(selector);
+            } else {
+                $currentTabBtn = $tabs.find(".active");
+                $currentFilter = $filters.find(".active");
+                $currentContent = $searchContent.find(".tab-pane.active");
+            }
+            if ($currentContent.attr("data-mapthat-override")) {
+                mapThatOverride = true;
+            } else {
+                mapThatOverride = false;
+            }
+            $currentForm = $currentContent.find("form[data-ajax-action]");
+            $hiddenInput = $section.find("input[name='search'][type='hidden']");
+
+        }
+
+        function fireMap() {
+            showLoader($section);
+            var $map = $section.find("[data-locations]");
+            $map.attr("data-search", $searchInput.val());
+            $currentContent.find("[data-ajax-container]").show();
+            $map.loadMapThat(function () {
+                hideLoader($section);
+            });
+        }
+
+        updateTabComponents();
+
+        if (mapThatOverride) {
+            fireMap();
+          
+        }
+
+
+        // Respond to actions the user may take on our search components
+        //--------------------------------------------------------------
+
+        $(window).on('mapthat_list_loaded', function (e) {
+            var msg = 'No results found for "' + $searchInput.val() + '"';
+        
+            if ($section.find(".mapthat-list-item").length == 0) {
+                $section.find(".mapthat-list-no-results").html('<p class="search-result-stats">' + msg + '</p>');
+            }
+        });
+
+        // Update our vars per a user changing tabs
+        $tabs.on('click', "li a", function (e) {
+            if (!$(this).tab) {
+                return;
+            }
+            e.preventDefault();
+            $(this).tab('show');
+            var selector = $(this).attr("data-target");
+
+            updateTabComponents(selector);
+            fireSearch(e);
+        });
+
+        //get our filter tabs and prevent the browser from appending on a #hash for the link
+        $filters.on('click', "a[data-target]", function (e) {
+            e.preventDefault();
+            var selector = $(this).attr("data-target");
+            $(this).toggleClass("active");
+            $(selector).collapse("toggle");
+            return false;
+        });
+
+        // anytime our user searches we need to then make our ajax requests with 
+        // the new search string
+        $searchInput.keyup(debounce(function (e) {
+
+           
+
+            e.preventDefault();
+            updateTabComponents();
+            // make our request using the updated values
+            fireSearch(e);
+        }, 200));
+
+        // Take action when a user enters or press the submit button
+        $section.on('click', ".search_submit", fireSearch);
+
+
+        // Take action when a user selects a sort option
+        $section.on('change', "select[name='sort']", function (e) {
+
+            $currentForm.find("select").val($(this).val());
+            updateTabComponents();
+            fireSearch.call(this, e);
+        });
+
+       
+
+        $filters.on('click', ".filter-group [data-ajax-url]", function (e) {
+            e.preventDefault();
+            updateTabComponents();
+            fireSearch.call(this, e);
+            return false;
+        });
+        $section.on('click', "[data-search-pagination] a", fireSearch);
+
+        $(window).bind('popstate', function (event) {
+            var oldUrl = event.originalEvent.state
+
+            if (oldUrl) {
+                window.location.href = oldUrl;
+            }
+        });
+
+        // Main Helper function to fire off our ajax requests
+        function fireSearch(e) {
+
+            e.preventDefault();
+            var url = $(this).attr("data-ajax-url") || $currentContent.attr('data-ajax-url');
+
+            // Take action when a user selects a sort option
+            $hiddenInput.val($searchInput.val());
+
+            // We need to stop the world in terms of our requests and updating
+            // any pending ajax's need to be canceld and we need to then stop loading event handlers
+            if (searchRequest && searchRequest.state() === 'pending') {
+                searchRequest.abort();
+                hideLoader($section);
+            }
+
+            $currentForm = $currentContent.find("form[data-ajax-action]");
+            var data = $currentForm.serialize();
+
+            if (!data) {
+                data = {
+                    search: $hiddenInput.val()
+
+                }
+            }
+            
+            function fire() {
+                showLoader($section);
+
+                if (!url) {
+                   
+                    return;
+                }
+                searchRequest = $.ajax({
+                    url: url,
+                    data: data,
+                    cache: false
+                });
+                searchRequest.done(function (html) {
+
+
+                    if (supports_history_api()) {
+                        if (typeof location.origin === 'undefined')
+                            location.origin = location.protocol + '//' + location.host;
+
+                        var queryStr = $currentForm.serialize()
+                        if (!queryStr) {
+                            queryStr = "search=" + $hiddenInput.val()
+                        }
+
+                        var urlParams = url.split("?")[1];
+                        if (urlParams) {
+                            urlParams = queryStringToHash(urlParams);
+                            var formParams = queryStringToHash(queryStr);
+                            for (var i in urlParams) {
+                                if (urlParams[i] === "") {
+                                    // test[i] === undefined is probably not very useful here
+                                    delete urlParams[i];
+                                }
+                            }
+                            $.extend(formParams, urlParams);
+                            formParams['tab'] = $(this).attr("data-tab-name") || $currentContent.attr('data-tab-name')
+                            queryStr = $.param(formParams).replace(/%2B/g, '+');
+                        } else {
+                            var formParams = queryStringToHash(queryStr);
+                            formParams['tab'] = $(this).attr("data-tab-name") || $currentContent.attr('data-tab-name')
+                            queryStr = $.param(formParams).replace(/%2B/g, '+');
+                        }
+
+                        var addUrl = location.origin + location.pathname + "?" + queryStr;
+
+
+                        history.pushState(addUrl, null, addUrl);
+                    }
+
+
+                    hideLoader($section);
+                    copyFilters($(html).find("#result_ajax_filters").children(), $currentFilter.find(".filter-group"));
+                    $currentContent.find("[data-ajax-container]").empty().show().html(html);
+                    
+                    updateTabComponents();
+                    $('.toggle-more').toggleMore(false);
+
+                    $section.find(".filter-toggle").collapse();
+                  
+                });
+            }
+
+            var searchStr = $searchInput.val();
+            // only fire search after sucfficent length
+            if (shouldFireSearch(searchStr)) {
+
+                if (mapThatOverride) {
+
+                    fireMap();
+                    return false;
+                }
+                fire();
+
+            } else {
+                hideLoader($section);
+                $currentContent.find("[data-ajax-container]").hide();
+            }
+
+           
+            return false;
+        }
+    });
+
+    function copyFilters($from, $to) {
+        $to.empty();
+        $from.clone().prop("id", "").prependTo($to)//.fadeIn(FADETIME);
+    }
+
+
+    // Returns a function, that, as long as it continues to be invoked, will not
+    // be triggered. The function will be called after it stops being called for
+    // N milliseconds. If `immediate` is passed, trigger the function on the
+    // leading edge, instead of the trailing.
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function () {
+            var context = this, args = arguments;
+            var later = function () {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
+
+    function supports_history_api() {
+        return !!(window.history && history.pushState);
+    }
+
+
+    function showLoader($el, func) {
+        return $el.find(".loading-spinner").show(); //.fadeIn(FADETIME, func).promise();
+    }
+
+    function hideLoader($el, func) {
+        return $el.find(".loading-spinner").fadeOut(FADETIME, func).promise();
+    }
+
+     function queryStringToHash(query) {
+        var query_string = {};
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            pair[0] = decodeURIComponent(pair[0]);
+            pair[1] = decodeURIComponent(pair[1]);
+            // If first entry with this name
+            if (typeof query_string[pair[0]] === "undefined") {
+                query_string[pair[0]] = pair[1];
+                // If second entry with this name
+            } else if (typeof query_string[pair[0]] === "string") {
+                var arr = [query_string[pair[0]], pair[1]];
+                query_string[pair[0]] = arr;
+                // If third or later entry with this name
+            } else {
+                query_string[pair[0]].push(pair[1]);
+            }
+        }
+        return query_string;
+    };
+
+
+
+});

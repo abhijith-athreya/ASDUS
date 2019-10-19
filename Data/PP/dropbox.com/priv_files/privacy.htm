@@ -1,0 +1,41 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <!--[if (gte IE 9) ]>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <![endif]-->
+    <title>Dropbox</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src https: 'unsafe-inline' 'unsafe-eval'; ">
+    <link rel="stylesheet" type="text/css" href="socialwidgets.css"></head>
+<body>
+<script async="" src="privacy_data/gtm.js"></script><script>
+    (function(){
+        window.dataLayer = [];
+        window.addEventListener('message', function(event){
+            if (event.origin === "https://www.dropbox.com" ||
+                event.origin === "https://paper.dropbox.com") { window.dataLayer.push(event.data); }
+        });
+        var fakeref = "",
+            ref_match = RegExp('[?&]referrer=([^&]*)').exec(window.location.search);
+        if (ref_match){ fakeref = decodeURIComponent(ref_match[1]); }
+        try {
+            if ('Object' in window && 'defineProperty' in Object){
+                Object.defineProperty(document,'referrer',{'get':function(){ return fakeref;}});
+            } else {
+                window.document.__defineGetter__('referrer', function () { return fakeref;});
+            }
+        } catch(e){}
+        if (document.referrer !== fakeref && document.referrer!=="") {
+            //call replace to remove the referrer
+            location.replace(location.href);
+        } else {
+                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','GTM-K8WT2R');
+        }
+    })();
+</script>
+
+
+</body></html>

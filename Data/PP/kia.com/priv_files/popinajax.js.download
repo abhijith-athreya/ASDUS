@@ -1,0 +1,13 @@
+function CleanupPopin(){try
+{if(objPopIn){objPopIn.v.popInState=9;var noOfDropAnimationIds=objPopIn.a.popInIntervalIds.length;for(var i=0;i<noOfDropAnimationIds;i++){var intervalPair=objPopIn.a.popInIntervalIds[i].split(";");clearInterval(parseInt(intervalPair[1]));}
+objPopIn.a.popInIntervalIds=[];}
+if(typeof iCoder_POP1141877261_dropstart!="undefined"){if(iCoder_POP1141877261_dropstart){clearInterval(iCoder_POP1141877261_dropstart);}}
+if(typeof iCoder_POP1141877261_vibrostart!="undefined"){if(iCoder_POP1141877261_vibrostart){clearInterval(iCoder_POP1141877261_vibrostart);}}
+if(typeof TerminateDropinCustomAnimation=="function"){TerminateDropinCustomAnimation();}
+popIn=null;window.onscroll=null;window.onresize=null;var popinDiv=document.getElementById("iCoder_POP1141877261");if(popinDiv){popinDiv.innerHTML='<table id="mainTable" cellspacing="0" cellpadding="2" style="top:4px; left:4px; position: absolute; width:0px; height:0px; font:normal 10pt Verdana;border:0px solid navy;"><tr style="height:100%"><td id="colorCell" style="background-color:#ff9933;color:black;"><div id="agent_info" style="width:100%;vertical-align:middle"></div></td></tr></table>';popinDiv.style.display="none";popinDiv.style.position="absolute";popinDiv.style.top="5000";popinDiv.style.left="0";popinDiv.style.backgroundImage="none";}
+if(objPopIn){objPopIn.v.popInRunning=false;}}
+catch(exc)
+{}}
+function CallPopin(){try{WaitForPopinToDownload()}catch(err){}}
+function WaitForPopinToDownload(){if(typeof popIn=="function"){try{if(objPopIn){objPopIn.v.popInState=1;}
+popIn();}catch(err){}}else{setTimeout("WaitForPopinToDownload();",100);}}

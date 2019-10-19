@@ -1,0 +1,7 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><script>
+
+var allowedOrigins = [["http\\:\\/\\/edition\\.cnn\\.com\\/", ""], [".*.cnn.com", "i"], ["cnnespanol\\.cnn\\.com\\/", ""]];
+
+!function(){"use strict";function e(e){return!o||0!==e.indexOf(o.origin)}function i(i){o&&e(i.key)&&o.source.postMessage(JSON.stringify({type:"SYNC",response:{key:i.key,value:i.newValue}}),o.origin)}var r,t,n;try{r=window.localStorage}catch(s){t=s}var o,a="_",g=function(i){for(var s,g,d,f,u=!1,c=0;c<allowedOrigins.length;c++)if(new RegExp(allowedOrigins[c][0],allowedOrigins[c][1]).test(i.origin)){u=!0;break}if(u){o=i;try{s=JSON.parse(i.data)}catch(l){return}if(d=i.origin+a+s.key,!r){if(n)return;return n=t?t.toString():"Localstorage is undefined",f={id:"iframeerror",type:"ERROR",response:"Error accessing localStorage: "+n},i.source.postMessage(JSON.stringify(f),i.origin),void 0}if("GET"===s.type)g=r.getItem(d);else if("PUT"===s.type)g=r.setItem(d,s.value);else{if("GETALL"!==s.type)return;g={};for(var y in r)e(y)&&(g[y]=r.getItem(y))}"undefined"!=typeof s.id&&(f={id:s.id,response:g},i.source.postMessage(JSON.stringify(f),i.origin))}};window.addEventListener("message",g,!0),window.addEventListener("storage",i,!0)}();
+</script></head><body></body></html>

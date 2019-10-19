@@ -1,0 +1,56 @@
+
+            CQ_Analytics.registerAfterCallback(function(options) {
+                if(!options.compatibility && $CQ.inArray( options.componentPath, CQ_Analytics.Sitecatalyst.frameworkComponents) < 0 )
+                    return false;    // component not in framework, skip SC callback
+                CQ_Analytics.Sitecatalyst.saveEvars();
+                CQ_Analytics.Sitecatalyst.updateEvars(options);
+                CQ_Analytics.Sitecatalyst.updateLinkTrackVars();
+                return false;
+            }, 10);
+    
+            CQ_Analytics.registerAfterCallback(function(options) {
+                if(!options.compatibility && $CQ.inArray( options.componentPath, CQ_Analytics.Sitecatalyst.frameworkComponents) < 0 )
+                    return false;    // component not in framework, skip SC callback
+                s = s_gi("deltadev2");
+                if (s.linkTrackVars == "None") {
+                    s.linkTrackVars = "events";
+                } else {
+                    s.linkTrackVars = s.linkTrackVars + ",events";
+                }
+                CQ_Analytics.Sitecatalyst.trackLink(options);
+                return false;
+            }, 100);
+    
+    
+            CQ_Analytics.registerAfterCallback(function(options) {
+                if(!options.compatibility && $CQ.inArray( options.componentPath, CQ_Analytics.Sitecatalyst.frameworkComponents) < 0 )
+                    return false;    // component not in framework, skip SC callback
+                CQ_Analytics.Sitecatalyst.restoreEvars();
+                return false;
+            }, 200);
+    
+            CQ_Analytics.adhocLinkTracking = "false";
+            
+    
+        var s = new AppMeasurement();
+        s.account = "deltadev2";
+        
+        s.fpCookieDomainPeriods = "2";
+        s.trackDownloadLinks = true;
+    s.linkDownloadFileTypes = 'exe,zip,wav,mp3,mov,mpg,avi,wmv,doc,pdf,xls,xlsx,ppt,pptx';
+    s.charSet = 'UTF\u002D8';
+    s.linkTrackVars = 'None';
+    s.linkExternalFilters = '';
+    s.linkTrackEvents = 'None';
+    s.trackExternalLinks = true;
+    s.linkLeaveQueryString = false;
+    s.trackInlineStats = true;
+    s.currencyCode = 'USD';
+    s.linkInternalFilters = 'javascript:,delta.com,blog.delta.com,airelite.com,deltaprivatejets.com,si.delta.com,delta\u002Doffers.com,nwa.com,verifiedbyvisa.com,visa.com,arcot.com,securesuite.net,securecode.com,mycardsecure.com,www304.americanexpress.com';
+    
+    s.visitorNamespace = "delta";
+    s.trackingServer = "delta.or1.2o7.net";
+    s.trackingServerSecure = "delta.or1.2o7.net";
+    
+    
+

@@ -1,0 +1,820 @@
+/* LAST Updated 2/20/18 by al201q */
+
+/* Adjustments for Day 7 Global Nav Updates */
+
+/* ========================
+    LAYOUT
+======================== */
+
+#page {
+  background: none repeat scroll 0 0 transparent;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* TYPOGRAPHY */
+
+#header li:hover, a:hover {
+  cursor: pointer;
+}
+
+.copyright a:hover, .copywrite {
+  color: #333333 !important;
+}
+
+/* ========================
+    TOP LEFT TABS
+======================== */
+
+.topLeftTabs {
+  font-size: 1em;
+  height: 32px;
+  left: 2px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: -31px;
+  z-index: 99999;
+}
+
+.topLeftTabs li {
+  background: url("/Common/global/images/about_us/bkg_global_tabs_div.png") no-repeat scroll left 5px transparent;
+  display: block;
+  float: left;
+  font-size: 1.2em;
+  line-height: 1;
+  margin: 0;
+  min-width: 56px;
+  padding: 11px 14px 3px 11px;
+  text-align: center;
+}
+
+.topLeftTabs #per, .topLeftTabs .first, .topLeftTabs #last {
+  background-image: none;
+}
+
+#header .topLeftTabs li a {
+  color: #E9E9E9;
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+  padding: 0 0 8px;
+  text-align: center;
+}
+
+#header .topLeftTabs li.selected a {
+  color: #333333;
+}
+
+#header .topLeftTabs #biz a {
+  background: url("/Common/global/images/about_us/nav_arrow_down.gif") no-repeat scroll right 4px transparent;
+  cursor: pointer;
+  padding-right: 20px;
+}
+
+.topLeftTabs li:hover a, .ie .topLeftTabs a:hover {
+  color: #E9E9E9;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#header .topLeftTabs #biz:hover, .topLeftTabs li.selected, .topLeftTabs li.showMenu {
+  background: none repeat scroll 0 0 #FFFFFF !important;
+  border-radius: 4px 4px 0 0;
+}
+
+.topLeftTabs li.showMenu, #header .topLeftTabs #biz:hover {
+  background: none repeat scroll 0 0 #FFFFFF;
+  cursor: pointer;
+}
+
+.topLeftTabs li.showMenu a, #header .topLeftTabs #biz:hover a, .ie7 #header .topLeftTabs #biz a:hover, .ie8 #header .topLeftTabs #biz a:hover, .lt-ie9 #header .topLeftTabs #biz a:hover, .topLeftTabs li.selected a {
+  color: #515151 !important;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.topLeftTabs li.showMenu a, #header .topLeftTabs #biz:hover a, .ie7 #header .topLeftTabs #biz a:hover, .ie8 #header .topLeftTabs #biz a:hover, .lt-ie9 #header .topLeftTabs #biz a:hover {
+  background-image: url("/Common/global/images/about_us/nav_arrow_down_over.gif");
+  cursor: pointer;
+}
+
+.topLeftTabs li ul {
+  background: none repeat scroll 0 0 #FFFFFF;
+  border-color: #CCCCCC;
+  border-radius: 0 0 4px 4px;
+  border-style: solid;
+  border-width: 0 1px 1px;
+  clear: left;
+  cursor: pointer;
+  display: block;
+  list-style: none outside none;
+  margin: 0 -100px 0 -11px;
+  overflow: hidden;
+  padding: 13px 14px;
+  text-align: left;
+  width: 115px;
+}
+
+#header .topLeftTabs li ul {
+  display: none;
+  left: auto;
+  position: absolute;
+  top: auto;
+  z-index: 2147483647;
+}
+
+.topLeftTabs li ul li {
+  float: none;
+  line-height: 22px;
+  list-style-type: none;
+  margin: 0;
+  padding: 5px 10px 0 14px;
+  white-space: nowrap;
+}
+
+.topLeftTabs li ul li a {
+  font-size: 12px;
+}
+
+.topLeftTabs li ul li a, .topLeftTabs li.selected ul li a, .topLeftTabs li:hover ul li a, .topLeftTabs li ul li a:hover, #header .topLeftTabs #biz li a, #header .topLeftTabs #biz:hover li a, #header .topLeftTabs #biz:hover li a:hover {
+  color: #005B95 !important;
+}
+
+#header .topLeftTabs #biz li a:hover {
+  text-decoration: underline;
+}
+
+#header .topLeftTabs li ul li, #header .topLeftTabs li ul li a {
+  background-image: none;
+  color: #067AB4;
+  float: none;
+  font-size: 1em;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  width: auto;
+}
+
+#header .topLeftTabs #biz li a {
+  background-image: none !important;
+  padding: 0 !important;
+}
+
+.topLeftTabs li.showMenu li, #header .topLeftTabs li:hover li {
+  background-image: none !important;
+}
+
+.topLeftTabs li.showMenu ul, #header .topLeftTabs li:hover ul {
+  display: block;
+}
+
+.topNav {
+  float: right;
+  margin: 6px 17px 4px 0;
+  padding: 0;
+}
+
+ul.topNav li {
+  display: block;
+  float: left;
+  line-height: normal;
+  margin: 0 0 0 10px;
+}
+
+ul.topNav li a {
+  border-right: 0 none;
+  padding: 0;
+}
+
+/* ========================
+     MAIN NAVIGATION
+======================== */
+
+#mainNavigation {
+  position: relative;
+  background-color: #000;
+  border-bottom: 1px solid #D2D2D2;
+  height: 86px;
+  margin: 0 auto;
+  min-height: 55px;
+  padding: 0;
+  width: 100%;
+}
+
+#mainNavigation.falseNav {
+  background-color: transparent;
+}
+
+#mainNavigation::after {
+  content: "";
+  display: block;
+  width: 100%;
+  background-color: #FFF;
+  height: 31px;
+  position: absolute;
+  bottom: 0;
+  z-index: 9;
+}
+
+/* PRIMARY NAV */
+
+#PrimaryNav {
+  /*border-radius:6px 6px 0 0;*/
+  height: 50px;
+  line-height: 1.5em;
+  margin: 0 auto !important;
+  padding: 5px 0 0;
+  position: relative;
+  max-width: 974px;
+  z-index: 1999;
+}
+
+#PrimaryNav li {
+  /*background:black;*/
+  display: table;
+  float: left;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0 22px;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+  width: auto;
+}
+
+#PrimaryNav li a {
+  display: table-cell;
+  color: #FFF;
+  height: 45px;
+  text-decoration: none;
+  /*padding:0 15px;*/
+  position: relative;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+#PrimaryNav li #pn-csr {
+  white-space: pre-line;
+}
+
+#PrimaryNav>li>a:hover, #PrimaryNav>li>a:focus, #PrimaryNav>li.selected>a, #PrimaryNav>li.showSecondary>a, #noimg_PrimaryNav>li>a:hover, #noimg_PrimaryNav>li>a:focus, #noimg_PrimaryNav>li.selected>a {
+  /*background:#FFF;
+    border-radius:3px 3px 0 0;
+    color: black;
+    behavior: url(/Common/global/css/about_us/PIE.htc);*/
+  border-bottom: 5px solid #EA7400;
+}
+
+#PrimaryNav .logo a {
+  background: url("/Common/global/images/about_us/att_logo.png") no-repeat scroll center 10px transparent;
+  height: 40px;
+  padding: 0;
+  text-indent: -9999px;
+  width: 30px;
+}
+
+#PrimaryNav .logo a:hover, #PrimaryNav .logo:hover a, #PrimaryNav .logo:hover a:hover, #PrimaryNav .logo a:focus, #PrimaryNav .logo:focus a, #PrimaryNav .logo:focus a:focus {
+  border-bottom: none;
+  border-radius: 0;
+}
+
+#pn-csr {
+  max-width: 86px;
+}
+
+#PrimaryNav .search {
+  display: none;
+  background: url("/Common/global/images/about_us/bkg_search_100.png") no-repeat scroll right 16px transparent;
+  float: right;
+  font-size: 11px;
+  margin-right: 15px;
+  padding: 15px 0 2px;
+  width: 103px;
+}
+
+#PrimaryNav .search form {
+  margin: 0;
+  padding: 0;
+}
+
+input#search {
+  background-color: #FFF;
+  border: medium none;
+  color: #555;
+  font-size: 1em;
+  padding: 2px 10px 2px 0;
+  width: 63px;
+}
+
+.btnGo {
+  border: 0 none;
+  cursor: pointer;
+  display: inline-block;
+  height: 14px;
+  margin: 3px 0 0;
+  vertical-align: middle;
+  width: 17px;
+}
+
+#mainNavigation fieldset {
+  padding: 2px 0 4px 4px;
+}
+
+/*#PrimaryNav li a:before {
+    border-left: 1px solid black;
+    content: "";
+    height: 20px;
+    left: 0;
+    position: absolute;
+    top:15px;
+}*/
+
+#PrimaryNav li:first-child a:before, #PrimaryNav #pn-compinfo:before, #PrimaryNav .selected a:before, #PrimaryNav .showSecondary a:before, #PrimaryNav .secondaryNav a:before, #PrimaryNav .tertiaryNav a:before {
+  border-left: none;
+  height: 0;
+  margin: 0;
+  position: static;
+}
+
+#PrimaryNav .visible-phone, #headerTitle {
+  display: none !important;
+}
+
+/* SECONDARY NAV */
+
+#PrimaryNav .secondaryNav, #PrimaryNav .secondaryNav div {
+  display: none;
+}
+
+#PrimaryNav .selected .secondaryNav, #PrimaryNav li:hover .secondaryNav, #PrimaryNav .showSecondary .secondaryNav {
+  background: #FFF;
+  clear: both;
+  display: block;
+  height: 30px;
+  left: 0;
+  margin: 0;
+  max-width: 974px;
+  overflow: visible;
+  padding-left: 0;
+  position: absolute;
+  top: 55px;
+  width: 100%;
+}
+
+#PrimaryNav .selected .secondaryNav {
+  z-index: 1;
+}
+
+#PrimaryNav li:hover .secondaryNav, #PrimaryNav .showSecondary .secondaryNav {
+  z-index: 2;
+}
+
+#PrimaryNav .secondaryNav li {
+  background: none repeat scroll 0 0 transparent;
+  display: block;
+  float: left;
+  font-size: 11px !important;
+  line-height: 16px;
+  /*     padding: 8px 0 0 22px; */
+  padding: 8px 0 0 20px;
+}
+
+#PrimaryNav .selected .secondaryNav li a, #PrimaryNav .showSecondary .secondaryNav li a {
+  background: none repeat scroll 0 0 transparent;
+  color: #191919;
+  display: block;
+  float: left;
+  height: 23px;
+  padding: 0;
+}
+
+#PrimaryNav .selected .secondaryNav .selected a, #PrimaryNav .showSecondary .secondaryNav .selected a {
+  color: black;
+}
+
+#PrimaryNav .selected .secondaryNav li a:hover, #PrimaryNav .showSecondary .secondaryNav li a:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+#PrimaryNav .selected .secondaryNav .showTray a, #PrimaryNav .showSecondary .secondaryNav .showTray a {
+  /*background: url("/Common/global/images/about_us/secondary_highlight.gif") no-repeat scroll center bottom transparent;*/
+  color: black;
+}
+
+#PrimaryNav .selected .secondaryNav .showTray>a, #PrimaryNav .showSecondary .secondaryNav .showTray>a {
+  text-decoration: underline;
+}
+
+/* TERTIARY NAV */
+
+#PrimaryNav .tertiaryNav {
+  background-color: #FFF;
+  border: 1px solid #D2D2D2;
+  border-top: 0;
+  display: none;
+  left: -1px;
+  line-height: 3.5em;
+  overflow: visible;
+  position: absolute;
+  top: 32px;
+  width: 100%;
+  z-index: 98888888;
+  padding: 10px 0 10px 10px;
+}
+
+#PrimaryNav .tertiaryNav .image, #PrimaryNav .tertiaryNav [class^='col'] {
+  vertical-align: top;
+  margin: 0 0 5px;
+  min-height: 185px;
+  padding: 22px 10px 0 10px;
+  box-sizing: border-box;
+  width: 25%;
+}
+
+#PrimaryNav .tertiaryNav strong {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 120%;
+  margin: 0 0 13px;
+}
+
+#PrimaryNav .tertiaryNav .bold {
+  font-weight: bold;
+}
+
+#PrimaryNav .tertiaryNav strong, #PrimaryNav .tertiaryNav strong a {
+  color: #808080;
+}
+
+#PrimaryNav .tertiaryNav li ul li {
+  float: none;
+}
+
+#PrimaryNav .tertiaryNav li {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px !important;
+  line-height: 110%;
+  margin: 0 0 10px;
+  padding: 0;
+  text-align: left;
+}
+
+#PrimaryNav .tertiaryNav>li {
+  display: inline-block;
+  margin: 10px 0;
+  padding: 0 10px;
+}
+
+#PrimaryNav .secondaryNav .tertiaryNav .showTray a, #PrimaryNav .secondaryNav .tertiaryNav li a {
+  background-image: none !important;
+  color: #005B95 !important;
+  display: block;
+  float: none;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  white-space: normal;
+}
+
+#PrimaryNav li .secondaryNav ul .image {
+  display: none;
+  background-image: url("/Common/global/images/about_us/tray/bkg_tray_media_kits.jpg");
+  background-position: 20px 22px !important;
+  background-repeat: no-repeat !important;
+  width: 180px;
+}
+
+/*#PrimaryNav .cols4 [class^='col'] {
+    width: 150px;
+}*/
+
+/* PRIMARY NAV BG IMAGE FALLBACKS */
+
+.ie7 #mainNavigation, .ie8 #mainNavigation, .no-borderradius #mainNavigation {
+  background: none;
+  box-shadow: none;
+  height: 100px;
+  margin-top: 0;
+  overflow: visible;
+  padding: 0 6px 6px;
+}
+
+.ie6 #mainNavigation {
+  width: 974px;
+}
+
+.ie7 #PrimaryNav, .ie8 #PrimaryNav, .no-borderradius #PrimaryNav {
+  background: none;
+  height: 55px;
+  padding: 0;
+}
+
+.ie7 #PrimaryNav li, .ie8 #PrimaryNav li, .no-borderradius #PrimaryNav li {
+  display: block;
+}
+
+.ie7 #PrimaryNav>li>a, .ie8 #PrimaryNav>li>a, .no-borderradius #PrimaryNav>li>a {
+  display: block;
+  height: 55px;
+  padding: 0;
+  text-indent: -9999px;
+}
+
+.ie7 #PrimaryNav li a:before, .ie8 #PrimaryNav li a:before, .no-borderradius #PrimaryNav li a:before {
+  background: none;
+  border-left: none;
+  height: 0;
+  margin: 0;
+  position: static;
+}
+
+.ie7 #PrimaryNav .secondaryNav .tertiaryNav li, .lt-ie8 #PrimaryNav .secondaryNav .tertiaryNav li {
+  zoom: 1;
+}
+
+/* LOGO TAB */
+
+.ie7 #PrimaryNav .logo, .ie8 #PrimaryNav .logo, .no-borderradius #PrimaryNav .logo {
+  margin-left: 3px;
+}
+
+/*.ie7 #PrimaryNav .logo a,
+.ie7 #PrimaryNav .logo a:hover,
+.ie8 #PrimaryNav .logo a,
+.ie8 #PrimaryNav .logo a:hover,
+.no-borderradius #PrimaryNav .logo a,
+.no-borderradius #PrimaryNav .logo a:hover {
+    width: 65px;
+}*/
+
+.ie7 #PrimaryNav .logo img, .ie8 #PrimaryNav .logo img, .no-borderradius #PrimaryNav .logo img {
+  display: none;
+}
+
+/* ABOUT US TAB */
+
+.ie7 #PrimaryNav li #pn-compinfo, .ie7 #noimg_PrimaryNav li #noimg-compinfo, .ie7 .wireless #PrimaryNav li #pn-wireless, .ie8 #PrimaryNav li #pn-compinfo, .ie8 #noimg_PrimaryNav li #noimg-compinfo, .ie8 .wireless #PrimaryNav li #pn-wireless, .no-borderradius #PrimaryNav li #pn-compinfo, .no-borderradius #noimg_PrimaryNav li #noimg-compinfo, .no-borderradius .wireless #PrimaryNav li #pn-wireless {
+  background-position: -68px 0;
+  width: 77px;
+}
+
+.ie7 #PrimaryNav li #pn-compinfo:hover, .ie7 #PrimaryNav li.selected #pn-compinfo, .ie7 #PrimaryNav li.showSecondary #pn-compinfo, .ie8 #PrimaryNav li #pn-compinfo:hover, .ie8 #PrimaryNav li.selected #pn-compinfo, .ie8 #PrimaryNav li.showSecondary #pn-compinfo, .no-borderradius #PrimaryNav li #pn-compinfo:hover, .no-borderradius #PrimaryNav li.selected #pn-compinfo, .no-borderradius #PrimaryNav li.showSecondary #pn-compinfo {
+  background-position: -68px -55px;
+}
+
+/* MOBILITY TAB */
+
+.ie7 #PrimaryNav li #pn-mobility, .ie7 #noimg_PrimaryNav li #noimg-mobility, .ie8 #PrimaryNav li #pn-mobility, .ie8 #noimg_PrimaryNav li #noimg-mobility, .no-borderradius #PrimaryNav li #pn-mobility, .no-borderradius #noimg_PrimaryNav li #noimg-mobility {
+  background-position: -145px 0;
+  width: 66px;
+}
+
+.ie7 #PrimaryNav li #pn-mobility:hover, .ie7 #PrimaryNav li.selected #pn-mobility, .ie7 #PrimaryNav li.showSecondary #pn-mobility, .ie8 #PrimaryNav li #pn-mobility:hover, .ie8 #PrimaryNav li.selected #pn-mobility, .ie8 #PrimaryNav li.showSecondary #pn-mobility, .no-borderradius #PrimaryNav li #pn-mobility:hover, .no-borderradius #PrimaryNav li.selected #pn-mobility, .no-borderradius #PrimaryNav li.showSecondary #pn-mobility {
+  background-position: -145px -55px;
+}
+
+/* BUSINESS TAB */
+
+.ie7 #PrimaryNav li #pn-business, .ie7 #noimg_PrimaryNav li #noimg-business, .ie8 #PrimaryNav li #pn-business, .ie8 #noimg_PrimaryNav li #noimg-business, .no-borderradius #PrimaryNav li #pn-business, .no-borderradius #noimg_PrimaryNav li #noimg-business {
+  background-position: -211px 0;
+  width: 78px;
+}
+
+.ie7 #PrimaryNav li #pn-business:hover, .ie7 #PrimaryNav li.selected #pn-business, .ie7 #PrimaryNav li.showSecondary #pn-business, .ie8 #PrimaryNav li #pn-business:hover, .ie8 #PrimaryNav li.selected #pn-business, .ie8 #PrimaryNav li.showSecondary #pn-business, .no-borderradius #PrimaryNav li #pn-business:hover, .no-borderradius #PrimaryNav li.selected #pn-business, .no-borderradius #PrimaryNav li.showSecondary #pn-business {
+  background-position: -211px -55px;
+}
+
+/* ENTERTAINMENT TAB */
+
+.ie7 #PrimaryNav li #pn-entertainment, .ie7 #noimg_PrimaryNav li #noimg-entertainment, .ie8 #PrimaryNav li #pn-entertainment, .ie8 #noimg_PrimaryNav li #noimg-entertainment, .no-borderradius #PrimaryNav li #pn-entertainment, .no-borderradius #noimg_PrimaryNav li #noimg-entertainment {
+  background-position: -289px 0;
+  width: 110px;
+}
+
+.ie7 #PrimaryNav li #pn-entertainment:hover, .ie7 #PrimaryNav li.selected #pn-entertainment, .ie7 #PrimaryNav li.showSecondary #pn-entertainment, .ie8 #PrimaryNav li #pn-entertainment:hover, .ie8 #PrimaryNav li.selected #pn-entertainment, .ie8 #PrimaryNav li.showSecondary #pn-entertainment, .no-borderradius #PrimaryNav li #pn-entertainment:hover, .no-borderradius #PrimaryNav li.selected #pn-entertainment, .no-borderradius #PrimaryNav li.showSecondary #pn-entertainment {
+  background-position: -289px -55px;
+}
+
+/* NETWORK TAB */
+
+.ie7 .network #PrimaryNav li #pn-network, .ie7 #PrimaryNav li #pn-network, .ie7 #noimg_PrimaryNav li #noimg-network, .ie8 .network #PrimaryNav li #pn-network, .ie8 #PrimaryNav li #pn-network, .ie8 #noimg_PrimaryNav li #noimg-network, .no-borderradius .network #PrimaryNav li #pn-network, .no-borderradius #PrimaryNav li #pn-network, .no-borderradius #noimg_PrimaryNav li #noimg-network {
+  background-position: -399px 0;
+  width: 72px;
+}
+
+.ie7 #PrimaryNav li #pn-network:hover, .ie7 #PrimaryNav li.selected #pn-network, .ie7 #PrimaryNav li.showSecondary #pn-network, .ie8 #PrimaryNav li #pn-network:hover, .ie8 #PrimaryNav li.selected #pn-network, .ie8 #PrimaryNav li.showSecondary #pn-network, .no-borderradius #PrimaryNav li #pn-network:hover, .no-borderradius #PrimaryNav li.selected #pn-network, .no-borderradius #PrimaryNav li.showSecondary #pn-network {
+  background-position: -399px -55px;
+}
+
+/* INNOVATION TAB */
+
+.ie7 #PrimaryNav li #pn-innovation, .ie7 #noimg_PrimaryNav li #noimg-innovation, .ie8 #PrimaryNav li #pn-innovation, .ie8 #noimg_PrimaryNav li #noimg-innovation, .no-borderradius #PrimaryNav li #pn-innovation, .no-borderradius #noimg_PrimaryNav li #noimg-innovation {
+  background-position: -471px 0;
+  width: 85px;
+}
+
+.ie7 #PrimaryNav li #pn-innovation:hover, .ie7 #PrimaryNav li.selected #pn-innovation, .ie7 #PrimaryNav li.showSecondary #pn-innovation, .ie8 #PrimaryNav li #pn-innovation:hover, .ie8 #PrimaryNav li.selected #pn-innovation, .ie8 #PrimaryNav li.showSecondary #pn-innovation, .no-borderradius #PrimaryNav li #pn-innovation:hover, .no-borderradius #PrimaryNav li.selected #pn-innovation, .no-borderradius #PrimaryNav li.showSecondary #pn-innovation {
+  background-position: -471px -55px;
+}
+
+/* INTERNATIONAL TAB */
+
+.ie7 #PrimaryNav li #pn-international, .ie7 #noimg_PrimaryNav li #noimg-international, .ie8 #PrimaryNav li #pn-international, .ie8 #noimg_PrimaryNav li #noimg-international, .no-borderradius #PrimaryNav li #pn-international, .no-borderradius #noimg_PrimaryNav li #noimg-international {
+  background-position: -556px 0;
+  width: 102px;
+}
+
+.ie7 #PrimaryNav li #pn-international:hover, .ie7 #PrimaryNav li.selected #pn-international, .ie7 #PrimaryNav li.showSecondary #pn-international, .ie8 #PrimaryNav li #pn-international:hover, .ie8 #PrimaryNav li.selected #pn-international, .ie8 #PrimaryNav li.showSecondary #pn-international, .no-borderradius #PrimaryNav li #pn-international:hover, .no-borderradius #PrimaryNav li.selected #pn-international, .no-borderradius #PrimaryNav li.showSecondary #pn-international {
+  background-position: -556px -55px;
+}
+
+/* CITIZENSHIP & SUSTAINABILITY TAB */
+
+.ie7 #PrimaryNav li #pn-csr, .ie7 #noimg_PrimaryNav li #noimg-csr, .ie8 #PrimaryNav li #pn-csr, .ie8 #noimg_PrimaryNav li #noimg-csr, .no-borderradius #PrimaryNav li #pn-csr, .no-borderradius #noimg_PrimaryNav li #noimg-csr {
+  background-position: -658px 0;
+  max-width: none;
+  width: 106px;
+}
+
+.ie7 #PrimaryNav li #pn-csr:hover, .ie7 #PrimaryNav li.selected #pn-csr, .ie7 #PrimaryNav li.showSecondary #pn-csr, .ie8 #PrimaryNav li #pn-csr:hover, .ie8 #PrimaryNav li.selected #pn-csr, .ie8 #PrimaryNav li.showSecondary #pn-csr, .no-borderradius #PrimaryNav li #pn-csr:hover, .no-borderradius #PrimaryNav li.selected #pn-csr, .no-borderradius #PrimaryNav li.showSecondary #pn-csr {
+  background-position: -658px -55px;
+}
+
+/* INVESTORS TAB */
+
+.ie7 #PrimaryNav li #pn-investor, .ie7 #noimg_PrimaryNav li #noimg-investor, .ie8 #PrimaryNav li #pn-investor, .ie8 #noimg_PrimaryNav li #noimg-investor, .no-borderradius #PrimaryNav li #pn-investor, .no-borderradius #noimg_PrimaryNav li #noimg-investor {
+  background-position: -764px 0;
+  width: 79px;
+}
+
+.ie7 #PrimaryNav li #pn-investor:hover, .ie7 #PrimaryNav li.selected #pn-investor, .ie7 #PrimaryNav li.showSecondary #pn-investor, .ie8 #PrimaryNav li #pn-investor:hover, .ie8 #PrimaryNav li.selected #pn-investor, .ie8 #PrimaryNav li.showSecondary #pn-investor, .no-borderradius #PrimaryNav li #pn-investor:hover, .no-borderradius #PrimaryNav li.selected #pn-investor, .no-borderradius #PrimaryNav li.showSecondary #pn-investor {
+  background-position: -764px -55px;
+}
+
+/* TERTIARY NAV */
+
+.ie7 #PrimaryNav .tertiaryNav .image, .ie7 #PrimaryNav .tertiaryNav [class^='col'], .ie8 #PrimaryNav .tertiaryNav .image, .ie8 #PrimaryNav .tertiaryNav [class^='col'], .lt-ie9 #PrimaryNav .tertiaryNav .image, .lt-ie9 #PrimaryNav .tertiaryNav [class^='col'] {
+  height: 190px;
+  width: 155px;
+}
+
+.ie7 #PrimaryNav .cols4 [class^='col'], .ie8 #PrimaryNav .cols4 [class^='col'], .lt-ie9 #PrimaryNav .cols4 [class^='col'] {
+  width: 155px !important;
+}
+
+.ie7 input#search {
+  width: 55px;
+}
+
+/* FALSE NAV */
+
+.falseNavSeparator {
+  background: url("/Common/global/images/about_us/bkg_aboutus_nav.png") no-repeat scroll left top transparent;
+}
+
+#container div.falseNav, .falseNavSeparator {
+  height: 55px;
+  /*width: 974px;*/
+}
+
+.ie7 #container div.falseNav, .ie8 #container div.falseNav, .lt-ie9 #container div.falseNav {
+  background: none;
+  height: 100px;
+  padding: 0;
+}
+
+#about_us_false_nav {
+  left: -99999px;
+  position: absolute;
+  top: -99999px;
+}
+
+/* NO IMG PRIMARY NAV */
+
+#noimg_PrimaryNav {
+  background-color: #DF7300;
+  display: none;
+  height: 31px;
+  line-height: 1.5em;
+  margin-left: 2px;
+  padding: 0;
+  position: absolute;
+  top: 8.3em;
+  width: 946px;
+}
+
+#noimg_PrimaryNav li {
+  float: left;
+  width: auto;
+}
+
+#noimg_PrimaryNav li a {
+  display: block;
+  color: #FFF;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+#noimg_PrimaryNav li #noimg-explore, #noimg_PrimaryNav li #noimg-shop, #noimg_PrimaryNav li #noimg-support, #noimg_PrimaryNav li #noimg-account {
+  line-height: 2.2em;
+  text-indent: 1.5em;
+  text-transform: uppercase;
+}
+
+#noimg_PrimaryNav li #noimg-account {
+  border: 0 none;
+}
+
+#noimg_PrimaryNav li #noimg-explore:hover, #noimg_PrimaryNav li #noimg-shop:hover, #noimg_PrimaryNav li #noimg-support:hover, #noimg_PrimaryNav li #noimg-account:hover {
+  background-color: #FFFFFF;
+}
+
+/* ========================
+    CONTENT
+======================== */
+
+#content-container {
+  background: none repeat scroll 0 0 #FFFFFF;
+  /*border: 1px solid #CCC;*/
+  margin: 30px auto;
+  padding: 15px 0;
+  position: relative;
+  width: 974px;
+}
+
+#content {
+  background: none repeat scroll 0 0 transparent;
+  display: block;
+  float: none;
+  margin: 0 0 0 15px;
+  padding: 0 0 10px;
+  width: 969px;
+}
+
+.ie7 #content, .ie8 #content, .lt-ie9 #content {
+  margin-left: 0;
+  padding-left: 10px;
+}
+
+.ie-css-padding #content {
+  padding-left: 10px;
+}
+
+.ie7 .ie-top-shadow, .ie8 .ie-top-shadow, .lt-ie9 .ie-top-shadow {
+  display: none;
+  background: url("/Common/global/images/about_us/ie-bkg-mainnavigation.png") no-repeat scroll center top transparent;
+  height: 11px;
+  left: 0;
+  margin-top: -11px;
+  position: absolute;
+  top: 0;
+  width: 986px;
+}
+
+.ie7 #content-container, .ie8 #content-container, .lt-ie9 #content-container {
+  /*background: none;*/
+  left: 0;
+  margin-bottom: 0;
+  position: relative;
+  text-align: center;
+  top: 0;
+  width: 986px;
+  border: 1px solid #D2D2D2;
+}
+
+.ie7 .ie-bottom-shadow, .ie8 .ie-bottom-shadow, .lt-ie9 .ie-bottom-shadow {
+  display: none;
+  background: url("/Common/global/images/about_us/ie-bkg-mainnavigation.png") no-repeat scroll center bottom transparent;
+  height: 13px;
+  left: 0;
+  position: relative;
+  top: 0;
+  width: 986px;
+}
+
+/* MISC */
+
+#tinymce {
+  background-image: none;
+}
+
+#stryTxt ul {
+  list-style: disc outside none;
+  margin-left: 30px;
+}
+
+/* ==========================================================================
+   Media Queries
+========================================================================== */
+
+@media only screen and (max-width: 767px) {
+  #PrimaryNav .visible-phone, #headerTitle {
+    display: block !important;
+  }
+}

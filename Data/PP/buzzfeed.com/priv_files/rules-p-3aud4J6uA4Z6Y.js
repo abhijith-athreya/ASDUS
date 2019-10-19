@@ -1,0 +1,8 @@
+/*
+ Quantcast measurement tag
+ Copyright (c) 2008-2017, Quantcast Corp.
+*/
+(function(f,m,l){var n="twitter:title og:title title author authors article:author article:authors bt:author bt:authors sailthru.author sailthru.authors sailthru.title lv:author lv:authors lv:title".split(" "),p=function(b){return{}.toString.call(b).match(/\s([a-zA-Z]+)/)[1].toLowerCase()},q=function(b,a,d){return b?"nc"===b?!a||!d||0>a.indexOf(d):"eq"===b?a===d:"sw"===b?0===a.indexOf(d):"ew"===b?(b=a.length-d.length,a=a.lastIndexOf(d,b),-1!==a&&a===b):"c"===b?0<=a.indexOf(d):!1:!1},g=function(b,
+a,d){a=document.getElementsByTagName("meta");for(var c,e,f=0;f<a.length;f++)if(c=a[f],e=c.getAttribute("name")||c.getAttribute("property"),e==d){e=c.getAttribute("content");a=c=a=void 0;b:{a=void 0;for(a=0;a<n.length;a++)if(n[a]===d){a=!1;break b}a=!0}if(e)if(a){c=e.split(",");for(a=0;a<c.length;a++)d=c,e=a,f=c[a].replace(/[^\w*]/g," ").replace(/^[\s\ufeff\xA0]+|[\s\ufeff\xA0]+$/g,""),d[e]=f;d=c}else d=e.replace(/[^\w*]/g," ");else d=e;b(d);return}b(!1)},h=function(b){return{labels:b}},k=function(b,
+a){var d=[],c;if("array"===p(a)){for(c=0;c<a.length;c++)d.push(b+"."+a[c]);return h(d.join(","))}return h(b+"."+a)};__qc.apply(null,["rules",[f,null,[[function(b){return"array"===p(b)?h(b.join(",")):h(""+b)},"Videos"]],[[function(b,a,d){var c;if(m.top===m.self)c=l.location.host;else{c=l.referrer;var e=l.createElement("a");e.href=c;c=e.hostname}q(a,c,d)?b(c):b(!1)},"c","buzzfeed.com/videos"]]],[f,null,[[k,"BuzzID"]],[[g,"exactmatch","bf:buzzid"]]],[f,null,[[k,"Author"]],[[g,"exactmatch","author"]]],
+[f,null,[[k,"Category"]],[[g,"exactmatch","article:section"]]],[f,null,[[k,"Title"]],[[g,"exactmatch","og:title"]]]])})("p-3aud4J6uA4Z6Y",window,document);

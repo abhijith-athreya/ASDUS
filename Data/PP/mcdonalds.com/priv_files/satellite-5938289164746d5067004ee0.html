@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!-- saved from url=(0116)https://assets.adobedtm.com/b1e0f2f1c887c13d5a8d850fc709d9f680d2011c/scripts/satellite-5938289164746d5067004ee0.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"></head><body>
+    <script async="" src="./fbds.js.download"></script><script>
+      (function(){
+        function escapeForHtml(str){
+          if (!str) return str
+          return str
+            .replace(/\&/g, '&amp;')
+            .replace(/\</g, '&lt;')
+            .replace(/\>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#x27;')
+            .replace(/\//g, '&#x2F;')
+        }
+
+        var regexChars = /[.*+?^${}()|[\]\\]/g;
+        function escapeForRegex(str) {
+          return str.replace(regexChars, "\\$&");
+        }
+
+        function parseQueryString(){
+          var ret = {}, parts = location.search.substring(1).split('&');
+          for (var i = parts.length; i--;) {
+            var vardef = parts[i].split('='), varname = vardef[0], value = vardef[1];
+            ret[varname] = unescape(value);
+          }
+          return ret;
+        }
+
+        var queryParams = parseQueryString();
+
+        var markup = "<!-- Facebook Conversion Code for McDonald&#039;s GCM Email Acquisition_Landing Page -->\n<script>(function() {\nvar _fbq = window._fbq || (window._fbq = []);\nif (!_fbq.loaded) {\nvar fbds = document.createElement('script');\nfbds.async = true;\nfbds.src = '//connect.facebook.net/en_US/fbds.js';\nvar s = document.getElementsByTagName('script')[0];\ns.parentNode.insertBefore(fbds, s);\n_fbq.loaded = true;\n}\n})();\nwindow._fbq = window._fbq || [];\nwindow._fbq.push(['track', '6028005139065', {'value':'0.00','currency':'USD'}]);\n</scr"+"ipt>\n<noscript><img height=\"1\" width=\"1\" alt=\"\" style=\"display:none\" src=\"https://www.facebook.com/tr?ev=6028005139065&amp;cd[value]=0.00&amp;cd[currency]=USD&amp;noscript=1\" /></noscript>\n";
+
+        for (var name in queryParams){
+          var regex = new RegExp('%' + escapeForRegex(name) + '%', 'ig');
+          markup = markup.replace(regex, 
+            escapeForHtml(queryParams[name]));
+        }
+
+        document.write(markup)
+      })();
+    </script><!-- Facebook Conversion Code for McDonald&#039;s GCM Email Acquisition_Landing Page -->
+<script>(function() {
+var _fbq = window._fbq || (window._fbq = []);
+if (!_fbq.loaded) {
+var fbds = document.createElement('script');
+fbds.async = true;
+fbds.src = '//connect.facebook.net/en_US/fbds.js';
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(fbds, s);
+_fbq.loaded = true;
+}
+})();
+window._fbq = window._fbq || [];
+window._fbq.push(['track', '6028005139065', {'value':'0.00','currency':'USD'}]);
+</script>
+<noscript>&lt;img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?ev=6028005139065&amp;amp;cd[value]=0.00&amp;amp;cd[currency]=USD&amp;amp;noscript=1" /&gt;</noscript>
+
+  
+
+</body></html>

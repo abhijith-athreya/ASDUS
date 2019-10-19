@@ -1,0 +1,359 @@
+if (Spectrum && Spectrum.Residential && Spectrum.Residential.Profile) {
+
+    CQ_Analytics.CCM.addListener("configloaded", function() {
+        //add to std clickstream cloud ui
+        CQ_Analytics.ClickstreamcloudUI.register(
+            this.getSessionStore(),
+            CQ_Analytics.CCM.getUIConfig(this.getName()));
+
+    }, Spectrum.Residential.Profile);
+
+}
+
+//Create the Spectrum profile session store
+var Spectrum = Spectrum || {};
+Spectrum.Residential = Spectrum.Residential || {};
+
+if (!Spectrum.Residential.Profile) {
+    // Created CharterProfile prototype object using function constructor
+    var SpectrumResidentialProfile = function() {
+        var spectrumResidentialProfile = this;
+
+        // Resi Object literal
+        var resiCfg = {
+            data: function() {
+                var targetGroupData = {};
+                if (Spectrum.Residential.TargetGroups) {
+                    Spectrum.Residential.TargetGroups.forEach(function(targetGroup) {
+                        targetGroupData[targetGroup] = "";
+                    });
+                }
+                return targetGroupData;
+            },
+            setGeolocation: function(geolocation, reload) {
+                spectrumResidentialProfile.setProperties(geolocation.getProperties());
+                reloadOrUpdate(reload);
+            },
+            userProfileCookie: "spectrum-residential-user-profile",
+            cookieLength: 24 * 60 * 60 * 1000 * 30 // 30 Days
+        };
+
+        /* Private methods */
+        function reloadOrUpdate(reload) {
+            if (reload) {
+                location.reload();
+            } else {
+                Spectrum.Residential.Profile.fireEvent("update");
+            }
+        }
+
+        this.cfg = function() {
+            return resiCfg;
+        };
+
+        this.getUserProfile = function() {
+            var spectrumResidentialProfile = this;
+            var userProfile = {};
+            $.each(this.cfg().data(), function(key) {
+                userProfile[key] = spectrumResidentialProfile.data[key];
+            });
+            return userProfile;
+        };
+
+        this.initializeValues = function() {
+            var spectrumResidentialProfile = this;
+            Object.keys(Spectrum.Residential.Profile.data).forEach(function(key) {
+                var param_override = Spectrum.HeadUtil.getURLParameter(key);
+                spectrumResidentialProfile.setProperty(key, param_override ? param_override : spectrumResidentialProfile.data[key]);
+            });
+        }
+    };
+
+    // Creating "spectrumresidentialprofile" Session Store Object
+    SpectrumResidentialProfile.prototype = new CQ_Analytics.SessionStore();
+    SpectrumResidentialProfile.prototype.STOREKEY = "SPECTRUMRESIDENTIALPROFILE";
+    SpectrumResidentialProfile.prototype.STORENAME = "spectrumresidentialprofile";
+
+    /* Public Prototype methods */
+    SpectrumResidentialProfile.prototype.init = function() {
+        this.data = this.cfg().data();
+
+        var cookieName = this.cfg().userProfileCookie;
+        if (Spectrum.HeadUtil.hasCookie(cookieName)) {
+            CQ_Analytics.SessionStore.prototype.setProperties.call(this, JSON.parse(Spectrum.HeadUtil.getCookieValue(cookieName)));
+        }
+
+        this.initializeValues();
+
+        this.initialized = true;
+        this.fireEvent('initialize', this);
+        this.fireEvent('update');
+    };
+
+    SpectrumResidentialProfile.prototype.getProperty = function(name, raw) {
+        return CQ_Analytics.SessionStore.prototype.getProperty.call(this, name, raw);
+    };
+
+    SpectrumResidentialProfile.prototype.setProperty = function(name, value) {
+        CQ_Analytics.SessionStore.prototype.setProperty.call(this, name, value);
+        Spectrum.HeadUtil.saveCookie(this.cfg().userProfileCookie, this.getUserProfile.call(this), this.cfg().cookieLength);
+    };
+
+    SpectrumResidentialProfile.prototype.setProperties = function(properties) {
+        CQ_Analytics.SessionStore.prototype.setProperties.call(this, properties);
+        Spectrum.HeadUtil.saveCookie(this.cfg().userProfileCookie, this.getUserProfile.call(this), this.cfg().cookieLength);
+    };
+
+    SpectrumResidentialProfile.prototype.setGeolocation = function(geolocation, reload) {
+            var reload = arguments.length > 1 ? arguments[1] : true;
+            this.cfg().setGeolocation(geolocation, reload);
+        };
+
+    // Instantiate Spectrum Profile object
+    Spectrum.Residential.Profile = new SpectrumResidentialProfile();
+
+    CQ_Analytics.CCM.addListener("configloaded", function() {
+        //registers Profile Data to clickstreamcloud manager
+        CQ_Analytics.CCM.register(this);
+    }, Spectrum.Residential.Profile);
+}
+
+;(function($){
+    "use strict";
+
+    window.Spectrum = window.Spectrum || {};
+    window.Spectrum.Residential.Location = window.Spectrum.Residential.Location || function Location(keys, values) {
+            var properties = { };
+            values = values || { };
+
+            $.each(keys, function(i, key) { properties[key] = values[key] || ""; });
+
+            this.getProperties = function() { return properties; };
+            this.getProperty   = function(property) { return properties[property]; };
+            this.setProperty   = function(key, value) { properties[key] = value; };
+            this.inFootprint   = function() { return properties['serviceVendorName' === 'charter' ]; };
+        };
+})($CQ);
+
+;(function($){
+    "use strict";
+
+    window.Spectrum = window.Spectrum || {};
+    window.Spectrum.Residential = window.Spectrum.Residential || {};
+    window.Spectrum.Residential.LocationService = window.Spectrum.Residential.LocationService || function () {
+            var URL = "/bin/spectrum/residential/location.json";
+
+            function createLocation(values) {
+                var keys = Spectrum.Residential.TargetGroups;
+                return new Spectrum.Residential.Location(keys, values);
+            }
+
+            // Used only for testing!
+            this.getLocationData = function(zip) {
+                var location = null;
+                $.ajax({
+                    url: URL + "/" + zip,
+                    dataType: "json",
+                    async: false,
+                    timeout: 8000,
+                    success: function(data) { location = createLocation(data); }
+                });
+                return location;
+            };
+
+            this.getLocationDataPromise = function(zip) {
+                return $.ajax({
+                    url: URL + "/" + zip,
+                    dataType: "json",
+                    timeout: 8000
+                }).then(function(data) { return data ? createLocation(data) : new $.Deferred().reject(); });
+            };
+        };
+
+    window.Spectrum.Residential.LocationService = new window.Spectrum.Residential.LocationService(); // make it a singleton
+})($CQ);
+
+if (Spectrum && Spectrum.Residential && Spectrum.Residential.CityLookup) {
+
+    CQ_Analytics.CCM.addListener("configloaded", function() {
+        //add to std clickstream cloud ui
+        CQ_Analytics.ClickstreamcloudUI.register(
+            this.getSessionStore(),
+            CQ_Analytics.CCM.getUIConfig(this.getName()));
+
+    }, Spectrum.Residential.CityLookup);
+
+}
+
+//Create the Spectrum profile session store
+var Spectrum = Spectrum || {};
+Spectrum.Residential = Spectrum.Residential || {};
+
+if (!Spectrum.Residential.CityLookup) {
+    // Created Residential CityLookup prototype object using function constructor
+    var SpectrumResidentialCityLookup = function() {
+        // Resi Object literal
+        var resiCfg = {
+            data: function() {
+                return {
+                    'city': "", // Page City
+                    'state': "", // Page State
+                    'abbreviatedState': "", // Page Abbreviated State
+                    'dataSpeed': "" // Page Internet Speed
+                };
+            }
+        };
+
+        /* Private methods */
+        function reloadOrUpdate(reload) {
+            if (reload) {
+                location.reload();
+            } else {
+                Spectrum.Residential.CityLookup.fireEvent("update");
+            }
+        }
+
+        this.cfg = function() {
+            return resiCfg;
+        };
+
+        this.getCityLookup = function() {
+            var spectrumResidentialCityLookup = this;
+            var userCityLookup = {};
+            $.each(this.cfg().data(), function(key) {
+                userCityLookup[key] = spectrumResidentialCityLookup.data[key];
+            });
+            return userCityLookup;
+        };
+    };
+
+    // Creating "spectrumresidentialCityLookup" Session Store Object
+    SpectrumResidentialCityLookup.prototype = new CQ_Analytics.SessionStore();
+    SpectrumResidentialCityLookup.prototype.STOREKEY = "SRCITYLOOKUP";
+    SpectrumResidentialCityLookup.prototype.STORENAME = "srcitylookup";
+
+    /* Public Prototype methods */
+    SpectrumResidentialCityLookup.prototype.init = function() {
+        this.data = this.cfg().data();
+        this.initialized = true;
+        this.fireEvent('initialize', this);
+        this.fireEvent('update');
+    };
+
+    // Instantiate Spectrum CityLookup object
+    Spectrum.Residential.CityLookup = new SpectrumResidentialCityLookup();
+
+    CQ_Analytics.CCM.addListener("configloaded", function() {
+        //registers CityLookup Data to clickstreamcloud manager
+        CQ_Analytics.CCM.register(this);
+    }, Spectrum.Residential.CityLookup);
+}
+
+if (Spectrum && Spectrum.Residential && Spectrum.Residential.SalesProfile) {
+
+    CQ_Analytics.CCM.addListener("configloaded", function() {
+        //add to std clickstream cloud ui
+        CQ_Analytics.ClickstreamcloudUI.register(
+            this.getSessionStore(),
+            CQ_Analytics.CCM.getUIConfig(this.getName()));
+
+    }, Spectrum.Residential.SalesProfile);
+
+}
+
+var Spectrum = Spectrum || {};
+Spectrum.Residential = Spectrum.Residential || {};
+
+if (!Spectrum.Residential.SalesProfile) {
+    // Created SalesProfile prototype object using function constructor
+    var SalesProfile = function() {
+        var data = Spectrum.Residential.Targeting.SalesProfile.data;
+
+        var storePropCookieConfig = Spectrum.Residential.UrlParamsMap;
+
+        function initClientContextFromCookies(salesProfile) {
+            for (var storeProp in storePropCookieConfig) {
+                var storeCookieConfig = storePropCookieConfig[storeProp];
+                var cookieName = storeCookieConfig.cookieName;
+                if (Spectrum.HeadUtil.hasCookie(cookieName)) {
+                    CQ_Analytics.SessionStore.prototype.setProperty.call(salesProfile, storeCookieConfig.clientcontextName, Spectrum.HeadUtil.getCookieValue(cookieName));
+                }
+            }
+        }
+
+        this.initialize = function() {
+            this.data = data;
+            this.cookieConfig = storePropCookieConfig;
+
+            initClientContextFromCookies(this);
+
+            this.initialized = true;
+            this.fireEvent('initialize', this);
+            this.fireEvent('update');
+        };
+    };
+
+    // Creating a session store for SB Sales profile
+    SalesProfile.prototype = new CQ_Analytics.SessionStore();
+    SalesProfile.prototype.STOREKEY = "SPECTRUM_RESIDENTIAL_SALES_PROFILE";
+    SalesProfile.prototype.STORENAME = "srsalesprofile";
+    SalesProfile.prototype.cookieLength = 24 * 60 * 60 * 1000 * 30;
+
+    /* Public prototype methods */
+    SalesProfile.prototype.init = function() {
+        this.initialize();
+    };
+
+    // Setting Cookie and Client Context Stores from Name and Value
+    SalesProfile.prototype.setProperty = function(key, value) {
+        var cookieConfig = this.cookieConfig;
+        var cookieData;
+        for (var cookie in cookieConfig) {
+            if (cookieConfig[cookie].clientcontextName == key) {
+                cookieData = cookieConfig[cookie];
+                break;
+            }
+        }
+        CQ_Analytics.SessionStore.prototype.setProperty.call(this, key, value);
+        Spectrum.HeadUtil.saveCookie(cookieData.cookieName, value, cookieData.cookieLength);
+    };
+
+    // Setting Cookie and Client Context Stores from Map object, does not follow overwrite rules of saveValuesAsCookies
+    SalesProfile.prototype.setProperties = function(properties) {
+        var salesProfile = this;
+        var cookieConfig = salesProfile.cookieConfig;
+        if(!properties) return;
+        for (var key in properties) {
+            var cookieData;
+            for (var cookie in cookieConfig) {
+                if (cookieConfig[cookie].clientcontextName == key) {
+                    cookieData = cookieConfig[cookie];
+                    break;
+                 }
+            }
+            // Setting Cookie Value
+            Spectrum.HeadUtil.saveCookie(cookieData.cookieName, properties[key], cookieData.cookieLength);
+            // Set SB Sales Client Context Store
+            CQ_Analytics.SessionStore.prototype.setProperty.call(salesProfile, properties[key]);
+        }
+    };
+
+    //This function checks if Sales profile params are same as default value or not.
+    //Returns true when parameter is not set in the cookie and this.data[] contains the default value for params.
+    SalesProfile.prototype.isDefault = function(key){
+        for (var cookie in this.cookieConfig) {
+            if (key === this.cookieConfig[cookie].clientcontextName) {
+                return this.data[key] === this.cookieConfig[cookie].defaultValue && this.data[key] !== Spectrum.HeadUtil.getCookieValue(this.cookieConfig[cookie].cookieName);
+            }
+        }
+    };
+
+    // Instantiated SB SalesProfile Class
+    Spectrum.Residential.SalesProfile = new SalesProfile();
+
+    CQ_Analytics.CCM.addListener("configloaded", function() {
+        //registers Profile Data to clickstreamcloud manager
+        CQ_Analytics.CCM.register(this);
+    }, Spectrum.Residential.SalesProfile);
+}
+

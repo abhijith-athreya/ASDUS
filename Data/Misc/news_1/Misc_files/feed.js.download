@@ -1,0 +1,127 @@
+function sendTaiData(arr1, event) {
+	arr1.push({'event': event});
+	var arr = arr1.reduce(function(res, cur) {
+    	for (var key in cur) {
+    		if (cur.hasOwnProperty(key)) {
+    			res[key] = cur[key];
+    		}
+    	}
+    	
+    	return res;
+    }, {});
+	
+	
+	$.ajax({
+	    url:  "http://tai.thehindu.com/tait/rwid/HINDU",
+	    type: 'GET',
+	     
+	    contentType: 'application/json; charset=utf-8',
+	    crossDomain: true,
+	    dataType: 'json',
+	    async: false,
+	    xhrFields: {
+	        withCredentials: true
+	    }, 
+	    success: function (response) {
+	    	console.log("data testing....");
+	    	var tid = response["tid"];
+	    	
+        	if(!tid && window.location != ""){
+        		console.log("No tid found");	        
+		}else{
+		   	console.log(" tid found | ", tid);
+		}    
+        	
+        	arr1.push({tid: tid, cookieId: tid});
+			var arr2 = arr1.reduce(function(res, cur) {
+		    	for (var key in cur) {
+		    		if (cur.hasOwnProperty(key)) {
+		    			res[key] = cur[key];
+		    		}
+		    	}
+		    	
+		    	return res;
+		    }, {});
+			console.log("array:: " + JSON.stringify(arr2));
+			taiSendAudience(arr2);
+        	
+	        console.log("usrtrack Response:: " + JSON.stringify(response));
+	    },
+	    timeout: 30000 // sets timeout to 30 seconds
+	});
+	
+}
+
+function taiSendAudience(arr) {
+	$.ajax({
+		url: "http://tai.thehindu.com/tait/audience/HINDU",
+		type: 'POST',
+	    data: JSON.stringify(arr),
+	    contentType: 'application/json; charset=utf-8',
+	    crossDomain: true,
+	    dataType: 'json',
+	    xhrFields: {
+	        withCredentials: true
+	    }, 
+	    success: function (response) {
+	        console.log("Audience Response:: " + JSON.stringify(response));
+	    },
+	    //jsonpCallback: 'callback1',
+	    timeout: 30000 // sets timeout to 30 seconds
+	});
+}
+
+function callback1(resp) {
+        console.log("Audience Response:: " + JSON.stringify(resp));
+}
+
+
+function taiCookieDrop(arr) {
+	var tid = '';
+	$.ajax({
+		url: "http://tai.thehindu.com/tait/cid/HINDU",
+		type: 'GET',
+	    contentType: 'application/json; charset=utf-8',
+	    crossDomain: true,
+	    xhrFields: {
+	        withCredentials: true
+	    }, 
+	    success: function (response) {
+	        console.log("Audience Response:: " + JSON.stringify(response));
+	        tid=response['tid'];
+	    },
+	    timeout: 30000 // sets timeout to 30 seconds
+	});
+	
+	return tid;
+}
+
+function taiLocalData(arr) {
+	$.ajax({
+		url: "http://localhost:7080/test-web/TestServlet1",
+		type: 'POST',
+	    data: JSON.stringify(arr),
+	    contentType: 'application/json; charset=utf-8',
+	    crossDomain: true,
+	    xhrFields: {
+	        withCredentials: true
+	    }, 
+	    success: function (response) {
+	        console.log("Audience Response:: " + JSON.stringify(response));
+	    },
+	    timeout: 30000 // sets timeout to 30 seconds
+	});
+}
+
+function checkNodataKeyValue(testArray) {
+	var testKey = "data";
+	var testVal = "nodata";
+	for (i=0; i < testArray.length; i++) {
+	    if ((testArray[i].hasOwnProperty(testKey)) && (testArray[i][testKey] === testVal)) {
+	        return true;
+	    }
+	}
+}
+function localbk1(resp) {
+	console.log('bcp response:: ' + JSON.stringify(resp));
+}

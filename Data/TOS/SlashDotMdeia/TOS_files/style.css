@@ -1,0 +1,488 @@
+/*
+Theme Name: slashdotmedia
+Theme URI: http://www.slashdotmedia.com
+Description: Wordpress Theme
+Version: 2.0
+Author: Decision Counsel
+Author URI: http://decisioncounsel.com
+*/
+
+
+/* ================================================================================ */
+/* COLORS */
+/* ================================================================================ */
+
+/* BLACK: 212121 */
+/* BLUE: 1880be */
+
+
+
+
+/* ================================================================================ */
+/* SITE ELEMENTS */
+/* ================================================================================ */
+
+* {margin: 0; padding: 0}
+
+html, body {height: 100%}
+
+::-moz-selection  { background: #eee; color:#000; text-shadow: none; }
+
+::selection  { background: #eee; color:#000; text-shadow: none; }
+
+a {cursor: pointer; text-decoration: none}
+
+a:active, a:focus{outline: 0;}
+
+img {border: none; height: auto;}
+
+img, object, embed {max-width: 100%;}
+
+.line { border: none; border-bottom: 4px dashed rgba(106,105,101,0.4); height: 0px; margin: 0 auto; margin: 16px 0;  }
+
+textarea {resize: none}
+
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {border: none;}
+
+input:focus, textarea:focus {outline: none;}
+
+::-webkit-input-placeholder  { color:#999; }
+input:-moz-placeholder { color:#999; }
+
+input[type="text"], input[type="email"], textarea {font-family:'HelveticaNeueW02-55Roma', Helvetica Neue, sans-serif;}
+
+#holder {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -45px; /* make sure this matches in the body footer DIV */}
+
+.push, footer {display: block; height: 45px; margin: 0 auto; clear: both}
+
+
+/* ================================================================================ */
+/* FONTS */
+/* ================================================================================ */
+
+/*
+font-family:'HelveticaNeueW02-55Roma';  Helvetica Neue
+font-family:'HelveticaNeueW01-75Bold';  Helvetica Neue Bold
+font-family:'UniversLTW01-85ExtraBla';  Univers Extra Black
+font-family:'Univers LT W01 45 Light';	Univers Light
+font-family:'UniversLTW01-53Extended';	Univers Extended
+*/
+
+
+h1, h2, h3, h4, h5 {-webkit-font-smoothing: antialiased; font-weight: 100}
+h2 { font-size: 24px; }
+
+p, a, em, li {font-weight: 100}
+strong, b {font-family:'HelveticaNeueW01-75Bold', sans-serif}
+
+
+/* ================================================================================ */
+/* UNIVERSAL STYLES / 1140 */
+/* ================================================================================ */
+
+body { background: #fff; color: #212121; font-family:'HelveticaNeueW02-55Roma', Helvetica Neue, sans-serif; -webkit-text-size-adjust:none; }
+
+.wrapper { width: 100%; max-width: 960px; min-width: 960px; margin: 0 auto; overflow: hidden;}
+
+.left {float: left}
+
+.right {float: right}
+
+.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+*:first-child+html .clearfix { zoom: 1; } /* IE7 */
+
+#toggle {-webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;}
+
+
+
+/* ================================================================================ */
+/* HEADER */
+/* ================================================================================ */
+
+header {display: block; height: 100px;}
+
+header .wrapper {overflow: visible}
+
+header h1 {float: left; margin-top: 18px}
+
+header h1 a {display: block}
+
+header h1 a span {display: none}
+
+header .right {width: 650px}
+
+header .top, header .bot {display: block; clear: both}
+
+/* TOP ROW */
+
+header .top {margin-top: 18px}
+
+header .socials, header .phone, header form {float: right;}
+
+header .socials {margin-top: 2px}
+
+header .socials a {text-indent: -9999em; width: 21px; height: 20px; background: url(images/sprite.png) no-repeat; display: inline-block; zoom: 1; *display:inline;}
+
+header .socials a.fb {background-position: 0 0;}
+header .socials a.fb:hover {background-position: 0 -22px;}
+
+header .socials a.twtr {background-position: -27px 0;}
+header .socials a.twtr:hover {background-position: -27px -22px;}
+
+header .socials a.lkn {background-position: -54px 0;}
+header .socials a.lkn:hover {background-position: -54px -22px;}
+
+header .socials a.cnt {background-position: -81px 0;}
+header .socials a.cnt:hover {background-position: -81px -22px;}
+
+header .phone {color: #666; font-size: 13px; display: block; padding: 0px 12px; height: 25px; line-height: 25px}
+
+header form {display: block; margin: 0 !important;}
+
+header form input[type="text"] {height: 23px; line-height: 23px; width: 190px; padding: 0 5px; border: 1px solid #c8c8c8; border-right: 0; float:left}
+
+header form input[type="submit"] {width: 25px; height: 25px; background: url(images/sprite.png) no-repeat -257px -18px #1880be; border: 0; float: left; color: transparent; display: block; cursor: pointer}
+
+header form input[type="submit"]:hover {background-color: #000}
+
+/* BOT ROW */
+
+header .bot {padding-top: 11px}
+
+header nav {float: right}
+
+header nav ul {list-style-type: none; margin: 0 !important; display: block;}
+
+header nav ul li {float: left; margin-left: 20px; position: relative}
+
+header nav ul li:first-child {margin-left: 0}
+
+header nav ul li a {display: block; color: #212121; font-size: 14px; font-family:'HelveticaNeueW01-75Bold'; text-decoration: none; height: 32px; border-bottom: 5px solid #fff;}
+
+header nav ul li:hover a {border-bottom: 5px solid #555; text-decoration: none}
+
+ul.sub-menu {position: absolute; top: 37px; background: #000; z-index: 1000; width: 100%; display: none;}
+
+header nav ul li:hover ul.sub-menu {display: block}
+
+ul.sub-menu li {float: none; height: auto; margin: 0; clear: both; border-top: 1px solid #444;}
+
+ul.sub-menu li:first-child {border-top: 0;}
+
+ul.sub-menu li a {display: block; height: auto; color: #fff; padding: 10px; font-weight: 100; font-size: 13px;}
+
+header nav ul li ul.sub-menu li a {border-bottom: 0}
+
+header nav ul li:hover ul.sub-menu li a {border-bottom: 0;}
+
+ul.sub-menu li a:hover {color: #1fb2fd; text-decoration: none;}
+
+
+/* ================================================================================ */
+/* HERO */
+/* ================================================================================ */
+
+.hero {height: 400px; overflow: hidden; position: relative;
+
+/* fallback */
+background-color: #1c9be0;
+
+/* Safari 4-5, Chrome 1-9 */
+background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1fb2fd), to(#1881bf));
+
+/* Safari 5.1, Chrome 10+ */
+background: -webkit-linear-gradient(left, #1fb2fd, #1881bf);
+
+/* Firefox 3.6+ */
+background: -moz-linear-gradient(left, #1fb2fd, #1881bf);
+
+/* IE 10 */
+background: -ms-linear-gradient(left, #1fb2fd, #1881bf);
+
+/* Opera 11.10+ */
+background: -o-linear-gradient(left, #1fb2fd, #1881bf);
+}
+
+#sd-hero:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+*:first-child+html #sd-hero { zoom: 1; } /* IE7 */
+
+.hero .wrapper {position: relative}
+
+.hero .slide {width: 960px; height: 400px; float: left}
+
+.hero .slide .left {width: 40%}
+
+.hero .slide .right {width: 57%;}
+
+.hero .slide h2 {font-family:'UniversLTW01-53Extended'; font-size: 60px; color: #fff; display: block; line-height: 1em; margin-top: 50px; letter-spacing: -2px}
+
+.hero .slide h2 em {font-style: normal; font-family:'UniversLTW01-85ExtraBla'; font-size: 64px; font-weight: 100; -webkit-font-smoothing: antialiased;}
+
+.hero .slide p {color: #fff; font-size: 14px; line-height: 1.5em; padding-top: 20px}
+
+.slash-bg {background: url(images/bg_hero.png) no-repeat; width: 526px; height: 370px; position: absolute; left: 15%; bottom: 0px}
+
+#pager {position: absolute; left: 0px; bottom: 20px;}
+
+#pager a {width: 30px; height: 21px; display: inline-block; color: transparent; text-indent: -9999em; background: url(images/sprite.png) no-repeat -36px -180px;}
+
+#pager a.selected {background-position: 0 -180px;}
+
+
+
+/* ================================================================================ */
+/* HOME (other sections) */
+/* ================================================================================ */
+
+.brands {display: block; clear: both; background: #212121; padding: 15px 0 35px 0;}
+
+.brands h2 {color: #999; font-family:'UniversLTW01-85ExtraBla'; font-size: 28px; display: block; letter-spacing: -1px}
+
+.brands .block-wrap {display: block; clear: both;}
+
+.brands .block-wrap .block {float: left; width: 45%; margin-left: 5%;}
+
+.brands .block-wrap .block:first-child {margin-left: 0;}
+
+.brands .block img {margin: 0 auto; display: block}
+
+.brands .block a.brand-link {height: 80px; display: block; margin-bottom: 15px}
+
+.brands .block p {color: #fff; display: block; font-size: 14px;}
+
+.brands .block p a {color: #1880be; text-decoration: none;}
+
+.brands .block p a:hover {color: #fff !important;}
+
+/* TECH */
+
+.tech {display: block; clear: both; padding: 60px 0;}
+
+.tech .left {width: 49%}
+
+.tech .right {width: 47%}
+
+.tech h2 {font-family:'UniversLTW01-85ExtraBla'; font-size: 42px; color: #212121; padding-bottom: 20px; display: block; letter-spacing: -2px}
+
+.tech p {color: #333; font-size: 14px; line-height: 1.5em}
+
+.tech a.learn-more {font-family:'UniversLTW01-85ExtraBla'; font-size: 24px; color: #1880be; text-decoration: none; float: left; display: block; padding-top: 10px; -webkit-font-smoothing: antialiased;}
+
+.tech a.learn-more:hover {color: #333}
+
+
+/* ================================================================================ */
+/* MAIN */
+/* ================================================================================ */
+
+.main {color: #212121; font-family:'HelveticaNeueW02-55Roma', sans-serif; -webkit-text-size-adjust:none; font-size: 13px; line-height: 18px}
+
+.blue-bar {display: block; clear: both; margin: 0 0 30px 0; height: 10px;
+
+/* fallback */
+background-color: #1c9be0;
+
+/* Safari 4-5, Chrome 1-9 */
+background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1fb2fd), to(#1881bf));
+
+/* Safari 5.1, Chrome 10+ */
+background: -webkit-linear-gradient(left, #1fb2fd, #1881bf);
+
+/* Firefox 3.6+ */
+background: -moz-linear-gradient(left, #1fb2fd, #1881bf);
+
+/* IE 10 */
+background: -ms-linear-gradient(left, #1fb2fd, #1881bf);
+
+/* Opera 11.10+ */
+background: -o-linear-gradient(left, #1fb2fd, #1881bf);
+}
+
+.blue-bar.biggie {height: 400px; position: relative; margin-bottom: 70px}
+
+.blue-bar.biggie .slash-bg {left: 50%; margin-left: -400px; bottom: 0px}
+
+.feat-img {display: block; position: relative; z-index: 500; bottom: -20px;}
+
+.feat-img img {margin: 0 auto; display: block}
+
+.blue-bar.slide-up {position: absolute; z-index: -1; width: 100%; left: 0;}
+
+.extra-height {display: block; clear: both; height: 35px;}
+
+/* ================================================================================ */
+/* SIDEBAR */
+/* ================================================================================ */
+
+#secondary {background: #252525; color: #fff; display: block; clear: both;}
+
+#secondary h2.follow-hd {color: #fff; font-size: 20px; letter-spacing: -1px; padding: 0 15px;}
+
+#secondary ul.social {margin: 0 15px;  padding-bottom: 20px}
+
+#secondary ul.social:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+*:first-child+html #secondary ul.social { zoom: 1; } /* IE7 */
+
+#secondary ul.social li a {width: 34px; height: 34px; background: url(images/sprite.png) no-repeat;}
+
+#secondary ul.social li a.facebook {background-position: 0 -48px}
+#secondary ul.social li a.facebook:hover {background-position: 0 -84px}
+
+#secondary ul.social li a.twitter {background-position: -43px -48px}
+#secondary ul.social li a.twitter:hover {background-position: -43px -84px}
+
+#secondary ul.social li a.rss {background-position: -86px -48px}
+#secondary ul.social li a.rss:hover {background-position: -86px -84px}
+
+#secondary #archives li.nav-header {color: #fff; font-family:'UniversLTW01-85ExtraBla'; font-size: 20px; font-weight: 100; text-transform: none; -webkit-font-smoothing: antialiased; text-shadow: none; filter: none; padding: 10px 15px; letter-spacing: -1px;}
+
+#secondary #archives li {font-family:'HelveticaNeueW01-75Bold'; font-size: 15px; font-weight: 100}
+
+#secondary #archives li a {text-shadow: none; filter: none; color: #1fb1fd;}
+
+#secondary #archives li a:hover {color: #252525}
+
+#secondary .divider {background: #696969; border: 0;}
+
+#secondary .well {background: #252525;}
+
+
+/* ================================================================================ */
+/* SINGLE ARTICLE */
+/* ================================================================================ */
+
+article.well {background: none; color: #333; padding-left: 0; padding-right: 0; display: block; clear: both;}
+
+article.well h1 {font-size: 32px; display: block; padding-bottom: 20px; line-height: 1.1em}
+
+#primary #nav-above a, #primary #nav-below a, #primary #nav-single a {background: #1880be; color: #fff; font-family:'UniversLTW01-85ExtraBla'; font-weight: 100; -webkit-font-smoothing: antialiased; text-shadow: none; -webkit-border-radius: 0px; border-radius: 0px; text-decoration: none; box-shadow: none; filter: none; border: 0; padding: 6px 14px;}
+
+#primary #nav-above a:hover, #primary #nav-below a:hover, #primary #nav-single a:hover {background: #000;}
+
+.entry-meta {background: none; color: #333; display: block; clear: both; height: auto;}
+
+footer.comment-meta {background: none;}
+
+h3#comments-title {display: block; clear: both; padding-bottom: 20px}
+
+#comments input#submit {background: #1880be; color: #fff; font-family:'UniversLTW01-85ExtraBla'; font-weight: 100; -webkit-font-smoothing: antialiased; text-shadow: none; -webkit-border-radius: 0px; border-radius: 0px; text-decoration: none; box-shadow: none; filter: none; border: 0; padding: 8px 14px; font-size: 18px; letter-spacing: -1px}
+
+#comments input#submit:hover {background: #000;}
+
+
+/* ================================================================================ */
+/* ARCHIVES / TAGS */
+/* ================================================================================ */
+
+header.page-header {margin: 0; display: block; clear: both; height: auto; float: none}
+
+header.page-header h1.page-title {font-family:'UniversLTW01-85ExtraBla'; font-size: 28px; font-weight: 100; letter-spacing: -1px; border-bottom: 1px solid #eee; padding-bottom: 20px; display: block; float: none;}
+
+.entry-content .btn, .entry-content .btn:hover {background: none; border: none; margin-bottom: 10px; filter: none; box-shadow: none;}
+
+.entry-content .btn:hover {text-decoration: underline}
+
+
+
+/* ================================================================================ */
+/* FOOTER / STICKY */
+/* ================================================================================ */
+
+footer {display: block; clear: both; background: #34424b; display: block; clear: both; font-size: 12px; height: 45px; line-height: 45px; color: #fff;}
+
+footer .menu-footer-container {float: left;}
+
+footer .menu-footer-container ul {list-style-type: none; margin: 0; padding: 0;}
+
+footer .menu-footer-container ul li {float: left; margin-left: 14px; line-height: 45px}
+
+footer .menu-footer-container ul li:first-child {margin-left: 0;}
+
+footer .menu-footer-container ul li a {display: block; color: #fff; height: 45px;}
+
+footer .menu-footer-container ul li a:hover {text-decoration: underline}
+
+footer p.credits {text-align: right}
+
+.footer-push {display: block; clear: both; height: 45px;}
+
+#menu-footer:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+*:first-child+html #menu-footer { zoom: 1; } /* IE7 */
+
+/* STICKY */
+
+.sticky {display: block; clear: both; background: #000; display: block; clear: both; font-size: 13px; height: 45px; line-height: 45px; color: #fff; position: fixed; bottom: 0; left: 0; width: 100%; z-index:999;}
+
+.sticky .wrapper {overflow: visible}
+
+.sticky .looking {position: relative; width: 775px; margin: 0 auto;}
+
+.sticky .looking p {padding-left: 52px; font-family:'HelveticaNeueW01-75Bold';}
+
+.sticky .looking p a {color: #1880be; text-decoration: underline;}
+
+.sticky .looking p a:hover {color: #fff;}
+
+.sticky .slash {width: 45px; height: 40px; background: url(images/sprite.png) no-repeat 0 -129px; display: block; position: absolute; left: 0; top: -6px;}
+
+/*New Table Header*/
+.table-top {
+  display: table;
+  min-height: 50px;
+  font-weight: normal;
+}
+
+.table-top h3,
+.table-top span {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.table-top h3 {
+  word-wrap: break-word;
+  width: 220px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.table-top span {
+  font-weight: normal;
+}
+
+a.specs {
+  float: right;
+  margin-top: -45px;
+  font-size: 14px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.g-recaptcha {
+  -moz-transform: scale(1.03);
+  -ms-transform: scale(1.03);
+  -o-transform: scale(1.03);
+  transform: scale(1.03);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+.rc-imageselect {
+  -webkit-transform: scale(1.03);
+  -moz-transform: scale(1.03);
+  -ms-transform: scale(1.03);
+  -o-transform: scale(1.03);
+  transform: scale(1.03);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  transform-origin: 0 0;
+}

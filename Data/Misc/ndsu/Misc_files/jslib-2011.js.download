@@ -1,0 +1,386 @@
+/* jslib-2011.js */
+
+$(document).ready(function() {
+	insertBannerLineBreak();
+	initializeTextSize();
+	initializeForms();
+
+	// if there are any images that should use lightbox, initialize czbox
+	if ($('.lightbox').length > 0) {
+		CzBox.create();
+	}
+	accordionFrame();
+
+	// for links whose link text matches the href, don't duplicate in print
+	$('a').each(function() {
+		if (('mailto:' + $(this).html()) == $(this).attr('href') ||
+			('http://' + $(this).html()) == $(this).attr('href') ||
+			('https://' + $(this).html()) == $(this).attr('href') ||
+			('http://' + $(this).html() + '/') == $(this).attr('href') ||
+			('https://' + $(this).html() + '/') == $(this).attr('href') ||
+			($(this).html() + '/') == $(this).attr('href') ||
+			$(this).html() == $(this).attr('href')) {
+
+			$(this).addClass('nohref');
+		}
+	});
+});
+/* ==================================================================== */
+/*				Form inputs				*/
+/* ==================================================================== */
+
+/* initializeForms() 
+ * Locate form field inputs on the page and initiate default events
+ */
+function initializeForms() {
+	var i;
+
+	// Search forms should restore their default value
+	$('#searchinput').focus( function() {
+		clearSetField(this);
+	});
+	$('#searchinput').blur( function() {
+		clearSetField(this);
+	});
+
+	// Though it might sometimes be helpful, do not restore the
+	// default value for other input fields
+	$('#typo3content :text[class!="noclear"]').each(function() {
+		$(this).focus( function() {
+			focusField(this);
+		});
+		$(this).blur( function() {
+			blurField(this);
+		});
+	});
+}
+
+/*
+ * clearSetField()
+ * Clears the field to simplify use when it has a default value
+ * Or sets it back to the default if it is null
+ *
+ * @input String
+ */
+function clearSetField(input) {
+	if (input.defaultValue==input.value) {
+		input.value = "";
+	}
+	else if (input.value=="") {
+		input.value = input.defaultValue;
+	}
+}
+
+/* focusField()
+ * Clears the input field, for use in main body fields
+ */
+function focusField(input) {
+	// clear the field if it has the default value and is not a search field
+	if (input.value == input.defaultValue && input.id!="searchinput") {
+		input.value = "";
+	}
+	input.style.backgroundColor="#f8f3cc";
+}
+function blurField(input) {
+	input.style.backgroundColor="";
+}
+
+/*
+ * setReferer
+ * Sets the carefully-named input field with the HTTP referer.
+ * To use, authors should insert a text field with the ID 'httpref'. Unfor-
+ * tunately (for them) there may be only one such field on the page to still be
+ * XHTML valid.
+ *
+ * Note that the Id referenced might change at any time, so you probably
+ * shouldn't reference this file if not using NDSU CMS.
+ * 
+ */
+function setReferrer() {
+	var ref = document.getElementById('ndsumailformhttpref');
+	if (document.referrer) {
+		ref.value = document.referrer;
+		ref.defaultValue = document.referrer;
+	// disabling the field makes the form not submit the value at all
+	//	ref.disabled = true;
+	}
+	else {
+		ref.value = 'Not available';
+	}
+}
+
+
+
+/* ================================================================= */
+/*				Format Banner text			*/
+/* ================================================================= */
+
+function insertBannerLineBreak() {
+	if ( $('#bannerwords a').html() ) {
+		var deptName = $('#bannerwords a').html();
+	}
+	else if ( $('#bannerwords span').html() ) {
+		var deptName = $('#bannerwords span').html();
+	}
+	else if ( $('#bannerwords').html() ) {
+		var deptName = $('#bannerwords').html();
+	}
+	else {
+		return;
+	}
+
+		// @todo force break if contains "Vice President"
+	if (deptName.length > 38) {
+		var words = deptName.split(' ');
+		var line1 = '';
+		var wordPosition = 0;
+	
+		// while adding the new word doesn't make the first line exceed the length of the second line+3 chars
+		while (words[wordPosition] && ((line1.length + words[wordPosition].length) < (deptName.length/2)+3)) {
+			line1 = line1 + words[wordPosition] + ' ';
+			wordPosition++;
+		}
+
+		if (words.length > wordPosition) {
+			var line2 = '';
+			while (words[wordPosition]) {
+				line2 = line2 + words[wordPosition] + ' ';
+				wordPosition++;
+			}
+
+			$('#bannerwords a').html(line1 + '<br/>' + line2);
+		}
+	}
+}
+
+/* ================================================================= */
+/*				Text resizer				*/
+/* ================================================================= */
+
+var currentFontSize;
+var smallFont='0.7109em';
+var mediumFont='0.8125em';
+var maximumFont='0.9141em';
+var path="/";
+var domain=document.domain;
+var helpURL = 'https://www.ndsu.edu/its/help/resize_text/';
+
+/**
+ * initializeTextSize()
+ * Adds the appropriate event actions and initiates defaults
+ */
+function initializeTextSize() {
+
+	drawSizeWidget();
+	getExistingFontSize();
+
+	$('#panel1d').click( function() { setSmallFontSize(); return false; });
+	$('#panel2d').click( function() { setMedFontSize(); return false; });
+	$('#panel3d').click( function() { setMaxFontSize(); return false; });
+}
+
+/**
+ * drawSizeWidget()
+ * Inserts the widget HTML
+ */
+function drawSizeWidget() {
+	var widgetHTML = '<span class="sizeLabel">Text size</span>' +
+	' <a href="' + helpURL + '" title="Small text" id="panel1d">S<span class="mask">mall</span></a> <span class="mask">|</span>' +
+	' <a href="' + helpURL + '" title="Medium text" id="panel2d">M<span class="mask">edium</span></a> <span class="mask">|</span>' +
+	' <a href="' + helpURL + '" title="Large text" id="panel3d">L<span class="mask">arge</span></a>';
+
+	$('#textresize').html(widgetHTML);
+}
+
+/**
+ * getExistingFontSize()
+ * Find the existing size from the cookie and set text size accordingly,
+ * or if null then set the default value.
+ */
+function getExistingFontSize() {
+	var existingFontSize = getFontSizeCookie("fontSize");
+	if (existingFontSize!=null) {
+		if (existingFontSize==smallFont) {
+			setSmallFontSize();
+		}
+		else if (existingFontSize==mediumFont) {
+			setMedFontSize();
+		}
+		else if (existingFontSize==maximumFont) {
+			setMaxFontSize();
+		}
+	}
+	else {
+		setMedFontSize();
+	}
+}
+/**
+ * setSmallFontSize()
+ * Sets the default font size to the document's body style
+ * and sets the fontSize cookie
+ */
+function setSmallFontSize() {
+	document.body.style.fontSize=smallFont;
+	setFontSizeCookie("fontSize",smallFont,null,path,domain);
+
+	$('#panel1d').addClass('fontSize');
+	$('#panel2d').removeClass('fontSize');
+	$('#panel3d').removeClass('fontSize');
+}
+
+/**
+ * setMaxFontSize()
+ * Selects the large font size to the document's body style
+ * and sets the fontSize cookie to max
+ */
+function setMaxFontSize() {
+	document.body.style.fontSize=maximumFont;
+	setFontSizeCookie("fontSize",maximumFont,null,path,domain);
+
+	$('#panel1d').removeClass('fontSize');
+	$('#panel2d').removeClass('fontSize');
+	$('#panel3d').addClass('fontSize');
+}
+
+/**
+ * setMedFontSize
+ * Selects the medium font size to the document's body style
+ * and sets the fontSize cookie to medium
+ */
+function setMedFontSize() {
+	document.body.style.fontSize = mediumFont;
+	setFontSizeCookie("fontSize",mediumFont,null,path,domain);
+
+	$('#panel1d').removeClass('fontSize');
+	$('#panel2d').addClass('fontSize');
+	$('#panel3d').removeClass('fontSize');
+}
+
+
+/** getFontSizeCookie */
+function getFontSizeCookie(cookieName){
+	if (document.cookie.length > 0) {
+		var startOfCookie = document.cookie.indexOf(cookieName+"=");
+		if (startOfCookie != -1) {
+			startOfCookie += cookieName.length+1;
+			var endOfCookie = document.cookie.indexOf(";", startOfCookie);
+			if (endOfCookie == -1)
+				endOfCookie = document.cookie.length;
+				return unescape(document.cookie.substring(startOfCookie, endOfCookie));
+			}
+	}
+	return null;
+}
+
+/** setFontSizeCookie */
+function setFontSizeCookie(cookieName, cookieValue, cookieExpiredays, path, domain) {
+	var ExpireDate = new Date ();
+	ExpireDate.setTime(ExpireDate.getTime() + (cookieExpiredays * 24 * 3600 * 1000));
+	document.cookie = cookieName + "=" + escape(cookieValue) +
+	((cookieExpiredays == null) ? "" : "; expires=" + ExpireDate.toGMTString())
+	+ ( ( path ) ? ";path=" + path : "" ) +
+	( ( domain ) ? ";domain=" + domain : "" );
+}
+
+
+
+
+
+
+
+
+
+
+/*
+ * When there is a Zipcode field, try to fill in City, State and County
+ * fields (if they exist).
+ */
+/*
+$('#ndsumailformZipcode').change(function() {
+	if ($('#ndsumailformZipcode').val().length >= 5) {
+		// consider only the first 5 characters, in case it's formatted as nnnnn-nnnn.
+		$.post('zipcode.php', { zipcode: $('#ndsumailformZipcode').val().substring(0,5) },
+			function(data) {
+				var updateData = data.split(',');
+				var state = updateData[0];
+				var city = updateData[1];
+				var county = updateData[2];
+				$('#ndsumailformCity').val(city);
+				$('#ndsumailformState').val(state);
+				$('#ndsumailformCounty').val(county);
+			});
+	}
+});
+*/
+
+/**
+ * CzBox2 - simple Zepto.js / jQuery lightbox
+ * @author		Jan Pecha, <janpecha@email.cz>
+ * @version		2012-09-04-1
+ */
+var CzBox=CzBox||{};CzBox.lang={textImage:"Image",textOf:"of",textPrev:"Previous",textNext:"Next",textClose:"Close",textLoading:"Loading"};CzBox.nodes={};CzBox._created=false;CzBox.enableRels=['czbox','lightbox'];CzBox.currentRel='';CzBox.currentIndex=0;CzBox.create=function(){if(CzBox._created===false){CzBox._created=true;CzBox.modifyDom();CzBox.init();var rels=CzBox.enableRels.join('|');rels='('+rels+')(\\[(.+)\\])?';var selector=new Array;for(var i=0;i<CzBox.enableRels.length;i++){selector.push('a[rel*='+CzBox.enableRels[i]+']')}CzBox.scanDocument(selector.join(', '),new RegExp(rels))}};CzBox.modifyDom=function(){if(!($('#czbox-box').length)){$('body').first().append('<div id="czbox-box">'+'<div id="czbox-background"></div>'+'<div id="czbox-image-box">'+'<div id="czbox-description"></div>'+'<div id="czbox-info-bar">'+'<span class="czbox-text">'+this.lang.textImage+'</span>'+' <span id="czbox-image-number"></span> '+'<span class="czbox-text">'+this.lang.textOf+'</span>'+' <span id="czbox-images-count"></span> '+'</div>'+'<div id="czbox-loading"><span class="czbox-text">'+this.lang.textLoading+'</span></div>'+'<div id="czbox-image-wrapper"><img id="czbox-image" src="#" alt=""></div>'+'<a id="czbox-btn-prev" href="#"><span class="czbox-text">'+this.lang.textPrev+'</span></a>'+'<a id="czbox-btn-next" href="#"><span class="czbox-text">'+this.lang.textNext+'</span></a>'+'<a id="czbox-btn-close" href="#"><span class="czbox-text">'+this.lang.textClose+'</span></a>'+'</div>'+'</div>')}};CzBox.init=function(){$('#czbox-btn-close, #czbox-background').on('click',function(){CzBox.close();return false});$('#czbox-btn-next').on('click',function(){CzBox.next();return false});$('#czbox-btn-prev').on('click',function(){CzBox.prev();return false});$('body').on('keydown',function(e){if($('#czbox-box').hasClass('czbox-open')){var code;if(!e){var e=window.event}if(e.keyCode){code=e.keyCode}else if(e.which){code=e.which}switch(code){case 27:CzBox.close();return false;case 13:case 39:case 40:CzBox.next();return false;case 37:case 38:CzBox.prev();return false}}});if(window.addEventListener){window.addEventListener('DOMMouseScroll',CzBox.handlerWheel,false)}window.onmousewheel=document.onmousewheel=CzBox.handlerWheel;$('#czbox-image').on('load',function(){$('#czbox-loading').css('display','none');$(this).parent().css('visibility','visible').animate({opacity:1},600)})};CzBox.scanDocument=function(selector,parseRelAttrRegExp){$(selector).each(function(index){var anchor=$(this);var rel=anchor.attr('rel');rel=CzBox.parseRelAttr(rel,parseRelAttrRegExp);if(rel===''){rel='i_'+index}else{rel='c_'+rel}if(typeof CzBox.nodes[rel]==='undefined'){CzBox.nodes[rel]=new Array}CzBox.nodes[rel].push(anchor);anchor.data('czbox-rel',rel);anchor.data('czbox-index',CzBox.nodes[rel].length-1);anchor.on('click',function(){CzBox.open(this);return false})})};var currentPosition=0;CzBox.open=function(anchor){if(anchor.href!==$('#czbox-image').attr('src')){$('#czbox-box').addClass('czbox-open');$('#czbox-loading').css('display','block');$('#czbox-image-wrapper').css('opacity',0).css('visibility','hidden');var url=anchor.href;if(typeof(dataUrl=$(anchor).data('czbox-href'))==='string'){url=dataUrl}$('#czbox-image').attr('src',url);CzBox.update(anchor);if(navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|Blackberry/i)){if(typeof(window.pageYOffset)=='number'){currentPosition=window.pageYOffset}else if(document.body&&(document.body.scrollTop)){currentPosition=document.body.scrollTop}window.scrollTo(0,0)}if(navigator.userAgent.match(/iPhone/i)){var iphoneHeight=$(window).height()+60;$('.czbox-open').css('height',iphoneHeight+'px')}}};CzBox.close=function(){$('#czbox-box').removeClass('czbox-open');$('#czbox-image').attr('src','');$('#czbox-description').hide();if(navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|Blackberry/i)){window.scrollTo(0,currentPosition)}};CzBox.next=function(){if(CzBox.currentRel!==''){if(CzBox.currentIndex<(CzBox.nodes[CzBox.currentRel].length-1)){CzBox.open(CzBox.nodes[CzBox.currentRel][CzBox.currentIndex+1].get(0))}}};CzBox.prev=function(){if(CzBox.currentRel!==''){if(CzBox.currentIndex>0){CzBox.open(CzBox.nodes[CzBox.currentRel][CzBox.currentIndex-1].get(0))}}};CzBox.update=function(anchor){anchor=$(anchor);var rel=anchor.data('czbox-rel');var index=parseInt(anchor.data('czbox-index'),10);if(CzBox.nodes[rel].length<2){$('#czbox-info-bar').hide();$('#czbox-btn-next').hide();$('#czbox-btn-prev').hide()}else{$('#czbox-info-bar').show();$('#czbox-image-number').html(index+1);$('#czbox-images-count').html(CzBox.nodes[rel].length);if(index===0){$('#czbox-btn-prev').hide()}else{$('#czbox-btn-prev').show()}if(index===(CzBox.nodes[rel].length-1)){$('#czbox-btn-next').hide()}else{$('#czbox-btn-next').show()}}var description=CzBox.getDescription(anchor);if(description!==''){$('#czbox-description').html(description).show()}else{$('#czbox-description').hide()}CzBox.currentRel=rel;CzBox.currentIndex=index};CzBox.parseRelAttr=function(rel,regexp){var result=rel.match(regexp);if(result===null){return''}result=result[3];if(typeof result==='undefined'){return''}return result};CzBox.getDescription=function(zeptoAnchor){var description='';var img=zeptoAnchor.children('img').first();if(description=img.attr('title')){return description}if(description=zeptoAnchor.attr('title')){return description}if(description=img.attr('alt')){return description}return''};CzBox.handlerWheel=function(e){if($('#czbox-box').hasClass('czbox-open')){e=e?e:window.event;if(e.stopPropagation){e.stopPropagation()}if(e.preventDefault){e.preventDefault()}e.cancelBubble=true;e.cancel=true;e.returnValue=false;return false}};CzBox.langCs=function(){CzBox.lang.textImage="ObrÃ¡zek";CzBox.lang.textOf="ze";CzBox.lang.textPrev="PÅ™edchozÃ­";CzBox.lang.textNext="DalÅ¡Ã­";CzBox.lang.textClose="ZavÅ™Ã­t";CzBox.lang.textLoading="NaÄÃ­tÃ¡m"}
+
+/** accordion */
+function accordionFrame() {
+	// update the DOM to be accordion-compatible
+	$('.csc-frame-accordion').each(function() {
+		var headingText = '';
+		$('div h3',this).each(function() {
+			// remove all its <div> wrappings, just because
+			$(this).unwrap();
+			var heading = $(this).remove();
+			headingText = heading.html();
+		});
+		$(this).before('<h3 class="accordion-handle">' + headingText + '</h3>');
+	});
+
+	// accordion begins with hiding all sections
+	// also find the height of the largest section
+	var maxHeight = 0;
+	$('.csc-frame-accordion').each(function() {
+		if ($(this).height() > maxHeight) {
+			maxHeight = $(this).height();
+		}
+		$(this).hide();
+	});
+
+	// show the first slide by default (if jQuery, aka desktop)
+	if ($(document).jquery) {
+		$('.csc-frame-accordion:first').show();
+		$('.accordion-handle:first').addClass('active');
+	}
+
+	// slides the element with class "csc-frame-accordion" when heading with class "accordion-handle" is clicked
+	$(".accordion-handle").click(function() {
+		$(this).addClass('active').siblings('.accordion-handle').removeClass('active');
+		$(this).next('.csc-frame-accordion').show('fast').siblings('.csc-frame-accordion').hide('fast');
+
+		if ($(document).jquery) {
+		// jquery requires effects to be completed first
+			$('.csc-frame-accordion').promise().done( function() {
+				adjustPosition($('.active'));
+			});
+		} else {
+			adjustPosition($('.active'));
+		}
+
+		function adjustPosition(el) {
+			// scroll to keep the top of the accordion visible
+			if (!elementInViewport(el)) {
+				window.scrollTo(0,el.offset().top);
+			}
+		}
+
+		function elementInViewport(el) {
+			var top = el.offset().top;
+			var height = el.height();
+
+			// IE doesn't define some window properties
+			var pageYOffset = window.pageYOffset ? window.pageYOffset : document.documentElement.scrollTop;
+			var innerHeight = window.innerHeight ? window.innerHeight : document.body.clientHeight;
+
+			return ( top < (pageYOffset + innerHeight) &&
+				(top + height) > pageYOffset );
+		}
+	});
+};

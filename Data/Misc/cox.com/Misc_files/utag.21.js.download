@@ -1,0 +1,131 @@
+//~~tv:19068.20131016
+//~~tc: Initial version of the SundaySky tag.
+
+if(typeof utag.ut=="undefined"){
+  utag.ut={};
+}
+
+utag.ut.libloader2=function(o, a, b, c, l) {
+  a=document;b=a.createElement('script');b.language='javascript';b.type='text/javascript';b.src=o.src;if(o.id){b.id=o.id};
+  if (typeof o.cb=='function') {
+    b.hFlag=0;b.onreadystatechange=function(){if((this.readyState=='complete'||this.readyState=='loaded')&&!b.hFlag){b.hFlag=1;o.cb()}};
+    b.onload=function(){if(!b.hFlag){b.hFlag=1;o.cb()}}
+  }
+  l = o.loc || 'head';
+  c = a.getElementsByTagName(l)[0];
+  if (c) {
+    if (l == 'script') {
+      c.parentNode.insertBefore(b, c);
+    } else {
+      c.appendChild(b)
+    }
+    utag.DB("Attach to "+l+": "+o.src)
+  }
+}
+
+window.SSKY = window.SSKY || [];
+
+//tealium universal tag - utag.sender.19068 ut4.0.201708031752, Copyright 2017 Tealium.com Inc. All Rights Reserved.
+try{
+(function(id,loader,u){
+  u=utag.o[loader].sender[id]={};
+  u.ev={'view':1};
+  u.event_lookup = {"browse":"prodview", "addToCart":"cartadd", "cartView":"cartview", "conversion":"conversion"};
+  u.initialized = false;
+  u.data = {};
+  u.data.params = {};
+  u.data.params.account = "cox";
+  u.data.params.profile = "1";
+  u.data.params.attrs = {};
+  u.map={"ss_event:prodview":"browse","ss_event:cartview":"cartView","ss_event:conversion":"conversion","totalOrderValue":"params.cart_value","categoryViewed":"attrs.cat","categoryCarted":"attrs.ccr","categorySubscribed":"attrs.csb","categoryPurchased":"attrs.cp","productViewed":"attrs.pv","productSubscribed":"attrs.psb","productPurchased":"attrs.pp","offerViewed":"attrs.ov","offerCarted":"attrs.ocr","offerPurchased":"attrs.op","pageName":"attrs.pn","zip":"attrs.z","businessUnit":"attrs.bu","siteID":"attrs.sid","visitorType":"attrs.ct"};
+  u.extend=[function(a,b,c,d,e,f,g){d=b['dom.pathname'];if(typeof d=='undefined')return;c=[{'/shoppingcart.cox':'cartview'},{'order-confirmation':'conversion'}];var m=false;for(e=0;e<c.length;e++){for(f in c[e]){if(d.toString().indexOf(f)>-1){b['ss_event']=c[e][f];m=true};};if(m)break};if(!m)b['ss_event']='prodview';},
+function(a,b){
+if(typeof b.ss_event=="undefined" || b.ss_event==""){
+  return false;
+}
+},
+function(a,b){ try{ if(b['dom.pathname'].toString().indexOf('/home.cox')>-1){b['ss_cat']='home'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['dom.pathname'].toString().indexOf('/content/')>-1){b['ss_cat']=b['_ccat']} } catch(e){ utag.DB(e) }  },
+function(a,b){
+function addLoadEvent(func) {
+    var oldonload = window.onload;
+    if (typeof window.onload != 'function') {
+        window.onload = func;
+    } else {
+        window.onload = function() {
+            if (oldonload) {
+                oldonload();
+            }
+            func();
+        };
+    }
+}
+
+utag.onload_flag = utag.onload_flag || {};
+if (!utag.onload_flag[id]) {
+    if (document.readyState != "complete") {
+        addLoadEvent(function() {
+            utag.view(utag_data, null, [id]);
+        });
+        return false;
+    }
+    utag.onload_flag[id] = 1;
+}
+}];
+
+  u.send=function(a,b){
+    if(u.ev[a]||typeof u.ev.all!="undefined"){
+      for(c=0;c<u.extend.length;c++){try{d=u.extend[c](a,b);if(d==false)return}catch(e){}};
+      var c,d,e,f,g;
+      c = [];
+      for(d in utag.loader.GV(u.map)){if(typeof b[d]!="undefined"&&b[d]!=""){e=u.map[d].split(",");for(f=0;f<e.length;f++){
+        if (e[f].indexOf("params.") == 0) {
+          var param = e[f].substr(7);
+          u.data.params[param] = b[d];
+        } else if (e[f].indexOf("attrs.") == 0) {
+          var attr = e[f].substr(6);
+          u.data.params.attrs[attr] = b[d];
+        } else {
+          u.data[e[f]] = b[d];
+        }
+      }}else{
+        h=d.split(":");if(h.length==2 && b[h[0]]==h[1]){g=""+u.event_lookup[u.map[d]];if(g!=""){b._cevent=g}}
+      }}
+      u.sundaysky_callback = function(){
+        if (b._cevent == "prodview") {
+          u.data.event_name = u.data.event_name || "t.browse";
+          u.data.params.attrs.pv = u.data.params.attrs.pv || (typeof b._cprod != "undefined" ? b._cprod.slice(0) : "");
+          u.data.params.attrs.cat = u.data.params.attrs.cat || (typeof b._ccat != "undefined" ? b._ccat.slice(0) : "");
+        } else if (b._cevent == "cartadd") {
+          u.data.event_name = u.data.event_name || "t.addToCart";
+          u.data.params.attrs.pa = u.data.params.attrs.pa || (typeof b._cprod != "undefined" ? b._cprod.slice(0) : "");
+          u.data.params.attrs.cat = u.data.params.attrs.cat || (typeof b._ccat != "undefined" ? b._ccat.slice(0) : "");
+        } else if (b._cevent == "cartview") {
+          u.data.event_name = u.data.event_name || "t.cartView";
+          u.data.params.attrs.sc = u.data.params.attrs.sc || (typeof b._cprod != "undefined" ? b._cprod.slice(0) : "");
+        } else if (b._cevent == "conversion") {
+          u.data.event_name = u.data.event_name || "t.conversion";
+          u.data.params.order_id = u.data.params.order_id || b._corder;
+          u.data.params.order_value = u.data.params.order_value || b._csubtotal;
+          u.data.params.attrs.pp = u.data.params.attrs.pp || (typeof b._cprod != "undefined" ? b._cprod.slice(0) : "");
+          u.data.params.attrs.cp = u.data.params.attrs.cp || (typeof b._ccat != "undefined" ? b._ccat.slice(0) : "");
+        }
+
+        c.push(u.data.event_name, u.data.params);
+        window.SSKY.push(c);
+      };
+
+      u.base_url = ('https:' == document.location.protocol ? 'https://dds6m601du5ji.cloudfront.net' : 'http://cdn1-res.sundaysky.com') + '/vop/t.js';
+      if (!u.initialized) {
+        u.initialized = true;
+        utag.ut.libloader2({src:u.base_url, cb:u.sundaysky_callback});
+      } else {
+        u.sundaysky_callback();
+      }
+    }
+  }
+  utag.o[loader].loader.LOAD(id);
+})('21','cox.main');
+}catch(e){}
+//end tealium universal tag
+

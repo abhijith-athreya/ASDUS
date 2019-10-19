@@ -1,0 +1,520 @@
+/* ==========================================================================
+   RESPONSIVE GLOBAL CORP NAV STYLES
+   ========================================================================== */
+
+ul#universalNav {
+  background: none;
+  height: auto;
+  width: auto;
+  text-indent: -9999px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+ul#universalNav li a {
+  padding: 0;
+}
+
+#header {
+  position: relative;
+  z-index: 2;
+}
+
+#mainNavigation {
+  position: relative;
+  z-index: 1;
+}
+
+#mainNavigation, .ie7 #mainNavigation, .ie8 #mainNavigation, #PrimaryNav {
+  font-size: inherit;
+  margin: 0 auto;
+  min-height: inherit;
+  width: 100%;
+}
+
+#mainNavigation ul {
+  list-style: none;
+}
+
+#mainNavigation fieldset {
+  border: none;
+  margin: 0;
+  position: relative;
+}
+
+input#search {
+  padding-right: 5px;
+}
+
+.btnGo {
+  background: none;
+  height: 18px;
+  width: 25px;
+}
+
+/* NEW MOBILE NAV ITEM */
+
+#mainNavigation #PrimaryNav li #sm_more_link {
+  background: transparent url('/etc/designs/snr/clientlibs/images/ATTglobe-white.png') no-repeat 10px center;
+  color: #FFF;
+  padding-left: 40px;
+}
+
+/* ========================
+   REUSABLE CLASES
+   ========================*/
+
+.hidden-phone {
+  display: none !important;
+}
+
+.visible-phone {
+  display: block !important;
+}
+
+/* ==========================================================================
+   Media Queries
+   ========================================================================== */
+
+@media only screen and (min-width: 994px) {
+  #headerNav #menuButton a, #headerNav #menuButton button, #headerNav h1 {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 994px) {
+  body {
+    background: none;
+    padding: 0;
+  }
+  #wrapper {
+    overflow-x: hidden;
+  }
+  .lt-ie9 #wrapper {
+    overflow-x: visible;
+  }
+  #header {
+    display: none;
+  }
+  #headerNav {
+    background: black;
+    height: 47px;
+  }
+  #headerNav h1 {
+    color: #FFF;
+    float: left;
+    font-family: 'Omnes', Arial, Helvetica, sans-serif;
+    font-size: 2.4em;
+    padding: 7px 0 0 18px;
+    position: relative;
+    margin: 8px 0 0;
+  }
+  #headerNav h1:before {
+    border-left: 1px solid white;
+    content: "";
+    height: 20px;
+    left: 0;
+    position: absolute;
+    top: 7px;
+  }
+  #headerNav #menuButton {
+    float: left;
+    height: 17px;
+    margin: 17px 15px 0 16px;
+    width: 20px;
+  }
+  #headerNav #menuButton a, #headerNav #menuButton button {
+    display: block;
+    line-height: 0;
+    font-size: 0;
+    color: transparent;
+    background-color: transparent;
+    border: 0;
+  }
+  #headerNav #menuButton .icon-bar {
+    display: block;
+    background: #FFF;
+    height: 3px;
+    margin-bottom: 4px;
+    width: 20px;
+  }
+  #mainNavigation {
+    border-radius: 0;
+    box-shadow: none;
+    height: auto;
+    margin: 0;
+    width: auto;
+  }
+  .no-borderradius #mainNavigation {
+    background: none;
+    height: auto;
+    padding: 0;
+  }
+  #mainNavigation #PrimaryNav li.logo {
+    display: none !important;
+  }
+  #mainNavigation #PrimaryNav, #mainNavigation #PrimaryNav li a, #mainNavigation #PrimaryNav li a:hover {
+    background: none;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    text-indent: 0;
+    white-space: normal;
+    width: auto;
+  }
+  #mainNavigation #PrimaryNav li {
+    background: #5a5a5a !important;
+    display: block;
+    float: none;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+  }
+  #mainNavigation #PrimaryNav li a {
+    border-bottom: 1px solid #191919;
+    display: block;
+  }
+  .no-borderradius #mainNavigation #PrimaryNav li a {
+    max-width: auto;
+    width: auto;
+  }
+  #mainNavigation #PrimaryNav>li>a, #mainNavigation #PrimaryNav>li>a:hover {
+    background: #d2d2d2;
+    color: #000;
+    font-size: 11px !important;
+    text-transform: uppercase;
+  }
+  #mainNavigation #PrimaryNav li .secondaryNav {
+    display: block;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    position: static;
+    width: auto;
+  }
+  #PrimaryNav li.selected .secondaryNav, #PrimaryNav li:hover .secondaryNav, #PrimaryNav li.showSecondary .secondaryNav {
+    background: none;
+  }
+  #mainNavigation #PrimaryNav li #about_us_nav {
+    display: none;
+  }
+  #mainNavigation #PrimaryNav li .secondaryNav a {
+    color: #FFF;
+  }
+  #wrapper #PrimaryNav li.selected .secondaryNav li a, #wrapper #PrimaryNav li.showSecondary .secondaryNav li a {
+    float: none;
+    padding: 10px !important;
+  }
+  #mainNavigation #PrimaryNav li a, #mainNavigation #PrimaryNav li a:hover {
+    padding: 10px;
+  }
+  #PrimaryNav li a:before {
+    border-left: none;
+    height: 0;
+    margin: 0;
+    position: static;
+  }
+  #wrapper #PrimaryNav li.selected a, #wrapper #PrimaryNav li.selected a:hover, #wrapper #PrimaryNav li a:hover, #wrapper #PrimaryNav li.showSecondary a {
+    width: auto;
+  }
+  #PrimaryNav a:hover, #PrimaryNav .selected a, #PrimaryNav .showSecondary a {
+    border-radius: 0;
+  }
+  #pn-csr {
+    max-width: none;
+  }
+  #mainNavigation #PrimaryNav li.search {
+    background: none repeat scroll 0 0 #5a5a5a !important;
+    height: 47px;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: -47px;
+    width: 100%;
+  }
+  #PrimaryNav input#search {
+    background: #f2f2f2;
+    border-radius: 4px;
+    color: #191919;
+    float: left;
+    margin: 10px 0 0 10px;
+    padding: 2px 5px 3px 30px;
+    font-size: 16px;
+    width: 70%;
+  }
+  #mainNavigation #PrimaryNav li.first-mobile {
+    margin-top: 47px;
+  }
+  #searchForm .btnGo {
+    background: url('/etc/designs/snr/clientlibs/images/mobile_nav_icon.png') no-repeat 0 0;
+    background-size: 15px auto;
+    height: 20px;
+    left: 20px;
+    padding-left: 20px;
+    position: absolute;
+    top: 14px;
+    width: 0;
+  }
+  #mainNavigation #PrimaryNav #menuCloseButton {
+    position: absolute;
+    right: 0;
+    top: -47px;
+    width: 40px;
+    height: 47px;
+  }
+  #mainNavigation #PrimaryNav #menuCloseButton button {
+    box-sizing: border-box;
+    background: url('/etc/designs/snr/clientlibs/images/btn_close.png') no-repeat;
+    background-position: 10px 55%;
+    background-color: transparent;
+    background-size: 18px auto;
+    border: 0;
+    color: transparent;
+    height: 100%;
+    width: 100%;
+  }
+  #PrimaryNav .showTray .tertiaryNav {
+    display: none !important;
+  }
+  /* ========================
+        OFF-CANVAS NAV
+    ======================== */
+  #inner-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  #headerNav {
+    position: relative;
+    z-index: 100;
+  }
+  #headerNav #menuButton {
+    cursor: pointer;
+  }
+  #PrimaryNav-container {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 200;
+  }
+  #PrimaryNav-container:not(:target) {
+    height: 0;
+    z-index: 1;
+  }
+  #PrimaryNav-container #PrimaryNav {
+    padding: 0;
+    position: relative;
+  }
+  .js-ready #PrimaryNav-container {
+    display: none;
+    height: 100%;
+    left: -80%;
+    width: 80%;
+    background: #5a5a5a;
+  }
+  .js-nav #PrimaryNav-container {
+    display: block;
+    overflow: visible;
+  }
+  .js-ready #mainNavigation #PrimaryNav {
+    background: #757575;
+  }
+  .js-ready #inner-wrapper {
+    left: 0;
+  }
+  .js-nav #inner-wrapper {
+    left: 80%;
+  }
+  .csstransforms3d.csstransitions.js-ready #PrimaryNav-container {
+    left: 0;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    -moz-transform: translate3d(-100%, 0, 0);
+    -ms-transform: translate3d(-100%, 0, 0);
+    -o-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    -o-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .csstransforms3d.csstransitions.js-ready #inner-wrapper {
+    left: 0 !important;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    -webkit-transition: -webkit-transform 500ms ease;
+    -moz-transition: -moz-transform 500ms ease;
+    -o-transition: -o-transform 500ms ease;
+    transition: transform 500ms ease;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    -o-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .csstransforms3d.csstransitions.js-nav #inner-wrapper {
+    -webkit-transform: translate3d(80%, 0, 0) scale3d(1, 1, 1);
+    -moz-transform: translate3d(80%, 0, 0) scale3d(1, 1, 1);
+    -ms-transform: translate3d(80%, 0, 0) scale3d(1, 1, 1);
+    -o-transform: translate3d(80%, 0, 0) scale3d(1, 1, 1);
+    transform: translate3d(80%, 0, 0) scale3d(1, 1, 1);
+  }
+  .csstransforms3d.csstransitions.js-ready #PrimaryNav-container #PrimaryNav {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
+    opacity: 0.7;
+    -webkit-transition: opacity 300ms 100ms, -webkit-transform 500ms ease;
+    -webkit-transition-delay: ease, 0s;
+    -moz-transition: opacity 300ms 100ms ease, -moz-transform 500ms ease;
+    -o-transition: opacity 300ms 100ms ease, -o-transform 500ms ease;
+    transition: opacity 300ms 100ms ease, transform 500ms ease;
+    -webkit-transform: translate3d(80%, 0, 0) scale3d(0.9, 0.9, 0.9);
+    -moz-transform: translate3d(80%, 0, 0) scale3d(0.9, 0.9, 0.9);
+    -ms-transform: translate3d(80%, 0, 0) scale3d(0.9, 0.9, 0.9);
+    -o-transform: translate3d(80%, 0, 0) scale3d(0.9, 0.9, 0.9);
+    transform: translate3d(80%, 0, 0) scale3d(0.9, 0.9, 0.9);
+    -webkit-transform-origin: 50% 0%;
+    -moz-transform-origin: 50% 0%;
+    -ms-transform-origin: 50% 0%;
+    -o-transform-origin: 50% 0%;
+    transform-origin: 50% 0%;
+  }
+  .csstransforms3d.csstransitions.js-nav #PrimaryNav-container #PrimaryNav {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  /* ========================
+        MOBILE FOOTER
+    ======================== */
+  #mobile-footer {
+    padding: 15px;
+  }
+  #mobile-footer, #mobile-footer a {
+    color: #666;
+  }
+  #mobile-footer ul, #mobile-footer p {
+    clear: both;
+    display: block;
+    float: left;
+  }
+  #mobile-footer p {
+    margin: 20px 0 0;
+  }
+  #mobile-footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  #mobile-footer li {
+    float: left;
+    margin-left: 8px;
+    /*text-transform: uppercase;*/
+  }
+  #mobile-footer li:first-child {
+    margin-left: 0;
+  }
+  #mobile-footer li:before {
+    content: '|';
+    padding-right: 8px;
+  }
+  #mobile-footer li:first-child:before, #mobile-footer .connect-social li:before {
+    content: '';
+    padding-right: 0;
+  }
+  #mobile-footer .connect-social p, #mobile-footer .connect-social ul {
+    clear: none;
+    display: inline;
+    margin: 0;
+  }
+  #mobile-footer .connect-social p {
+    margin-right: 10px;
+  }
+  #custom-footer {
+    padding: 15px;
+  }
+  #footer {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  /* ========================
+        REUSABLE
+     ========================*/
+  #mainNavigation .hidden-phone {
+    display: none !important;
+  }
+  #mainNavigation .visible-phone {
+    display: block !important;
+  }
+}
+
+@media only screen and (min-width: 974px) {
+  /* ========================
+        REUSABLE
+     ========================*/
+  #mainNavigation .hidden-phone {
+    display: none !important;
+  }
+  #mainNavigation .visible-phone {
+    display: block !important;
+  }
+}
+
+@media only screen and (min-width: 995px) {
+  #mainNavigation {
+    z-index: 4;
+  }
+  /*#headerNav {
+        display:none;
+    }*/
+  #PrimaryNav li .secondaryNav li .tertiaryNav {
+    margin: 0;
+  }
+  #PrimaryNav li .secondaryNav li .tertiaryNav li ul, #PrimaryNav li .secondaryNav li .tertiaryNav li li {
+    padding: 0;
+  }
+  #headerTitle {
+    display: none;
+  }
+  #mobile-footer {
+    display: none;
+  }
+  #footer {
+    display: block;
+  }
+  /* ========================
+        REUSABLE
+    ========================*/
+  #mainNavigation .hidden-phone {
+    display: block !important;
+  }
+  #mainNavigation .visible-phone {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+.clearfix:before, .clearfix:after {
+  content: " ";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  *zoom: 1;
+}

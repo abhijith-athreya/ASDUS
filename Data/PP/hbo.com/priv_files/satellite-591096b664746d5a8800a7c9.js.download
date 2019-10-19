@@ -1,0 +1,27 @@
+// will be moved to frontend
+function getContext(elem) {
+	var objs = []
+  objs.push(getBiContext(elem))
+  var parent = elem.parentElement
+  while(parent) {
+    objs.push(getBiContext(parent))
+    parent = parent.parentElement
+  }
+  var result = {}
+  objs.reverse().forEach(function(obj) {
+    Object.keys(obj).forEach(function(key) {
+    	result[key] = obj[key]
+    })
+  })
+  
+  return result
+  
+  function getBiContext(elem) {
+    var context = elem.getAttribute('data-bi-context')
+    if (context) {
+      return JSON.parse(context)
+    } else {
+      return {}
+    }
+  }
+}

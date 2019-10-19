@@ -1,0 +1,29 @@
+_satellite.pushAsyncScript(function(event, target, $variables){
+  if (document.URL.indexOf("gclid") > -1) {
+  	function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+  
+    var pixelUrl = "https://h.nexac.com/e/a-1659/s-3508/c-840/g-3839.xgi?pkey=bijo15bijox40";
+		var random = Math.floor(Math.random()*10e12);
+    var chpcm = "bhp";
+    var chpsg = "fvflup";
+    var chpcr = "";
+    var chpck = "";
+    var chpth = getQueryVariable("gclid");
+    var url = pixelUrl + "&chpcm=" + chpcm + "&chpsg=" + chpsg + "&chpcr=" + chpcr + "&chpck=" + chpck + "&chpth=" + chpth + "&rand=" + random;
+		var img=document.createElement("img");
+            img.width='1';
+            img.height='1';
+            img.border='0';
+            img.src = url;
+		document.body.appendChild(img);
+}
+});

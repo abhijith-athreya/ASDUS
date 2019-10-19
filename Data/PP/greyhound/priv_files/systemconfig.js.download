@@ -1,0 +1,82 @@
+﻿//Cache busting logic for systemjs as per: https://github.com/systemjs/systemjs/issues/1616#issuecomment-289268010
+var buildNo = "v=" + cbVar;
+//SystemJSLoader$1 -> RegisterLoader$1 -> Loader
+var Loader = Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(System))).constructor;
+var loaderResolve = Loader.prototype.resolve;
+
+function augment(key) {
+    if (key.indexOf(buildNo) > 0) {
+        //key already augmented.
+        return key;
+    }
+
+    var hI = key.indexOf("#"), qI = key.lastIndexOf("?", hI < 0 ? undefined : hI);
+    if (qI > 0) {
+        if (hI > 0) {
+            //? and # found: put build between ? and #
+            key = key.slice(0, hI) + "&" + buildNo + key.slice(hI);
+        } else {
+            //? found: put build at end
+            key += "&" + buildNo;
+        }
+    } else {
+        //no ? nor #
+        key += "?" + buildNo;
+    }
+    return key;
+}
+
+var metadataSymbol;
+function getMetadataSymbol(loader, mustFindKey) {
+    if (metadataSymbol) {
+        return metadataSymbol;
+    }
+    if (loader["@@metadata"]) {
+        //some browsers dont support Symbol()
+        return metadataSymbol = "@@metadata";
+    }
+    var symbols = Object.getOwnPropertySymbols(loader);
+    for (var i = 0; i < symbols.length; i++) {
+        var s = symbols[i], lov = loader[s];
+        if (lov && typeof lov === 'object' && lov[mustFindKey]) {
+            return metadataSymbol = s;
+        }
+    }
+    throw new Error("I tried.");
+}
+
+Loader.prototype.resolve = function hackedLoaderResolve() {
+    var loader = this;
+    return Promise
+        .resolve(loaderResolve.apply(loader, arguments))
+        .then(function (key) {
+            var newKey = augment(key);
+            if (newKey !== key) {
+                var metaSymbol = getMetadataSymbol(loader, key);
+                var metadata = loader[metaSymbol];
+                var moveMe = metadata[key];
+
+                if (moveMe) {
+                    delete metadata[key];
+                    metadata[newKey] = moveMe;
+                }
+            }
+            return newKey;
+        });
+};
+
+System.config({
+    baseURL: '/content/scripts/app',
+    map: {
+        jquery: "/content/scripts/lib/jquery-1.11.2.min.js",
+        "jquery.validation": "/content/scripts/lib/jquery.validate.js"
+    },
+    packages: {
+        "/content/scripts/app": {
+            defaultExtension: defExt
+        }
+    },
+    meta: {
+      "jquery.validation": { deps: ['jquery'] }
+    }
+});

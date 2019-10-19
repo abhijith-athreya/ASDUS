@@ -1,0 +1,150 @@
+zc = typeof zc !== 'undefined' ? zc : {};
+zc.analytics = {};
+
+var _gaq = _gaq || [];
+
+(function() {
+    zc.analytics.devMode = false;
+
+    zc.analytics.executeAfterTrackingComplete = function(callback, opts) {
+        // This function is for handling the case where we are attempting to do something like leave the page
+        // before analytics has finished downloading and initializing, but there are pending events to log.
+        opts = opts || {};
+
+        // If no analytics configured, return immediately.
+        if (!window.gtmDataLayer && !window.google_tag_manager && zc.analytics.getSize(zc.analytics.trackers) == 0) {
+            setTimeout(function() { callback(); }, 1);
+            return;
+        }
+
+        var isPendingAnalytics = function() {
+            return _gaq.length > 0
+                || (window.gtmDataLayer && !window.google_tag_manager)
+                || (window.google_tag_manager && (!google_tag_manager.gtmDom || !google_tag_manager.gtmLoad));
+        };
+        var doCallback = function() {
+            // Once all of the analytics are loaded, wait one more second to hopefully give time for everything to fire.
+            setTimeout(function() { callback(); }, 1000);
+        };
+
+        if (isPendingAnalytics()) {
+            // Subtract a second from maxWait since we already have a one second wait in doCallback().
+            var maxWait = opts.maxWait ? (opts.maxWait - 1000) : 1000;
+            var start = new Date().getTime();
+            var checkInterval = setInterval(function() {
+                if (!isPendingAnalytics() || (new Date().getTime() - start) > maxWait) {
+                    clearInterval(checkInterval);
+                    doCallback();
+                }
+            }, 20);
+        } else {
+            doCallback();
+        }
+    };
+
+    zc.analytics.eventsTracked = {};
+
+    zc.analytics.getSize = function(o) {
+        var cnt = 0;
+        if (o != null) {
+            for (var key in o) {
+                cnt++;
+            }
+        }
+        return cnt;
+    };
+
+    zc.analytics.initializeGA = function(opts) {
+        if (opts && opts.accountId) {
+            if (!zc.analytics.trackers.GA) {
+                zc.analytics.loadGA();
+                zc.analytics.trackers.GA = {};
+            }
+            var gaTrackerCount = zc.analytics.getSize(zc.analytics.trackers.GA);
+            var gaTrackerPrefix = gaTrackerCount == 0 ? "" : ("t" + gaTrackerCount + ".");
+            var tracker = {
+                accountId: opts.accountId,
+                prefix: function(command) {
+                    return gaTrackerPrefix + command;
+                },
+                trackPages: opts.trackPages == true,
+                trackEvents: opts.trackEvents == true
+            };
+            zc.analytics.trackers.GA[opts.accountId] = tracker;
+
+            _gaq.push([tracker.prefix("_setAccount"), opts.accountId]);
+            _gaq.push([tracker.prefix("_setDomainName"), opts.domainName || "none"]);
+            _gaq.push([tracker.prefix("_setAllowLinker"), true]);
+        }
+    };
+
+    zc.analytics.loadGA = function() {
+        var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);
+    };
+
+    zc.analytics.trackers = {};
+
+    zc.analytics.trackEvent = function(category, action, label, value, opts) {
+        opts = opts || {};
+        var eventKey = category + "|" + action + "|" + (label == null ? "" : label) + "|" + (value == null ? "" : value);
+        if (!opts.once || !zc.analytics.eventsTracked[eventKey]) {
+            if (zc.analytics.devMode) {
+                if (category == null || action == null) {
+                    throw new Error("Analytics: trackEvent category or action not defined");
+                }
+                if (value != null && typeof value != "number") {
+                    throw new Error("Analytics: trackEvent value must be a number");
+                }
+                if (window.console && window.console.debug) {
+                    console.debug(
+                        "Analytics: trackEvent(category: %s, action: %s, optional_label: %s, optional_value: %s)",
+                        category, action, (label == null ? "null" : label), (value == null ? "null" : value)
+                    );
+                }
+            }
+
+            if (zc.analytics.trackers.GA) {
+                for (var trackerKey in zc.analytics.trackers.GA) {
+                    var tracker = zc.analytics.trackers.GA[trackerKey];
+                    if (tracker.trackEvents) {
+                        _gaq.push([tracker.prefix("_trackEvent"), category, action, label, value]);
+                        zc.analytics.eventsTracked[eventKey] = true;
+                    }
+                }
+            }
+
+            if (window.gtmDataLayer) {
+                gtmDataLayer.push({ gtmEventCategory: category });
+                gtmDataLayer.push({ gtmEventAction: action });
+                gtmDataLayer.push({ gtmEventLabel: label });
+                gtmDataLayer.push({ gtmEventValue: value });
+                gtmDataLayer.push({ event: "gtmUserEvent" });
+                zc.analytics.eventsTracked[eventKey] = true;
+            }
+        }
+    };
+
+    zc.analytics.trackPageview = function(page) {
+        page = page || (window.location.pathname + window.location.search);
+
+        if (zc.analytics.devMode) {
+            if (window.console && window.console.debug) console.debug("Analytics: trackPageview(\"%s\")", page);
+        }
+
+        if (zc.analytics.trackers.GA) {
+            for (var trackerKey in zc.analytics.trackers.GA) {
+                var tracker = zc.analytics.trackers.GA[trackerKey];
+                if (tracker.trackPages) {
+                    _gaq.push([tracker.prefix("_trackPageview"), page]);
+                }
+            }
+        }
+
+        if (window.gtmDataLayer) {
+            gtmDataLayer.push({ gtmPageViewPath: page });
+            gtmDataLayer.push({ event: "gtmPageView" });
+        }
+    };
+})();

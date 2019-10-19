@@ -1,0 +1,557 @@
+/*topnav js*/
+var lightboxX = 2;
+var $trigger = 0;
+var $validated = false;
+var isopen = false;
+var domain = '';
+var thisurl = '';
+var thisuri = '';
+var ref = '';
+var loc = '';
+var ispop = true;
+var isstandalone;
+var enrollmentsource = "Standard Header Signup";
+var campaign = '';
+var source = '';
+var subject = '';
+var px1 = '';
+var px2 = '';
+var px3 = '';
+
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+}
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires+";path=/";
+}
+
+
+
+$(function() {
+    //$("#pixels1").html(px1);
+
+
+    $('.dd-label').each(function() {
+        var text = $(this).text();
+        $(this).text(text.replace('Zipcode', 'Zip Code'));
+    });
+
+    ref = document.referrer;
+    loc = document.location.href;
+    thisurl = document.location.href.url;
+    thisuri = document.location.pathname.substring(1);
+    var views = 0
+    try {
+        views = parseInt("0" + getCookie("views"));
+    } catch (ex) {}
+
+    //console.log(views)
+
+    var qs = '';
+    var hs = location.hash;
+    qs = '';
+    if (loc.indexOf("?") > -1) {
+        qs = loc.split("?")[1].replace(hs, "");
+    }
+    if (qs == "" && ref != undefined) {
+
+        if ((ref.indexOf("mcdonalds.com") > -1) && (ref.indexOf("?") > -1)) {
+            qs = ref.split("?")[1].replace(hs, "");
+        }
+    }
+
+    if (qs != "") {
+        var vars = qs.split('&');
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split('=');
+            if (decodeURIComponent(pair[0]) == "utm_source") {
+                source = decodeURIComponent(pair[1]).trim();
+            }
+
+            if (decodeURIComponent(pair[0]) == "utm_campaign") {
+                campaign = decodeURIComponent(pair[1]).trim();
+            }
+
+            if (decodeURIComponent(pair[0]) == "pop") {
+                if (decodeURIComponent(pair[1]).trim() == "0") {
+                    ispop = false;
+                    views = lightboxX + 1;
+                }
+            }
+        }
+    }
+
+    if (source.toLowerCase() == 'email' || source.toLowerCase() == 'cytsites') {
+        ispop = false;
+        views = lightboxX + 1;
+    }
+    //if(source==''){source=ref;}
+    if (source == '') {
+        source = 'Direct Traffic'
+    } else {
+        source = source + " - " + campaign;
+    }
+
+
+    if (views >= lightboxX) {
+        ispop = false;
+    }
+
+    if (ref.indexOf("mcdonalds.com") > -1) {
+        ispop = false;
+    } else {
+        setCookie("views", views + 1, 365);
+    }
+
+    if (ispop) {
+        enrollmentsource = "Light Box"
+    }
+    if (isstandalone) {
+        enrollmentsource = "Email Signup Page"
+    }
+    if (ispop && !isstandalone) {
+
+        var popdiv = $("<div></div>").attr("id", "lightboxcontainer");
+        var maskdiv = $("<div></div>").attr("id", "joinmask");
+        var popheader = $("<div></div>").attr("id", "popheader");
+
+        popheader.append('<div id="poplogo"><img src="/content/dam/usa/documents/subscription/joinpoplogo.jpg"></div><div id="poptitle"></div><div id="popclose"><a href="javascript:;">X</a></div>');
+
+
+        popheader.insertBefore("#emaillist-head");
+        maskdiv.insertBefore("#document_wrapper").hide();
+
+        popdiv.insertBefore("#page_wrapper").hide();
+
+        $("#dropcontainer").prepend(popheader);
+        $("#popclose a").click(function() {
+            closejoinpop();
+        });
+        $("#joinmask").click(function() {
+            closejoinpop();
+        });
+
+        $("#poptitle").html("<h6>JOIN OUR EMAIL LIST</h6>Get the scoop. Sign up for news on events, promotions, how we make our food and what we're doing to give back. All delivered exclusively to your inbox.")
+
+        $("#joincontainer").appendTo("#lightboxcontainer").show();
+
+        $(".emaildropDownInner, .emaildropDownConfirm").addClass("popup");
+        $(".joincontainerfoot").hide();
+
+        $(".dd-close").click(function() {
+            closejoinpop();
+        });
+        $(".dd-close").hide();
+        $("#conf-headline").html("<h1>You're In! Thanks for signing up!</h1>");
+
+        $("#conf-subhead").hide();
+        $("#joinlink").hide();
+        $("#dropcontainer").css({
+            height: "400px",
+            width: "600px",
+            backgroundColor: "#fff"
+        });
+        //$("body").css("overflow", "hidden");
+        $("#emaillist-head").hide();
+
+        $("#topnavupdatebtn").attr("href", "javascript:;")
+        $("#topnavupdatebtn").click(function() {
+            setCookie("views", lightboxX + 1, 365);
+  window.location="/us/en-us/subscription.html?op=update"
+        });
+
+
+        $(window).load(function() {
+            setTimeout(function() {
+                $("#joinmask").fadeIn("slow");
+                $("#lightboxcontainer").fadeIn("slow");
+            }, 10);
+
+
+
+        });
+
+    } else {
+        //  $("#joincontainer").insertAfter("#meal_builder").show();
+        var dropcontainer = $("<div></div>").attr("id", "dropdowncontainer");
+
+        $("#joincontainer").appendTo(dropcontainer).show();
+        dropcontainer.appendTo("#notification").show();
+
+    }
+
+
+    $("body").on('input', '.topnavemail, .topnavzip', function() {
+		var currentObject = $(this);
+        validatetopnavjoin(currentObject);
+    });
+
+
+    $(".emaildropDownInner").show();
+    $("#transmask").insertBefore("#document_wrapper");
+	$(this).closest('form').find('.topnavemail').val("");
+	$(this).closest('form').find('.topnavzip').val("");
+$("#topnavupdatebtn").attr("href","/us/en-us/subscription.html");
+    $("#topnavupdatebtn").click(function() {
+        trackupdatebutton();
+    })
+	var subscribe_btn = $(this).closest('form').find('.join_nav_subscribe');
+    $(subscribe_btn).attr("href", "javascript:;");
+
+
+
+    try {
+        if (ref.indexOf("://") > -1) {
+            domain = url.split('/')[2];
+        } else {
+            domain = ref.split('/')[0];
+        }
+        domain = domain.split(':')[0];
+    } catch (ex) {}
+
+});
+
+
+var topnavemailregex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/im;
+var topnavzipregex = /^\d{5}$/;
+
+function closejoinpop() {
+    if (ispop) {
+        //    $("#joincontainer").insertAfter("#meal_builder").show();
+        var dropcontainer = $("<div></div>").attr("id", "dropdowncontainer");
+
+        $("#joincontainer").appendTo(dropcontainer).show();
+        dropcontainer.appendTo("#notification").show();
+
+
+        $("#joinmask").remove();
+        $("#lightboxcontainer").remove();
+        $("#popheader").remove();
+
+        $("#joinlink").show();
+        $(".joincontainerfoot").show();
+        $("#emaillist-head").show();
+
+        $(".dd-close").show();
+        $("#conf-headline").html("<h1>You're In!</h1>");
+        $("#conf-subhead").show();
+
+
+
+        $("#dropcontainer").css({
+            height: "0px",
+            width: "250px",
+            background: "none"
+        });
+        $("body").css("overflow", "auto");
+        $(".emaildropDownInner, .emaildropDownConfirm").removeClass("popup");
+        ispop = false;
+        enrollmentsource = "Standard Header Signup"
+    }
+
+
+}
+
+
+function doclean(instr) {
+    return instr.replace("'", "â€™").trim();
+
+}
+
+function topnavvalidateemail(em, currentObj) {
+	var inmail = $(currentObj).closest('form').find("." + em);
+	var reqErr = $(currentObj).closest('form').find('.'+em + 'err');
+    if (topnavemailregex.test(inmail.val().trim())) {
+        if ($(inmail).is(":focus")) {
+            $(inmail).removeClass("invalid").addClass("valid");
+             $(reqErr).html("");
+        } else {
+            $(inmail).removeClass("invalid").removeClass("valid");
+             $(reqErr).html("");
+        }
+        return true;
+    } else {
+        if ($(inmail).is(":focus")) {
+            $(inmail).removeClass("valid").addClass("invalid");
+             $(reqErr).html("Invalid Email");
+        } else {
+            $(inmail).removeClass("invalid").removeClass("valid");
+             $(reqErr).html("");
+        }
+
+        return false;
+    }
+}
+
+function topnavvalidatezipcode(zp, currentObj) {
+	var reqVal = $(currentObj).closest('form').find("." + zp);
+	var reqErr = $(currentObj).closest('form').find('.'+zp + 'err');
+    if (topnavzipregex.test($(reqVal).val().trim())) {
+        $(reqVal).removeClass("invalid").addClass("valid");
+         $(reqErr).html("");
+
+        return true;
+    } else {
+        $(reqVal).removeClass("valid").addClass("invalid");
+         $(reqErr).html("Invalid zip code");
+
+        return false;
+    }
+}
+
+function topnavrequired(ins, ttl, currentObj) {
+	var reqVal = $(currentObj).closest('form').find("." + ins);
+	var reqErr = $(currentObj).closest('form').find('.'+ins + 'err');
+    if ($(reqVal).val().trim() != '') {
+        $(reqVal).removeClass('invalid').addClass('valid');
+        $(reqErr).html("");
+        return true;
+    } else {
+        $(reqVal).removeClass('valid').addClass('invalid');
+        $(reqErr).html(ttl + " is required");
+        return false
+    }
+
+}
+
+
+function validatetopnavjoin(obj) {
+
+
+    var v1 = false;
+    var v2 = false;
+    var v3 = false;
+    var v4 = false;
+    v1 = topnavrequired("topnavzip", "Zip Code", obj);
+    if (v1) {
+        v2 = topnavvalidatezipcode("topnavzip", obj);
+    }
+    v3 = topnavrequired("topnavemail", "Email", obj);
+    if (v3) {
+        v4 = topnavvalidateemail("topnavemail", obj);
+    }
+    var isvalid = v1 && v2 && v3 && v4;
+	var subscribebtn = $(obj).closest('form').find('.join_nav_subscribe');
+    if (isvalid) {
+        $(subscribebtn).unbind("click").click(function() {
+
+            topnavjoin(obj);
+        }).removeClass("deactivated").addClass("activated");
+        $("#btn-email-submit").attr('aria-disabled', false);
+    } else {
+        $(subscribebtn).unbind("click").removeClass("activated").addClass("deactivated");
+        $("#btn-email-submit").attr('aria-disabled', true);
+    }
+    return (isvalid)
+
+
+
+}
+
+
+
+
+function topnavjoin(currentObj) {
+
+    //    _gaq.push(['_trackEvent', thisuri, 'click - '+thisurl, 'subscribe']);
+
+    $("#pixels2").html(px2);
+
+
+    if (validatetopnavjoin(currentObj)) {//if (true) {
+
+        //  if(isvalid){
+        tracktopnavjoin(true);
+		var joinSpanVal = $(currentObj).closest('form').find(".topnavjoinerr");
+        $(joinSpanVal).html("");
+        var profileid = '';
+
+      // var epsilonurl = 'https://profileuat2.mcdonalds.com/mcdsglobal/mcdspreferencecenterv2.asmx';
+		var epsilonurl = 'https://profile2.mcdonalds.com/mcdspreferencecenterv2.asmx';
+        topnavemail = $(currentObj).closest('form').find('.topnavemail').val();
+        topnavzip = $(currentObj).closest('form').find('.topnavzip').val();
+
+        var adate = new moment().format('DD-MMM-YYYY HH:mm:ss');
+
+        var data = "{'ClientID': 'MCDS',";
+        data += "'FirstName' : '',";
+        data += "'LastName' : '',";
+        data += "'DateOfBirth' : '',";
+        data += "'PhoneNumber' : '',";
+        data += "'PhoneType' : '',";
+        data += "'SMSOptIn' : '',";
+        data += "'EmailAddress' : '" + doclean(topnavemail.toLowerCase()) + "',";
+        data += "'EmailAddressConfirm' : '" + doclean(topnavemail.toLowerCase()) + "',";
+        data += "'SpanishOnly' : '',";
+        data += "'Password' : '',";
+        data += "'PasswordConfirm' : '',";
+        data += "'PostalCode' : '" + doclean(topnavzip) + "',";
+        data += "'AgeVerification' : 'T',";
+        data += "'TCVerification' : 'T',";
+        data += "'ExternalInfo' : '',";
+        data += "'CultureInfo' : '',";
+        data += "'ActionDate' : '"+adate+"',";
+        data += "'EnrSrc' : '" + enrollmentsource + "',";
+        data += "'Source' : '" + source + "' }";
+
+        $.ajax({
+            type: "POST",
+            method: "POST",
+            url: epsilonurl + "/PreferenceCenterInitRegistrationV1",
+            data: data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function(r) {
+                // Added for DTM â€“ Direct Call
+                //           if(source!='Direct Traffic'){
+                //_satellite.track("web-signupcomplete");
+                //           }
+                $("#spinner").hide();
+
+				// Start:DTM tracker to track SignUP
+			_satellite.track("signUp");
+			// End:DTM tracker to track SignUP
+
+                if (r.d.Response[0].Type == "ERROR") {
+                    var errid = r.d.Response[0].ErrorDesc[0].Number;
+                    var errstr = r.d.Response[0].ErrorDesc[0].Value + "<br>";
+                    switch (errid) {
+                        case '1':
+                            errstr = 'Oops! Looks like that email is already registered.';
+                            break;
+                        case '2':
+                            errstr = 'Oops! Looks like that email is already registered.';
+                            break;
+
+                    }
+                    $(joinSpanVal).html(errstr + "<br>");
+                } else {
+                    profileid = r.d.Response[0].Type.ProfileID;
+                    setCookie("views", lightboxX + 1, 365);
+
+                    $("#pixels3").html(px3);
+                    $(".topnavjoincomplete").click(function() {
+                        tracktopnavjoincomplete();
+                        window.location="/us/en-us/subscription.html?op=joincomplete&email="+topnavemail+"&zip="+topnavzip
+                    });
+
+                    $(".emaildropDownConfirm").show();
+                    $(".emaildropDownInner").hide();
+					if($(currentObj).parents('form').attr('name'))
+					{
+						$('#indboxSignUpModal').modal('show');
+					}
+                    $("#poptitle").html("");
+                    //$("#dropcontainer").animate({'height':140}, 'fast');
+
+                }
+
+            },
+            error: function(r) {
+                $("#spinner").hide();
+                $("#joinerr").html("We're sorry there was an error processing your request.  Please try again later.<br>");
+            }
+        });
+    } else {
+        window.scrollTo(0, 0);
+    }
+}
+
+function open_join() {
+    if (ispop) {
+        closejoinpop();
+    } else {
+        //_gaq.push(['_trackEvent', thisuri, 'click - ' + thisurl, 'join our email list']);
+
+        if (isopen) {
+            $("#dropcontainer").animate({
+                'height': 0,
+            }, "fast");
+            $("#joinlink").removeClass("active");
+            isopen = false;
+            tracktopnavjoin(false);
+            $("#transmask").hide().unbind("click");
+            //      $(".emaildropDownConfirm").hide();$(".emaildropDownInner").show();
+
+        } else {
+            $("#transmask").show().unbind("click").click(function() {
+                open_join();
+            });
+            $("#dropcontainer").animate({
+                'height': 400
+            }, "fast");
+            $("#joinlink").addClass("active");
+            isopen = true;
+        }
+    }
+}
+
+
+
+function tracktopnavjoin(issubmit) {
+    var uri = document.location.pathname.substring(1);
+    var thisuri = document.location.pathname.substring(1);
+    var thisurl = document.location.href;
+    //_gaq.push(['_trackEvent', thisuri, 'click - ' + thisurl, 'subscribe']);
+
+
+    tracktopnavfield(["topnavemail", "topnavzip"], uri, issubmit);
+}
+
+
+
+function tracktopnavfield(fieldarr, section, issubmit) {
+
+    $.each(fieldarr, function(key, value) {
+
+        if (!issubmit) {
+            if ($("#" + value).val() != '') {
+                //_gaq.push(['_trackEvent', section, value, 'abandon']);
+            }
+
+        }
+
+        if ($("#" + value).val() != '') {
+            //_gaq.push(['_trackEvent', section, value, 'true']);
+        } else {
+            //_gaq.push(['_trackEvent', section, value, 'false']);
+        }
+    });
+
+
+}
+
+function trackupdatebutton() {
+    var thisuri = document.location.pathname.substring(1);
+    var thisurl = document.location.href;
+    //_gaq.push(['_trackEvent', thisuri, 'click - ' + thisurl, 'update your profile']);
+
+
+}
+
+
+function tracktopnavjoincomplete() {
+    var thisuri = document.location.pathname.substring(1);
+    var thisurl = document.location.href;
+    //_gaq.push(['_trackEvent', thisuri, 'click - ' + thisurl, 'complete your profile']);
+
+
+}
+
+$(window).load(function(){
+	$(".joinEmailListcontainerMobile").html($(".dropcontainerMobile").html());
+	$(".joinEmailListcontainer").html($(".dropcontainer").html());
+
+});

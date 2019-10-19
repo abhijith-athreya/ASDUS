@@ -1,0 +1,1 @@
+var __ads_enabled__ = true;

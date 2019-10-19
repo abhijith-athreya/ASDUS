@@ -1,0 +1,53 @@
+/**
+ * jQuery behaviors for the Press Center Network Menu block
+ */
+(function($) {
+
+    Drupal.behaviors.network_menu = {
+        attach : function(context, settings) {
+            $('#block-networks-press-pc-network-menu select', context).change(
+                    function() {
+                        window.location = $(this).val();
+                    });
+
+            $('#block-networks-adsales-as-network-menu select', context).change(
+                    function() {
+                        window.location = $(this).val();
+                    });
+
+            $('#block-networks-press-pc-network-menu ul.dk_options_inner li a', context).mousedown(
+                    function() {
+                        window.location = $(this).attr('href');
+                    });
+
+            $('#block-networks-adsales-as-network-menu ul.dk_options_inner li a', context).mousedown(
+                    function() {
+                        window.location = $(this).attr('href');
+                    });           
+             
+            $('ul#network-photo-filter li a', context).mousedown(
+            		function() {
+            			window.location = $(this).attr('href');
+            		});           
+            
+            $('ul#show-photo-filter-season li a', context).mousedown(
+            		function() {
+            			window.location = $(this).attr('href');
+            		});           
+            
+            $('ul#show-photo-filter-episode li a', context).mousedown(
+            		function() {
+            			window.location = $(this).attr('href');
+            		});           
+            
+            return false;
+        }
+    };
+    
+      // Call Dropkick dropdown function for press center show subnav
+//	$(function () {
+ //      if(j('#user-register-form select').length > 0)
+//		$('#user-register-form select').dropkick(); 
+//	});
+
+}(jQuery));

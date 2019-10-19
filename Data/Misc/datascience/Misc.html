@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<!-- saved from url=(0103)https://www.datasciencecentral.com/profiles/blogs/building-outiler-resistant-centroids-in-any-dimension -->
+<html lang="en" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml"><head data-layout-view="default" class="xj_layout_head"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<script src="./Misc_files/cb=gapi.loaded_1" async=""></script><script src="./Misc_files/cb=gapi.loaded_0" async=""></script><script type="text/javascript" async="" src="./Misc_files/analytics.js.download"></script><script type="text/javascript" async="" src="./Misc_files/atrk.js.download"></script><script type="text/javascript" async="" src="./Misc_files/plusone.js.download" gapi_processed="true"></script><script id="twitter-wjs" src="./Misc_files/widgets.js.download"></script><script type="text/javascript" async="" src="./Misc_files/analytics.js.download"></script><script async="" src="./Misc_files/gtm.js.download"></script><script src="./Misc_files/cieJ8zlV_jZdd4OzDnokC5R2VWg.js.download"></script><script src="./Misc_files/Bs2Uot6PssXFR_FR4MUMnQbAl3A.js.download"></script><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-T5W4WQ');</script>
+
+
+<title>Tutorial: Neutralizing Outliers in Any Dimension - Data Science Central</title>
+<link rel="icon" href="https://www.datasciencecentral.com/favicon.ico" type="image/x-icon">
+<link rel="SHORTCUT ICON" href="https://www.datasciencecentral.com/favicon.ico" type="image/x-icon">
+<meta name="description" content="In this article, we discuss a general framework to drastically reduce the influence of outliers in most contexts. It applies to problems such as clustering (fi…">
+<meta name="title" content="Tutorial: Neutralizing Outliers in Any Dimension">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.datasciencecentral.com/profiles/blogs/building-outiler-resistant-centroids-in-any-dimension">
+<meta property="og:title" content="Tutorial: Neutralizing Outliers in Any Dimension">
+<meta property="og:image" content="http://api.ning.com:80/files/vwzIt05Fr131yIGm9Cc-mW-f*yHyfJRv44kCleHoEygR8yF4OOf06b5uznqzz21G0t0IxZyxuwSpA2HPtrE3TaYes6HL-hP7/Capture.PNG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tutorial: Neutralizing Outliers in Any Dimension">
+<meta name="twitter:description" content="In this article, we discuss a general framework to drastically reduce the influence of outliers in most contexts. It applies to problems such as clustering (fi…">
+<meta name="twitter:image" content="http://api.ning.com:80/files/vwzIt05Fr131yIGm9Cc-mW-f*yHyfJRv44kCleHoEygR8yF4OOf06b5uznqzz21G0t0IxZyxuwSpA2HPtrE3TaYes6HL-hP7/Capture.PNG">
+<link rel="image_src" href="https://api.ning.com:80/files/vwzIt05Fr131yIGm9Cc-mW-f*yHyfJRv44kCleHoEygR8yF4OOf06b5uznqzz21G0t0IxZyxuwSpA2HPtrE3TaYes6HL-hP7/Capture.PNG">
+<script type="text/javascript">
+    djConfig = { preventBackButtonFix: false, isDebug: false }
+ning = {"CurrentApp":{"premium":true,"iconUrl":"http:\/\/api.ning.com\/icons\/appatar\/6448529?default=6448529&width=64&height=64","url":"httpsdatasciencecentral.ning.com","domains":["datasciencecentral.com"],"online":true,"privateSource":true,"id":"datasciencecentral","appId":"6448529","description":"Welcome to Data Science Central. The Community of and for Data Scientist","name":"Data Science Central","owner":"2edcolrgc4o4b","createdDate":"2011-10-05T21:11:40.055Z","runOwnAds":false,"category":{"Visualization":null,"Integration":null,"Science":null,"Modeling":null,"Big":null,"Intelligence":null,"R":null,"Mining":null,"Analytics":null,"Data":null,"Business":null,"Predictive":null},"tags":["Visualization","Integration","Science","Modeling","Big","Intelligence","R","Mining","Analytics","Data","Business","Predictive"]},"CurrentProfile":null,"maxFileUploadSize":7};
+        (function(){
+            if (!window.ning) { return; }
+
+            var age, gender, rand, obfuscated, combined;
+
+            obfuscated = document.cookie.match(/xgdi=([^;]+)/);
+            if (obfuscated) {
+                var offset = 100000;
+                obfuscated = parseInt(obfuscated[1]);
+                rand = obfuscated / offset;
+                combined = (obfuscated % offset) ^ rand;
+                age = combined % 1000;
+                gender = (combined / 1000) & 3;
+                gender = (gender == 1 ? 'm' : gender == 2 ? 'f' : 0);
+                ning.viewer = {"age":age,"gender":gender};
+            }
+        })();
+
+        if (window.location.hash.indexOf('#!/') == 0) {
+        window.location.replace(window.location.hash.substr(2));
+    }
+    window.xg = window.xg || {};
+xg.captcha = {
+    'shouldShow': false,
+    'siteKey': '6Ldf3AoUAAAAALPgNx2gcXc8a_5XEcnNseR6WmsT'
+};
+xg.addOnRequire = function(f) { xg.addOnRequire.functions.push(f); };
+xg.addOnRequire.functions = [];
+xg.addOnFacebookLoad = function (f) { xg.addOnFacebookLoad.functions.push(f); };
+xg.addOnFacebookLoad.functions = [];
+xg._loader = {
+    p: 0,
+    loading: function(set) {  this.p++; },
+    onLoad: function(set) {
+                this.p--;
+        if (this.p == 0 && typeof(xg._loader.onDone) == 'function') {
+            xg._loader.onDone();
+        }
+    }
+};
+xg._loader.loading('xnloader');
+if (window.bzplcm) {
+    window.bzplcm._profileCount = 0;
+    window.bzplcm._profileSend = function() { if (window.bzplcm._profileCount++ == 1) window.bzplcm.send(); };
+}
+xg._loader.onDone = function() {
+            if(window.bzplcm)window.bzplcm.start('ni');
+        xg.shared.util.parseWidgets();    var addOnRequireFunctions = xg.addOnRequire.functions;
+    xg.addOnRequire = function(f) { f(); };
+    try {
+        if (addOnRequireFunctions) { dojo.lang.forEach(addOnRequireFunctions, function(onRequire) { onRequire.apply(); }); }
+    } catch (e) {
+        if(window.bzplcm)window.bzplcm.ts('nx').send();
+        throw e;
+    }
+    if(window.bzplcm) { window.bzplcm.stop('ni'); window.bzplcm._profileSend(); }
+};
+window.xn = { track: { event: function() {}, pageView: function() {}, registerCompletedFlow: function() {}, registerError: function() {}, timer: function() { return { lapTime: function() {} }; } } };</script>
+<meta name="medium" content="blog"><link rel="alternate" type="application/atom+xml" title="Vincent Granville&#39;s Posts - Data Science Central" href="https://www.datasciencecentral.com/profiles/blog/feed?user=3v6n5b6g08kgn&amp;xn_auth=no"><link rel="alternate" type="application/atom+xml" title="Comments - Tutorial: Neutralizing Outliers in Any Dimension - Data Science Central" href="https://www.datasciencecentral.com/profiles/comment/feed?attachedTo=6448529%3ABlogPost%3A516879&amp;xn_auth=no"><link rel="alternate" type="application/atom+xml" title="Top Content - Data Science Central" href="https://www.datasciencecentral.com/leaderboards/topcontent/week?feed=yes&amp;xn_auth=no&amp;n=20&amp;images=yes&amp;imageMaxSize=240"><link rel="alternate" type="application/rss+xml" title="Announcements - Data Science Central" href="https://feeds.feedburner.com/AnnouncementsDiscussions-DataScienceCentral">
+<style type="text/css" media="screen,projection">
+@import url(https://static.ning.com/socialnetworkmain/widgets/index/css/common-982.min.css?xn_version=1559613497);
+@import url(https://static.ning.com/socialnetworkmain/widgets/profiles/css/component.min.css?xn_version=467783652);
+
+</style>
+<style type="text/css" media="screen,projection">
+@import url(https://api.ning.com:/files/z*xaX9jnXta6rTb8W8mFjmugixtlrvYBSp3DIZlAUwwa2leTwg*WgaBd1LR4m6fcKos*RprTDrB6U*PKCg3KsgfipozK811l/1877692431.css?xn_version=201804270412);
+
+</style>
+<style type="text/css" media="screen,projection">
+@import url(https://static.ning.com/socialnetworkmain/widgets/index/css/icon/icons-369.min.css?xn_version=3991738700);
+@import url(https://static.ning.com/socialnetworkmain/widgets/index/css/link-hover.min.css?xn_version=4067210475);
+@import url(https://api.ning.com/files/2zPSo6fUUIVTDWswsa8L4sUvms4VEMa9S0JMG9vEZ13XOp-7Mf0odyjk5QJQdRGpLsWsP3Q0RYy7yjMC2I9XFCOujJ9r3Q5p/1594695968.css?xn_version=201804270412);
+
+</style>
+<!--[if IE 6]>
+    <link rel="stylesheet" type="text/css" href="https://static.ning.com/socialnetworkmain/widgets/index/css/common-ie6.min.css?xn_version=463104712" />
+<![endif]-->
+<!--[if IE 7]>
+<link rel="stylesheet" type="text/css" href="https://static.ning.com/socialnetworkmain/widgets/index/css/common-ie7.css?xn_version=2712659298" />
+<![endif]-->
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.datasciencecentral.com/profiles/blog/rsd">
+<link rel="stylesheet" href="data:text/css;charset=utf-8;base64,Y2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdLApjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gKiB7CiAgYm94LXNpemluZzogYm9yZGVyLWJveDsKfQoKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdIHsKICBkaXNwbGF5OiBub25lOwogIGZvbnQtc2l6ZTogMTJweDsKICBwb3NpdGlvbjogZml4ZWQ7CiAgei1pbmRleDogMTAwMDA7Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXS5jZi1pbnZhbGlkIGNmLWRpYWxvZy1jb250ZW50LXRpdGxlLApjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0uY2YtaW52YWxpZCBjZi1kaWFsb2ctY2xvc2UtYnV0dG9uLApjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0uY2YtaW52YWxpZCBjZi1zaWdudXAtdGV4dCwKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdLmNmLWludmFsaWQgaW5wdXRbdHlwZT0ic3VibWl0Il0gewogIC13ZWJraXQtZmlsdGVyOiBibHVyKDJweCk7CiAgICAgICAgICBmaWx0ZXI6IGJsdXIoMnB4KTsKfQoKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdW2RhdGEtdmlzaWJpbGl0eT0idmlzaWJsZSJdIHsKICBkaXNwbGF5OiBibG9jazsKfQoKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdW2RhdGEtZ29hbD0ic2lnbnVwU3VjY2VzcyJdIHsKICB0ZXh0LWFsaWduOiBsZWZ0Owp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il1bZGF0YS1nb2FsPSJzaWdudXBTdWNjZXNzIl0gY2YtZGlhbG9nLWNvbnRlbnQtdGV4dCB7CiAgZGlzcGxheTogLW1zLWZsZXhib3g7CiAgZGlzcGxheTogZmxleDsKICAtbXMtZmxleC1mbG93OiBjb2x1bW47CiAgICAgIGZsZXgtZmxvdzogY29sdW1uOwogIC1tcy1mbGV4LXBhY2s6IGxlZnQ7CiAgICAgIGp1c3RpZnktY29udGVudDogbGVmdDsKfQoKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdW2RhdGEtZ29hbD0ic2lnbnVwU3VjY2VzcyJdIGNmLXNpZ251cC10ZXh0IHsKICBkaXNwbGF5OiBibG9jazsKfQoKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdW2RhdGEtZm9ybT0ic3VibWl0dGluZyJdIGNmLWRpYWxvZywKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdW2RhdGEtZ29hbD0ic3VibWl0dGluZyJdIGlucHV0W3R5cGU9InN1Ym1pdCJdIHsKICBjdXJzb3I6IHdhaXQ7Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBjZi1kaWFsb2cgewogIGN1cnNvcjogZGVmYXVsdDsKICBkaXNwbGF5OiBibG9jazsKICB6LWluZGV4OiAyMDAwNTsKfQoKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdIC5jZi1icmFuZGluZywKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdIC5jZi1icmFuZGluZzphY3RpdmUsCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSAuY2YtYnJhbmRpbmc6dmlzaXRlZCB7CiAgY29sb3I6ICMxMTEgIWltcG9ydGFudDsKICB0ZXh0LWRlY29yYXRpb246IG5vbmUgIWltcG9ydGFudDsKICB0ZXh0LWluZGVudDogMCAhaW1wb3J0YW50OwogIHBhZGRpbmc6IDAgIWltcG9ydGFudDsKICBmb250LXNpemU6IC44NWVtICFpbXBvcnRhbnQ7CiAgLW1zLWZsZXg6IDEgMCBhdXRvICFpbXBvcnRhbnQ7CiAgICAgIGZsZXg6IDEgMCBhdXRvICFpbXBvcnRhbnQ7CiAgd2lkdGg6IDEwMCUgIWltcG9ydGFudDsKICBkaXNwbGF5OiAtbXMtZmxleGJveCAhaW1wb3J0YW50OwogIGRpc3BsYXk6IGZsZXggIWltcG9ydGFudDsKICAtbXMtZmxleC1wYWNrOiBlbmQgIWltcG9ydGFudDsKICAgICAganVzdGlmeS1jb250ZW50OiBmbGV4LWVuZCAhaW1wb3J0YW50OwogIG1hcmdpbjogMCAhaW1wb3J0YW50OwogIGN1cnNvcjogcG9pbnRlciAhaW1wb3J0YW50OwogIC1tcy1mbGV4LWFsaWduOiBiYXNlbGluZSAhaW1wb3J0YW50OwogICAgICBhbGlnbi1pdGVtczogYmFzZWxpbmUgIWltcG9ydGFudDsKfQoKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdIC5jZi1icmFuZGluZzpob3ZlciB7CiAgY29sb3I6ICMxMTEgIWltcG9ydGFudDsKICB0ZXh0LWRlY29yYXRpb246IG5vbmUgIWltcG9ydGFudDsKfQoKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdIC5jZi1icmFuZGluZzo6YmVmb3JlIHsKICBjb250ZW50OiAiUG93ZXJlZCBieSI7CiAgbWFyZ2luLXJpZ2h0OiAuNWVtOwogIGZvbnQtd2VpZ2h0OiAzMDA7CiAgZm9udC1mYW1pbHk6ICJPcGVuIFNhbnMiLCBIZWx2ZXRpY2EsIEFyaWFsLCBzYW5zLXNlcmlmOwp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gLmNmLWJyYW5kaW5nID4gc3ZnIHsKICBoZWlnaHQ6IC43ZW07CiAgd2lkdGg6IGF1dG87Cn0KCkBtZWRpYSAobWF4LXdpZHRoOiA3NjhweCkgewogIGNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSB7CiAgICBib3R0b206IDA7CiAgICBsZWZ0OiAwOwogICAgcmlnaHQ6IDA7CiAgfQoKICBjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gY2YtZGlhbG9nLWNvbnRlbnQgewogICAgYm9yZGVyLXRvcDogMXB4IHNvbGlkICNkY2RjZGM7CiAgfQoKICBjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gLmNmLWJyYW5kaW5nIHsKICAgIC1tcy1mbGV4LXBhY2s6IGNlbnRlciAhaW1wb3J0YW50OwogICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyICFpbXBvcnRhbnQ7CiAgfQp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gY2YtZGlhbG9nLWNvbnRlbnQgewogIGRpc3BsYXk6IGJsb2NrOwogIGJhY2tncm91bmQ6ICNmZmY7CiAgY29sb3I6ICMzMzM7CiAgbGluZS1oZWlnaHQ6IDEuNjU7CiAgbWF4LXdpZHRoOiAxMDAlOwogIHBvc2l0aW9uOiByZWxhdGl2ZTsKfQoKQG1lZGlhIChtaW4td2lkdGg6IDc2OHB4KSB7CiAgY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdIGNmLWRpYWxvZyB7CiAgICBwYWRkaW5nOiAxZW07CiAgfQoKICBjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gY2YtZGlhbG9nLWNvbnRlbnQgewogICAgYm9yZGVyLXJhZGl1czogMnB4OwogICAgYm94LXNoYWRvdzogMCAwIDAgMXB4IHJnYmEoMCwgMCwgMCwgLjEpLCAwIDVweCAyMHB4IHJnYmEoMCwgMCwgMCwgLjEpOwogICAgd2lkdGg6IDMyZW07CiAgfQoKICBjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il1bZGF0YS1wb3NpdGlvbn49InRvcCJdIHsKICAgIHRvcDogMDsKICB9CgogIGNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXVtkYXRhLXBvc2l0aW9ufj0iYm90dG9tIl0gewogICAgYm90dG9tOiAwOwogIH0KCiAgY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdW2RhdGEtcG9zaXRpb25+PSJsZWZ0Il0gewogICAgbGVmdDogMDsKICB9CgogIGNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXVtkYXRhLXBvc2l0aW9ufj0icmlnaHQiXSB7CiAgICByaWdodDogMDsKICB9Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBjZi1kaWFsb2ctY29udGVudCwKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdIGNmLWRpYWxvZy1jb250ZW50ICogewogIGZvbnQtZmFtaWx5OiBpbmhlcml0Owp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gY2YtZGlhbG9nLWNvbnRlbnQtdGV4dCwKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdIGlucHV0W3R5cGU9ImVtYWlsIl0gewogIGNvbG9yOiBpbmhlcml0Owp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gY2YtZGlhbG9nLWNvbnRlbnQtdGV4dCB7CiAgZGlzcGxheTogYmxvY2s7CiAgcGFkZGluZzogMWVtOwogIC13ZWJraXQtZm9udC1zbW9vdGhpbmc6IGFudGlhbGlhc2VkOwp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gY2Ytc2lnbnVwLXRleHQgewogIGRpc3BsYXk6IGJsb2NrOwogIG9wYWNpdHk6IC44OwogIGxpbmUtaGVpZ2h0OiAxLjU7Cn0KCkBtZWRpYSAobWF4LXdpZHRoOiA0ODBweCkgewogIGNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBjZi1kaWFsb2ctY29udGVudC10ZXh0IHsKICAgIHBhZGRpbmc6IDFlbTsKICB9Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBjZi1kaWFsb2ctY29udGVudC10ZXh0ID4gKiB7CiAgdGV4dC1pbmRlbnQ6IDA7CiAgbWFyZ2luOiAxZW0gMDsKfQoKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdIGNmLWRpYWxvZy1jb250ZW50LXRleHQgYSB7CiAgdGV4dC1kZWNvcmF0aW9uOiBub25lOwogIGZvbnQtd2VpZ2h0OiBib2xkOwp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gY2YtZGlhbG9nLWNvbnRlbnQtdGV4dCA+ICo6Zmlyc3QtY2hpbGQgewogIG1hcmdpbi10b3A6IDA7Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBjZi1kaWFsb2ctY29udGVudC10ZXh0ID4gKjpsYXN0LWNoaWxkIHsKICBtYXJnaW4tYm90dG9tOiAwOwp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gY2YtZGlhbG9nLWNvbnRlbnQtdGl0bGUgewogIGRpc3BsYXk6IGJsb2NrOwogIGZvbnQtc2l6ZTogMS41ZW07CiAgZm9udC13ZWlnaHQ6IGJvbGQ7CiAgbGluZS1oZWlnaHQ6IDEuMzsKICBtYXJnaW46IDA7CiAgcGFkZGluZy1yaWdodDogMmVtOwp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gY2YtZGlhbG9nLWNsb3NlLWJ1dHRvbiB7CiAgLXdlYmtpdC1mb250LXNtb290aGluZzogYW50aWFsaWFzZWQ7CiAgZGlzcGxheTogYmxvY2s7CiAgcG9zaXRpb246IGFic29sdXRlOwogIGZvbnQtc2l6ZTogMS4yNWVtOwogIGhlaWdodDogMmVtOwogIGxpbmUtaGVpZ2h0OiAyOwogIHJpZ2h0OiAuNGVtOwogIHRvcDogLjRlbTsKICB3aWR0aDogMmVtOwogIGZvbnQtZmFtaWx5OiBBcmlhbCwgc2Fucy1zZXJpZjsKICB0ZXh0LWFsaWduOiBjZW50ZXI7CiAgY3Vyc29yOiBwb2ludGVyOwogIHotaW5kZXg6IDIwMDA3OwogIGJvcmRlci1yYWRpdXM6IDNweDsKICBjb2xvcjogcmdiYSgwLCAwLCAwLCAuOCk7Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBjZi1kaWFsb2ctY2xvc2UtYnV0dG9uOmhvdmVyIHsKICBiYWNrZ3JvdW5kOiByZ2JhKDAsIDAsIDAsIC4xKTsKICBjb2xvcjogIzAwMDsKfQoKY2xvdWRmbGFyZS1hcHBbYXBwPSJsZWFkLWJveCJdIGNmLWRpYWxvZy1jbG9zZS1idXR0b246OmFmdGVyIHsKICBjb250ZW50OiAiXDI3MTUiOwogIGRpc3BsYXk6IGJsb2NrOwp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gaW5wdXRbdHlwZT0ic3VibWl0Il0gewogIGJvcmRlci1yYWRpdXM6IDAuMTg3NWVtOwogIGJvcmRlcjogMXB4IHNvbGlkIHRyYW5zcGFyZW50OwogIGJveC1zaGFkb3c6IG5vbmU7CiAgY29sb3I6ICNmZmY7CiAgY3Vyc29yOiBwb2ludGVyOwogIGZvbnQ6IGluaGVyaXQ7CiAgZm9udC13ZWlnaHQ6IGJvbGQ7CiAgLW1zLWZsZXg6IDAgMCBhdXRvOwogICAgICBmbGV4OiAwIDAgYXV0bzsKICBtYXJnaW4tbGVmdDogMWVtOwogIG1heC13aWR0aDogMTZlbTsKICBvdmVyZmxvdzogaGlkZGVuOwogIHBhZGRpbmc6IC42ZW0gMWVtOwogIGhlaWdodDogMi44ZW07CiAgbGluZS1oZWlnaHQ6IDE7CiAgcG9zaXRpb246IHJlbGF0aXZlOwogIHRleHQtb3ZlcmZsb3c6IGVsbGlwc2lzOwogIHdoaXRlLXNwYWNlOiBub3dyYXA7CiAgd2lkdGg6IGF1dG87Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBpbnB1dFt0eXBlPSJzdWJtaXQiXTpkaXNhYmxlZCB7CiAgb3BhY2l0eTogMC43OwogIGN1cnNvcjogbm90LWFsbG93ZWQ7Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBpbnB1dFt0eXBlPSJlbWFpbCJdIHsKICAtd2Via2l0LWFwcGVhcmFuY2U6IG5vbmU7CiAgLW1vei1hcHBlYXJhbmNlOiBub25lOwogICAgICAgYXBwZWFyYW5jZTogbm9uZTsKICBmb250OiBpbmhlcml0OwogIHdpZHRoOiAxMDAlOwogIC13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogdHJhbnNwYXJlbnQ7CiAgdGV4dC1yZW5kZXJpbmc6IG9wdGltaXplTGVnaWJpbGl0eTsKICBiYWNrZ3JvdW5kOiAjZmZmOwogIGNvbG9yOiBpbmhlcml0OwogIGJvcmRlcjogMXB4IHNvbGlkIHJnYmEoMCwgMCwgMCwgLjE4KTsKICBib3JkZXItdG9wLWNvbG9yOiByZ2JhKDAsIDAsIDAsIC4yNCk7CiAgcGFkZGluZzogLjZlbSAxZW07CiAgaGVpZ2h0OiAyLjhlbTsKICBsaW5lLWhlaWdodDogMTsKICBib3gtc2hhZG93OiBub25lOwogIGJvcmRlci1yYWRpdXM6IC4xODc1ZW07Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBpbnB1dFt0eXBlPSJlbWFpbCJdOm5vdCg6Zm9jdXMpIHsKICBiYWNrZ3JvdW5kOiByZ2JhKDAsIDAsIDAsIC4wMik7Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBpbnB1dFt0eXBlPSJlbWFpbCJdOnBsYWNlaG9sZGVyIHsKICBjb2xvcjogcmdiYSgwLCAwLCAwLCAuNSk7Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXS5jZi1pbnZhbGlkIGlucHV0W3R5cGU9J2VtYWlsJ10sCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXS5jZi1pbnZhbGlkIGlucHV0W3R5cGU9J2VtYWlsJ106aG92ZXIgewogIGNvbG9yOiAjZjE2OTc1OwogIGJhY2tncm91bmQ6ICNmZmY2Zjc7CiAgYm9yZGVyLWNvbG9yOiBjdXJyZW50Q29sb3I7CiAgdGV4dC1hbGlnbjogY2VudGVyOwp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0uY2YtaW52YWxpZCBpbnB1dFt0eXBlPSdlbWFpbCddOmRpc2FibGVkOjotd2Via2l0LWlucHV0LXBsYWNlaG9sZGVyIHsKICBjb2xvcjogI2I3MTkyNzsKICB0ZXh0LWFsaWduOiBjZW50ZXI7Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXS5jZi1pbnZhbGlkIGlucHV0W3R5cGU9J2VtYWlsJ106ZGlzYWJsZWQ6LW1zLWlucHV0LXBsYWNlaG9sZGVyIHsKICBjb2xvcjogI2I3MTkyNzsKICB0ZXh0LWFsaWduOiBjZW50ZXI7Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXS5jZi1pbnZhbGlkIGlucHV0W3R5cGU9J2VtYWlsJ106ZGlzYWJsZWQ6OnBsYWNlaG9sZGVyIHsKICBjb2xvcjogI2I3MTkyNzsKICB0ZXh0LWFsaWduOiBjZW50ZXI7Cn0KCmNsb3VkZmxhcmUtYXBwW2FwcD0ibGVhZC1ib3giXSBpbnB1dFt0eXBlPSJlbWFpbCJdOmZvY3VzIHsKICBvdXRsaW5lOiBub25lOwp9CgpjbG91ZGZsYXJlLWFwcFthcHA9ImxlYWQtYm94Il0gZm9ybSB7CiAgd2lkdGg6IDEwMCU7CiAgbWFyZ2luOiAuNWVtIDA7CiAgLW1zLWZsZXgtYWxpZ246IGNlbnRlcjsKICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjsKICBkaXNwbGF5OiAtbXMtZmxleGJveDsKICBkaXNwbGF5OiBmbGV4OwogIC1tcy1mbGV4LXBhY2s6IGp1c3RpZnk7CiAgICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlbjsKfQo="><link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.datasciencecentral.com" as="script"><script type="text/javascript" src="https://adservice.google.com/adsid/integrator.js?domain=www.datasciencecentral.com"></script><script src="https://securepubads.g.doubleclick.net/gpt/pubads_impl_199.js" async=""></script><script type="text/javascript" src="./Misc_files/jquery.ui.widget.js.download"></script><script type="text/javascript" src="./Misc_files/jquery.iframe-transport.js.download"></script><script type="text/javascript" src="./Misc_files/jquery.fileupload.js.download"></script><script type="text/javascript" src="./Misc_files/set_common_min.js.download"></script><script type="text/javascript" src="./Misc_files/set_shared_c0_min.js.download"></script><script type="text/javascript" src="./Misc_files/set_sidebar_u_min.js.download"></script><meta name="viewport" content="width=device-width, initial-scale=1"><style type="text/css">:root a[href^="http://ad-apac.doubleclick.net/"], :root .GKJYXHBF2 > .GKJYXHBE2 > .GKJYXHBH5, :root a[href^="http://www.amazon.co.uk/exec/obidos/external-search?"], :root #\5f _mom_ad_2, :root #rhs_block .mod > .luhb-div > div[data-async-type="updateHotelBookingModule"], :root #\5f _admvnlb_modal_container, :root #MAIN.ShowTopic > .ad, :root a[href^="http://pubads.g.doubleclick.net/"], :root .GB3L-QEDGY .GB3L-QEDF- > .GB3L-QEDE-, :root #main_col > #center_col div[style="font-size:14px;margin:0 4px;padding:1px 5px;background:#fff7ed"], :root div[class*="-storyBodyAd-"], :root #center_col > #main > .dfrd > .mnr-c > .c._oc._zs, :root a[href^="http://ul.to/ref/"], :root #\5f _nq__hh[style="display:block!important"], :root a[href^="http://cdn.adstract.com/"], :root a[href^="//tracking.content-recommendation.net/"][href*="/sponsored/click.html?"], :root div[class^="ads-partner-"], :root #\5f _mom_ad_12, :root a[href^="http://lp.ncdownloader.com/"], :root .inlineNewsletterSubscription + .inlineNewsletterSubscription div[class$="_item"], :root a[href^="https://intrev.co/"], :root div[id^="google_ads_iframe_"], :root #ads > .dose > .dosesingle, :root a[href^="http://3wr110.net/"], :root a[href^="http://bestorican.com/"], :root div[id^="ad_script_"], :root a[href^="http://get.slickvpn.com/"], :root .gbfwa > div[class$="_item"], :root #assetsListings[style="display: block;"], :root #center_col > #\5f Emc, :root a[href^="http://marketgid.com"], :root #rhs_block > ol > .rhsvw > .kp-blk > .xpdopen > ._OKe > ol > ._DJe > .luhb-div, :root a[href^="http://go.mobisla.com/"], :root #center_col > #res > #topstuff + #search > div > #ires > #rso > #flun, :root a[href^="http://www.webtrackerplus.com/"], :root a[href^="http://www.affbuzzads.com/affiliate/"], :root #center_col > #resultStats + #tads, :root #main-content > [style="padding:10px 0 0 0 !important;"], :root #center_col > #resultStats + #tads + #res + #tads, :root #cnt #center_col > #taw > #tvcap > .c._oc._Lp, :root a[href^="http://www.paddypower.com/?AFF_ID="], :root a[onmousedown^="this.href='http://staffpicks.outbrain.com/network/redir?"][target="_blank"], :root #center_col > #resultStats + div + #res + #tads, :root div[id^="crt-"][style], :root div[class^="Ad__container"], :root a[href^="http://centertrust.xyz/"], :root a[href^="http://g1.v.fwmrm.net/ad/"], :root a[href^="http://www.fbooksluts.com/"], :root #center_col > #resultStats + div[style="border:1px solid #dedede;margin-bottom:11px;padding:5px 7px 5px 6px"], :root a[href^="http://ads.integral-marketing.com/"], :root div[id^="advads_"], :root a[data-obtrack^="http://paid.outbrain.com/network/redir?"], :root .__y_inner > .__y_item, :root div[id^="ads300_100-widget"], :root #center_col > #taw > #tvcap > .rscontainer, :root #center_col > div[style="font-size:14px;margin-right:0;min-height:5px"] > div[style="font-size:14px;margin:0 4px;padding:1px 5px;background:#fff8e7"], :root div[id^="MarketGid"], :root #cnt #center_col > #res > #topstuff > .ts, :root #content > #center > .dose > .dosesingle, :root a[href^="http://www.text-link-ads.com/"], :root #content > #right > .dose > .dosesingle, :root #flowplayer > div[style="position: absolute; width: 300px; height: 275px; left: 222.5px; top: 85px; z-index: 999;"], :root a[href^="http://ads.betfair.com/redirect.aspx?"], :root #flowplayer > div[style="z-index: 208; position: absolute; width: 300px; height: 275px; left: 222.5px; top: 85px;"], :root a[href*="emprestimo.eu"], :root #header + #content > #left > #rlblock_left, :root .__zinit .__y_item, :root a[href^="//40ceexln7929.com/"], :root #mbEnd[cellspacing="0"][cellpadding="0"], :root a[href^="http://banners.victor.com/processing/"], :root #mn #center_col > div > h2.spon:first-child, :root .ch[onclick="ga(this,event)"], :root #mn #center_col > div > h2.spon:first-child + ol:last-child, :root a[href^="http://affiliate.coral.co.uk/processing/"], :root #mn div[style="position:relative"] > #center_col > ._Ak, :root a[href*=".clksite.com/"], :root #mn div[style="position:relative"] > #center_col > div > ._dPg, :root .__yinit .__y_item, :root a[href^="http://finaljuyu.com/"], :root div[id^="mainads"], :root #rhs_block > .ts[cellspacing="0"][cellpadding="0"][style="padding:0"], :root #resultspanel > #topads, :root #rhs_block > #mbEnd, :root #rhs_block .mod > .gws-local-hotels__booking-module, :root #rhs_block .xpdopen > ._OKe > div > .mod > ._yYf, :root a[href^="http://data.ad.yieldmanager.net/"], :root .mw > #rcnt > #center_col > #taw > #tvcap > .c, :root #rhs_block > script + .c._oc._Ve.rhsvw, :root a[data-redirect^="https://paid.outbrain.com/network/redir?"], :root a[href^="http://track.adform.net/"], :root #tads + div + .c, :root #rhswrapper > #rhssection[border="0"][bgcolor="#ffffff"], :root a[href^="http://admingame.info/"], :root #ssmiwdiv[jsdisplay], :root a[href^="http://www.dealcent.com/register.php?affid="], :root #topstuff > #tads, :root .GFYY1SVD2 > .GFYY1SVC2 > .GFYY1SVF5, :root a[href^="http://www.linkbucks.com/referral/"], :root .GHOFUQ5BG2 > .GHOFUQ5BF2 > .GHOFUQ5BG5, :root .GFYY1SVE2 > .GFYY1SVD2 > .GFYY1SVG5, :root .jobs-information-call-to-action + .jobs-information-call-to-action div[class$="_item"], :root a[href^="https://ad.atdmt.com/"], :root .__ywvr .__y_item, :root a[href*=".qertewrt.com/"], :root a[href^="http://www.terraclicks.com/"], :root .GJJKPX2N1 > .GJJKPX2M1 > .GJJKPX2P4, :root .GPMV2XEDA2 > .GPMV2XEDP1 > .GPMV2XEDJBB, :root a[href^="http://aff.ironsocket.com/"], :root .Mpopup + #Mad > #MadZone, :root aside[itemtype="https://schema.org/WPAdBlock"], :root .__y_elastic .__y_item, :root a[href^="http://www.adxpansion.com"], :root .__ywl .__y_item, :root .l-container > #fishtank, :root .icons-rss-feed + .icons-rss-feed div[class$="_item"], :root a[href^="http://dethao.com/"], :root .lads[width="100%"][style="background:#FFF8DD"], :root iframe[src^="http://cdn2.adexprt.com/"], :root .mod > ._jH + .rscontainer, :root a[href^="http://clicks.binarypromos.com/"], :root .mw > #rcnt > #center_col > #taw > .c, :root .nrelate .nr_partner, :root a[href^="http://tezfiles.com/pr/"], :root .ob_container .item-container-obpd, :root a[href^="http://partner.sbaffiliates.com/"], :root a[href^="http://www.firstload.com/affiliate/"], :root a[href^="http://www.myfreepaysite.com/sfw_int.php?aid"], :root a[href^="//srv.buysellads.com/"], :root a[href^="http://pwrads.net/"], :root .ob_dual_right > .ob_ads_header ~ .odb_div, :root .plistaList > .itemLinkPET, :root a[href^="http://www.download-provider.org/"], :root .plistaList > .plista_widget_underArticle_item[data-type="pet"], :root .plista_widget_belowArticleRelaunch_item[data-type="pet"], :root a[href^="http://www.pinkvisualgames.com/?revid="], :root .ra[align="left"][width="30%"], :root a[href^="http://ads.affbuzzads.com/"], :root a[href^="http://promos.bwin.com/"], :root .ra[align="right"][width="30%"], :root a[href^="http://bs.serving-sys.com/"], :root .ra[width="30%"][align="right"] + table[width="70%"][cellpadding="0"], :root a[href^="https://www.googleadservices.com/pagead/aclk?"], :root a[href^="http://api.content.ad/"], :root a[href^="http://n217adserv.com/"], :root .rc-cta[data-target], :root .rhsvw[style="background-color:#fff;margin:0 0 14px;padding-bottom:1px;padding-top:1px;"], :root .widget-pane-section-result[data-result-ad-type], :root a[href^="http://adserver.adtechus.com/"], :root .rscontainer > .ellip, :root .section-result[data-result-ad-type], :root .trc_rbox .syndicatedItem, :root .trc_rbox_border_elm .syndicatedItem, :root a[href^="http://taboola-"][href*="/redirect.php?app.type="], :root .trc_rbox_div .syndicatedItem, :root .trc_rbox_div .syndicatedItemUB, :root div[id^="div_openx_ad_"], :root .trc_rbox_div a[target="_blank"][href^="http://tab"], :root a[href^="//porngames.adult/?SID="], :root a[href^="http://engine.newsmaxfeednetwork.com/"], :root a[href^="http://ddownload39.club/"], :root .trc_related_container div[data-item-syndicated="true"], :root ADS-RIGHT, :root a[href^="http://campaign.bharatmatrimony.com/track/"], :root a[href*="/adServe/banners?"], :root AFS-AD, :root a[href^="https://www.secureupload.eu/suprerefid="], :root a[href^="http://www.myvpn.pro/"], :root a[onmousedown^="this.href='http://paid.outbrain.com/network/redir?"][target="_blank"], :root AMP-AD, :root A[href^="https://www.friendlyduck.com/AF_"], :root a[href^="http://server.cpmstar.com/click.aspx?poolid="], :root a[href^="http://dwn.pushtraffic.net/"], :root a[href^="http://sharesuper.info/"], :root [ad-id^="googlead"], :root a[href^="http://www.ringtonematcher.com/"], :root [id*="MGWrap"], :root a[href^="//ads.ad-center.com/"], :root a[href^="http://websitedhoome.com/"], :root [id*="MarketGid"], :root [id*="ScriptRoot"], :root a[href="http://track.freemmo2017.com/"], :root a[onmousedown^="this.href='http://staffpicks.outbrain.com/network/redir?"][target="_blank"] + .ob_source, :root a[href^="http://games.ucoz.ru/"][target="_blank"], :root [lazy-ad="lefttop_banner"], :root [onclick*="content.ad/"], :root a[href^="http://see-work.info/"], :root a[href^="http://www.graboid.com/affiliates/"], :root a[href^="http://papi.mynativeplatform.com:80/pub2/"], :root [onclick^="window.open('http://adultfriendfinder.com/search/"], :root a[href^="http://www.ducksnetwork.com/"], :root a[data-oburl^="http://paid.outbrain.com/network/redir?"], :root a[href^="https://atomidownload.com/"], :root a[data-oburl^="https://paid.outbrain.com/network/redir?"], :root a[data-redirect^="http://click.plista.com/pets"], :root a[data-redirect^="http://paid.outbrain.com/network/redir?"], :root a[href^="http://go.ad2up.com/"], :root a[href^="http://adtransfer.net/"], :root a[href^="http://adclick.g.doubleclick.net/"], :root a[data-redirect^="this.href='http://paid.outbrain.com/network/redir?"], :root div[class*="_AdInArticle_"], :root a[data-url^="http://paid.outbrain.com/network/redir?"], :root a[data-url^="http://paid.outbrain.com/network/redir?"] + .author, :root a[href^="http://ad.yieldmanager.com/"], :root a[href^="http://www.myfreepaysite.com/sfw.php?aid"], :root a[href^="http://lp.ezdownloadpro.info/"], :root a[data-widget-outbrain-redirect^="http://paid.outbrain.com/network/redir?"], :root a[href$="/vghd.shtml"], :root a[href^="http://amzn.to/"] > img[src^="data"], :root a[href*=".adk2x.com/"], :root a[href^="//z6naousb.com/"], :root a[href*=".adsrv.eacdn.com/"] > img, :root a[href^="//www.mgid.com/"], :root a[href^="http://www.clkads.com/adServe/"], :root a[href^="http://ad.doubleclick.net/"], :root div[id^="ad-position-"], :root a[href*=".bang.com/"][href*="&aff="], :root a[href*=".clkcln.com/"], :root a[href^="http://guideways.info/"], :root a[href*=".ichlnk.com/"], :root a[href*=".revimedia.com/"], :root a[href*=".trust.zone"], :root a[href^="http://www.1clickmoviedownloader.info/"], :root div[id^="dfp-ad-"], :root a[href*="/adrotate-out.php?"], :root a[href*="/cmd.php?ad="], :root a[href^="https://servedbyadbutler.com/"], :root a[href^="http://xtgem.com/click?"], :root a[href*="=Adtracker"], :root a[href^="http://www.downloadweb.org/"], :root a[href*="ad2upapp.com/"], :root a[href^="https://members.linkifier.com/public/affiliateLanding?refCode="], :root a[href*="googleme.eu"], :root a[href*="letsadvertisetogether.com"], :root a[href*="onclkds."], :root a[href^="http://www.streamtunerhd.com/signup?"], :root a[href^="http://bonusfapturbo.nmvsite.com/"], :root a[href*="pussl3.com"], :root a[href^=" http://ads.ad-center.com/"], :root a[href^=" http://n47adshostnet.com/"], :root a[href^="//adbit.co/?a=Advertise&"], :root a[href^="http://secure.signup-way.com/"], :root a[href^="http://landingpagegenius.com/"], :root a[href^="//api.ad-goi.com/"], :root a[href^="//bwnjijl7w.com/"], :root a[href^="//db52cc91beabf7e8.com/"], :root a[href^="http://tracking.deltamediallc.com/"], :root a[href^="//go.onclasrv.com/"], :root a[href^="//jsmptjmp.com/"], :root a[href^="http://www.revenuehits.com/"], :root a[href^="http://click.plista.com/pets"], :root a[href^="http://www.streamate.com/exports/"], :root a[href^="//t.MtagMonetizationA.com/"], :root a[href^="http://1phads.com/"], :root div[id^="ads250_250-widget"], :root a[href^="http://2pxg8bcf.top/"], :root a[href^="http://www.clickansave.net/"], :root a[href^="http://360ads.go2cloud.org/"], :root a[href^="http://NowDownloadAll.com"], :root a[href^="http://www.mysuperpharm.com/"], :root a[href^="http://www.sex.com/videos/?utm_"], :root a[href^="http://a.adquantix.com/"], :root a[href^="http://abc2.mobile-10.com/"], :root a[href^="http://ad-emea.doubleclick.net/"], :root a[href^="http://ad.au.doubleclick.net/"], :root a[href^="http://adexprt.me/"], :root a[href^="http://adf.ly/?id="], :root a[href^="http://api.ringtonematcher.com/"], :root a[href^="http://adfarm.mediaplex.com/"], :root a[href^="http://www.babylon.com/welcome/index?affID"], :root a[href^="http://adserving.unibet.com/"], :root a[href^="http://adlev.neodatagroup.com/"], :root a[href^="http://adprovider.adlure.net/"], :root a[href^="http://pan.adraccoon.com?"], :root div[id^="lazyad-"], :root a[href^="http://bcp.crwdcntrl.net/"], :root a[href^="http://adrunnr.com/"], :root a[href^="http://www.fpcTraffic2.com/blind/in.cgi?"], :root a[href^="http://ads.activtrades.com/"], :root a[href^="http://mmo123.co/"], :root a[href^="http://ads.ad-center.com/"], :root a[href^="http://ads.expekt.com/affiliates/"], :root a[href^="http://zevera.com/afi.html"], :root a[href^="http://ads.sprintrade.com/"], :root a[href^="http://ads.pheedo.com/"], :root a[href^="http://ads2.williamhill.com/redirect.aspx?"], :root a[href^="http://adserver.adtech.de/"], :root a[href^="http://www.1clickdownloader.com/"], :root a[href^="http://cdn3.adbrau.com/"], :root a[href^="http://adserver.itsfogo.com/"], :root a[href^="http://adserving.liveuniversenetwork.com/"], :root a[href^="http://adsrv.keycaptcha.com"], :root a[href^="http://adtrack123.pl/"], :root a[href^="http://green.trafficinvest.com/"], :root a[href^="http://clickserv.sitescout.com/"], :root a[href^="http://www.adshost2.com/"], :root a[href^="http://adtrackone.eu/"], :root a[href^="http://adultfriendfinder.com/p/register.cgi?pid="], :root a[href^="http://linksnappy.com/?ref="], :root a[href^="http://affiliate.glbtracker.com/"], :root a[href^="http://affiliate.godaddy.com/"], :root a[href^="http://www.accuserveadsystem.com/accuserve-go.php?"], :root a[href^="http://lp.ilivid.com/"], :root a[href^="http://searchtabnew.com/"], :root a[href^="http://affiliates.pinnaclesports.com/processing/"], :root a[href^="http://affiliates.score-affiliates.com/"], :root div[id^="block-views-topheader-ad-block-"], :root a[href^="http://www.gamebookers.com/cgi-bin/intro.cgi?"], :root a[href^="http://aflrm.com/"], :root a[href^="http://anonymous-net.com/"], :root a[href^="http://mojofun.info/"], :root a[href^="http://findersocket.com/"], :root iframe[src^="http://ad.yieldmanager.com/"], :root a[href^="http://at.atwola.com/"], :root a[href^="http://record.sportsbetaffiliates.com.au/"], :root a[href^="http://b.bestcompleteusa.info/"], :root a[href^="http://bc.vc/?r="], :root a[onmousedown^="this.href='https://paid.outbrain.com/network/redir?"][target="_blank"] + .ob_source, :root a[href^="http://betahit.click/"], :root a[href^="http://hyperies.info/"], :root a[href^="http://bluehost.com/track/"], :root div[id^="advads-"], :root a[href^="http://buysellads.com/"], :root a[href^="http://databass.info/"], :root a[href^="http://c.actiondesk.com/"], :root a[href^="http://c.ketads.com/"], :root a[href^="http://www.bet365.com/"][href*="&affiliate="], :root a[href^="http://callville.xyz/"], :root a[href^="http://media.paddypower.com/redirect.aspx?"], :root a[href^="http://campaign.bharatmatrimony.com/cbstrack/"], :root a[href^="http://casino-x.com/?partner"], :root a[href^="http://cdn.adsrvmedia.net/"], :root a[href^="http://web.adblade.com/"], :root a[href^="http://cdn3.adexprts.com/"], :root a[href^="http://go.oclaserver.com/"], :root a[href^="http://chaturbate.com/affiliates/"], :root script[src^="http://free-shoutbox.net/app/webroot/shoutbox/sb.php?shoutbox="] + #freeshoutbox_content, :root div[itemtype="http://schema.org/WPAdBlock"], :root a[href^="http://cinema.friendscout24.de?"], :root a[href^="http://click.guamwnvgashbkashawhgkhahshmashcas.pw/"], :root a[href^="http://www.down1oads.com/"], :root a[href^="http://clickandjoinyourgirl.com/"], :root a[href^="http://clicks.guamwnvgashbkashawhgkhahshmashcas.pw/"], :root a[href^="http://www.pheedo.com/"], :root a[href^="http://clk.directrev.com/"], :root a[href^="http://galleries.pinballpublishernetwork.com/"], :root a[target="_blank"][href^="http://api.taboola.com/"], :root a[href^="http://clkmon.com/adServe/"], :root a[href^="http://hdplugin.flashplayer-updates.com/"], :root a[href^="http://track.incognitovpn.com/"], :root div[id^="acm-ad-tag-"], :root a[href^="http://codec.codecm.com/"], :root a[href^="http://n.admagnet.net/"], :root a[href^="http://prochina.space/"], :root a[href^="http://connectlinking6.com/"], :root a[href^="http://contractallsticker.net/"], :root a[href^="http://wgpartner.com/"], :root a[href^="http://cpaway.afftrack.com/"], :root a[href^="http://cwcams.com/landing/click/"], :root a[href^="http://d2.zedo.com/"], :root a[href^="http://data.committeemenencyclopedicrepertory.info/"], :root a[href^="https://affiliates.bet-at-home.com/processing/"], :root div[class^="Ad__bigBox"], :root a[href^="http://data.linoleictanzaniatitanic.com/"], :root div[itemtype="http://www.schema.org/WPAdBlock"], :root a[href^="http://dftrck.com/"], :root a[href^="https://syndication.exoclick.com/splash.php?"], :root a[href^="http://down1oads.com/"], :root a[href^="http://download-performance.com/"], :root a[href^="http://duckcash.eu/"], :root a[href^="https://bs.serving-sys.com"], :root a[href^="http://www.myfreecams.com/?co_id="][href*="&track="], :root a[href^="http://easydownload4you.com/"], :root a[href^="http://www.moneyducks.com/"], :root a[href^="http://eclkmpsa.com/"], :root a[href^="http://elite-sex-finder.com/?"], :root a[href^="http://elitefuckbook.com/"], :root a[href^="http://extra.bet365.com/"][href*="?affiliate="], :root a[href^="http://farm.plista.com/pets"], :root a[href^="http://freesoftwarelive.com/"], :root a[href^="http://ryushare.com/affiliate.python"], :root a[href^="http://feedads.g.doubleclick.net/"], :root a[href^="http://webgirlz.online/landing/"], :root a[href^="http://fileloadr.com/"], :root a[href^="http://fileupnow.rocks/"], :root a[href^="http://prousa.work/"], :root a[href^="https://secure.eveonline.com/ft/?aid="], :root a[href^="http://fsoft4down.com/"], :root a[href^="http://track.trkvluum.com/"], :root a[href^="http://fusionads.net"], :root a[href^="https://mk-ads.com/"], :root a[href^="http://galleries.securewebsiteaccess.com/"], :root a[href^="https://farm.plista.com/pets"], :root a[href^="http://gca.sh/user/register?ref="], :root a[href^="http://www.on2url.com/app/adtrack.asp"], :root a[href^="http://getlinksinaseconds.com/"], :root a[href^="http://go.seomojo.com/tracking202/"], :root a[href^="http://www.getyourguide.com/?partner_id="], :root a[href^="http://goldmoney.com/?gmrefcode="], :root a[href^="http://greensmoke.com/"], :root a[href^="http://hd-plugins.com/download/"], :root a[href^="http://hpn.houzz.com/"], :root a[href^="http://tracking.crazylead.com/"], :root a[href^="http://hyperlinksecure.com/go/"], :root a[href^="http://imads.integral-marketing.com/"], :root a[href^="http://www.tirerack.com/affiliates/"], :root a[href^="http://install.securewebsiteaccess.com/"], :root a[href^="http://secure.signup-page.com/"], :root a[href^="http://www.brightwheel.info/"], :root a[href^="http://internalredirect.site/"], :root a[href^="http://istri.it/?"], :root a[href^="http://jobitem.org/"], :root a[href^="http://liversely.com/"], :root a[href^="http://join3.bannedsextapes.com/track/"], :root a[href^="http://k2s.cc/code/"], :root a[href^="http://tracking.toroadvertising.com/"], :root a[href^="http://k2s.cc/pr/"], :root a[href^="http://keep2share.cc/pr/"], :root a[href^="http://latestdownloads.net/download.php?"], :root a[href^="https://ad.doubleclick.net/"], :root div[id^="ADV-SLOT-"], :root a[href^="http://liversely.net/"], :root a[href^="http://t.mdn2015x2.com/"], :root a[href^="http://mgid.com/"], :root a[href^="http://www.freefilesdownloader.com/"], :root a[href^="http://www.quick-torrent.com/download.html?aff"], :root a[href^="http://mo8mwxi1.com/"], :root a[href^="http://onclickads.net/"], :root div[class^="gemini-ad"], :root a[href^="http://online.ladbrokes.com/promoRedirect?"], :root a[href^="http://paid.outbrain.com/network/redir?"], :root a[href^="http://track.affiliatenetwork.co.za/"], :root a[href^="http://pokershibes.com/index.php?ref="], :root a[href^="http://www.friendlyadvertisements.com/"], :root a[href^="https://www.dsct1.com/"], :root a[href^="https://www.spyoff.com/"], :root a[href^="http://prochina.link/"], :root a[href^="http://record.betsafe.com/"], :root a[href^="http://record.commissionking.com/"], :root a[href^="http://refer.webhostingbuzz.com/"], :root a[href^="https://dcs.adgear.com/clicks/"], :root a[href^="http://rekoverr.com/"], :root a[href^="http://secure.hostgator.com/~affiliat/"], :root a[href^="http://serve.williamhill.com/promoRedirect?"], :root a[href^="http://servicegetbook.net/"], :root a[href^="http://srvpub.com/"], :root a[href^="http://stateresolver.link/"], :root a[href^="http://www.drowle.com/"], :root a[href^="http://steel.starflavor.bid/"], :root a[href^="https://keep2share.cc/pr/"], :root a[href^="http://syndication.exoclick.com/"], :root a[href^="https://www.adskeeper.co.uk/"], :root a[href^="http://t.mdn2015x1.com/"], :root a[href^="https://www.firstload.com/affiliate/"], :root a[href^="http://t.mdn2015x3.com/"], :root a[href^="http://t.wowtrk.com/"], :root a[href^="http://tour.affbuzzads.com/"], :root div[id^="ad-div-"], :root a[href^="http://uploaded.net/ref/"], :root a[href^="http://us.marketgid.com"], :root a[href^="http://webtrackerplus.com/"], :root a[href^="http://www.123-reg.co.uk/affiliate2.cgi"], :root div[id^="cns_ads_"], :root a[href^="http://www.TwinPlan.com/AF_"], :root a[href^="http://www.twinplan.com/AF_"], :root a[href^="http://www.adbrite.com/mb/commerce/purchase_form.php?"], :root a[href^="http://www.adskeeper.co.uk/"], :root a[href^="http://www.affiliates1128.com/processing/"], :root a[href^="http://www.downloadplayer1.com/"], :root a[href^="https://understandsolar.com/signup/?lead_source="][href*="&tracking_code="], :root a[href^="http://www.wantstraffic.com/"], :root a[href^="http://www.badoink.com/go.php?"], :root a[href^="http://www.bet365.com/"][href*="?affiliate="], :root a[href^="http://www.bitlord.me/share/"], :root bottomadblock, :root a[href^="http://www.cash-duck.com/"], :root a[href^="http://www.coinducks.com/"], :root a[href^="http://www.dl-provider.com/search/"], :root a[href^="http://www.downloadthesefiles.com/"], :root a[href^="http://www.duckcash.eu/"], :root a[href^="http://www.duckssolutions.com/"], :root a[href^="http://www.easydownloadnow.com/"], :root a[href^="http://www.epicgameads.com/"], :root a[href^="http://www.faceporn.net/free?"], :root a[href^="http://www.fducks.com/"], :root a[href^="http://www.firstclass-download.com/"], :root a[href^="https://torguard.net/aff.php"], :root a[href^="http://www.firstload.de/affiliate/"], :root a[href^="http://www.fonts.com/BannerScript/"], :root a[href^="https://trust.zone/go/r.php?RID="], :root a[href^="http://www.flashx.tv/downloadthis"], :root a[href^="http://www.fleshlight.com/"], :root a[href^="http://www.friendlyquacks.com/"], :root a[href^="http://www.greenmangaming.com/?tap_a="], :root a[href^="http://www.hitcpm.com/"], :root a[href^="http://www.idownloadplay.com/"], :root a[href^="https://pubads.g.doubleclick.net/"], :root a[href^="http://www.incredimail.com/?id="], :root a[href^="http://www.installads.net/"], :root a[href^="https://tracking.truthfinder.com/?a="], :root a[href^="https://dediseedbox.com/clients/aff.php?"], :root a[href^="http://www.ireel.com/signup?ref"], :root a[href^="http://www.liutilities.com/"], :root a[href^="http://www.pinkvisualpad.com/?revid="], :root a[href^="http://www.liversely.net/"], :root a[href^="http://www.menaon.com/installs/"], :root a[href^="http://www.mobileandinternetadvertising.com/"], :root a[href^="http://www.my-dirty-hobby.com/?sub="], :root a[href^="http://www.plus500.com/?id="], :root a[href^="http://www.ragazzeinvendita.com/?rcid="], :root a[href^="http://www.richducks.com/"], :root a[href^="http://www.roboform.com/php/land.php"], :root a[href^="http://www.securegfm.com/"], :root a[href^="http://www.seekbang.com/cs/"], :root a[href^="http://www.sex.com/?utm_"], :root a[href^="http://www.sex.com/pics/?utm_"], :root a[href^="http://www.urmediazone.com/signup"], :root div[class^="Ad__adContainer"], :root a[href^="http://www.sexgangsters.com/?pid="], :root a[href^="http://www.sfippa.com/"], :root a[href^="http://www.socialsex.com/"], :root a[href^="http://www.torntv-downloader.com/"], :root a[href^="http://www.torntvdl.com/"], :root a[href^="http://www.uniblue.com/cm/"], :root a[href^="http://www.usearchmedia.com/signup?"], :root a[href^="http://www.xmediaserve.com/"], :root a[href^="http://www.yourfuckbook.com/?"], :root a[href^="http://www.zergnet.com/i/"], :root a[href^="http://www1.clickdownloader.com/"], :root a[href^="http://www5.smartadserver.com/call/pubjumpi/"], :root a[href^="http://wxdownloadmanager.com/dl/"], :root a[href^="http://xads.zedo.com/"], :root a[href^="http://yads.zedo.com/"], :root a[href^="https://windscribe.com/promo/"], :root div[id^="div_ad_stack_"], :root a[href^="http://z1.zedo.com/"], :root a[href^="https://adhealers.com/"], :root a[href^="https://awentw.com/"], :root a[href^="https://betway.com/"][href*="&a="], :root a[href^="https://www.share-online.biz/affiliate/"], :root a[href^="https://chaturbate.com/affiliates/"], :root a[href^="https://click.plista.com/pets"], :root a[href^="https://dltags.com/"], :root a[href^="https://evaporate.pw/"], :root a[href^="https://go.ad2up.com/"], :root a[href^="https://go.onclasrv.com/"], :root a[href^="https://paid.outbrain.com/network/redir?"], :root a[href^="https://t.mobtya.com/"], :root div[id^="ad-server-"], :root a[href^="https://trackjs.com/?utm_source"], :root a[href^="https://trklvs.com/"], :root a[href^="https://www.camyou.com/?cam="][href*="&track="], :root a[href^="https://www.oboom.com/ad/"], :root a[href^="https://www.popads.net/users/"], :root a[onmousedown^="this.href='/wp-content/embed-ad-content/"], :root a[onmousedown^="this.href='http://paid.outbrain.com/network/redir?"][target="_blank"] + .ob_source, :root a[onmousedown^="this.href='https://paid.outbrain.com/network/redir?"][target="_blank"], :root div[id^="div-gpt-ad"], :root a[style="display:block;width:300px;min-height:250px"][href^="http://li.cnet.com/click?"], :root a[target="_blank"][onmousedown="this.href^='http://paid.outbrain.com/network/redir?"], :root aside[id^="div-gpt-ad"], :root div > [class][onclick*=".updateAnalyticsEvents"], :root div[class$="dealnews"] > .dealnews, :root div[class^="BlockAdvert-"], :root div[class^="ResponsiveAd-"], :root div[class^="ad_border_"], :root div[class^="ad_position_"], :root div[class^="block-openx-"], :root div[class^="local-feed-banner-ads"], :root div[class^="proadszone-"], :root div[data-spotim-slot], :root div[id^="YFBMSN"], :root div[id^="ad-cid-"], :root div[id^="adrotate_widgets-"], :root div[id^="ads120_600-widget"], :root div[id^="ads300_250-widget"], :root div[id^="ads300_600-widget"], :root div[id^="dfp-slot-"], :root div[id^="div-adtech-ad-"], :root div[id^="dmRosAdWrapper"], :root div[id^="google_dfp_"], :root div[id^="proadszone-"], :root div[id^="q1-adset-"], :root div[id^="zergnet-widget"], :root iframe[id^="google_ads_frame"], :root iframe[id^="google_ads_iframe"], :root iframe[src^="http://cdn1.adexprt.com/"], :root iframe[src^="http://static.mozo.com.au/strips/"], :root img[alt^="Fuckbook"], :root input[onclick^="window.open('http://www.friendlyduck.com/"], :root input[onclick^="window.open('http://www.FriendlyDuck.com/"], :root p[id^="div-gpt-ad-"], :root td[valign="top"] > .mainmenu[style="padding:10px 0 0 0 !important;"], :root topadblock { display: none !important; }</style><script type="text/javascript" charset="utf-8" async="" src="./Misc_files/button.7db838345f9545c91ea4497f64abb814.js.download"></script><style type="text/css">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}.fb_link img{border:none}@keyframes fb_transform{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_reset .fb_dialog_legacy{overflow:visible}.fb_dialog_advanced{padding:10px;border-radius:8px}.fb_dialog_content{background:#fff;color:#333}.fb_dialog_close_icon{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{top:5px;left:5px;right:auto}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent}.fb_dialog_close_icon:active{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent}.fb_dialog_loader{background-color:#f6f7f9;border:1px solid #606060;font-size:24px;padding:20px}.fb_dialog_top_left,.fb_dialog_top_right,.fb_dialog_bottom_left,.fb_dialog_bottom_right{height:10px;width:10px;overflow:hidden;position:absolute}.fb_dialog_top_left{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 0;left:-10px;top:-10px}.fb_dialog_top_right{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 -10px;right:-10px;top:-10px}.fb_dialog_bottom_left{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 -20px;bottom:-10px;left:-10px}.fb_dialog_bottom_right{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 -30px;right:-10px;bottom:-10px}.fb_dialog_vert_left,.fb_dialog_vert_right,.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{position:absolute;background:#525252;filter:alpha(opacity=70);opacity:.7}.fb_dialog_vert_left,.fb_dialog_vert_right{width:10px;height:100%}.fb_dialog_vert_left{margin-left:-10px}.fb_dialog_vert_right{right:0;margin-right:-10px}.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{width:100%;height:10px}.fb_dialog_horiz_top{margin-top:-10px}.fb_dialog_horiz_bottom{bottom:0;margin-bottom:-10px}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #365899;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{-webkit-transform:none;height:100%;margin:0;overflow:visible;position:absolute;top:-10000px;left:0;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{width:auto;height:auto;min-height:initial;min-width:initial;background:none}.fb_dialog.fb_dialog_mobile.loading.centered #fb_dialog_loader_spinner{width:100%}.fb_dialog.fb_dialog_mobile.loading.centered .fb_dialog_content{background:none}.loading.centered #fb_dialog_loader_close{color:#fff;display:block;padding-top:20px;clear:both;font-size:18px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .45);position:absolute;bottom:0;left:0;right:0;top:0;width:100%;min-height:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_content .dialog_header{-webkit-box-shadow:white 0 1px 1px -1px inset;background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#738ABA), to(#2C4987));border-bottom:1px solid;border-color:#1d4088;color:#fff;font:14px Helvetica, sans-serif;font-weight:bold;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{-webkit-font-smoothing:subpixel-antialiased;height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#4966A6), color-stop(.5, #355492), to(#2A4887));border:1px solid #29487d;-webkit-background-clip:padding-box;-webkit-border-radius:3px;-webkit-box-shadow:rgba(0, 0, 0, .117188) 0 1px 1px inset, rgba(255, 255, 255, .167969) 0 1px 0;display:inline-block;margin-top:3px;max-width:85px;line-height:18px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{border:none;background:none;color:#fff;font:12px Helvetica, sans-serif;font-weight:bold;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #555;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f6f7f9;border:1px solid #555;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_button{text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}#fb_dialog_loader_spinner{animation:rotateSpinner 1.2s linear infinite;background-color:transparent;background-image:url(https://static.xx.fbcdn.net/rsrc.php/v3/yD/r/t-wz8gw1xG1.png);background-repeat:no-repeat;background-position:50% 50%;height:24px;width:24px}@keyframes rotateSpinner{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_hide_iframes iframe{position:relative;left:-10000px}.fb_iframe_widget_loader{position:relative;display:inline-block}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}.fb_iframe_widget_loader iframe{min-height:32px;z-index:2;zoom:1}.fb_iframe_widget_loader .FB_Loader{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/y9/r/jKEcVPZFk-2.gif) no-repeat;height:32px;width:32px;margin-left:-16px;position:absolute;left:50%;z-index:4}
+.fb_customer_chat_bounce_in{animation-duration:250ms;animation-name:fb_bounce_in}.fb_customer_chat_bounce_out{animation-duration:250ms;animation-name:fb_fade_out}.fb_invisible_flow{display:inherit;height:0;overflow-x:hidden;width:0}.fb_mobile_overlay_active{background-color:#fff;height:100%;overflow:hidden;position:fixed;visibility:hidden;width:100%}@keyframes fb_fade_out{from{opacity:1}to{opacity:0}}@keyframes fb_bounce_in{0%{opacity:0;transform:scale(.8, .8);transform-origin:100% 100%}10%{opacity:.1}20%{opacity:.2}30%{opacity:.3}40%{opacity:.4}50%{opacity:.5}60%{opacity:.6}70%{opacity:.7}80%{opacity:.8;transform:scale(1.03, 1.03)}90{opacity:.9}100%{opacity:1;transform:scale(1, 1)}}</style><style type="text/css">.mceToolbar {display: none}</style><style></style></head>
+<body><div class="cc-grower" style="max-height: 71px;"><div role="dialog" aria-live="polite" aria-label="cookieconsent" aria-describedby="cookieconsent:desc" class="cc-window cc-banner cc-type-info cc-theme-block cc-static cc-top cc-color-override-1939428960 " style=""><!--googleoff: all--><span id="cookieconsent:desc" class="cc-message">We use cookies to ensure that we give you the best possible experience. By continuing to browse the site you are agreeing to our use of cookies. <a aria-label="learn more about cookies" role="button" tabindex="0" class="cc-link" href="https://www.datasciencecentral.com/page/cookie-policy" target="_blank">Learn more</a></span><div class="cc-compliance"><a aria-label="dismiss cookie message" role="button" tabindex="0" class="cc-btn cc-dismiss">OK, Got it!</a></div><!--googleon: all--></div></div>
+
+<noscript>&lt;iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T5W4WQ"
+height="0" width="0" style="display:none;visibility:hidden"&gt;&lt;/iframe&gt;</noscript>
+
+<div class="xj_before_content"><div id="fb-root" class=" fb_reset"><script src="./Misc_files/sdk.js.download" async=""></script><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe name="fb_xdm_frame_https" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" allow="encrypted-media" id="fb_xdm_frame_https" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tabindex="-1" src="./Misc_files/2VRzCA39w_9.html" style="border: none;"></iframe></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div></div></div></div>
+<script>
+  window.fbAsyncInit = function () {
+    FB.init({
+      appId      : '259683271111061', 
+      status     : true,   
+      cookie     : true,   
+      xfbml      : true, 
+      version    : 'v2.3'  
+    });
+    var n = xg.addOnFacebookLoad.functions.length;
+    for (var i = 0; i < n; i++) {
+      xg.addOnFacebookLoad.functions[i]();
+    }
+    xg.addOnFacebookLoad = function (f) { f(); };
+    xg.addOnFacebookLoad.functions = [];
+  };
+  (function() {
+    var e = document.createElement('script');
+    e.src = document.location.protocol + '//connect.facebook.net/en_US/sdk.js';
+    e.async = true;
+    document.getElementById('fb-root').appendChild(e);
+  })();
+</script> <div id="xn_bar">
+<div id="xn_bar_menu">
+<div id="xn_bar_menu_branding">
+</div>
+<div id="xn_bar_menu_more">
+<form id="xn_bar_menu_search" method="GET" action="https://www.datasciencecentral.com/page/search">
+<fieldset>
+<input type="text" name="q" id="xn_bar_menu_search_query" value="Search Data Science Central" _hint="Search Data Science Central" accesskey="4" class="text xj_search_hint">
+<a id="xn_bar_menu_search_submit" href="https://www.datasciencecentral.com/profiles/blogs/building-outiler-resistant-centroids-in-any-dimension#" onclick="document.getElementById(&#39;xn_bar_menu_search&#39;).submit();return false">Search</a>
+</fieldset>
+</form>
+</div>
+<ul id="xn_bar_menu_tabs">
+<li><a href="https://www.datasciencecentral.com/main/authorization/signUp?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension">Sign Up</a></li>
+<li><a href="https://www.datasciencecentral.com/main/authorization/signIn?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension">Sign In</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="xg_theme" data-layout-pack="brutus">
+<div id="xg_themebody">
+<div id="xg_ad_above_header" class="xg_ad xj_ad_above_header dy-displaynone">
+</div>
+<div id="xg_head">
+<div id="xg_masthead">
+<h1 id="xg_sitename" class="xj_site_name"><a id="application_name_header_link" href="https://www.datasciencecentral.com/"><img src="./Misc_files/dsc_logo.png" alt="Data Science Central"></a></h1>
+<p id="xg_sitedesc" class="xj_site_desc"></p>
+</div>
+<div id="xg_navigation" class="xj_navigation"><ul>
+<li dojotype="SubTabHover" id="xg_tab_xn10" class="xg_subtab"><a href="https://www.datasciencecentral.com/"><span>Home</span></a><div class="xg_subtab" style="display:none;position:absolute;"><ul class="xg_subtab" style="display:block;"><li style="list-style:none !important;display:block;text-align:left;"><a style="float:none;" href="https://www.datasciencecentral.com/"><span>Home</span></a></li><li style="list-style:none !important;display:block;text-align:left;"><a href="https://www.analyticbridge.datasciencecentral.com/page/links" target="_blank" style="float:none;"><span>Top Links</span></a></li><li style="list-style:none !important;display:block;text-align:left;"><a href="https://www.datasciencecentral.com/profiles/blogs/my-data-science-book" style="float:none;"><span>Data Science Book</span></a></li><li style="list-style:none !important;display:block;text-align:left;"><a href="https://www.datasciencecentral.com/page/editorial-guidelines" style="float:none;"><span>Editorial Guidelines</span></a></li><li style="list-style:none !important;display:block;text-align:left;"><a href="https://www.datasciencecentral.com/page/user-agreement" style="float:none;"><span>User Agreement</span></a></li><li style="list-style:none !important;display:block;text-align:left;"><a href="https://www.datasciencecentral.com/page/cookie-policy" style="float:none;"><span>Cookie Policy</span></a></li></ul></div></li><li id="xg_tab_xn32" class="xg_subtab"><a href="https://www.datavizualization.datasciencecentral.com/" target="_blank"><span>DataViz</span></a></li><li id="xg_tab_xn26" class="xg_subtab"><a href="https://www.hadoop360.datasciencecentral.com/" target="_blank"><span>Hadoop</span></a></li><li id="xg_tab_xn40" class="xg_subtab"><a href="https://www.bigdatanews.datasciencecentral.com/" target="_blank"><span>Big Data</span></a></li><li id="xg_tab_profile" class="xg_subtab"><a href="https://www.analyticbridge.datasciencecentral.com/" target="_blank"><span>Analytics</span></a></li><li id="xg_tab_xn28" class="xg_subtab"><a href="https://www.datasciencecentral.com/video/video/listFeatured"><span>Webinars</span></a></li><li id="xg_tab_xn31" class="xg_subtab"><a href="https://www.datasciencecentral.com/page/search?q=deep+learning"><span>Deep Learning</span></a></li><li id="xg_tab_xn22" class="xg_subtab"><a href="https://www.datasciencecentral.com/page/search?q=AI"><span>AI</span></a></li><li id="xg_tab_xn3" class="xg_subtab"><a href="http://www.analytictalent.datasciencecentral.com/" target="_blank"><span>Jobs</span></a></li><li dojotype="SubTabHover" id="xg_tab_xn25" class="xg_subtab"><a href="https://www.datasciencecentral.com/profiles/blogs/check-out-our-dsc-newsletter"><span>Membership</span></a><div class="xg_subtab" style="display:none;position:absolute;"><ul class="xg_subtab" style="display:block;"><li style="list-style:none !important;display:block;text-align:left;"><a style="float:none;" href="https://www.datasciencecentral.com/profiles/blogs/check-out-our-dsc-newsletter"><span>Membership</span></a></li><li style="list-style:none !important;display:block;text-align:left;"><a href="https://www.datasciencecentral.com/page/previous-digests" style="float:none;"><span>Previous Digests</span></a></li></ul></div></li><li id="xg_tab_xn35" class="xg_subtab"><a href="https://www.datasciencecentral.com/page/search"><span>Search</span></a></li><li id="xg_tab_xn39" class="xg_subtab"><a href="https://www.classifieds.datasciencecentral.com/" target="_blank"><span>Classifieds</span></a></li><li id="xg_tab_xn18" class="xg_subtab"><a href="https://www.datasciencecentral.com/page/contact-us"><span>Contact</span></a></li></ul>
+</div>
+</div>
+<div id="xg_ad_below_header" class="xg_ad xj_ad_below_header">
+<div class="xg_module module-plain  html_module module_text xg_reset" data-module_name="text">
+<div class="xg_module_body xg_user_generated">
+<center><script async="async" src="./Misc_files/gpt.js.download" type="text/javascript">
+</script> <script type="text/javascript">
+  var googletag = googletag || {};
+  googletag.cmd = googletag.cmd || [];
+</script> <script type="text/javascript">
+  googletag.cmd.push(function() {
+    googletag.defineSlot('/2672641/Bottom_Leaderboard', [728, 90], 'div-gpt-ad-1512428902846-0').addService(googletag.pubads());
+    googletag.defineSlot('/2672641/Box_Ad', [300, 250], 'div-gpt-ad-1512428902846-1').addService(googletag.pubads());
+    googletag.defineSlot('/2672641/Box_Ad_Blog', [300, 250], 'div-gpt-ad-1512428902846-2').addService(googletag.pubads());
+    googletag.defineSlot('/2672641/Box_Ad_Forum', [300, 250], 'div-gpt-ad-1512428902846-3').addService(googletag.pubads());
+    googletag.defineSlot('/2672641/Box_Ad2', [300, 250], 'div-gpt-ad-1512428902846-4').addService(googletag.pubads());
+    googletag.defineSlot('/2672641/Left_Square_Box', [220, 220], 'div-gpt-ad-1512428902846-5').addService(googletag.pubads());
+    googletag.defineSlot('/2672641/Skyscraper', [160, 600], 'div-gpt-ad-1512428902846-6').addService(googletag.pubads());
+    googletag.defineSlot('/2672641/Square_Box', [220, 220], 'div-gpt-ad-1512428902846-7').addService(googletag.pubads());
+    googletag.defineSlot('/2672641/Top_Leaderboard', [728, 90], 'div-gpt-ad-1512428902846-8').addService(googletag.pubads());
+    googletag.enableServices();
+  });
+</script> 
+<div id="div-gpt-ad-1512428902846-8" style="height:90px; width:728px;"><script type="text/javascript">
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1512428902846-8'); });
+</script></div>
+<br></center>
+<center><a href="https://www.datasciencecentral.com/profiles/blogs/check-out-our-dsc-newsletter">Subscribe to DSC Newsletter</a></center>
+</div>
+</div>
+</div>
+<div id="xg" class="xg_widget_profiles xg_widget_profiles_blog xg_widget_profiles_blog_show">
+<div id="xg_body">
+<div class="xj_notifications"></div>
+<div class="xg_column xg_span-16" id="column1">
+<div id="xg_canvas" class="xj_canvas">
+<ul class="navigation easyclear"><li><a href="https://www.datasciencecentral.com/profiles/blog/list">All Blog Posts</a></li><li><a href="https://www.datasciencecentral.com/profiles/blog/list?my=1">My Blog</a></li><li class="right  xg_lightborder navbutton"><a href="https://www.datasciencecentral.com/profiles/blog/new" class="xg_sprite xg_sprite-add">Add</a></li></ul>
+<div class="xg_module xg_blog xg_blog_detail xg_blog_mypage xg_module_with_dialog">
+<div class="xg_headline xg_headline-img xg_headline-2l">
+<div class="ib"><span class="xg_avatar"><a class="fn url" href="https://www.datasciencecentral.com/profile/VincentGranville" title="Vincent Granville"><span class="table_img dy-avatar dy-avatar-64 "><img class="photo photo" src="./Misc_files/1206399868.png" alt=""></span></a></span></div>
+<div class="tb"><h1>Tutorial: Neutralizing Outliers in Any Dimension</h1>
+<ul class="navigation byline">
+<li><a class="nolink">Posted by </a><a href="https://www.datasciencecentral.com/profile/VincentGranville">Vincent Granville</a><a class="nolink"> on January 29, 2017 at 10:30pm</a></li>
+<li><a class="xg_sprite xg_sprite-view" href="https://www.datasciencecentral.com/profiles/blog/list?user=3v6n5b6g08kgn">View Blog</a></li>
+</ul>
+</div>
+</div>
+<div class="xg_module_body">
+<div class="postbody">
+<div class="xg_user_generated">
+<p><span>In this article, we discuss a general framework to drastically reduce the influence of outliers in most contexts. It applies to problems such as clustering (finding centroids,) regression, measuring correlation or R-Squared, and many more. We will focus on the centroid problem here, as it is very similar and generalizes easily to solving a linear regression. The correlation / R-Squared issue was discussed <a href="http://www.analyticbridge.com/profiles/blogs/correlation-and-r-squared-for-big-data" target="_blank">in an earlier article</a>&nbsp;and involves only a change of formula. Clustering and regression are more complex problems involving iterative algorithms. &nbsp;</span></p>
+<p><span>This article also features interesting material for future data scientists, such as&nbsp;</span></p>
+<ul>
+<li>Several outlier detection techniques&nbsp;</li>
+<li>How to display contour maps and images corresponding to an intensity function or heatmap, in R (in just a few lines of code, and very easy to understand) -- see section 5 below</li>
+<li>How to produce data sets that simulate clustering structures or other patterns&nbsp;</li>
+<li>Distribution of arrival times for successive records in a time series</li>
+</ul>
+<p><strong><span class="font-size-4">1. General Framework</span></strong></p>
+<p>We discuss replacing techniques used by statisticians, based on optimizing traditional L^2 metrics such as variance, by techniques based on L^<em>p</em> metrics, which are more robust when &nbsp;1 &lt; &nbsp;<em>p</em>&nbsp; &lt; 2. The case <em>p</em> = 2 corresponds to the traditional framework, Throughout the article, <em>p</em>&nbsp;is referred to as the power. The regression and centroid problems being equivalent, we focus here on finding a centroid using the L^<em>p</em> criterion (denoted as H), and we show how to modify it for regression problems. Illustrations are in a 2-dimensional space (<em>d</em> = 2) but easily generalize to any dimension, especially as we are not using any matrix inversions to solve the problem.&nbsp;</p>
+<p><strong>Finding a robust centroid</strong></p>
+<p>The focus here is on finding the point that minimizes the sum of the "distances" to <em>n</em>&nbsp;points in a <em>d</em>-dimensional space, called centroid or center,&nbsp;<strong>especially in the presence of outliers</strong>.&nbsp;</p>
+<p>The sum of "distances" between an arbitrary point (<em>u</em>, <em>v</em>) &nbsp;and a set S = { (x(1), y(1)) ... (x(<em>n</em>), y(<em>n</em>)) } of <em>n</em> points is defined as follows:</p>
+<p style="text-align: center;">H((<em>u</em>,<em>v</em>), S; <em>p</em>) = &nbsp;SUM{ (<em>e</em> + |x(k) - <em>u|</em>)^<em>p</em> + (<em>e</em> + |y(k) - v|^<em>p</em> } / <em>n,</em></p>
+<p>where <em>e</em> is a very small positive quantity, equal to zero unless <em>p</em> is negative; the sum is over <em>k</em> = 1,...,<em>n</em>.</p>
+<p>The function H has one parameter <em>p</em>&nbsp;called <em>power</em>, and when <em>p</em> = 2, we are facing the traditional problem of finding the centroid of a cloud of points: in this case, the solution is the classic average of the <em>n</em> points. This solution is notoriously sensitive to outliers. When 1 &lt; &nbsp;<em>p</em> &lt; 2, we get get a more stable solution, less sensitive to outliers, yet when <em>n</em> is large (&gt; 20) and the proportion of outliers is small (by definition it is always small!), the solution is pretty much the same regardless of <em>p</em> (assuming 1 &lt;&nbsp;<em>p</em>&nbsp;&lt; 3).</p>
+<p>In short, what we are trying to accomplish here is to build a robust measure of centrality in any dimension, just like the median is a robust &nbsp;measure of centrality in dimension&nbsp;<em>d</em> = 1.</p>
+<p><strong>Generalization to linear regression problems</strong></p>
+<p>The same methodology can be used for regression. With 2 parameters <em>u</em> and <em>v</em> as in Y = <em>u&nbsp;</em>X + <em>v</em>, the function H becomes</p>
+<p style="text-align: center;"><span>H((</span><em>u</em><span>,</span><em>v</em><span>), S;&nbsp;</span><em>p</em><span>) = &nbsp;SUM{ (</span><em>e</em><span>&nbsp;+ |y(k) - <em>u *&nbsp;</em>x(k) -&nbsp;<em>v</em></span><em>|</em><span>)^</span><em>p</em><span>&nbsp;</span><span>&nbsp;} /&nbsp;</span><em>n,</em></p>
+<p style="text-align: left;">again with e = 0 if <em>p</em> &gt; 0. It generalizes easily to more than 2 parameters <em>u</em>, <em>v</em>.&nbsp;</p>
+<p><strong>General outlier detection techniques</strong></p>
+<p>Our proposed method smooths out the impact of outliers rather than detecting them. For outlier detection and removal, you can use one of these methods:</p>
+<ul>
+<li>Using traditional centrality measures and eliminating the points farthest away from the center, then re-computing the center and proceeding iteratively with eliminating newly found outliers until stability is reached.</li>
+<li>Using the median both for the x- and y-coordinates, rather than the average.</li>
+<li>The <em>leaving-one-out</em> technique consists of computing the convex hull of your data set S, then removing one point at a time, and re-computing the convex hull after removing the point in question. The point resulting in the largest loss of volume in the convex hull, when removed, corresponds to the strongest outlier.</li>
+<li>Identifying points of lowest density using <a href="https://www.datasciencecentral.com/profiles/blogs/variance-clustering-test-of-hypotheses-and-density-estimation-rev" target="_blank">density estimation techniques</a>.</li>
+<li>Nearest neighbor distances: a point far away from its nearest neighbors is potentially an outlier. Compute all nearest neighbor distances and look for the most extremes.&nbsp;</li>
+</ul>
+<p>Another way to attenuate the impact of outliers is to use a weighted sum for H, that is (in the case of the regression problem) to use the formula</p>
+<p style="text-align: center;">&nbsp;<span>H((</span><em>u</em><span>,</span><em>v</em><span>), S;&nbsp;</span><em>p</em><span>) = &nbsp;SUM{ q(<em>k</em>) * (</span><em>e</em><span>&nbsp;+ |y(k) -&nbsp;<em>u *&nbsp;</em>x(k) -&nbsp;<em>v</em></span><em>|</em><span>)^</span><em>p</em><span>&nbsp;</span><span>&nbsp;} /&nbsp;</span><em>n,</em></p>
+<p>where q(<em>k</em>) is the weight attached to point <em>k</em>, with SUM{ q(<em>k</em>) } = 1. In this case, a point with low density is assigned a smaller weight.</p>
+<p>To read more about outlier detection, <a href="https://www.datasciencecentral.com/page/search?q=outlier" target="_blank">click here</a>.&nbsp;</p>
+<p><span class="font-size-3"><strong>A related physics problem</strong></span></p>
+<p>When <em>p</em> &lt; 0, and especially when <em>p</em> = -2, maximizing or minimizing H becomes an interesting physics problem of optimizing a potential H. The centroid problem is now equivalent to&nbsp;finding the point of maximum or minimum light, sound, radioactivity, or heat intensity, in the presence of an energy field produced by&nbsp;<em>n</em>&nbsp;energy source points.&nbsp;Both problems are closely related and use the same algorithm to find solutions.</p>
+<p>However, the case <em>p</em> &lt; 0 has no practical value to data scientists or statisticians (as far as I know) and it presents the following challenges:</p>
+<ul>
+<li>If (<em>u</em>, <em>v</em>) is a point of S and <em>p</em> &lt; 0, then&nbsp;H((<em>u</em>,<em>v</em>), S;&nbsp;<em>p</em>) is infinite: we have singularities. This is dealt with by introducing the very small constant <em>e</em> &gt; 0 in the definition of H. This quantity is used to address the fact that in the real world, no source of energy is a point with an area of zero and positive (but finite) intensity. This artifact of physics models <a href="https://physics.stackexchange.com/questions/275340/according-to-the-inverse-square-law-is-the-intensity-at-the-source-always-infin" target="_blank">is discussed here</a>.&nbsp;</li>
+<li>If you want to minimize H, there will be an infinite number of solutions, all located far outside the cloud of points S. Think about finding the point in the universe that receives the least amount of light from the solar system. So typically one is interested in finding a maximum, not a minimum (unless you put constraints on the solution, such as being located inside the convex hull of S.)&nbsp;</li>
+<li>Even if searching for a maximum of H, the convergence may be slow and chaotic, as you can end up with several maxima (H is no longer a nice, smooth curve when <em>p</em> &lt; 0.)</li>
+</ul>
+<p><span class="font-size-4"><strong>2. Algorithm to find&nbsp;centroid when <em>p</em> &gt; 1</strong></span></p>
+<p><span>There are many algorithms available to solve this type of mathematical optimization problem. A popular class of algorithms is based on <a href="https://www.datasciencecentral.com/page/search?q=gradient" target="_blank">gradient descent and boosting</a>. Here however, we use what is possibly the simplest algorithm. Why? For two reasons. First it is very easy to understand, still leads to some interesting research, is easy to replicate, and keep the focus on the concepts and the results associated with the centroids, rather than on a specific implementation. Second, with modern computers (even on my 10 years old laptop) the computing power is big enough that naive algorithms perform well. If you are OK with getting results accurate to two or three digits -- and in real life, many data sets, even web analytics measured using two different sources, do not have higher accuracy -- then a rudimentary algorithm is enough.</span></p>
+<p><span>So here I used rudimentary&nbsp;Monte-Carlo to find the centroids. However, in higher dimensions (<em>d</em> &gt; 3) be careful about the <a href="https://www.datasciencecentral.com/profiles/blogs/about-the-curse-of-dimensionality" target="_blank">curse of dimensionality</a>. Note that when <em>p</em> &lt; 0, Monte Carlo is not that bad, as it allows you to visit and circle around several local minima. It is also easy to deploy in a Map-Reduce environment (Hadoop.) The algorithm is actually so simple that there is no need to describe it: the short, easy-to-read source code below (Perl) speaks for itself.&nbsp;</span></p>
+<p><strong>Source code to generate points and compute centroid, using Monte Carlo</strong></p>
+<p>Notes about the source code:</p>
+<ul>
+<li>The first <em>n</em> points in the output file <span style="font-family: &#39;courier new&#39;, courier;">centroid.txt</span> are the simulated sample points (random deviates on [0, 1] x [0, 1]. The last point is the centroid computed on the sample points.</li>
+<li>Note that&nbsp;<span style="font-family: &#39;courier new&#39;, courier;">$seed&nbsp;</span>(first line of code) is used to initiate the random generator and for reproducibility purposes. Also, I noticed that a value of&nbsp;$seed&nbsp;lower than 1,000 causes the first random deviate generated to be biased (unusually small.)</li>
+<li>The variable <span style="font-family: &#39;courier new&#39;, courier;">$sum</span> stores, at each iteration <span style="font-family: &#39;courier new&#39;, courier;">$iter</span>, &nbsp;the value of the function H that we try to minimize.</li>
+</ul>
+<p>Below is the source code.</p>
+<p><span style="font-family: &#39;courier new&#39;, courier;">$seed=1000;&nbsp;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">srand($seed);</span><br> <span style="font-family: &#39;courier new&#39;, courier;">$n=100;</span></p>
+<p><span style="font-family: &#39;courier new&#39;, courier;">open(OUT,"&gt;centroid.txt");</span><span style="font-family: &#39;courier new&#39;, courier;"><br></span></p>
+<p><span style="font-family: &#39;courier new&#39;, courier;">for ($k=0; $k&lt;$n; $k++) {&nbsp;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; $x[$k]=rand();&nbsp;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; $y[$k]=rand();</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; print OUT "$x[$k]\t$y[$k]\n"; # one of the n simulated points</span><br> <span style="font-family: &#39;courier new&#39;, courier;">}</span></p>
+<p><span style="font-family: &#39;courier new&#39;, courier;">$power = 1.25; &nbsp;# corresponds to p (the power) in the article</span><br> <span style="font-family: &#39;courier new&#39;, courier;">$niter = 200000;</span> <br> <span style="font-family: &#39;courier new&#39;, courier;">$eps = 0.00001; # the "e" in the H function (see article)</span></p>
+<p><span style="font-family: &#39;courier new&#39;, courier;">$min=99999999;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">for ($iter=0; $iter&lt;$niter; $iter++) {</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; $u=rand();&nbsp;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; $v=rand();</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; $sum=0;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; for ($k=0; $k&lt;$n; $k++) {</span> <br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; &nbsp; $dist=exp($power*log($eps+abs($x[$k]-$u)))+exp($power*log($eps+abs($y[$k]-$v)));&nbsp;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; &nbsp; $sum+=$dist;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; }</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; $sum = $sum/$n;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; if ($sum &lt; $min) {&nbsp;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; &nbsp; $min=$sum;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; &nbsp; $x_centroid=$u;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; &nbsp; $y_centroid=$v;</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; }</span><br> <span style="font-family: &#39;courier new&#39;, courier;">}</span><br> <span style="font-family: &#39;courier new&#39;, courier;">print OUT "$x_centroid\t$y_centroid\n";</span></p>
+<p><span style="font-family: &#39;courier new&#39;, courier;">close(OUT);</span></p>
+<p><strong>Generating point clouds with simulation</strong></p>
+<p>In the few lines of the source code (above), we generated points randomly distributed in the unit square [0, 1] x [0, 1] . In order to simulate outliers or more complicated distributions that represent real-life problems, one has to use more sophisticated techniques.&nbsp;<a href="http://www.analyticbridge.com/group/codesnippets/forum/topics/simple-source-code-to-simulate-nice-cluster-structures" target="_blank">Click here</a> to get the source code to easily generate a cluster structure (illustrated in figure 1 below).</p>
+<p><a href="./Misc_files/Capture.PNG" target="_self"><img src="./Misc_files/Capture.PNG" width="408" class="align-center"></a></p>
+<p></p>
+<p style="text-align: center;"><em><strong>Figure 1</strong>: example of simulated clustered point cloud</em></p>
+<p>More complex simulations (random clusters evolving over time) <a href="http://www.analyticbridge.com/profiles/blogs/shooting-stars" target="_blank">can be found here</a>. Some simple stochastic processes can be simulated by first simulating random points (called centers) uniformly distributed in a rectangle, then, around each center, simulating a random number of points radially distributed around each center. Other techniques involve thinning, that is, removing some points afver over-si,ulating a large number of points.&nbsp;</p>
+<p><span class="font-size-4"><strong>3. Examples and results</strong></span></p>
+<p>A few examples are provided in the next section to validate the methodology. In this section, rather than validation, we focus on showing its usefulness when 0 em&gt;p &lt; 2, compared to the traditional solution consisting of using <em>p</em> = 2, found in all statistical packages. Note that the traditional solution (<em>p</em> = 2) was designed not out of practical considerations such as robustness, but because of its ease of computation at a time when computers did not exist, and data sets were manually built.&nbsp;</p>
+<p>To test the methodology, we created various data sets, introduced outliers, and computed the centroid using different values of <em>p</em>. The example shown in Figure 2, consisting of five points (bottom left) plus an outlier &nbsp;(top right) illustrates the performance. The six data points are in blue. The centroids, computed for&nbsp;<em>p</em> = 0.75, 1.00, 1.25, 1.50, 1.75 and 2.00, are in red. The rightmost centroid corresponds to <em>p</em> = 2: this is the classic centroid. Due to the outlier, it is located outside the convex hull of the five remaining points, which is awkward. The leftmost centroid corresponds to <em>p</em> = 0.75 and is very close to the traditional centroid obtained after removing the outlier. I also tried the values <em>p</em> = 0.25 and <em>p</em> = 0.50, but failed to obtain convergence to a unique solution after 200,000 iterations.</p>
+<p><a href="./Misc_files/Capture(1).PNG" target="_self"><img src="./Misc_files/Capture(1).PNG" width="434" class="align-center"></a></p>
+<p style="text-align: center;"><em><strong>Figure 2</strong>: the blue dots represent the data points, the red + the centroid (computed for 6 values of p)</em></p>
+<p style="text-align: left;">Note that the scale does not matter. Finally, using <em>p</em> &lt; 2 does not fully get rid of the influence of the outlier, but instead, it reduces its impact when computing the centroid. To completely get rid of the outliers, a methodology using medians computed for the x- and y-axis, is more efficient.</p>
+<p style="text-align: left;">If you are wondering how to produce a scatter plot in Excel with two data sets (points and centroids) as in Figure 2, <a href="https://superuser.com/questions/770150/plot-multiple-sets-of-x-y-data-on-a-single-chart" target="_blank">click here</a>&nbsp;for instructions: it is easier than you think.&nbsp;</p>
+<p><span class="font-size-4"><strong>4. Convergence of the algorithm</strong></span></p>
+<p>Figure 3 shows the speed of convergence of the algorithm, using the same source code as in section 2 with&nbsp;<em>p</em> = 1.4. So you can replicate these results. In this case, the data set S consists of <em>n</em> = 100 points randomly (uniformly) distributed on [0, 1] x [0, 1].</p>
+<p>About 10,000 iterations in the outer loop are needed to reach two digits of accuracy, and this requires a tiny fraction of a second to compute. This "10,000 iterations" is actually a rule of thumb for any Monte-Carlo algorithm used to find an optimum with two correct digits.&nbsp;Note that in Figure 3, only iterations providing an improvement over the current approximation of the centroid -- that is, iterations where the value of H is smaller than those computed in all previous iterations -- are displayed. A potential research topic is to investigate the asymptotic behavior of these "records", in the example below occurring at iterations 0, 4, 12, 44, 109, 156, and so on.</p>
+<p><a href="./Misc_files/Capture(2).PNG" target="_self"><img src="./Misc_files/Capture(2).PNG" width="331" class="align-center"></a></p>
+<p style="text-align: center;"><em><strong>Figure 3</strong>: convergence of the algorithm (p = 1.4)</em></p>
+<p>Since the <em>n</em> = 100 simulated points were randomly (uniformly) distributed in [0, 1] x [0, 1] it is no surprise that the centroid found by the algorithm, after convergence, is very close to (0.5, 0.5).</p>
+<p>Indeed, we tried values of <em>p</em> equally spaced between 1.25 and 3.50, and in each case, the centroid found was also very close to (0.5, 0.5), see Figure 4. That includes the special case <em>p</em> = 2 (it is located somewhere on the chart below) corresponding to the classic average of the <em>n</em> points. Note that here, no outliers were introduced in the simulations.</p>
+<p><a href="./Misc_files/Capture(3).PNG" target="_self"><img src="./Misc_files/Capture(3).PNG" width="464" class="align-center"></a></p>
+<p style="text-align: center;"><em><strong>Figure 4</strong>: x- and y-coordinates of centroid, obtained with various values of p</em></p>
+<p><strong><span class="font-size-4">5. Interesting Contour Maps</span></strong></p>
+<p>The following contour maps in Figure 5, produced with the <a href="https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/contour.html" target="_blank">contour function</a>&nbsp;in R, show that as <em>p</em> gets closer to 0, the function H becomes more chaotic, exhibiting local minima. These charts were produced using a data set S consisting of <em>n</em> = 20 points randomly (uniformly) distributed on [0, 1] x [0, 1]. It is interesting to notice that, despite the random distribution of the <em>n</em> points, strong patterns emerge when <em>p</em> &lt; 1 (the statistical significance of these patterns is weak though.).</p>
+<p><a href="./Misc_files/Capture1.PNG" target="_self"><img src="./Misc_files/Capture1.PNG" width="425" class="align-center"></a></p>
+<p style="text-align: center;"><em><strong>Figure 5A</strong>: Contour map for H, with n = 20 and p =2</em></p>
+<p style="text-align: center;"></p>
+<p style="text-align: left;"><a href="./Misc_files/Capture2.PNG" target="_self"><img src="./Misc_files/Capture2.PNG" width="422" class="align-center"></a></p>
+<p style="text-align: center;"><em><strong>Figure 5B</strong>: Contour map for H, with n = 20 and p = 0.50</em></p>
+<p style="text-align: center;"></p>
+<p style="text-align: left;"><a href="./Misc_files/Capture3.PNG" target="_self"><img src="./Misc_files/Capture3.PNG" width="426" class="align-center"></a></p>
+<p style="text-align: center;"><em><strong>Figure 5C</strong>: Contour map for H, with n = 20 and p = 0.15</em></p>
+<p style="text-align: left;">You can also plot images of H, using the <a href="http://stat.ethz.ch/R-manual/R-devel/library/graphics/html/image.html" target="_blank">function image</a>&nbsp;in R with a gray palette with 300 levels of grey, using the command&nbsp;<span style="font-family: &#39;courier new&#39;, courier;">image(z, col = gray.colors(300))</span> where z is an&nbsp;<em>m</em> x <em>m</em> matrix (in R) representing values of H computed at <em>m</em> x <em>m</em> locations (here <em>m</em> = 100 and <em>n</em> = 20.)</p>
+<p style="text-align: left;">The source code (in R) looks like this:</p>
+<p><span style="font-family: &#39;courier new&#39;, courier;">&nbsp; data&lt;-read.table("c:/vincentg/math2r.txt",header=TRUE)</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; w&lt;-data$H</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; z &lt;- matrix(w, nrow = 100, ncol = 100, byrow = TRUE)</span><br> <span style="font-family: &#39;courier new&#39;, courier;">&nbsp; image(z, col = gray.colors(300))&nbsp;</span></p>
+<p>Here the file <span style="font-family: &#39;courier new&#39;, courier;">math2r.txt</span> stores the <em>m</em> x <em>m</em> values of H sequentially in a one-column text file, row after row. The first row is the header (equal to H.) Note that in order to produce Figure 5, we used <span style="font-family: &#39;courier new&#39;, courier;">contour(z)</span> rather than&nbsp;<span style="font-family: &#39;courier new&#39;, courier;">image(z, col = gray.colors(300))</span>. In Figure 6 we actually used the function <span style="font-family: &#39;courier new&#39;, courier;">image</span> to display H values for&nbsp;<em>p</em> = 0.5: low values of H (corresponding to proximity to centroid) are in a darker color, and unlike the case <em>p</em> = 2, you can notice multiple local minima. Figure 6 is based on the same data as Figure 5B. The source code to produce the input file <span style="font-family: &#39;courier new&#39;, courier;">math2r.txt</span> <a href="https://api.ning.com/files/4gUc0nun9aZtOv-Yw4O2XxKnjQim9CJI65pGgeoSpMa4HZEvpF*6Psa4iv2nV8qqbfMXWxc0v2QcNOPD8IsywInZdrxtwVqX/mathr.pl.txt" target="_self">can be found here</a>..&nbsp;</p>
+<p><a href="./Misc_files/Capture(4).PNG" target="_self"><img src="./Misc_files/Capture(4).PNG" width="270" class="align-center"></a></p>
+<p style="text-align: center;"><em><strong>Figure 6</strong>: H values displayed in an image using R (n = 20 and p = 0.5)</em></p>
+<p style="text-align: left;">As a bonus, below is Figure 7 corresponding to <em>p</em> = -2, which interestingly is very similar to <em>p</em> = 0.5 (see Figure 5B.) This value of <em>p</em> has tremendous applications in physics, as it corresponds to the&nbsp;<a href="https://en.wikipedia.org/wiki/Inverse-square_law" target="_blank">inverse-square law</a>.</p>
+<p style="text-align: left;"><a href="./Misc_files/Capture(5).PNG" target="_self"><img src="./Misc_files/Capture(5).PNG" width="428" class="align-center"></a></p>
+<p style="text-align: center;"><em><strong>Figure 7</strong>: this time with p=-2</em></p>
+<p style="text-align: left;"></p>
+<p style="text-align: left;"><iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-follow-button twitter-follow-button-rendered" title="Twitter Follow Button" src="./Misc_files/follow_button.8e64fb971a1b22efbf633db166113ae6.en.html" style="position: static; visibility: visible; width: 235px; height: 20px;" data-screen-name="analyticbridge"></iframe></p>
+<p><span><span class="font-size-4"><b>Top DSC Resources</b></span></span></p>
+<ul>
+<li>Article:&nbsp;<a href="https://www.datasciencecentral.com/profiles/blogs/difference-between-machine-learning-data-science-ai-deep-learning">Difference between Machine Learning, Data Science, AI, Deep Learnin...</a></li>
+<li>Article:&nbsp;<a href="https://www.datasciencecentral.com/profiles/blogs/20-articles-about-core-data-science">What is Data Science? 24 Fundamental Articles Answering This Question</a></li>
+<li>Article:&nbsp;<a href="https://www.datasciencecentral.com/profiles/blogs/hitchhiker-s-guide-to-data-science-machine-learning-r-python">Hitchhiker's Guide to Data Science, Machine Learning, R, Python</a></li>
+<li>Tutorial:&nbsp;<a href="https://www.datasciencecentral.com/profiles/blogs/data-science-cheat-sheet">Data Science Cheat Sheet</a></li>
+<li>Tutorial:&nbsp;<a href="https://www.datasciencecentral.com/profiles/blogs/how-to-become-a-data-scientist-for-free">How to Become a Data Scientist - On Your Own</a></li>
+<li>Categories:&nbsp;<a href="https://www.datasciencecentral.com/profiles/blogs/20-articles-about-core-data-science">Data Science</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=machine+learning">Machine Learning</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=AI">AI</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=IoT">IoT</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/profiles/blogs/15-deep-learning-tutorials">Deep Learning</a></li>
+<li>Tools:&nbsp;<a href="https://www.datasciencecentral.com/profiles/blogs/11-great-hadoop-spark-and-map-reduce-articles">Hadoop</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=visualization">DataViZ</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=Python">Python</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=R">R</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=SQL">SQL</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=Excel">Excel</a></li>
+<li>Techniques:&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=clustering">Clustering</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=regression">Regression</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=support+vector+machines">SVM</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=neural+networks">Neural Nets</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=ensembles">Ensembles</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=decision+tree">Decision Trees</a></li>
+<li>Links:&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=cheat+sheets">Cheat Sheets</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=books">Books</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/events/">Events</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/video/video/listFeatured">Webinars</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=tutorial">Tutorials</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=course">Training</a>&nbsp;-&nbsp;<a href="http://www.bigdatanews.com/group/bdn-daily-press-releases/forum">News</a>&nbsp;-&nbsp;<a href="http://careers.analytictalent.com/jobs/search/results">Jobs</a></li>
+<li>Links:&nbsp;<a href="https://www.datasciencecentral.com/group/announcements">Announcements</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=salary+survey">Salary Surveys</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/search?q=data+set">Data Sets</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/group/data-science-certification">Certification</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/news-feeds">RSS Feeds</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/contact-us">About Us</a></li>
+<li>Newsletter:&nbsp;<a href="https://www.datasciencecentral.com/profiles/blogs/check-out-our-dsc-newsletter">Sign-up</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/previous-digests">Past Editions</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/member">Members-Only Section</a>&nbsp;-&nbsp;<a href="http://www.datashaping.com/">Content Search</a>&nbsp;-&nbsp;<a href="https://www.datasciencecentral.com/page/editorial-guidelines">For Bloggers</a></li>
+<li>DSC on:&nbsp;<a href="https://www.datasciencecentral.com/">Ning</a>&nbsp;-&nbsp;<a href="https://twitter.com/datasciencectrl">Twitter</a>&nbsp;-&nbsp;<a href="https://www.linkedin.com/groups/35222">LinkedIn</a>&nbsp;-&nbsp;<a href="https://www.facebook.com/DataScienceCtrl/">Facebook</a>&nbsp;-&nbsp;<a href="https://plus.google.com/u/0/communities/107156514183161811383">GooglePlus</a></li>
+</ul>
+<p><span><span>Follow us on Twitter:&nbsp;</span><a href="https://www.twitter.com/datasciencectrl">@DataScienceCtrl</a><span>&nbsp;|&nbsp;</span><a href="https://www.twitter.com/analyticbridge">@AnalyticBridge</a></span></p> </div>
+</div><div id="insideblog">
+<div class="dscAdAppear" zsrc="PGNlbnRlcj48YnIgLz48IS0tIC8yNjcyNjQxL0JveF9BZF9CbG9nIC0tPg0KPGRpdiBpZD0nZGl2LWdwdC1hZC0xNTEyNDI4OTAyODQ2LTInIHN0eWxlPSdoZWlnaHQ6MjUwcHg7IHdpZHRoOjMwMHB4Oyc+DQo8c2NyaXB0Pg0KZ29vZ2xldGFnLmNtZC5wdXNoKGZ1bmN0aW9uKCkgeyBnb29nbGV0YWcuZGlzcGxheSgnZGl2LWdwdC1hZC0xNTEyNDI4OTAyODQ2LTInKTsgfSk7DQo8L3NjcmlwdD4NCjwvZGl2PjxiciAvPg0KPC9jZW50ZXI+"></div>
+</div>
+<div class="left-panel">
+<script>xg.addOnRequire(function () { xg.post('/main/viewcount/update?xn_out=json', {key: '6448529:BlogPost:516879', x: 'e8b0f99'}); });</script> <p class="small dy-clear view-count-container">
+<span class="view-count-label">Views:</span> <span class="view-count">9115</span></p>
+<p class="small object-detail" id="tagsList" style="display:none">Tags:<br></p>
+<div class="likebox likebox-ning">
+<div class="ning-like">
+<div class="xg_lightborder like-button like-button-1">
+<a data-content-id="6448529:BlogPost:516879" data-content-type="BlogPost" data-sign-up-url="https://www.datasciencecentral.com/main/authorization/signUp?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension" data-like-url="/main/like/like" data-unlike-url="/main/like/unlike" data-track="{&quot;category&quot;:&quot;Likes&quot;,&quot;action&quot;:&quot;Like&quot;,&quot;label&quot;:&quot;&quot;}" data-page-type="detail" class="xg_sprite" href="https://www.datasciencecentral.com/profiles/blogs/building-outiler-resistant-centroids-in-any-dimension#">
+Like </a>
+</div>
+<div class="like-count">
+<a href="https://www.datasciencecentral.com/profiles/blogs/building-outiler-resistant-centroids-in-any-dimension#" class="view-liked" _id="6448529:BlogPost:516879">4 members like this</a>
+</div>
+</div>
+</div>
+<p class="share-links clear"><a class="xg_sprite xg_sprite-share" href="https://www.datasciencecentral.com/main/sharing/share?id=6448529%253ABlogPost%253A516879">Share</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<span class="xg_tweet">
+<iframe id="twitter-widget-1" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-share-button twitter-share-button-rendered twitter-tweet-button" title="Twitter Tweet Button" src="./Misc_files/tweet_button.8e64fb971a1b22efbf633db166113ae6.en.html" style="position: static; visibility: visible; width: 61px; height: 20px;" data-url="https://www.datasciencecentral.com/profiles/blogs/building-outiler-resistant-centroids-in-any-dimension"></iframe>
+</span>
+<span class="google-plusone" data-content-type="BlogPost" data-content-id="6448529:BlogPost:516879" data-page-type="detail">
+<div id="___plusone_0" style="text-indent: 0px; margin: 0px; padding: 0px; background: transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; display: inline-block; width: 32px; height: 20px;"><iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: static; top: 0px; width: 32px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 20px;" tabindex="0" vspace="0" width="100%" id="I0_1525286415754" name="I0_1525286415754" src="./Misc_files/fastbutton.html" data-gapiattached="true" title="G+"></iframe></div>
+</span>
+<a class="post_to_facebook xj_post_to_facebook_stream dy-displaynone" href="https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension%3Fxg_source%3Dfacebook&amp;t=Tutorial%3A%20Neutralizing%20Outliers%20in%20Any%20Dimension%20on%20Data%20Science%20Central" _args="{&quot;name&quot;:&quot;Tutorial: Neutralizing Outliers in Any Dimension on Data Science Central&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;,&quot;media&quot;:[{&quot;type&quot;:&quot;image&quot;,&quot;src&quot;:&quot;http:\/\/api.ning.com:80\/files\/vwzIt05Fr131yIGm9Cc-mW-f*yHyfJRv44kCleHoEygR8yF4OOf06b5uznqzz21G0t0IxZyxuwSpA2HPtrE3TaYes6HL-hP7\/Capture.PNG&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;},{&quot;type&quot;:&quot;image&quot;,&quot;src&quot;:&quot;http:\/\/api.ning.com:80\/files\/vwzIt05Fr111VxQVfnI5QEWKNI2YAnqqfauSZ1x7UyQLXSaeccB0y81AA2roOGmZCerMSlaWaSe1fSlnyxzcwc3uOzEzC21s\/Capture.PNG&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;},{&quot;type&quot;:&quot;image&quot;,&quot;src&quot;:&quot;http:\/\/api.ning.com:80\/files\/vwzIt05Fr11LeWeRZusJ2UziV*-JrA3Q91sjlOfQGSp0FGoHgof03WdsAoZWqO3y6pIJWGhFC-Mh6EOZ1UIkM5V97TrXIWhM\/Capture.PNG&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;},{&quot;type&quot;:&quot;image&quot;,&quot;src&quot;:&quot;http:\/\/api.ning.com:80\/files\/vwzIt05Fr12-yq3-oBDLRZ8hdEi3hAj3d6Rtlz4XqlCSWIh6FjbnVYsm4MC1-OJL5hJUV2WtjNP1pTBKdpqSJLIfV0SEoCsy\/Capture.PNG&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;},{&quot;type&quot;:&quot;image&quot;,&quot;src&quot;:&quot;http:\/\/api.ning.com:80\/files\/4gUc0nun9aYLqpswnsJYqT5hGJ*r8q-cvekfs1gINl7WFghYyvVQV6JYOOhs4WONnK3z2KkhQoYBxQNRUEoFrqg7p9J7EOT8\/Capture1.PNG&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;},{&quot;type&quot;:&quot;image&quot;,&quot;src&quot;:&quot;http:\/\/api.ning.com:80\/files\/4gUc0nun9aZTeXCQJcl7EFtI-3qwM0z7rXjxiFj2760sYfqO7EmNkJQg0UXEP9z1d89HNqlCNqeO9*DWxIN8WUe4CnuccSXy\/Capture2.PNG&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;},{&quot;type&quot;:&quot;image&quot;,&quot;src&quot;:&quot;http:\/\/api.ning.com:80\/files\/4gUc0nun9abYdrfGFSikNMbwjcogbCMsE4tldnPkJfpNsWxJfsY3yasusWS0OXBDoXjtJzf9jOfN*gvBUyRFbfiKtwwdHYVU\/Capture3.PNG&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;},{&quot;type&quot;:&quot;image&quot;,&quot;src&quot;:&quot;http:\/\/api.ning.com:80\/files\/4gUc0nun9aZ8UejUJIZk7cL00owkWa1b*vo1zayBHXkABDdnPMuHvbGmn1lQEGCwkBiana6WJX73NujU5wxLaUoxLDnQWshw\/Capture.PNG&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;},{&quot;type&quot;:&quot;image&quot;,&quot;src&quot;:&quot;http:\/\/api.ning.com:80\/files\/4gUc0nun9aa*4QREecYk4WtbshdRurAHMn*pokiU7aeUagucTBLY7dOPLkJqKcfvlybSrbWqSL18qEr26ipzpTJ77cwWXDCf\/Capture.PNG&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;}],&quot;actionLink&quot;:{&quot;text&quot;:&quot;Full Post&quot;,&quot;href&quot;:&quot;https:\/\/www.datasciencecentral.com\/profiles\/blogs\/building-outiler-resistant-centroids-in-any-dimension?xg_source=facebook&quot;},&quot;description&quot;:&quot;In this article, we discuss a general framework to drastically reduce the influence of outliers in most contexts. It applies to problems such as clustering (finding centroids,) regression, measuring correlation or R-Squared, and many more. We will focus on the centroid problem here, as it is very similar and generalizes easily to solving a linear regression. The correlation \/ R-Squared issue was discussed in an earlier article\u00a0and involves only a change of formula. Clustering and regression are more complex problems involving iterative algorithms. \u00a0\nThis article also features interesting material for future data scientists, such as\u00a0\n\nSeveral outlier detection techniques\u00a0\nHow to display contour maps and images corresponding to an intensity function or heatmap, in R (in just a few lines of code, and very easy to understand) -- see section 5 below\nHow to produce data sets that simulate clustering structures or other patterns\u00a0\nDistribution of arrival times for successive records in a time series\n\n1. General Framework\nWe discuss replacing techniques used by statisticians, based on optimizing traditional L^2 metrics such as variance, by techniques based on L^p metrics, which are more robust when \u00a01 &lt; \u00a0p\u00a0 &lt; 2. The case p = 2 corresponds to the traditional framework, Throughout the article, p\u00a0is referred to as the power. The regression and centroid problems being equivalent, we focus here on finding a centroid using the L^p criterion (denoted as H), and we show how to modify it for regression problems. Illustrations are in a 2-dimensional space (d = 2) but easily generalize to any dimension, especially as we are not using any matrix inversions to solve the problem.\u00a0\nFinding a robust centroid\nThe focus here is on finding the point that minimizes the sum of the \&quot;distances\&quot; to n\u00a0points in a d-dimensional space, called centroid or center,\u00a0especially in the presence of outliers.\u00a0\nThe sum of \&quot;distances\&quot; between an arbitrary point (u, v) \u00a0and a set S = { (x(1), y(1)) ... (x(n), y(&quot;,&quot;log&quot;:{&quot;module&quot;:&quot;profiles&quot;,&quot;page&quot;:&quot;blog&quot;,&quot;action&quot;:&quot;show&quot;},&quot;private&quot;:false,&quot;user&quot;:null,&quot;contentId&quot;:null,&quot;display&quot;:false,&quot;userMessage&quot;:&quot;&quot;,&quot;pageId&quot;:null,&quot;text&quot;:&quot;Facebook&quot;}">Facebook</a>
+</p><div class="likebox">
+<div class="facebook-like" data-content-type="BlogPost" data-content-id="6448529:BlogPost:516879" data-page-type="detail">
+<fb:like href="https://www.datasciencecentral.com/xn/detail/6448529:BlogPost:516879" layout="button_count" show_faces="false" width="450" class=" fb_iframe_widget" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=259683271111061&amp;container_width=0&amp;href=https%3A%2F%2Fwww.datasciencecentral.com%2Fxn%2Fdetail%2F6448529%3ABlogPost%3A516879&amp;layout=button_count&amp;locale=en_US&amp;sdk=joey&amp;show_faces=false&amp;width=450"><span style="vertical-align: bottom; width: 61px; height: 20px;"><iframe name="f9e6866c00fae" width="450px" height="1000px" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" allow="encrypted-media" title="fb:like Facebook Social Plugin" src="./Misc_files/like.html" style="border: none; visibility: visible; width: 61px; height: 20px;" class=""></iframe></span></fb:like>
+</div>
+</div>
+<p></p> </div>
+<ul class="pagination smallpagination">
+<li class="left"><a href="https://www.datasciencecentral.com/profiles/blogs/weekly-digest-january-30" title="Weekly Digest, January 30">&lt; Previous Post</a></li> <li class="right"><a title="20 Great Blogs Posted in the last 12 Months" href="https://www.datasciencecentral.com/profiles/blogs/20-great-blogs-posted-in-the-last-12-months">Next Post &gt;</a></li>
+</ul>
+</div>
+</div>
+<div class="xg_module">
+<div class="xg_module_body">
+<p id="add-comment">Comment</p>
+<div class="comment-join">
+<h3>You need to be a member of Data Science Central to add comments!</h3>
+<p><a href="https://www.datasciencecentral.com/main/authorization/signUp?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension">Join Data Science Central</a></p>
+</div>
+</div>
+<div class="xg_module_body" id="comments" style="display: none" _numcomments="0" _scrollto="">
+</div>
+<div class="xg_module_foot" id="xj_comments_footer" style="display:none">
+<p class="left">
+<a class="xg_icon xg_icon-rss" href="https://www.datasciencecentral.com/profiles/comment/feed?attachedTo=6448529%3ABlogPost%3A516879&amp;xn_auth=no">RSS</a>
+</p>
+</div>
+</div>
+<input type="hidden" id="incrementViewCountEndpoint" value="https://www.datasciencecentral.com/profiles/blog/incrementViewCount?id=6448529%3ABlogPost%3A516879&amp;xn_out=json">
+</div>
+</div>
+<div class="xg_column xg_span-5 xg_last" id="column2">
+<div class="xj_user_info"> <div class="xg_module" id="xg_module_account">
+<div class="xg_module_body xg_signup xg_lightborder">
+<p>Welcome to<br>Data Science Central</p>
+<p class="last-child"><big><strong><a href="https://www.datasciencecentral.com/main/authorization/signUp?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension">Sign Up</a></strong></big><br>or <a href="https://www.datasciencecentral.com/main/authorization/signIn?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension" style="white-space:nowrap">Sign In</a></p>
+<div class="xg_external_signup xg_lightborder xj_signup">
+<p class="dy-small">Or sign in with:</p>
+<ul class="providers">
+<li><a onclick="window.open(&#39;https://datasciencecentral.networkauth.com/facebook/connect_start?ext_perm=user_birthday%2Cuser_location%2Cemail&amp;token_url=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Fauthorization%2FprocessExternalAuth%3Ftarget%3Dhttps%253A%252F%252Fwww.datasciencecentral.com%252Fprofiles%252Fblogs%252Fbuilding-outiler-resistant-centroids-in-any-dimension%26source%3DsignUp%26close%3D1%26provider%3Dfacebook&#39;, null, &#39;width=626,height=436,location=no,menubar=no,resizable=yes,scrollbars=yes,toolbar=no,status=no&#39;); return false;" href="https://datasciencecentral.networkauth.com/facebook/connect_start?ext_perm=user_birthday%2Cuser_location%2Cemail&amp;token_url=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Fauthorization%2FprocessExternalAuth%3Ftarget%3Dhttps%253A%252F%252Fwww.datasciencecentral.com%252Fprofiles%252Fblogs%252Fbuilding-outiler-resistant-centroids-in-any-dimension%26source%3DsignUp%26close%3D0%26provider%3Dfacebook">
+<span class="mini-service mini-service-facebook" title="Facebook"></span>
+</a></li>
+<li><a onclick="window.open(&#39;https://datasciencecentral.networkauth.com/twitter/start?token_url=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Fauthorization%2FprocessExternalAuth%3Ftarget%3Dhttps%253A%252F%252Fwww.datasciencecentral.com%252Fprofiles%252Fblogs%252Fbuilding-outiler-resistant-centroids-in-any-dimension%26source%3DsignUp%26close%3D1%26provider%3Dtwitter&#39;, null, &#39;width=860,height=440,location=no,menubar=no,resizable=yes,scrollbars=yes,toolbar=no,status=no&#39;); return false;" href="https://datasciencecentral.networkauth.com/twitter/start?token_url=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Fauthorization%2FprocessExternalAuth%3Ftarget%3Dhttps%253A%252F%252Fwww.datasciencecentral.com%252Fprofiles%252Fblogs%252Fbuilding-outiler-resistant-centroids-in-any-dimension%26source%3DsignUp%26close%3D0%26provider%3Dtwitter">
+<span class="mini-service mini-service-twitter" title="Twitter"></span>
+</a></li>
+<li><a onclick="window.open(&#39;https://datasciencecentral.networkauth.com/googleplus/start?token_url=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Fauthorization%2FprocessExternalAuth%3Ftarget%3Dhttps%253A%252F%252Fwww.datasciencecentral.com%252Fprofiles%252Fblogs%252Fbuilding-outiler-resistant-centroids-in-any-dimension%26source%3DsignUp%26close%3D1%26provider%3Dgoogle&#39;, null, &#39;width=530,height=480,location=no,menubar=no,resizable=yes,scrollbars=yes,toolbar=no,status=no&#39;); return false;" href="https://datasciencecentral.networkauth.com/googleplus/start?token_url=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Fauthorization%2FprocessExternalAuth%3Ftarget%3Dhttps%253A%252F%252Fwww.datasciencecentral.com%252Fprofiles%252Fblogs%252Fbuilding-outiler-resistant-centroids-in-any-dimension%26source%3DsignUp%26close%3D0%26provider%3Dgoogle">
+<span class="mini-service mini-service-google" title="Google"></span>
+</a></li>
+<li><a onclick="window.open(&#39;https://datasciencecentral.networkauth.com/openid/start?openid_identifier=http%3A%2F%2Fme.yahoo.com%2F&amp;token_url=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Fauthorization%2FprocessExternalAuth%3Ftarget%3Dhttps%253A%252F%252Fwww.datasciencecentral.com%252Fprofiles%252Fblogs%252Fbuilding-outiler-resistant-centroids-in-any-dimension%26source%3DsignUp%26close%3D1%26provider%3Dyahoo&#39;, null, &#39;width=500,height=480,location=no,menubar=no,resizable=yes,scrollbars=yes,toolbar=no,status=no&#39;); return false;" href="https://datasciencecentral.networkauth.com/openid/start?openid_identifier=http%3A%2F%2Fme.yahoo.com%2F&amp;token_url=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Fauthorization%2FprocessExternalAuth%3Ftarget%3Dhttps%253A%252F%252Fwww.datasciencecentral.com%252Fprofiles%252Fblogs%252Fbuilding-outiler-resistant-centroids-in-any-dimension%26source%3DsignUp%26close%3D0%26provider%3Dyahoo">
+<span class="mini-service mini-service-yahoo" title="Yahoo!"></span>
+</a></li>
+<li><a onclick="window.open(&#39;https://datasciencecentral.networkauth.com/linkedin/start?token_url=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Fauthorization%2FprocessExternalAuth%3Ftarget%3Dhttps%253A%252F%252Fwww.datasciencecentral.com%252Fprofiles%252Fblogs%252Fbuilding-outiler-resistant-centroids-in-any-dimension%26source%3DsignUp%26close%3D1%26provider%3Dlinkedin&#39;, null, &#39;width=630,height=505,location=no,menubar=no,resizable=yes,scrollbars=yes,toolbar=no,status=no&#39;); return false;" href="https://datasciencecentral.networkauth.com/linkedin/start?token_url=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Fauthorization%2FprocessExternalAuth%3Ftarget%3Dhttps%253A%252F%252Fwww.datasciencecentral.com%252Fprofiles%252Fblogs%252Fbuilding-outiler-resistant-centroids-in-any-dimension%26source%3DsignUp%26close%3D0%26provider%3Dlinkedin">
+<span class="mini-service mini-service-linkedin" title="LinkedIn"></span>
+</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="xj_sidebar_content"><div class="xg_module html_module module_text xg_reset" data-module_name="text">
+<div class="xg_module_body xg_user_generated">
+<center>
+<div id="div-gpt-ad-1512428902846-6" style="height:600px; width:160px;"><script type="text/javascript">
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1512428902846-6'); });
+</script></div>
+</center>
+</div>
+</div>
+<div class="xg_module html_module module_text xg_reset" data-module_name="text">
+<div class="xg_module_body xg_user_generated">
+<center>
+<div id="div-gpt-ad-1512428902846-7" style="height:220px; width:220px;"><script type="text/javascript">
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1512428902846-7'); });
+</script></div>
+</center>
+</div>
+</div>
+<div class="xg_module html_module module_text xg_reset" data-module_name="text">
+<div class="xg_module_head"><h2>Follow Us</h2></div>
+<div class="xg_module_body xg_user_generated">
+<p><a href="https://twitter.com/DataScienceCtrl"><font color="#CC0000"><b>@DataScienceCtrl</b></font></a><span>&nbsp;|</span>&nbsp;<a href="https://www.datasciencecentral.com/page/news-feeds">RSS Feeds</a></p>
+</div>
+</div>
+<div class="xg_module mini-leaderboard-module xj_leaderboard_module" data-module_name="leaderboards">
+<div class="xg_module_head handle">
+<h2><span>Top Content</span>&nbsp;</h2>
+<p class="edit" style="display:none"><a class="button" href="https://www.datasciencecentral.com/profiles/blogs/building-outiler-resistant-centroids-in-any-dimension#"><span>Edit</span></a></p>
+</div>
+<div class="xg_module_body">
+<table class="leaderboard">
+<tbody>
+<tr>
+<td class="lb-rank">1</td>
+<td class="lb-content">
+<span class="xg_avatar left"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ABlogPost%3A714551" class=""><img alt="Two Questions to Ask to a PhD Candidate for a Leadership Role" src="./Misc_files/1206399868(1).png" class="photo" width="32" height="32"></a></span>
+<h3 class="dy-protect"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ABlogPost%3A714551" class="">Two Questions to Ask to a PhD Candidate for a Leadership Role</a></h3>
+</td>
+</tr>
+<tr class="alt">
+<td class="lb-rank">2</td>
+<td class="lb-content">
+<span class="xg_avatar left"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ABlogPost%3A714955" class=""><img alt="Data Engineer and Business Analyst Might be the Best Data Science Opportunities" src="./Misc_files/1066474078.jpeg" class="photo" width="32" height="32"></a></span>
+<h3 class="dy-protect"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ABlogPost%3A714955" class="">Data Engineer and Business Analyst Might be the Best Data Science Opportunities</a></h3>
+</td>
+</tr>
+<tr>
+<td class="lb-rank">3</td>
+<td class="lb-content">
+<span class="xg_avatar left"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ABlogPost%3A520644" class=""><img alt="Useful R Packages that Aligns with The CRISP DM Methodology" src="./Misc_files/1247827654.jpeg" class="photo" width="32" height="32"></a></span>
+<h3 class="dy-protect"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ABlogPost%3A520644" class="">Useful R Packages that Aligns with The CRISP DM Methodology</a></h3>
+</td>
+</tr>
+<tr class="alt">
+<td class="lb-rank">4</td>
+<td class="lb-content">
+<span class="xg_avatar left"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ATopic%3A715483" class=""><img alt="Time series comparison" src="./Misc_files/genericavatar.png" class="photo" width="32" height="32"></a></span>
+<h3 class="dy-protect"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ATopic%3A715483" class="">Time series comparison</a></h3>
+</td>
+</tr>
+<tr>
+<td class="lb-rank">5</td>
+<td class="lb-content">
+<span class="xg_avatar left"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ABlogPost%3A623330" class=""><img alt="Creativity Is Crucial In Data Science" src="./Misc_files/1598575181.png" class="photo" width="32" height="32"></a></span>
+<h3 class="dy-protect"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ABlogPost%3A623330" class="">Creativity Is Crucial In Data Science</a></h3>
+</td>
+</tr>
+<tr class="alt">
+<td class="lb-rank">6</td>
+<td class="lb-content">
+<span class="xg_avatar left"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ABlogPost%3A715161" class=""><img alt="What Does GDPR Mean For Your Business?" src="./Misc_files/ronaldphotogroot.jpg" class="photo" width="32" height="32"></a></span>
+<h3 class="dy-protect"><a href="https://www.datasciencecentral.com/xn/detail/6448529%3ABlogPost%3A715161" class="">What Does GDPR Mean For Your Business?</a></h3>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="xg_module_foot">
+<ul>
+<li class="left"><a class="xg_icon xg_icon-rss" href="https://www.datasciencecentral.com/leaderboards/topcontent/week?feed=yes&amp;xn_auth=no&amp;n=20&amp;images=yes&amp;imageMaxSize=240">RSS</a></li>
+<li class="right"><a href="https://www.datasciencecentral.com/leaderboards/topcontent/week">View All</a></li>
+</ul>
+</div>
+</div>
+<div class="xg_module module_feed" data-module_name="feed">
+<div class="xg_module_head"><h2>Announcements</h2></div>
+<div class="xg_module_body">
+<p class="last-child"><a href="https://www.datasciencecentral.com/xn/detail/6448529:Topic:716886" target="_blank">Anaconda Data Science Certification</a></p>
+</div>
+<div class="xg_module_body">
+<p class="last-child"><a href="https://www.datasciencecentral.com/xn/detail/6448529:Topic:716973" target="_blank">Unlock the Mysteries of Data Science</a></p>
+</div>
+<div class="xg_module_body">
+<p class="last-child"><a href="https://www.datasciencecentral.com/xn/detail/6448529:Topic:717102" target="_blank">Master’s in Applied Statistics Online</a></p>
+</div>
+<div class="xg_module_body">
+<p class="last-child"><a href="https://www.datasciencecentral.com/xn/detail/6448529:Topic:716424" target="_blank">A new way to prep your data</a></p>
+</div>
+<div class="xg_module_body">
+<p class="last-child"><a href="https://www.datasciencecentral.com/xn/detail/6448529:Topic:716013" target="_blank">Train AI 2018 Keynote: Garry Kasparov</a></p>
+</div>
+<div class="xg_module_body">
+<p class="last-child"><a href="https://www.datasciencecentral.com/xn/detail/6448529:Topic:716011" target="_blank">10 Steps to Machine Learning</a></p>
+</div>
+<div class="xg_module_body">
+<p class="last-child"><a href="https://www.datasciencecentral.com/xn/detail/6448529:Topic:715781" target="_blank">DL frameworks: purpose-built deskside platform</a></p>
+</div>
+<div class="xg_module_body">
+<p class="last-child"><a href="https://www.datasciencecentral.com/xn/detail/6448529:Topic:716008" target="_blank">Pivot into a Data Analytics Career</a></p>
+</div>
+<div class="xg_module_body">
+<p class="last-child"><a href="https://www.datasciencecentral.com/xn/detail/6448529:Topic:715256" target="_blank">[eBook] Solve Data Science Challenges</a></p>
+</div>
+<div class="xg_module_body">
+<p class="last-child"><a href="https://www.datasciencecentral.com/xn/detail/6448529:Topic:714898" target="_blank">7 Tracks, 5 Events &amp; a Deep Discount-PAW Las Vegas</a></p>
+</div>
+<div class="xg_module_foot">
+<ul>
+</ul>
+</div>
+</div>
+<div class="xg_module module_video" data-module_name="video">
+<div class="xg_module_head">
+<h2>Videos</h2>
+</div>
+<div class="xg_module_body body_large">
+<ul class="clist">
+<li>
+<div class="ib">
+<a href="https://www.datasciencecentral.com/video/dsc-webinar-series-self-service-analytics-fostering-a-data">
+<img src="./Misc_files/1863480752.jpeg" alt="DSC Webinar Series: Self-Service Analytics: Fostering a Data-Enabled Culture" width="136">
+</a>
+</div>
+<div class="tb">
+<h3><a href="https://www.datasciencecentral.com/video/dsc-webinar-series-self-service-analytics-fostering-a-data">
+DSC Webinar Series: Self-Service Analytics: Fostering a Data-Enabled Culture </a></h3>
+<p class="xg_lightfont">
+Added by <a class="xg_lightfont" href="https://www.datasciencecentral.com/profile/2edcolrgc4o4b">Tim Matteson</a> <span class="reactions">
+<a href="https://www.datasciencecentral.com/video/dsc-webinar-series-self-service-analytics-fostering-a-data#comments" data-page-type="detail" class="xg_sprite xg_sprite-comment">0 <span class="details">Comments</span></a>
+<a href="https://www.datasciencecentral.com/video/dsc-webinar-series-self-service-analytics-fostering-a-data" data-content-id="6448529:Video:713390" data-content-type="Video" data-sign-up-url="https://www.datasciencecentral.com/main/authorization/signUp?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension" data-page-type="detail" class="xg_sprite like-link-1 like-link">
+1 <span class="details">Like</span>
+</a>
+</span>
+</p>
+</div>
+</li>
+</ul><ul class="clist"> <li>
+<div class="ib">
+<a href="https://www.datasciencecentral.com/video/dsc-webinar-series-the-state-of-data-preparation-in-2018">
+<img src="./Misc_files/1845313597.jpeg" alt="DSC Webinar Series: The State of Data Preparation in 2018" width="136">
+</a>
+</div>
+<div class="tb">
+<h3><a href="https://www.datasciencecentral.com/video/dsc-webinar-series-the-state-of-data-preparation-in-2018">
+DSC Webinar Series: The State of Data Preparation in 2018 </a></h3>
+<p class="xg_lightfont">
+Added by <a class="xg_lightfont" href="https://www.datasciencecentral.com/profile/2edcolrgc4o4b">Tim Matteson</a> <span class="reactions">
+<a href="https://www.datasciencecentral.com/video/dsc-webinar-series-the-state-of-data-preparation-in-2018#comments" data-page-type="detail" class="xg_sprite xg_sprite-comment">1 <span class="details">Comment</span></a>
+<a href="https://www.datasciencecentral.com/video/dsc-webinar-series-the-state-of-data-preparation-in-2018" data-content-id="6448529:Video:710341" data-content-type="Video" data-sign-up-url="https://www.datasciencecentral.com/main/authorization/signUp?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension" data-page-type="detail" class="xg_sprite like-link-1 like-link">
+0 <span class="details">Likes</span>
+</a>
+</span>
+</p>
+</div>
+</li>
+</ul><ul class="clist"> <li>
+<div class="ib">
+<a href="https://www.datasciencecentral.com/video/dsc-webinar-series-data-contributions-to-a-conversational-ai">
+<img src="./Misc_files/1832855414.jpeg" alt="DSC Webinar Series: Data Contributions to a Conversational AI Platform" width="136">
+</a>
+</div>
+<div class="tb">
+<h3><a href="https://www.datasciencecentral.com/video/dsc-webinar-series-data-contributions-to-a-conversational-ai">
+DSC Webinar Series: Data Contributions to a Conversational AI Platform </a></h3>
+<p class="xg_lightfont">
+Added by <a class="xg_lightfont" href="https://www.datasciencecentral.com/profile/2edcolrgc4o4b">Tim Matteson</a> <span class="reactions">
+<a href="https://www.datasciencecentral.com/video/dsc-webinar-series-data-contributions-to-a-conversational-ai#comments" data-page-type="detail" class="xg_sprite xg_sprite-comment">0 <span class="details">Comments</span></a>
+<a href="https://www.datasciencecentral.com/video/dsc-webinar-series-data-contributions-to-a-conversational-ai" data-content-id="6448529:Video:707963" data-content-type="Video" data-sign-up-url="https://www.datasciencecentral.com/main/authorization/signUp?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension" data-page-type="detail" class="xg_sprite like-link-1 like-link">
+1 <span class="details">Like</span>
+</a>
+</span>
+</p>
+</div>
+</li>
+</ul><ul class="clist"> </ul>
+</div>
+<div class="xg_module_foot">
+<ul>
+<li class="left"><a class="xg_sprite xg_sprite-add" href="https://www.datasciencecentral.com/video/video/chooseUploader">Add Videos</a></li>
+<li class="right"><a href="https://www.datasciencecentral.com/video/video">View All</a></li>
+<li class="right video-facebook-share" style="display:none; margin-right:10px;"><a target="_blank" href="https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.datasciencecentral.com%2Fvideo%2Fvideo%3Ffrom%3Dfb"><img src="./Misc_files/facebook.gif" alt="Facebook"></a></li>
+<script>
+                        xg.addOnRequire(function () {
+                            x$('.module_video').mouseover(function () { x$(this).find('.video-facebook-share').show(); })
+                                    .mouseout(function () { x$(this).find('.video-facebook-share').hide(); });
+                        });
+                    </script>
+</ul>
+</div>
+</div>
+<div class="xg_module html_module module_text xg_reset" data-module_name="text">
+<div class="xg_module_head"><h2>Resources</h2></div>
+<div class="xg_module_body xg_user_generated">
+<script src="./Misc_files/ResourcesDiscussions-DataScienceCentral" type="text/javascript">
+</script><div class="feedburnerFeedBlock" id="ResourcesDiscussions-DataScienceCentralp4m9u2flr4sluunaober37hkrs"><ul><li><span class="headline"><a href="http://www.datasciencecentral.com/xn/detail/6448529:Topic:476291" target="_blank">Migrating an Excel Spreadsheet to MySQL and to Spark 2.0.1 (Part 1)</a></span></li><li><span class="headline"><a href="http://www.datasciencecentral.com/xn/detail/6448529:Topic:432503" target="_blank">Introduction to Programming in Stata</a></span></li><li><span class="headline"><a href="http://www.datasciencecentral.com/xn/detail/6448529:Topic:410728" target="_blank">Benchmarking 20 Machine Learning Models Accuracy and Speed</a></span></li><li><span class="headline"><a href="http://www.datasciencecentral.com/xn/detail/6448529:Topic:406467" target="_blank">Stata Cheat Sheet</a></span></li><li><span class="headline"><a href="http://www.datasciencecentral.com/xn/detail/6448529:Topic:394381" target="_blank">Selection of best articles from our past weekly digests</a></span></li><li><span class="headline"><a href="http://www.datasciencecentral.com/xn/detail/6448529:Topic:330055" target="_blank">Statistical Analysis Advisor Chart</a></span></li><li><span class="headline"><a href="http://www.datasciencecentral.com/xn/detail/6448529:Topic:303624" target="_blank">Selection of best articles from our past weekly digests</a></span></li><li><span class="headline"><a href="http://www.datasciencecentral.com/xn/detail/6448529:Topic:244456" target="_blank">Free Online Book: Forecasting, Principles and Practice</a></span></li><li><span class="headline"><a href="http://www.datasciencecentral.com/xn/detail/6448529:Topic:195512" target="_blank">38 Seminal Articles Every Data Scientist Should Read</a></span></li><li><span class="headline"><a href="http://www.datasciencecentral.com/xn/detail/6448529:Topic:192890" target="_blank">Black-box Confidence Intervals: Excel and Perl Implementation</a></span></li></ul> <div id="creditfooter"><a href="https://feedburner.google.com/" target="_blank"><img src="./Misc_files/buzzboost-pwrd.gif" alt="Headlines by FeedBurner" style="border:0"></a></div></div>
+</div>
+</div>
+<div class="xg_module html_module module_text xg_reset" data-module_name="text">
+<div class="xg_module_head"><h2>Top Categories</h2></div>
+<div class="xg_module_body xg_user_generated">
+<p><a href="https://www.datasciencecentral.com/page/search?q=machine+learning" target="_self">Machine Learning</a></p>
+<p><a href="https://www.datasciencecentral.com/page/search?q=R" target="_self">R Programming</a></p>
+<p><a href="https://www.datasciencecentral.com/page/search?q=Python" target="_self">Python for Data Science</a></p>
+<p><a href="https://www.datasciencecentral.com/page/search?q=visualization" target="_self">Visualization, Dashboards</a></p>
+<p><a href="https://www.datasciencecentral.com/page/search?q=nosql" target="_self">NoSQL and NewSQL</a></p>
+<p><a href="https://www.datasciencecentral.com/page/search?q=big+data" target="_self">Big Data</a></p>
+<p><a href="https://www.datasciencecentral.com/page/search?q=cheat+sheets" target="_blank">Cheat Sheets</a></p>
+<p><a href="https://www.datasciencecentral.com/page/search?q=iot" target="_self">Internet of Things</a></p>
+<p><a href="https://www.datasciencecentral.com/page/search?q=excel">Excel</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="xg_foot">
+<div id="xg_footcontent">
+<div class="xj_foot_content"><p class="left">
+© 2018 &nbsp; Data Science Central &nbsp;
+Powered by<a class="poweredBy-logo" href="https://www.ning.com/" title="" alt="" rel="dofollow">
+<img class="poweredbylogo" width="87" height="15" src="./Misc_files/Ning_MM_footer_blk@2x.png" title="Ning Website Builder" alt="Website builder | Create website | Ning.com">
+</a> </p>
+<p class="right xg_lightfont">
+<a href="https://www.datasciencecentral.com/main/embeddable/list">Badges</a> &nbsp;|&nbsp;
+<a href="https://www.datasciencecentral.com/main/authorization/signUp?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Findex%2Freport" dojotype="PromptToJoinLink" _joinprompttext="Please sign up or sign in to complete this step." _hassignup="true" _signinurl="https://www.datasciencecentral.com/main/authorization/signIn?target=https%3A%2F%2Fwww.datasciencecentral.com%2Fmain%2Findex%2Freport">Report an Issue</a> &nbsp;|&nbsp;
+<a href="https://www.datasciencecentral.com/main/authorization/privacyPolicy?previousUrl=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension">Privacy Policy</a> &nbsp;|&nbsp;
+<a href="https://www.datasciencecentral.com/main/authorization/termsOfService?previousUrl=https%3A%2F%2Fwww.datasciencecentral.com%2Fprofiles%2Fblogs%2Fbuilding-outiler-resistant-centroids-in-any-dimension">Terms of Service</a>
+</p>
+</div>
+</div>
+</div>
+<div id="xg_ad_below_footer" class="xg_ad xj_ad_below_footer">
+<div class="xg_module module-plain  html_module module_text xg_reset" data-module_name="text">
+<div class="xg_module_body xg_user_generated">
+<center>
+<div id="div-gpt-ad-1512428902846-0" style="height:90px; width:728px;"><script type="text/javascript">
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1512428902846-0'); });
+</script></div>
+<br></center>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="xj_after_content"><div id="xj_baz17246" class="xg_theme"></div>
+<div id="xg_overlay" style="display:none;">
+<!--[if lte IE 6.5]><iframe></iframe><![endif]-->
+</div>
+<!--googleoff: all--><noscript>
+	&lt;style type="text/css" media="screen"&gt;
+        #xg { position:relative;top:120px; }
+        #xn_bar { top:120px; }
+	&lt;/style&gt;
+	&lt;div class="errordesc noscript"&gt;
+		&lt;div&gt;
+            &lt;h3&gt;&lt;strong&gt;Hello, you need to enable JavaScript to use Data Science Central.&lt;/strong&gt;&lt;/h3&gt;
+            &lt;p&gt;Please check your browser settings or contact your system administrator.&lt;/p&gt;
+			&lt;img src="/xn_resources/widgets/index/gfx/jstrk_off.gif" alt="" height="1" width="1" /&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+</noscript><!--googleon: all-->
+<script type="text/javascript" src="./Misc_files/core.min.js.download"></script> <script>
+            var sources = ["https:\/\/static.ning.com\/socialnetworkmain\/widgets\/lib\/js\/jquery\/jquery.ui.widget.js?xn_version=201804270412","https:\/\/static.ning.com\/socialnetworkmain\/widgets\/lib\/js\/jquery\/jquery.iframe-transport.js?xn_version=201804270412","https:\/\/static.ning.com\/socialnetworkmain\/widgets\/lib\/js\/jquery\/jquery.fileupload.js?xn_version=201804270412","https:\/\/api.ning.com:\/files\/qJ62-rMLTIpC1Fw4vSLzb02yVu2-CcXurTPDDIvxwYlo77WrkO4ahQD3PeSRvODHAQ4nK40kjRZS4uE91c47lapm7UrHh38D\/set_common_min.js?r=1518432657","https:\/\/api.ning.com:\/files\/70dimIkGHrVBaRyLDKOe0jWstiOgB1ymIfCGwCunfxWozWgXQDDMcJGL8FHZ*o5sdUjGKsoCf9DomYYaVOTe0MbpdT1jg*oD\/set_shared_c0_min.js?r=1518431458","https:\/\/api.ning.com:\/files\/qJ62-rMLTIquF1SnYsahMg3Z1yzp367oKg8zHMVBGJQlu1DOLt0EmYoKNk-jgF6jWFrR1jZ605PmRABqBsN-fpChobbNJY71\/set_sidebar_u_min.js?r=1518432058"];
+            var numSources = sources.length;
+                        var heads = document.getElementsByTagName('head');
+            var node = heads.length > 0 ? heads[0] : document.body;
+            var onloadFunctionsObj = {};
+
+            var createScriptTagFunc = function(source) {
+                var script = document.createElement('script');
+                
+                script.type = 'text/javascript';
+                                var currentOnLoad = function() {xg._loader.onLoad(source);};
+                if (script.readyState) { //for IE (including IE9)
+                    script.onreadystatechange = function() {
+                        if (script.readyState == 'complete' || script.readyState == 'loaded') {
+                            script.onreadystatechange = null;
+                            currentOnLoad();
+                        }
+                    }
+                } else {
+                   script.onerror = script.onload = currentOnLoad;
+                }
+
+                script.src = source;
+                node.appendChild(script);
+            };
+
+            for (var i = 0; i < numSources; i++) {
+                                xg._loader.loading(sources[i]);
+                createScriptTagFunc(sources[i]);
+            }
+        </script>
+<script type="text/javascript">
+if (!ning._) {ning._ = {}}
+ning._.compat = { encryptedToken: "<empty>" }
+ning._.CurrentServerTime = "2018-05-02T18:40:17+00:00";
+ning._.probableScreenName = "";
+ning._.domains = {
+    base: 'ning.com',
+    ports: { http: '80', ssl: '443' }
+};
+ning.loader.version = '201804270412'; // DEP-180427:0 33
+djConfig.parseWidgets = false;
+</script>
+<script type="text/javascript">
+          (function() {
+            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+            po.src = 'https://apis.google.com/js/plusone.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+          })();
+        </script>
+<script type="text/javascript">
+        xg.token = '';
+xg.canTweet = false;
+xg.cdnHost = 'static.ning.com';
+xg.version = '201804270412';
+xg.useMultiCdn = true;
+xg.staticRoot = 'socialnetworkmain';
+xg.xnTrackHost = null;
+    xg.cdnDefaultPolicyHost = 'static';
+    xg.cdnPolicy = [];
+xg.global = xg.global || {};
+xg.global.currentMozzle = 'profiles';
+xg.global.userCanInvite = false;
+xg.global.requestBase = '';
+xg.global.locale = 'en_US';
+xg.num_thousand_sep = ",";
+xg.num_decimal_sep = ".";
+(function() {
+    dojo.addOnLoad(function() {
+        if(window.bzplcm) { window.bzplcm.ts('hr'); window.bzplcm._profileSend(); }
+            });
+            ning.loader.require('xg.profiles.blog.show', 'xg.index.like.likeButton', 'xg.index.googlePlusOne', 'xg.shared.PostToFacebookStreamLink', 'xg.index.facebookLike', 'xg.index.like.desktopLike', function() { xg._loader.onLoad('xnloader'); });
+    })();    </script>
+
+<script async="" src="./Misc_files/js"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-27452860-1');
+</script>
+
+<script type="text/javascript">
+xg.addOnRequire(function() {
+    document.getElementById('xn_bar_menu_search').action = 'https://www.datasciencecentral.com/page/search';
+});
+
+</script>
+
+<script type="text/javascript">
+_atrk_opts = { atrk_acct:"QpAKm1aMp4Z352", domain:"datasciencecentral.com",dynamic: true};
+(function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
+</script>
+<noscript>&lt;img src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=QpAKm1aMp4Z352" style="display:none" height="1" width="1" alt="" /&gt;</noscript>
+
+
+<link href="./Misc_files/style020170126141034-6-7.css" rel="stylesheet" type="text/css">
+<script src="./Misc_files/script020170126141034-2.js.download"></script>
+
+
+<script src="./Misc_files/as.js.download"></script>
+
+
+<script src="./Misc_files/script020171208141034-13-16.js.download"></script>
+
+
+<div id="tmp_insideblog" style="display:none;">
+<div class="dscAdAppear" zsrc="PGNlbnRlcj48YnIgLz48IS0tIC8yNjcyNjQxL0JveF9BZF9CbG9nIC0tPg0KPGRpdiBpZD0nZGl2LWdwdC1hZC0xNTEyNDI4OTAyODQ2LTInIHN0eWxlPSdoZWlnaHQ6MjUwcHg7IHdpZHRoOjMwMHB4Oyc+DQo8c2NyaXB0Pg0KZ29vZ2xldGFnLmNtZC5wdXNoKGZ1bmN0aW9uKCkgeyBnb29nbGV0YWcuZGlzcGxheSgnZGl2LWdwdC1hZC0xNTEyNDI4OTAyODQ2LTInKTsgfSk7DQo8L3NjcmlwdD4NCjwvZGl2PjxiciAvPg0KPC9jZW50ZXI+"></div>
+</div>
+<script type="text/javascript">
+if (typeof(x$) != 'undefined') {
+x$(".xg_widget_profiles_blog_show .xg_blog .postbody").after('<div id="insideblog"></div>');
+var t_insideblogCode = document.getElementById('tmp_insideblog');
+var insideblogCode = document.getElementById('insideblog');
+insideblogCode.innerHTML = t_insideblogCode.innerHTML;
+}
+</script>
+
+
+<div id="tmp_insideforum" style="display:none;">
+<div class="dscAdAppear" zsrc="PGNlbnRlcj48YnIgLz48IS0tIC8yNjcyNjQxL0JveF9BZF9Gb3J1bSAtLT4NCjxkaXYgaWQ9J2Rpdi1ncHQtYWQtMTUxMjQyODkwMjg0Ni0zJyBzdHlsZT0naGVpZ2h0OjI1MHB4OyB3aWR0aDozMDBweDsnPg0KPHNjcmlwdD4NCmdvb2dsZXRhZy5jbWQucHVzaChmdW5jdGlvbigpIHsgZ29vZ2xldGFnLmRpc3BsYXkoJ2Rpdi1ncHQtYWQtMTUxMjQyODkwMjg0Ni0zJyk7IH0pOw0KPC9zY3JpcHQ+DQo8L2Rpdj48YnIgLz4NCjwvY2VudGVyPg=="></div>
+</div>
+<script type="text/javascript">
+if (typeof(x$) != 'undefined') {
+x$(".xg_widget_forum_topic_show div.discussion div.description").after('<div id="insideforum"></div>');
+var t_insideforumCode = document.getElementById('tmp_insideforum');
+var insideforumCode = document.getElementById('insideforum');
+insideforumCode.innerHTML = t_insideforumCode.innerHTML;
+}
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="./Misc_files/cookieconsent.min.css">
+<script src="./Misc_files/cookieconsent.min.js.download"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000000"
+    },
+    "button": {
+      "background": "transparent",
+      "text": "#f1d600",
+      "border": "#f1d600"
+    }
+  },
+  "position": "top",
+  "target": "_blank",
+  "static": true,
+  "cookie.name": "cookieconsent_dsc",
+  "domain": "datasciencecentral.com",
+  "content": {
+  "dismiss": "OK, Got it!",
+    "message": "We use cookies to ensure that we give you the best possible experience. By continuing to browse the site you are agreeing to our use of cookies.",
+    "href": "https://www.datasciencecentral.com/page/cookie-policy"
+  }
+})});
+</script>
+<style>@media screen and (min-device-width : 385px) { .cc-window.cc-floating { max-width: none; flex-direction: row; } .cc-floating .cc-message { width: 100%; margin-bottom: 0px; } .cc-window.cc-floating .cc-compliance { margin-top: -5px; float: right; } .cc-link { padding-left: 0px; } .cc-window.cc-floating .cc-compliance { min-width: 100px; } .cc-bottom { bottom: 0; } }</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (!dataLayer) {
+            return;
+        }
+        var handler = function (event) {
+            var element = event.currentTarget;
+            if (element.hasAttribute('data-track-disable')) {
+                return;
+            }
+            var options = JSON.parse(element.getAttribute('data-track'));
+            dataLayer.push({
+                'event'         : 'trackEvent',
+                'eventType'     : 'googleAnalyticsNetwork',
+                'eventCategory' : options && options.category || '',
+                'eventAction'   : options && options.action || '',
+                'eventLabel'    : options && options.label || '',
+                'eventValue'    : options && options.value || ''
+            });
+        };
+        var elements = document.querySelectorAll('[data-track]');
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].addEventListener('click', handler);
+        }
+    });
+</script>
+</div>
+
+
+<cloudflare-app app="lead-box" data-goal="cta" data-position="right bottom" data-product-id="pro" style="z-index: 10001;" data-visibility="visible">
+      <cf-dialog>
+        <cf-dialog-content>
+          <cf-dialog-close-button role="button"></cf-dialog-close-button>
+
+          <cf-dialog-content-text>
+            
+    <cf-dialog-content-title>Revolutionize Your Data Analysis - 5/22</cf-dialog-content-title>
+
+    <form>
+      Join this latest Data Science Central Webinar to learn how a re-envisioned tech stack can help you bring together IT and Business Analysts and allow them to use the right data at the right time.
+
+      <input type="submit" value="Register Now">
+    </form>
+  
+
+            
+          </cf-dialog-content-text>
+        </cf-dialog-content>
+      </cf-dialog>
+    <style>
+      cloudflare-app[app="lead-box"] input[type="submit"] {
+        background: #3c79a7;
+      }
+
+      cloudflare-app[app="lead-box"] input[type="email"]:focus {
+        border-color: #3c79a7;
+      }
+    </style></cloudflare-app><iframe scrolling="no" frameborder="0" allowtransparency="true" src="./Misc_files/widget_iframe.8e64fb971a1b22efbf633db166113ae6.html" title="Twitter settings iframe" style="display: none;"></iframe><iframe name="oauth2relay218489221" id="oauth2relay218489221" src="./Misc_files/postmessageRelay.html" tabindex="-1" aria-hidden="true" style="width: 1px; height: 1px; position: absolute; top: -100px;"></iframe><iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;" title="Twitter analytics iframe" src="./Misc_files/saved_resource.html"></iframe></body></html>

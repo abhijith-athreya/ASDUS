@@ -1,0 +1,1657 @@
+/*
+Theme Name: ABC DLS
+Theme URI:
+Author: ABC
+Author URI: http://www.abc.net.au
+Description: About the ABC
+Version: 0.2
+*/
+
+/**
+ * Table of Contents
+ *
+ * 1. import DLS styles
+ * 1.5 Override ABC Global Nav styles
+ * 2. General
+ * 3. Main Layout
+ * 4. Main Navigation
+ * 5. Page Data
+ * 6. Sub-footer
+ * 7. Sidebar
+ * 8. Search Form & Results
+ * 8.1 Newsletter subscribe forms
+ * 9. Articles
+ * 10. Comments
+ * 11. Pagination
+ * 12. Accordions
+ * 13. History page
+ * 14. Media Centre and Blogs pages
+ * 15. Contact Us page
+ * 16. Complaints pages
+
+ */
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+1. import DLS styles
+
+--------------------------------------------------------------------------------------- */
+
+
+@import url("./css/normalize.css");
+@import url("./css/components.css?v=20160913.1");
+
+
+.dls-card__cards {
+	margin-bottom: 20rem;
+}
+
+@media (min-width: 1240px) {
+	.dlsa-grid--show .dlsa-fixed-12col {
+		 left: 0;
+		 width: calc(100%);
+		 transition: none;
+	}
+}
+
+@media (min-width: 1560px) {
+	.dlsa-grid--show .dlsa-fixed-12col {
+		left: 0;
+		width: calc(100%);
+	}
+}
+
+/* fix broken links in cards! */
+.dls-card__link {
+	position: relative;
+}
+
+
+/*
+
+Override DLS header styles
+
+*/
+
+.dls-masthead__logo {
+	background: none;
+}
+.dls-masthead__abc-icon {
+	color: #000;
+}
+h2.dls-masthead__category-core {
+	font-weight: bold;
+	font-size: 1.5rem;
+	margin-left: 0rem;
+}
+.dls-masthead__header .container {
+	padding-left: 0;
+	padding-right: 0
+}
+
+.dls-footer__copyright a {
+	color: inherit;
+}
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+1.5 Override ABC Global Nav styles
+
+--------------------------------------------------------------------------------------- */
+
+/* kill black footer bar */
+body:after {
+	content: none;
+}
+
+/* make header wider */
+#abcHeader {
+	max-width: calc(70rem + 60px);
+}
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+2. General
+
+--------------------------------------------------------------------------------------- */
+
+body {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+/*
+a {
+	color: #009;
+	text-decoration: none;
+}
+a:hover, a:focus {
+	text-decoration: none;
+	border-bottom: 2px solid #ffc600;
+}*/
+h2 a, h3 a, h4 a {
+	color: inherit;
+}
+h1 {
+    font-size: 2rem;
+    line-height: 3rem;
+	font-weight: 800;
+	width: 100%;
+}
+h2 {
+    font-size: 1.5rem;
+	line-height: 2.33rem;
+	font-weight: normal;
+}
+h3 {
+	font-size: 1.5rem;
+	line-height: 2rem;
+	font-weight: 800;
+}
+@media (min-width: 48em) {
+    h1 {
+        font-size: 3rem;
+        line-height: 4rem;
+    }
+    h2 {
+        font-size: 1.75rem;
+    }
+}
+
+/* more links (temporary) */
+a.dls-more-link {
+	color: #000;
+}
+a.dls-more-link .dls-icon {
+	position: relative;
+	top: -2px;
+	width: 1rem;
+	height: 1rem;
+	margin-left: 0.5rem;
+	color: #ffc600;
+	vertical-align: middle;
+	transition: transform 0.2s ease-out;
+	transform: translateX(0);
+}
+a.dls-more-link:hover .dls-icon {
+	transform: translateX(0.5rem);
+}
+
+/* form elements */
+
+textarea,
+input[type="text"],
+input[type="email"] {
+	padding: 1rem 0.7rem;
+	font-size: 1rem;
+	line-height: 1.4;
+	border: 1px solid #a8a8a8;
+}
+input[type="text"],
+input[type="email"] {
+	height: 3rem;
+	padding: 0 0.7rem;
+	/* line-height: 1.0; /* - this will make placeholder text uncentered vertically! */
+}
+input[type="button"],
+input[type="submit"] {
+	height: 3rem;
+	padding: 0.7rem 2rem;
+	vertical-align: top;
+    text-transform: uppercase;
+	font-size: .875rem;
+    letter-spacing: .125rem;
+    font-weight: 600;
+	cursor: pointer;
+	color: #2b3336;
+	background: #ffc600;
+	border: 0;
+}
+input[type="button"]:hover,
+input[type="submit"]:hover {
+    cursor: pointer;
+	color: #ffc600;
+	background: #2b3336;
+}
+
+/* form placeholder text styles */
+/* do not combine into one declaration - will break! */
+::-webkit-input-placeholder {font-style: italic; color: #767676;}
+::-moz-placeholder {font-style: italic; color: #767676;}
+:-ms-input-placeholder {font-style: italic; color: #767676;}
+::-ms-input-placeholder {font-style: italic; color: #767676;}
+::placeholder {font-style: italic; color: #767676;}
+
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+3. Main Layout
+
+--------------------------------------------------------------------------------------- */
+
+
+#container .row { overflow: visible; }
+
+#main-content {
+	min-height: 50em;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 3.5em;
+	padding-bottom: 5em;
+	z-index: 1;  /* helps links of items overlapping sidebar because of negative margins: a z-index on item itself should be enough, but doesn't work in some browsers - see issue CORP-159 */
+}
+
+@media (min-width: 34em) {
+	#main-content {
+		border: 1px solid #eee;
+		border-width: 0 1px 0 1px;
+	}
+}
+
+.home.page #main-content {
+	padding-bottom: 0;
+}
+
+#sidebar {
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-bottom: 5em;
+	border: 1px solid #eee;
+	position: static; /* fix for position:relative causing placeholder text not to show in MS Edge */
+}
+
+@media (min-width: 62em) {
+	#sidebar {
+		padding-top: 3.2rem;
+		border-width: 0 1px 0 0;
+	}
+}
+
+/* ---------------------------------------------------------------------------------------
+
+4. Main Navigation
+
+--------------------------------------------------------------------------------------- */
+
+.dls-nav {
+	height:auto;
+	min-height: 3rem;
+}
+@media (min-width: 48em) {
+    .dls-nav {
+        min-height: 4rem;
+    }
+}
+.dls-nav .container {
+	position: relative;
+}
+@media (max-width: 62em) {
+	/* fade out on RHS */
+	.dls-nav__frame:after {
+		content: "";
+		display: block;
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 2.5rem;
+		height: 4rem;
+		margin: 0;
+		background: -moz-linear-gradient(left, rgba(43,51,54,0) 0%, rgba(43,51,54,1) 70%, rgba(43,51,54,1) 100%);
+		background: -webkit-linear-gradient(left, rgba(43,51,54,0) 0%,rgba(43,51,54,1) 70%,rgba(43,51,54,1) 100%);
+		background: linear-gradient(to right, rgba(43,51,54,0) 0%,rgba(43,51,54,1) 70%,rgba(43,51,54,1) 100%);
+	}
+
+	/* hide webkit scrollbar */
+	.dls-nav__ul::-webkit-scrollbar {
+	    display: none;
+	}
+
+	/* add margin to end of list at same width of gradient */
+	.dls-nav__ul li:last-child {
+		margin-right: 2.5rem;
+	}
+}
+.dls-nav__ul {
+	list-style: none;
+    min-height: 3rem;
+    margin: 0 0 0 0;
+	padding: 0 0 0 3rem;
+	z-index: 9;
+	white-space: nowrap;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	-ms-overflow-style:
+	-ms-autohiding-scrollbar;
+}
+.dls-nav__ul li {
+	display: inline-block;
+	white-space: nowrap;
+}
+.dls-nav__ul a {
+	display: inline-block;
+    height: 3rem;
+	margin-left: 1rem;
+    margin-right: 0.5rem;
+    padding: 0 0 0 0;
+    font-size: .875rem;
+    line-height: 3rem;
+	color: #fff;
+}
+@media (min-width: 48em) {
+    .dls-nav__ul a {
+        height: 4rem;
+        line-height: 4rem;
+        font-size: 1rem;
+    }
+}
+
+/* .dls-nav__ul .-is-selected a */
+.dls-nav__ul .current_page_item > a {
+    font-weight: 600;
+	padding-bottom: 0;
+	border-bottom: 4px solid #ffc600;
+}
+.dls-nav__ul a:hover, .dls-nav__ul a:focus {
+	text-decoration: none;
+	color: #ffc600;
+}
+.dls-nav__ul .current-menu-parent > a,
+.dls-nav__ul .current-menu-ancestor > a {
+    padding: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+@media (min-width: 48em) {
+    .dls-nav__ul .current-menu-parent > a,
+    .dls-nav__ul .current-menu-ancestor > a {
+        font-size: 1.125rem;
+    }
+}
+
+/* sub-menus - normally hidden */
+.nav-bar .sub-menu {
+	display: none;
+}
+
+/* show sub-menus when section selected */
+.nav-bar .current-menu-item .sub-menu,
+.nav-bar .current-menu-parent .sub-menu,
+.nav-bar .current-menu-ancestor .sub-menu {
+	display: inline;
+	margin-left: -1em;
+}
+
+
+/* when a sub-menu is open, hide top level nav items other than parent of the open sub-menu */
+
+/* Who we are */
+body.page-id-14 .nav-bar > li,
+body.parent-pageid-14 .nav-bar > li {
+	display: none;
+}
+/* How the ABC is run */
+body.page-id-50 .nav-bar > li,
+body.parent-pageid-50 .nav-bar > li {
+	display: none;
+}
+/* unhide the parent nav items */
+.nav-bar .current-menu-item,
+.nav-bar .current-menu-parent,
+.nav-bar .current-menu-ancestor {
+	display: inline !important;
+}
+.nav-bar .current-menu-item .sub-menu,
+.nav-bar .current-menu-parent .sub-menu,
+.nav-bar .current-menu-ancestor .sub-menu {
+    margin-left: -2rem;
+}
+
+/* Who We Are - The ABC Board page - change styles to hide the inconsistency in the nav */
+body.page-id-44 #menu-item-10039 > a {
+	border-color: transparent;
+}
+
+/* Media Centre: make Press Releases, Statements and Responses, Speeches and Articles part of Media Centre nav */
+/* This should really be done by moving these pages so they are subpages of media centre, but ... */
+body.post-type-archive-press_release .dls-nav__ul .menu-item-241 a,
+body.post-type-archive-statements .dls-nav__ul .menu-item-241 a,
+body.post-type-archive-speeches .dls-nav__ul .menu-item-241 a,
+body.single-press_release .dls-nav__ul .menu-item-241 a,
+body.single-statements .dls-nav__ul .menu-item-241 a,
+body.single-speeches .dls-nav__ul .menu-item-241 a {
+	font-size: 1rem;
+	font-weight: bold;
+	padding-bottom: 0;
+	border-bottom: 4px solid #ffc600;
+}
+
+/* Blogs: make Form the Editorial Director, Access ABC part of Blogs nav */
+body.blog .dls-nav__ul .menu-item-10041 a,
+body.category-from-the-editorial-director .dls-nav__ul .menu-item-10041 a,
+body.category-access-abc .dls-nav__ul .menu-item-10041 a,
+body.cat-access-abc .dls-nav__ul .menu-item-10041 a,
+body.cat-from-the-editorial-director .dls-nav__ul .menu-item-10041 a {
+	font-size: 1rem;
+	font-weight: bold;
+	padding-bottom: 0;
+	border-bottom: 4px solid #ffc600;
+}
+
+/* Contact Us pages */
+body.parent-pageid-61 .dls-nav__ul .menu-item-243 a,
+body.parent-pageid-565.dls-nav__ul .menu-item-243 a {
+	font-size: 1rem;
+	font-weight: bold;
+	padding-bottom: 0;
+	border-bottom: 4px solid #ffc600;
+}
+
+/* At a glance page */
+/* Add to main menu so the 'Who we are' section submenu will show, but hide menu item itself */
+/* should be left visible, but... */
+#menu-item-10058 {display:none !important;}
+
+
+/* back arrow - display when a sub menu is open */
+.dls-nav .backlink {
+	display: none;
+	position: absolute;
+	z-index: 1;
+	left: 0;
+    top: 0;
+    height: 3rem;
+    width: 3rem;
+	margin: 0;
+    padding: 0;
+    line-height: 3rem;
+    text-align: center;
+	background: #2B3336;
+	background: -moz-linear-gradient(left, rgba(43,51,54,1) 0%, rgba(43,51,54,1) 70%, rgba(43,51,54,0) 100%);
+	background: -webkit-linear-gradient(left, rgba(43,51,54,1) 0%,rgba(43,51,54,1) 70%,rgba(43,51,54,0) 100%);
+	background: linear-gradient(to right, rgba(43,51,54,1) 0%,rgba(43,51,54,1) 70%,rgba(43,51,54,0) 100%);
+}
+@media (min-width: 48em) {
+    .dls-nav .backlink {
+        height: 4rem;
+        width: 4rem;
+        line-height: 4rem;
+    }
+}
+
+@media (min-width: 62em) {
+    .dls-nav .backlink {
+		border: 1px solid transparent;
+    }
+
+	.dls-nav .backlink:focus {
+		border-color: #fcc000;
+	}
+}
+
+.dls-nav .backlink svg {
+	width: 1rem;
+	height: 1rem;
+	margin-top: 0.3rem;
+	color: #fff;
+}
+.dls-nav .backlink:hover svg,
+.dls-nav .backlink:focus svg {
+	color: #ffc600;
+}
+
+/* unhide the back arrow ! */
+body.page-id-14 .dls-nav .backlink,
+body.parent-pageid-14 .dls-nav .backlink,
+body.page-id-50 .dls-nav .backlink,
+body.parent-pageid-50 .dls-nav .backlink {
+	display: inline;
+}
+/* this is not needed - the left alignment is included in the .dls-nav__ul styles
+body.page-id-14 .dls-nav__ul,
+body.parent-pageid-14 .dls-nav__ul,
+body.page-id-50 .dls-nav__ul,
+body.parent-pageid-50 .dls-nav__ul {
+	margin-left: 3rem;
+}
+*/
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+5. Page Data
+
+--------------------------------------------------------------------------------------- */
+
+.page-data {
+	position: absolute;
+	right: 0;
+	top: 0;
+	float:right;
+	padding: 0.5rem 1rem;
+	text-align:right;
+	color: #ccc;
+}
+.sidebar-data {
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: 0.5rem 1rem;
+	text-align:right;
+	color: #ccc;
+}
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+6. Sub-footer
+
+--------------------------------------------------------------------------------------- */
+
+#subfooter {
+	position: relative;
+	background: #eee;
+	border-top: 4em solid #eee;
+}
+#subfooter .row {
+	overflow: hidden;
+}
+#subfooter .container {
+	background: #eee;
+}
+#subfooter h2 {
+	width: 100%;
+	margin-left: 1rem;
+	margin-bottom: 1.0rem;
+	line-height: 1;
+	font-weight: normal;
+}
+#subfooter .latest-articles {
+	width: 100%;
+	color: #fff;
+	background: #2b3237;
+}
+#subfooter .latest-articles h3 {
+	margin-left: 1rem;
+	margin-top: 1em;
+	margin-bottom: 3rem;
+	font-size: 1.75rem;
+	font-weight: normal;
+}
+#subfooter .latest-articles h4 {
+	margin-bottom: 0;
+}
+#subfooter .latest-articles ul {
+	margin: 0 1rem;
+	list-style: none;
+	padding-left: 0;
+}
+#subfooter .latest-articles a {
+	color: #fff;
+}
+#subfooter .latest-articles a:hover,
+#subfooter .latest-articles a:visited:hover {
+	color: #ffc600;
+}
+#subfooter .latest-articles a:visited {
+	color: #cecece;
+}
+#subfooter .latest-articles li {
+	margin-top: 0;
+	margin-bottom: 1rem;
+	padding-bottom: 1rem;
+	border-bottom: 2px solid #3d4348;
+}
+#subfooter .latest-articles p:last-of-type {
+	border-bottom: 0;
+}
+#subfooter .latest-articles .category {
+	margin-right:1em;
+	font-size:0.8em;
+	text-transform: uppercase;
+}
+#subfooter .latest-articles .date {
+	margin-left:1em;
+}
+@media (min-width: 34em) {
+	#subfooter .dls-card {
+		margin-top: 1.5rem;
+		padding-top: 0;
+	}
+	#subfooter .dls-card,
+	#subfooter .latest-articles {
+		width: calc(100% / 2);
+		margin-bottom:3rem;
+	}
+	#subfooter .dls-card:before {
+		content: none; /* .dls-card:before is breaking links! */
+	}
+	#subfooter .dls-card:nth-of-type(1) {
+		border-right: 1px solid #d8d8d8;
+	}
+	#subfooter .dls-card:nth-of-type(2) {
+		border-left: 1px solid #d8d8d8;
+	}
+}
+@media (min-width: 62em) {
+	#subfooter {
+		background: linear-gradient(to right, #eee 0%, #eee 50%, #2b3237 50%, #2b3237 100%); /* dark background for latest articles to bleed off page right */
+	}
+	#subfooter .dls-card,
+	#subfooter .latest-articles {
+		width: calc(100% / 4);
+	}
+	#subfooter .latest-articles {
+		margin-top: -4rem;
+		margin-bottom: 0;
+		padding-top: 5rem;
+	}
+	#subfooter .dls-card:nth-of-type(2) {
+		border-right: 1px solid #d8d8d8;
+	}
+	#subfooter .dls-card:nth-of-type(3) {
+		border-left: 1px solid #d8d8d8;
+	}
+}
+
+/* ---------------------------------------------------------------------------------------
+
+7. Sidebar
+
+--------------------------------------------------------------------------------------- */
+
+/* subnav */
+
+#subnav {
+	margin: 0 -1rem;
+	padding: 0;
+	/*background: #ff9;*/
+}
+#subnav li {
+	margin: 0;
+	padding: 1rem 1rem;
+	list-style: none;
+	border-top: 1px solid #eee;
+}
+#subnav li:first-child {
+	border-top: 0;
+}
+#subnav li a {
+	line-height: 1.2;
+	color: #000;
+}
+#subnav li a:visited {
+	color: #696969;
+}
+#subnav li a:hover, #offices li a:active {
+	color: #2a7ab0;
+}
+#subnav > li {
+	padding: 4rem 1rem 4rem 1rem;
+	font-size: 1.625rem;
+}
+#subnav .sub-menu {
+	margin: 2rem -1rem -4rem -1rem;
+	padding: 0;
+}
+#subnav .sub-menu li {
+	font-size: 1.125rem;
+}
+#subnav .current-menu-item {
+	/*text-decoration: underline;*/
+}
+
+
+/* Sidebar: related links */
+
+.related-links {
+	padding-top: 4em;
+}
+.related-links #subnav > li {
+	padding: 1.5rem 1rem 1.5rem 1rem;
+	font-size: 1.125rem;
+	font-weight: normal;
+}
+
+
+
+/* Sidebar: 'The ABC at a glance' */
+
+.glance {
+	margin-top: 0rem;
+}
+.glance h2 {
+	font-size: 1.625rem;
+}
+.glance p {
+	font-size: 1.125rem;
+}
+
+
+/* Sidebar: careers module */
+
+#careers {
+	width: 100%;
+	height: 990px;
+	margin-top: 0rem;
+	border: 0;
+}
+@media (min-width: 75em) {
+	#careers {
+		width: 316px;
+		height: 990px;
+		margin-left: 0rem;
+		border: 15px solid #fff;
+		border-width: 15px 0;
+	}
+}
+
+
+/* Sidebar: Blogs (form) */
+
+#sidebar .newsletters {
+	width: 100%;
+	margin-top: 0rem;
+	padding: 4rem 1rem;
+	background: #f5f5f5;
+	border: 0;
+}
+@media (min-width: 75em) {
+	#sidebar .newsletters {
+		width: 316px;
+		margin-left: 0rem;
+		border: 15px solid #fff;
+		border-width: 15px 0;
+	}
+}
+#sidebar .newsletters p {
+	color: #373737;
+}
+#sidebar .newsletters-links {
+	margin: 3rem 0 2rem 0;
+	padding: 0;
+}
+#sidebar .newsletters-links li {
+	margin: 1rem 0;
+	padding: 0;
+	list-style:none;
+}
+
+
+/* Sidebar: Contact Us */
+
+body.page-id-61 #subnav .sub-menu {
+	display: none;
+}
+
+
+/* ---------------------------------------------------------------------------------------
+
+8. Search Form & Results
+
+--------------------------------------------------------------------------------------- */
+
+#searchform {
+	margin: 0 0 3rem 0;
+}
+
+@media (max-width: 61.9375em) {
+	#searchform {
+		border-bottom: 1px solid #f2f2f2;
+		padding: 1rem;
+		margin-left: -1rem;
+		margin-right: -1rem;
+	}
+}
+
+#searchform fieldset {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+#searchform label {
+	/*display:none;*/
+}
+#searchform #s {
+	width: calc(100% - 3rem);
+	border: 1px solid #a8a8a8;
+	border-right: none;
+	/* disable default iOS input style */
+	border-radius: 0;
+	-webkit-appearance: none;
+}
+#searchsubmit {
+	width: 3rem;
+	height: 3rem;
+	font-size: 1rem;
+	line-height: 1;
+	padding: 1rem;
+	color: #000;
+	background: #ffc600;
+	border: 0;
+}
+#searchsubmit svg {
+	width: 1.7rem;
+	height: 1.7rem;
+	margin: -0.35rem;
+}
+#searchsubmit:hover {
+	color: #ffc000;
+	background: #2b3336;
+}
+
+/* Search Results */
+
+.search-result {
+	margin-bottom: 3em;
+}
+.post-meta {
+	margin-bottom: 0.5em;
+	/*font-variant: small-caps;*/
+	text-transform: uppercase;
+	color: #999;
+}
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+8.1 Newsletter subscribe forms
+
+--------------------------------------------------------------------------------------- */
+
+.subscribe_form {
+	margin-bottom: 3rem;
+}
+.subscribe_form fieldset {
+	margin: 1rem 0;
+	padding: 0;
+	border: 0;
+}
+.subscribe_form label {
+	display: block;
+	margin: 1.0rem 0 0.5rem 0;
+	font-size: 1rem;
+    font-weight: 600;
+	color: #373737;
+}
+#sidebar .subscribe_form label {
+	margin: 0.5rem 0;
+}
+.subscribe_form input[type="checkbox"] {
+	margin-right: 0.3rem;
+}
+.subscribe_form input[type="text"],
+.subscribe_form input[type="email"] {
+	width: 24rem;
+	margin-bottom: 1rem;
+}
+#sidebar .subscribe_form input[type="text"],
+#sidebar .subscribe_form input[type="email"] {
+	width: 100%;
+}
+
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+9. Articles
+
+--------------------------------------------------------------------------------------- */
+
+article.page {
+
+
+}
+
+article img.thumbnail {
+	border-style: none;
+    float: right;
+    margin: 0.1rem 0 0.2rem 1rem;
+    border: 1px solid #ccc;
+}
+.aligncenter {
+	margin-left: auto;
+	margin-right: auto;
+}
+.alignright {
+	float:right;
+}
+.wp-caption {
+	margin-bottom: 1.5em;
+	width: auto !important;
+/*	margin-top: 1em;
+	background: #eee;
+	border: 1px solid #ddd;*/
+}
+.wp-caption.alignleft {
+	float: left;
+	margin-top: .3rem;
+	margin-right: 1.5rem;
+}
+.wp-caption.alignright {
+	margin-top: .3rem;
+	margin-left: 1.5rem;
+}
+.wp-caption img {
+	display: block;
+	/*margin: 4px;*/
+	margin: 0 auto;
+}
+.wp-caption.alignleft img,
+.wp-caption.alignright img {
+	margin: 0;
+}
+.wp-caption-text {
+	margin: 0.5em 1em;
+	text-align:center;
+	font-size: .875rem;
+}
+.wp-caption.alignleft .wp-caption-text,
+.wp-caption.alignright .wp-caption-text {
+	text-align: left;
+	margin-left: 0;
+}
+
+/*
+	override inline styles added by WP editor
+	which breaks mobile layout
+ 	screens up to 544px
+ */
+@media (max-width: 34em) {
+	.wp-caption {
+		width: auto !important;
+	}
+	.wp-caption img {
+		max-width: calc(100% - 8px);
+		height: auto;
+		margin: 4px auto;
+	}
+	.wp-caption.alignleft,
+	.wp-caption.alignright {
+		float: none;
+	}
+}
+
+ul.metadata {
+	padding-left:0;
+	list-style: none;
+}
+ul.metadata li {
+	display: inline;
+	padding-right: 0.7rem;
+	font-size: 0.75rem;
+}
+ul.metadata li:before {
+	content: "/";
+	padding-right: 0.7rem;
+}
+ul.metadata li:first-child:before {
+	content: "";
+	padding-right: 0;
+}
+ul.metadata li.post_type {
+	text-transform: uppercase;
+}
+
+
+/* ---------------------------------------------------------------------------------------
+
+10. Comments
+
+--------------------------------------------------------------------------------------- */
+
+#comments-container {
+	display: none;
+	position: relative;
+	background: #f5f5f5;
+}
+.comments-wrapper {
+	padding-top: 4rem;
+	padding-bottom: 4rem;
+	border: 1px solid #eae9e9;
+	border-width: 0 1px 0 1px;
+}
+.comments-sidebar {
+	border: 1px solid #eae9e9;
+	border-width: 0 1px 0 0;
+}
+
+
+li.comment {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	padding-top:1em;
+	padding-bottom:1em;
+	border-top: 1px solid #eee;
+}
+ol>li.comment:first-child {
+	border-top: 0;
+}
+.comment .comment-meta {
+	color: #888;
+}
+.comment .says {
+	font-style: italic;
+}
+.comment cite {
+	font-size: 1.143em;
+}
+div.comment-author.vcard {
+	width: 60px;
+	margin: 1em 0 1em 1em;
+	float: right;
+}
+div.comment-author.vcard span.fn.n {
+	display:none;
+}
+div.comment-reply-link {
+	margin-top: -1em;
+}
+
+/* comment form */
+h3.comment-reply-title {
+    font-size: 1.5rem;
+	line-height: 2.33rem;
+	font-weight: normal;
+
+}
+@media (min-width: 48em) {
+    h3.comment-reply-title {
+        font-size: 1.75rem;
+    }
+}
+.comment-form label {
+	display: block;
+	margin-bottom: 0.8rem;
+}
+.comment-form textarea {
+	width: 100%;
+	max-width: 100%;
+}
+.comment-form input[type="text"] {
+	width: 100%;
+	max-width: 24rem;
+}
+.comment-form input[type="submit"] {
+	margin-top: 0.5rem;
+}
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+11. Pagination
+
+--------------------------------------------------------------------------------------- */
+
+#pagination {
+	margin-top: 5rem;
+	text-align: center;
+}
+ul.page-numbers {
+	margin:0;
+	padding-left: 0;
+	list-style: none;
+	text-align: center;
+}
+ul.page-numbers li {
+	display: inline-block;
+	margin: 0 3px;
+}
+ul.page-numbers li span.visuallyhidden {
+	display: none;
+}
+span.page-numbers, a.page-numbers {
+	display: inline-block;
+	width: 3.4em;
+	padding: 1.2em 0;
+	font-size: 0.75rem;
+	line-height: 1.0;
+	font-weight: bold;
+	color: #2b3336;
+	background: #ffc600;
+}
+span.page-numbers.current,
+a.page-numbers:hover {
+	text-decoration: none;
+	color: #ffc600;
+	background: #2b3336;
+}
+span.page-numbers.dots {
+	width: 1.2em;
+	font-size: 1.4rem; /* increase dot size */
+	font-weight: normal;
+	background: #fff;
+}
+a.page-numbers.next,
+a.page-numbers.prev {
+	width: 9em;
+}
+
+/* ---------------------------------------------------------------------------------------
+
+12. Accordions
+
+--------------------------------------------------------------------------------------- */
+
+/* quick and dirty changes to make less ugly */
+/* override jquery-ui-custom.css */
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {padding: 0.1em 0.5em; color: #000; }
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {color: #000;}
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {color: #000; background: #ccc;}
+.ui-state-hover a, .ui-state-hover a:hover {}
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {background: transparent;}
+
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+13. History page
+
+--------------------------------------------------------------------------------------- */
+
+.page-id-3068 {
+
+}
+#timeline-nav {
+	overflow: visible;
+	margin: 5rem -1rem 3rem -1rem;
+	padding: 1rem;
+	font-size: 1.125rem;
+	color: #000;
+	background: #f5f5f5;
+	z-index: 99;
+}
+
+@media (max-width: 62em) {
+	#timeline-nav li {
+		display: inline-block;;
+		width: 5.5rem;
+		margin: 0.5rem 0.4rem;
+		padding: 0;
+		list-style: none;
+	}
+	#timeline-nav a {
+		display: block;
+		padding: 1.5rem 0;
+		font-weight: bold;
+		text-align: center;
+		color: #2b3336;
+		background: #ffc600;
+	}
+	#timeline-nav a:focus,
+	#timeline-nav a.selected,
+	#timeline-nav a:hover {
+		text-decoration: none;
+		color: #ffc600;
+		background: #2b3336;
+	}
+}
+@media (min-width: 62em) {
+	#timeline-nav {
+		margin: 13rem -16rem 3rem -1rem;
+		padding: 0 0 0 1rem;
+	}
+	#timeline-nav li {
+		display: inline;
+		margin: 0 0 0 -4px;
+		padding: 0.7rem 0;
+		list-style: none;
+		border-left: 1px solid #e3e3e3;
+	}
+	#timeline-nav li:first-child {
+		border: 0;
+	}
+	#timeline-nav a {
+		display: inline-block;
+		margin: -4px 0 0 0;
+		padding: 1.5rem 1rem 1.2rem 1rem;
+		font-weight: normal;
+		font-size: 1.25rem;
+		color: #000;
+		background: transparent;
+		border-top: 4px solid transparent;
+		border-bottom: 6px solid transparent;
+	}
+	#timeline-nav a:focus,
+	#timeline-nav a.selected,
+	#timeline-nav a:hover {
+		text-decoration: none;
+		color: #000;
+		background: #fafafa;
+		border-top: 4px solid #ffc600;
+		border-bottom: 6px solid #fff;
+	}
+	#timeline-nav a.selected {
+		font-weight: bold;
+	}
+}
+@media (min-width: 75em) {
+	#timeline-nav {
+		margin: 12rem -19rem 3rem -1rem;
+	}
+}
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+14. Media Centre and Blogs pages
+
+--------------------------------------------------------------------------------------- */
+
+p.rss {
+	display: none;
+}
+
+/*** commented out code below is to make sub-menus scroll like main-nav - test later! ***/
+/* kill flex at small sizes
+@media (max-width: 62em) {
+	#container > .row {
+		display:block;
+	}
+} */
+
+/* these styles are mostly copied from the main menu */
+#main-content .sub-menu-frame {
+	position: relative;
+    /*overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; */
+	width: calc(100% + 2rem);
+	max-width: calc(100% + 2rem);
+	margin: 3rem -1rem 4rem -1rem;
+	padding-left: 0;
+	border: 2px solid #f2f2f2;
+	border-width: 2px 0;
+}
+/* fade out on RHS
+#main-content .sub-menu-frame:after {
+	content: "";
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 2.5rem;
+	height: 4rem;
+	margin: 0;
+	background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 90%, rgba(255,255,255,1) 100%);
+	background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 90%,rgba(255,255,255,1) 100%);
+	background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 90%,rgba(255,255,255,1) 100%);
+} */
+/* add margin to end of list at same width of gradient
+#main-content .sub-menu li:last-child {
+	margin-right: 2.5rem;
+} */
+#main-content .sub-menu {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	/*white-space: nowrap;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	-ms-overflow-style:
+	-ms-autohiding-scrollbar;
+	z-index: 9; */
+}
+
+/* hide webkit scrollbar
+#main-content .sub-menu::-webkit-scrollbar {
+	display: none;
+} */
+/* add margin to end of list at same width of gradient
+#main-content .sub-menu li:last-child {
+	margin-right: 2.5rem;
+} */
+#main-content .sub-menu li {
+	display: inline-block;
+	white-space: nowrap;
+}
+#main-content .sub-menu li.corp-post-filter div {
+	display: inline-block;
+}
+@media (max-width: 75em) {
+	.corp-post-filter {
+		width: auto;
+	}
+}
+@media (min-width: 75em) {
+	.corp-post-filter {
+		float:right;
+	}
+}
+#main-content .sub-menu li a {
+	display: inline-block;
+	height: 4rem;
+	margin-left: 1rem;
+	margin-right: 1rem;
+	padding-left: 0;
+	padding-right: 0;
+	padding-top: 1.5rem;
+	font-size: 1rem;
+	line-height: 1;
+	color: #000;
+	font-weight: 400;
+}
+#main-content .sub-menu li a:hover {
+	text-decoration: none;
+	color: #ffc600;
+}
+/* on state */
+#main-content .sub-menu li.current a {
+	font-size: 1rem;
+	font-weight: bold;
+	padding-bottom: 0;
+	border-bottom: 4px solid #ffc600;
+}
+/* articles */
+article.media,
+article.blog {
+	margin: 2rem -1rem 0 -1rem;
+	padding: 1rem;
+	border-bottom: 2px solid #f2f2f2;
+}
+article.media img.thumbnail,
+article.blog img.thumbnail {
+	float:left;
+	margin:0 1rem 1rem 0;
+}
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+15. Contact Us page
+
+--------------------------------------------------------------------------------------- */
+
+.call_email_connect {
+	width: 100%;
+	overflow: auto;
+}
+@media (min-width: 34em) {
+	.call_email_connect > div {
+		 width: 33%;
+		 float: left;
+		 padding-right: 1rem;
+	}
+	.call_email_connect > div p {
+		 padding-right: 2rem;
+	}
+}
+.bfc {
+	width:  10.5rem;
+	height: 10.5rem;
+	margin: 1rem 0 4rem 0;
+	padding-top: 3.4rem;
+	text-align: center;
+	color: #ffc600;
+	background: #2b3337;
+	border-radius: 5.25rem;
+}
+.bfc a {
+	display: inline-block;
+	padding: 0.3rem;
+	color: #ffc600;
+	/*outline: 1px dotted lime;*/
+}
+.bfc svg {
+	width:  2.7rem;
+	height: 2.7rem;
+	color: #ffc600;
+}
+.bfc.call {
+	padding-top: 3.7rem;
+}
+.bfc.call svg {
+	width:  2.3rem;
+	height: 2.3rem;
+}
+.bfc.connect {
+	padding-top: 3.7rem;
+}
+.bfc.connect svg {
+	width:  1.9rem;
+	height: 1.9rem;
+}
+
+
+#where-to-find {
+	margin: 4rem -1rem 6rem -1rem;
+	overflow: visible;
+	background: #fff;
+}
+#where-to-find h2 {
+	margin-left: 1rem;
+}
+#map {
+	width: 100%;
+	height: 400px;
+	margin-right:-300px;
+	z-index: 99;
+}
+#offices {
+	width: 100%;
+	height: 12rem;
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	background: #f2f2f2;
+	border: 2px solid #f2f2f2;
+	border-width: 2px 0;
+}
+@media (min-width: 34em) {
+}
+@media (min-width: 62em) {
+	#where-to-find {
+		margin: 4rem -16rem 6rem -1rem;
+	}
+	#map {
+		display: block;
+		width: 75%;
+		height: 500px;
+	}
+	#offices {
+		width: 25%;
+		height: 500px;
+		float: left;
+	}
+}
+@media (min-width: 75em) {
+	#where-to-find {
+		margin: 4rem -19rem 6rem -1rem;
+	}
+}
+
+#offices li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border-bottom: 2px solid #f2f2f2;
+}
+#offices li a {
+	display: block;
+	padding: 1rem;
+	color: #000;
+	background: #fff;
+}
+#offices li a:visited {
+	color: #696969;
+}
+#offices li a:hover, #offices li a:active {
+	color: #2a7ab0;
+	background: #f9f9f9;
+}
+#offices li:last-child {
+	border: 0;
+}
+#offices li h3 {
+	margin: 0;
+	padding: 1rem;
+	font-size: 1.5rem;
+	font-weight: normal;
+	background: #fff;
+}
+#where-to-find > p {
+	margin: 2rem 1rem;
+}
+
+
+
+/* Webkit: style offices list scrollbars */
+#offices::-webkit-scrollbar {width: 12px;}
+#offices::-webkit-scrollbar-track {background-color: #f2f2f2;}
+#offices::-webkit-scrollbar-thumb {background-color: #ffc600; }
+#offices::-webkit-scrollbar-button {background-color: #ffc600;}
+#offices ::-webkit-scrollbar-corner {background-color: #f00;}
+/* IE */
+#offices {
+	scrollbar-base-color: #C0C0C0;
+	scrollbar-base-color: #C0C0C0;
+	scrollbar-3dlight-color: #C0C0C0;
+	scrollbar-highlight-color: #C0C0C0;
+	scrollbar-track-color: #EBEBEB;
+	scrollbar-arrow-color: black;
+	scrollbar-shadow-color: #C0C0C0;
+	scrollbar-dark-shadow-color: #C0C0C0;
+}
+
+
+
+#book-a-tour {
+	margin: 4rem 0;
+	color: #fff;
+	background: #010001;
+}
+#book-a-tour a {
+	color: #fff;
+}
+#book-a-tour img {
+	max-width: 100%
+}
+#book-a-tour h2 {
+	margin: -6em 2rem 1rem 2rem;
+}
+#book-a-tour p {
+	margin: 1rem 2rem;
+	padding-bottom: 1rem;
+}
+
+/* Frequently asked questions */
+body.page-id-588 .question-type {
+	margin-top: 4em;
+}
+
+
+
+/* ---------------------------------------------------------------------------------------
+
+16. Complaints pages
+
+--------------------------------------------------------------------------------------- */
+
+
+body.page-id-578 .main-content h4,
+body.page-id-2144 .main-content h4 {
+	margin-bottom: 0;
+}
+
+
+
+
+/**
+ * Tweaks from Adam
+ */
+
+.dls-masthead__logo {
+    background: #ffc600;
+    margin-right: 1rem;
+    width: 3rem;
+    height: 3rem;
+}
+.dls-masthead__abc-icon {
+    color: #fff;
+    width: 1.5rem;
+}
+.corp-linkedin-post-title {
+    font-weight: 800;
+}
+.dls-footer .-ul > li ul li a {
+    font-size: 0.875rem;
+}
+.post-meta {
+    font-size: 0.875rem;
+}
+.related-links #subnav > li {
+    font-weight: 800;
+}
+.dls-card__meta {
+    letter-spacing: 0.09375rem
+}
+.dls-footer ul li a {
+    font-weight: 600;
+}
+.dls-card__title {
+    font-weight: 800;
+}
+#subnav .sub-menu li a {
+    font-weight: 800;
+}
+#subfooter .latest-articles {
+    padding: 5rem 0 0 1.5rem;
+}
+#subfooter .latest-articles .date {
+    font-size: 0.875rem
+}
+.dls-footer__more .dls-more-link {
+    font-size: 1rem;
+    font-weight: 600;
+}
+.corp-linkedin-post-label a {
+    letter-spacing: 0.09375rem;
+}
+.dls-accordion__toggle {
+    font-size: 1rem;
+}
+.corp-feature-panel__heading {
+    font-weight: 800;
+}
+#subfooter .latest-articles a {
+    font-weight: 600;
+}
+/*.dls-accordion .-open h3 {
+    border-left: 8px solid #ffc600;
+    border-bottom: none
+}*/
+
+h2.dls-masthead__category-core {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+
+@media (min-width: 48em) {
+    h2.dls-masthead__category-core {
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+    .dls-masthead__logo {
+        width: 4rem;
+        height: 4rem;
+    }
+    .dls-masthead__abc-icon {
+        width: 2rem;
+    }
+}

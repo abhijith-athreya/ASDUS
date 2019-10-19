@@ -1,0 +1,526 @@
+/*body{
+	font: 16px "Conv_RazerF5", Sans-Serif;
+	color:#888;
+	line-height:22px;
+}*/
+
+/**
+ * BxSlider v4.1.2 - Fully loaded, responsive content slider
+ * //bxslider.com
+ *
+ * Written by: Steven Wanderski, 2014
+ * //stevenwanderski.com
+ * (while drinking Belgian ales and listening to jazz)
+ *
+ * CEO and founder of bxCreative, LTD
+ * //bxcreative.com
+ */
+
+
+/** RESET AND LAYOUT
+===================================*/
+
+.bx-wrapper {
+	position: relative;
+	margin: 0 auto 60px;
+	padding: 0;
+	*zoom: 1;
+}
+
+.bx-wrapper img {
+	max-width: 100%;
+	display: block;
+	background: black;
+}
+
+/** THEME
+===================================*/
+
+.bx-wrapper .bx-viewport {
+	-moz-box-shadow: 0 0 5px #ccc;
+	-webkit-box-shadow: 0 0 5px #ccc;
+	box-shadow: 0 0 5px #ccc;
+	border:  5px solid #fff;
+	left: -5px;
+	background: #fff;
+	
+	/*fix other elements on the page moving (on Chrome)*/
+	-webkit-transform: translatez(0);
+	-moz-transform: translatez(0);
+    	-ms-transform: translatez(0);
+    	-o-transform: translatez(0);
+    	transform: translatez(0);
+}
+
+.bx-wrapper .bx-pager,
+.bx-wrapper .bx-controls-auto {
+	position: absolute;
+	bottom: -30px;
+	width: 100%;
+}
+
+/* LOADER */
+
+.bx-wrapper .bx-loading {
+	min-height: 50px;
+	background: url("//assets.razerzone.com/eeimages/leviathan/js/bxslider/images/bx_loader.gif") center center no-repeat #fff;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2000;
+}
+
+/* PAGER */
+
+.bx-wrapper .bx-pager {
+	text-align: center;
+	font-size: .85em;
+	font-family: Arial;
+	font-weight: bold;
+	color: #666;
+	padding-top: 20px;
+}
+
+.bx-wrapper .bx-pager .bx-pager-item,
+.bx-wrapper .bx-controls-auto .bx-controls-auto-item {
+	display: inline-block;
+	*zoom: 1;
+	*display: inline;
+}
+
+.bx-wrapper .bx-pager.bx-default-pager a {
+	background: #666;
+	text-indent: -9999px;
+	display: block;
+	width: 10px;
+	height: 10px;
+	margin: 0 5px;
+	outline: 0;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.bx-wrapper .bx-pager.bx-default-pager a:hover,
+.bx-wrapper .bx-pager.bx-default-pager a.active {
+	background: #000;
+}
+
+/* DIRECTION CONTROLS (NEXT / PREV) */
+
+.bx-wrapper .bx-prev {
+	left: 10px;
+	background: url("//assets.razerzone.com/eeimages/leviathan/js/bxslider/images/controls.png") no-repeat 0 -32px;
+}
+
+.bx-wrapper .bx-next {
+	right: 10px;
+	background: url("//assets.razerzone.com/eeimages/leviathan/js/bxslider/images/controls.png") no-repeat -43px -32px;
+}
+
+.bx-wrapper .bx-prev:hover {
+	background-position: 0 0;
+}
+
+.bx-wrapper .bx-next:hover {
+	background-position: -43px 0;
+}
+
+.bx-wrapper .bx-controls-direction a {
+	position: absolute;
+	top: 50%;
+	margin-top: -16px;
+	outline: 0;
+	width: 32px;
+	height: 32px;
+	text-indent: -9999px;
+	z-index: 9999;
+}
+
+.bx-wrapper .bx-controls-direction a.disabled {
+	display: none;
+}
+
+/* AUTO CONTROLS (START / STOP) */
+
+.bx-wrapper .bx-controls-auto {
+	text-align: center;
+}
+
+.bx-wrapper .bx-controls-auto .bx-start {
+	display: block;
+	text-indent: -9999px;
+	width: 10px;
+	height: 11px;
+	outline: 0;
+	background: url("//assets.razerzone.com/eeimages/leviathan/js/bxslider/images/controls.png") -86px -11px no-repeat;
+	margin: 0 3px;
+}
+
+.bx-wrapper .bx-controls-auto .bx-start:hover,
+.bx-wrapper .bx-controls-auto .bx-start.active {
+	background-position: -86px 0;
+}
+
+.bx-wrapper .bx-controls-auto .bx-stop {
+	display: block;
+	text-indent: -9999px;
+	width: 9px;
+	height: 11px;
+	outline: 0;
+	background: url("//assets.razerzone.com/eeimages/leviathan/js/bxslider/images/controls.png") -86px -44px no-repeat;
+	margin: 0 3px;
+}
+
+.bx-wrapper .bx-controls-auto .bx-stop:hover,
+.bx-wrapper .bx-controls-auto .bx-stop.active {
+	background-position: -86px -33px;
+}
+
+/* PAGER WITH AUTO-CONTROLS HYBRID LAYOUT */
+
+.bx-wrapper .bx-controls.bx-has-controls-auto.bx-has-pager .bx-pager {
+	text-align: left;
+	width: 80%;
+}
+
+.bx-wrapper .bx-controls.bx-has-controls-auto.bx-has-pager .bx-controls-auto {
+	right: 0;
+	width: 35px;
+}
+
+/* IMAGE CAPTIONS */
+
+.bx-wrapper .bx-caption {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background: #666\9;
+	background: rgba(80, 80, 80, 0.75);
+	width: 100%;
+}
+
+.bx-wrapper .bx-caption span {
+	color: #fff;
+	font-family: Arial;
+	display: block;
+	font-size: .85em;
+	padding: 10px;
+}
+
+
+.pns p{
+	font-size: 16px;
+}
+.pns h2{
+	font: 24px "Conv_RazerF5Thin", Sans-Serif;
+    color: #00ff00;
+    text-transform: uppercase;
+    padding-bottom: 12px;
+}
+
+.pns h2.large{
+	font-size:48px;
+}
+.pns{
+	overflow: hidden;
+	position: relative;
+}
+
+}
+.pns p{
+	padding-top:10px;
+}
+
+.pns p.big-padding{
+	padding-top:50px;
+}
+
+.pns p.large{
+	font-size:36px;
+}
+
+.pns p.white{
+	color:#fff;
+}
+
+.pns [class*='col-'] {
+  padding-right:20px;
+  padding-left:20px;
+}
+
+.pns .row{
+	min-height:200px;
+	padding:100px 0px;
+}
+
+.pns .row.short{
+	min-height:200px;
+	padding:25px 0px;
+}
+
+.pns .footnote-text {
+	font-size:12px;
+}
+
+.pns .image-text{
+	font-size:14px;
+	font-style:italic;
+}
+
+.pns .logo-text{
+	font-size:14px;
+	font-weight:bold;
+	color:#fff;
+}
+
+.pns .img-responsive{
+	display:block;
+	max-width:100%;
+	height:auto;
+}
+
+.pns .logo-images img{
+	padding:10px 20px;
+}
+
+.pns .usp-image{
+	position:absolute; 
+	bottom:0;
+	min-width:50%;	
+}
+.text-center {
+  text-align: center;
+}
+
+.text-left{
+	text-align: left;
+}
+.text-center-override{
+	margin: 40px auto 0 auto;
+	text-align: center;
+	float: none;
+}
+.pns .noPadTop{
+	padding-top: 0;
+}
+.pns img.abs{
+	left: 0;
+	margin-left: 0;
+	min-width: 0;
+	position: relative;
+}
+.pns.abs{
+	text-align: center;
+}
+
+.bx-wrapper {
+	display: none;
+}
+.bx-wrapper .bx-viewport{
+	left: 0;
+	border: 5px solid black;
+	box-shadow: none;
+}
+.pns-video h2{
+
+}
+
+@media (max-width: 1333px) {
+	.pns img.abs{
+		position: relative;
+		margin: 0;
+		max-width: 100%;
+		left: 0;
+	}	
+}
+
+@media (max-width: 767px) {
+	.pns .xs-padding-top{
+		padding-top:40px;
+	}
+	.pns p.big-padding{
+		padding-top:20px;
+	}	
+	.pns .row{
+		min-height:200px;
+		padding:40px 0px;
+	}	
+	.pns .row.usp-text{
+		padding-top: 30px !important;
+		padding-bottom: 30px !important;
+	}
+	.text-center-override{
+		margin: 0 auto 0 auto;
+	}
+	.pns-video h2{
+		padding: 15px;
+	}
+}
+@media (max-width: 1199px) {
+	.pns .md-padding-top{
+		padding-top:40px;
+	}
+	.pns p.big-padding{
+		padding-top:30px;
+	}	
+}
+
+
+.pns.category-landing{
+    height: 100vh;
+}
+.pns.category-landing h1{
+	font-size: 30px;
+	color: white;
+	font-weight: 400;
+	text-transform: uppercase;
+}
+.pns.category-landing .usp-text{
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	top: 90%;
+
+}
+.pns .learn-more{
+	background: #00a000;
+    border-left: 2px solid lime;
+    color: white;
+    padding: 7px;
+    text-transform: uppercase;
+    margin: 20px 0;
+    display: inline-block;
+    width: auto;
+}
+.pns .learn-more::after{
+	content:"\003e"; 
+	padding-left: 5px;
+}
+@media (max-width: 767px) {
+	.pns.category-landing .usp-text{
+		position: relative;
+		top: 85%;
+	}
+
+	.bx-wrapper {
+	    display: block;
+	    margin: 0 auto 30px auto;
+	}
+	.gallery-holder{
+		display: none;
+	}
+}
+
+.pns .icon-with-text{
+	padding: 0;
+	text-align: center;
+}
+.pns .icon-text{
+	text-align: left;
+}
+
+.pns .logo-images .icon-with-text img{
+	padding: 0;
+	max-width: none;
+}
+.pns .icon-row{
+	padding-top: 0;
+	padding-bottom: 20px;
+	min-height: 0;
+
+}
+.pns-gallery [class*='col-']{
+	padding: 10px 10px;
+}
+.pns-gallery .logo-images img{
+    width: 100%;
+    padding: 0;
+}
+.pns-gallery h2{
+	padding: 10px;
+}
+
+
+@media (max-width: 767px) {
+	.usp-left .usp-text, .usp-right .usp-text{
+		padding: 0 !important;
+	}
+}
+
+#menu ul.menu>li ul.sub-1 li.level0 ul.sub-2 li ul.sub-3 li .sub-msg ul li{
+	text-align: center;
+	width: 100%;
+}
+#menu ul.menu>li ul.sub-1 li.level0 ul.sub-2 li ul.sub-3 li .sub-msg ul li .icon-1{
+	display: none;
+}
+#menu ul.menu>li ul.sub-1 li.level0 ul.sub-2 li ul.sub-3 li .sub-msg{
+	padding-top: 20px;
+	min-height: 0;
+}
+#menu ul.menu>li ul.sub-1 li.level0 ul.sub-2 li span{
+	max-width: 90%;
+	line-height: 14px;
+	margin: 8px 0;
+}
+#menu ul.menu>li{
+	font-size: 19px;
+}
+@media (max-width: 767px) {
+	#menu ul.menu>li ul.sub-1 li.level0 ul.sub-2 li span{
+		max-width: 100%;
+		line-height: auto;
+		margin-top: 0;
+	}
+}
+@media (max-width: 979px) and (min-width: 768px){
+	header #menu ul.menu li {
+	    font-size: 14px;
+	}
+}
+
+@media (max-width: 767px){
+	.hm-slider .home-carousel .owl-controls {
+	    margin-top: 370px;
+	}
+}
+
+@media (max-width: 767px){
+	.home-features {
+		margin-top: 420px;
+	}
+}
+
+@media (max-width: 450px){
+	.hm-slider .home-carousel .owl-controls {
+	    margin-top: 250px;
+	}
+}
+
+@media (max-width: 450px){
+	.home-features {
+		margin-top: 310px;
+	}
+}
+
+/*.pns-gallery a {
+    width: 24%;
+    display: inline-block;
+    background: #333;
+    margin: 5px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 767px) {
+	.pns-gallery a {
+	    margin: 2px;
+	}
+}
+
+.pns-gallery .logo-images img{
+	padding: 0;
+}*/
+

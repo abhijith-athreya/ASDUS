@@ -1,0 +1,1242 @@
+@-webkit-keyframes fly-in-from-left {
+  from {
+    -webkit-transform: translateY(15rem) rotate(15deg);
+    transform: translateY(15rem) rotate(15deg);
+    opacity: 0; } }
+
+@-moz-keyframes fly-in-from-left {
+  from {
+    -moz-transform: translateY(15rem) rotate(15deg);
+    transform: translateY(15rem) rotate(15deg);
+    opacity: 0; } }
+
+@keyframes fly-in-from-left {
+  from {
+    -webkit-transform: translateY(15rem) rotate(15deg);
+    -moz-transform: translateY(15rem) rotate(15deg);
+    transform: translateY(15rem) rotate(15deg);
+    opacity: 0; } }
+
+@-webkit-keyframes fly-in-from-right {
+  from {
+    -webkit-transform: translateY(15rem) rotate(-15deg);
+    transform: translateY(15rem) rotate(-15deg);
+    opacity: 0; } }
+
+@-moz-keyframes fly-in-from-right {
+  from {
+    -moz-transform: translateY(15rem) rotate(-15deg);
+    transform: translateY(15rem) rotate(-15deg);
+    opacity: 0; } }
+
+@keyframes fly-in-from-right {
+  from {
+    -webkit-transform: translateY(15rem) rotate(-15deg);
+    -moz-transform: translateY(15rem) rotate(-15deg);
+    transform: translateY(15rem) rotate(-15deg);
+    opacity: 0; } }
+
+/* Temporary overrides for Bitcoin.com WordPress site. To be cleaned up and removed. */
+.post-sidebar + .post-sidebar {
+  margin-top: 15px; }
+
+.post-sidebar .btcwdgt {
+  min-width: 0 !important; }
+
+.header-block.header-block-compact .header-bg, .header-block.header-block-compact.header-bg,
+.header-block .header-block-compact .header-bg,
+.header-block .header-block-compact.header-bg {
+  padding: 30px 0; }
+  @media (min-width: 1024px) {
+    .header-block.header-block-compact .header-bg, .header-block.header-block-compact.header-bg,
+    .header-block .header-block-compact .header-bg,
+    .header-block .header-block-compact.header-bg {
+      padding: 40px 0; } }
+
+.header-block.header-block-compact h1.title,
+.header-block .header-block-compact h1.title {
+  font-size: 2em;
+  line-height: 1.2em; }
+  @media (min-width: 1024px) {
+    .header-block.header-block-compact h1.title,
+    .header-block .header-block-compact h1.title {
+      font-size: 2.4em; } }
+
+.header-block.header-block-compact .inside,
+.header-block .header-block-compact .inside {
+  font-size: 1em;
+  line-height: 1.2em;
+  margin-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px; }
+  @media (min-width: 1024px) {
+    .header-block.header-block-compact .inside,
+    .header-block .header-block-compact .inside {
+      margin-top: 15px;
+      padding-left: 20px;
+      padding-right: 20px;
+      font-size: 1.2em;
+      max-width: 740px;
+      margin-left: auto;
+      margin-right: auto; } }
+
+/* Components */
+/*
+Hero
+
+Hero section
+
+default                            - Default (Medium) size
+.small                             - small Size
+.large                             - large Size
+
+markup:
+<div class="hero {$modifiers}" style="background-image: url('assets/images/bg/buy_slide.jpg');">
+  <div class="hero-content">
+    <h1>The page title</h1>
+    <p>Lorem ipsum dolor sit amet.</p>
+  </div>
+</div>
+
+Styleguide 1.1
+*/
+/*
+  Hero
+
+  Hero 2-columns
+
+  markup:
+  <div class="hero {$modifiers}" style="background-image: url('assets/images/bg/buy_slide.jpg');">
+    <div class="hero-content flex-row">
+      <div class="logo">
+        <h1>Column 1</h1>
+      </div>
+      <div class="content text-left">
+        <p>Bitcoinocracy is a free and decentralized way to measure the Bitcoin community's stance on a given proposition.</p>
+        <p>Voting requires proof of bitcoin holdings via cryptographic signature. Signed votes cannot be forged, and are fully auditable by all users.</p>
+      </div>
+    </div>
+  </div>
+
+  Styleguide 1.1.1
+  */
+.hero {
+  padding: 20px;
+  background-size: cover;
+  background-position: center;
+  background-color: #444444; }
+  .hero .hero-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.7);
+    text-align: center;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -moz-box-orient: vertical;
+    -moz-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -moz-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 20px 30px; }
+    @media (min-width: 1024px) {
+      .hero .hero-content.flex-row {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: row;
+        -moz-box-orient: horizontal;
+        -moz-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row; } }
+    @media (min-width: 1024px) {
+      .hero .hero-content {
+        padding: 20px 35px;
+        min-height: 180px; } }
+    .hero .hero-content h1 {
+      color: #fab915;
+      font-family: 'museo-sans-rounded';
+      font-size: 1.6em;
+      font-weight: 500;
+      margin: 0 0 15px;
+      line-height: 1.1em; }
+      @media (min-width: 1024px) {
+        .hero .hero-content h1 {
+          font-size: 2em; } }
+      @media (min-width: 1280px) {
+        .hero .hero-content h1 {
+          font-size: 3em; } }
+    .hero .hero-content h2 {
+      color: #ffffff;
+      font-family: 'museo-sans-rounded';
+      font-size: 1.8em;
+      font-weight: 500;
+      margin: 0 0 10px;
+      line-height: 1.1em; }
+      @media (min-width: 1024px) {
+        .hero .hero-content h2 {
+          font-size: 2.2em; } }
+      @media (min-width: 1280px) {
+        .hero .hero-content h2 {
+          font-size: 3.2em; } }
+    .hero .hero-content p {
+      color: #ffffff;
+      margin: 0 auto;
+      font-size: 0.8em;
+      line-height: 1.3em;
+      max-width: 600px; }
+      @media (min-width: 1024px) {
+        .hero .hero-content p {
+          font-size: 1em; } }
+      .hero .hero-content p + p {
+        margin-top: 10px; }
+  .hero.small {
+    padding: 20px; }
+    @media (min-width: 1024px) {
+      .hero.small .hero-content {
+        padding: 30px 50px; } }
+    @media (min-width: 1024px) {
+      .hero.small .hero-content h1 {
+        font-size: 1.3em; } }
+    @media (min-width: 1280px) {
+      .hero.small .hero-content h1 {
+        font-size: 1.3em; } }
+    @media (min-width: 1024px) {
+      .hero.small .hero-content h2 {
+        font-size: 1.1em; } }
+    @media (min-width: 1280px) {
+      .hero.small .hero-content h2 {
+        font-size: 1.1em; } }
+    @media (min-width: 1024px) {
+      .hero.small .hero-content p {
+        font-size: 1em; } }
+  .hero.large {
+    padding: 30px; }
+    @media (min-width: 1024px) {
+      .hero.large .hero-content {
+        padding: 30px 50px;
+        min-height: 400px; } }
+    @media (min-width: 1024px) {
+      .hero.large .hero-content h1 {
+        font-size: 3em; } }
+    @media (min-width: 1280px) {
+      .hero.large .hero-content h1 {
+        font-size: 4.375em; } }
+    @media (min-width: 1024px) {
+      .hero.large .hero-content p {
+        font-size: 1.4em; } }
+  @media (min-width: 1024px) {
+    .hero .logo {
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 1 320px;
+      -moz-box-flex: 0;
+      -ms-flex: 0 1 320px;
+      flex: 0 1 320px; } }
+  .hero .logo img {
+    max-width: 200px; }
+  .hero .logo h1 {
+    font-size: 1em; }
+  .hero .content {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -moz-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto; }
+    @media (min-width: 1024px) {
+      .hero .content {
+        margin-left: 40px; } }
+    .hero .content p {
+      max-width: 100%; }
+
+* {
+  font-family: 'museo-sans-rounded'; }
+
+.btcsg-typography {
+  font-size: 16px; }
+  .btcsg-typography h1, .btcsg-typography h2, .btcsg-typography h3, .btcsg-typography h4, .btcsg-typography h5, .btcsg-typography h6 {
+    color: #3c3c3c; }
+    .btcsg-typography h1 + h1, .btcsg-typography h1 + h2, .btcsg-typography h1 + h3, .btcsg-typography h1 + h4, .btcsg-typography h1 + h5, .btcsg-typography h1 + h6, .btcsg-typography h2 + h1, .btcsg-typography h2 + h2, .btcsg-typography h2 + h3, .btcsg-typography h2 + h4, .btcsg-typography h2 + h5, .btcsg-typography h2 + h6, .btcsg-typography h3 + h1, .btcsg-typography h3 + h2, .btcsg-typography h3 + h3, .btcsg-typography h3 + h4, .btcsg-typography h3 + h5, .btcsg-typography h3 + h6, .btcsg-typography h4 + h1, .btcsg-typography h4 + h2, .btcsg-typography h4 + h3, .btcsg-typography h4 + h4, .btcsg-typography h4 + h5, .btcsg-typography h4 + h6, .btcsg-typography h5 + h1, .btcsg-typography h5 + h2, .btcsg-typography h5 + h3, .btcsg-typography h5 + h4, .btcsg-typography h5 + h5, .btcsg-typography h5 + h6, .btcsg-typography h6 + h1, .btcsg-typography h6 + h2, .btcsg-typography h6 + h3, .btcsg-typography h6 + h4, .btcsg-typography h6 + h5, .btcsg-typography h6 + h6 {
+      margin: 40px 0 10px; }
+  .btcsg-typography p {
+    color: #3c3c3c;
+    font-size: 1em;
+    line-height: 1.4em;
+    margin: 0; }
+    .btcsg-typography p + p {
+      margin-top: 1.2em; }
+    .btcsg-typography p + h1, .btcsg-typography p + h2, .btcsg-typography p + h3, .btcsg-typography p + h4, .btcsg-typography p + h5, .btcsg-typography p + h6 {
+      margin: 40px 0 10px; }
+  .btcsg-typography ol, .btcsg-typography ul {
+    margin: 25px 0 25px 20px;
+    font-size: 1.125em;
+    line-height: 1.6em; }
+    .btcsg-typography ol li, .btcsg-typography ul li {
+      font-size: 1em;
+      color: #3c3c3c;
+      margin: 0; }
+      .btcsg-typography ol li + li, .btcsg-typography ul li + li {
+        margin-top: 7px; }
+
+/*
+Card
+
+Styleguide 1.2
+*/
+/*
+  Card #1
+
+  markup:
+  <div class="btcsg-card btcsg-card-1 {$modifiers}">
+    <div class="btcsg-card-heading">
+      <img src="/assets/img/alternate_coin_yellow_M.png">
+      <h3>Card title</h3>
+    </div>
+    <div class="btcsg-card-content">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <div class="btcsg-card-cta">
+        <sg-insert>1.3.1</sg-insert>
+      </div>
+    </div>
+  </div>
+
+  Styleguide 1.2.1
+  */
+/*
+  Card List
+
+  markup:
+  <div class="btcsg-card-list btcsg-card-list-1">
+    <sg-insert>1.2.1</sg-insert>
+    <sg-insert>1.2.1</sg-insert>
+    <sg-insert>1.2.1</sg-insert>
+    <sg-insert>1.2.1</sg-insert>
+  </div>
+
+  Styleguide 1.2.2
+  */
+.btcsg-card {
+  border: 1px solid #CCC;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-radius: 3px;
+  text-align: center;
+  -webkit-transform-origin: top left;
+  -moz-transform-origin: top left;
+  -ms-transform-origin: top left;
+  transform-origin: top left; }
+  .btcsg-card.btcsg-card-1 {
+    position: relative;
+    margin-bottom: 38px;
+    padding-bottom: 25px; }
+  .btcsg-card .btcsg-card-heading {
+    padding: 20px 20px 7px; }
+    .btcsg-card .btcsg-card-heading img {
+      display: block;
+      margin: 0 auto 20px;
+      width: 80%;
+      max-width: 100px !important; }
+    .btcsg-card .btcsg-card-heading h3 {
+      font-size: 1.4em;
+      margin: 0; }
+  .btcsg-card .btcsg-card-content {
+    padding: 7px 20px 20px; }
+    .btcsg-card .btcsg-card-content p {
+      margin: 0; }
+      .btcsg-card .btcsg-card-content p + p {
+        margin-top: 10px; }
+    .btcsg-card .btcsg-card-content .btcsg-card-cta {
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      -webkit-transform: translate(-50%, 0);
+      -moz-transform: translate(-50%, 0);
+      -ms-transform: translate(-50%, 0);
+      transform: translate(-50%, 0); }
+      .btcsg-card .btcsg-card-content .btcsg-card-cta .btcsg-button {
+        border: 1px solid #fab915; }
+
+.btcsg-card-list {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex; }
+  .btcsg-card-list.btcsg-card-list-1 {
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap; }
+    .btcsg-card-list.btcsg-card-list-1 .btcsg-card {
+      -webkit-box-flex: 1;
+      -webkit-flex: 1 1 100%;
+      -moz-box-flex: 1;
+      -ms-flex: 1 1 100%;
+      flex: 1 1 100%; }
+      @media (min-width: 768px) {
+        .btcsg-card-list.btcsg-card-list-1 .btcsg-card {
+          -webkit-box-flex: 1;
+          -webkit-flex: 1 1 45%;
+          -moz-box-flex: 1;
+          -ms-flex: 1 1 45%;
+          flex: 1 1 45%; }
+          .btcsg-card-list.btcsg-card-list-1 .btcsg-card:nth-child(even) {
+            margin-left: 15px; } }
+      @media (min-width: 1280px) {
+        .btcsg-card-list.btcsg-card-list-1 .btcsg-card {
+          -webkit-box-flex: 1;
+          -webkit-flex: 1 1 20%;
+          -moz-box-flex: 1;
+          -ms-flex: 1 1 20%;
+          flex: 1 1 20%; }
+          .btcsg-card-list.btcsg-card-list-1 .btcsg-card + .btcsg-card {
+            margin-left: 15px; } }
+  .btcsg-card-list.btcsg-card-list-2 {
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap; }
+    .btcsg-card-list.btcsg-card-list-2 .btcsg-card {
+      -webkit-box-flex: 1;
+      -webkit-flex: 1 1 100%;
+      -moz-box-flex: 1;
+      -ms-flex: 1 1 100%;
+      flex: 1 1 100%; }
+      .btcsg-card-list.btcsg-card-list-2 .btcsg-card + .btcsg-card {
+        margin-top: 15px; }
+      @media (min-width: 768px) {
+        .btcsg-card-list.btcsg-card-list-2 .btcsg-card {
+          -webkit-box-flex: 1;
+          -webkit-flex: 1 1 30%;
+          -moz-box-flex: 1;
+          -ms-flex: 1 1 30%;
+          flex: 1 1 30%; }
+          .btcsg-card-list.btcsg-card-list-2 .btcsg-card + .btcsg-card {
+            margin-left: 15px;
+            margin-top: 0; }
+          .btcsg-card-list.btcsg-card-list-2 .btcsg-card:nth-child(3n+4) {
+            margin-left: 0; }
+          .btcsg-card-list.btcsg-card-list-2 .btcsg-card:nth-child(n+4) {
+            margin-top: 15px; } }
+    @media (min-width: 768px) {
+      .btcsg-card-list.btcsg-card-list-2.btcsg-card-list-row-4 .btcsg-card {
+        -webkit-box-flex: 1;
+        -webkit-flex: 1 1 22%;
+        -moz-box-flex: 1;
+        -ms-flex: 1 1 22%;
+        flex: 1 1 22%;
+        margin-top: 0; }
+        .btcsg-card-list.btcsg-card-list-2.btcsg-card-list-row-4 .btcsg-card + .btcsg-card {
+          margin-left: 15px; }
+        .btcsg-card-list.btcsg-card-list-2.btcsg-card-list-row-4 .btcsg-card:nth-child(4n+5) {
+          margin-left: 0; }
+        .btcsg-card-list.btcsg-card-list-2.btcsg-card-list-row-4 .btcsg-card:nth-child(n+5) {
+          margin-top: 15px; } }
+  .btcsg-card-list.btcsg-card-list-vertical {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -moz-box-orient: vertical;
+    -moz-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column; }
+  .btcsg-card-list.btcsg-card-list-column-2 {
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap; }
+    .btcsg-card-list.btcsg-card-list-column-2 .btcsg-card {
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 0 100%;
+      -moz-box-flex: 0;
+      -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+      padding-left: 0;
+      padding-right: 0; }
+      @media (min-width: 768px) {
+        .btcsg-card-list.btcsg-card-list-column-2 .btcsg-card {
+          -webkit-box-flex: 0;
+          -webkit-flex: 0 0 50%;
+          -moz-box-flex: 0;
+          -ms-flex: 0 0 50%;
+          flex: 0 0 50%; }
+          .btcsg-card-list.btcsg-card-list-column-2 .btcsg-card:nth-child(odd) {
+            padding-right: 7.5px; }
+          .btcsg-card-list.btcsg-card-list-column-2 .btcsg-card:nth-child(even) {
+            padding-left: 7.5px; } }
+
+/*
+  Card #2
+
+  Card with style variant #2
+
+  markup:
+  <div class="btcsg-card btcsg-card-2 {$modifiers}">
+    <a href="javascript:;" class="btcsg-card-heading">
+      <img src="/assets/img/city.jpg">
+      <h3>Lorem ipsum dolor sit amet</h3>
+    </a>
+  </div>
+
+  Styleguide 1.2.3
+  */
+/*
+  Card List - Variant #2
+
+  markup:
+  <div class="btcsg-card-list btcsg-card-list-2">
+    <sg-insert>1.2.3</sg-insert>
+    <sg-insert>1.2.3</sg-insert>
+    <sg-insert>1.2.3</sg-insert>
+  </div>
+
+  Styleguide 1.2.4
+  */
+.btcsg-card-2 {
+  display: block;
+  position: relative;
+  text-align: left;
+  overflow: hidden; }
+  .btcsg-card-2 .btcsg-card-heading {
+    position: relative;
+    padding: 0;
+    display: block;
+    height: 180px; }
+    .btcsg-card-2 .btcsg-card-heading:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      -moz-transition: opacity 0.8s cubic-bezier(0.55, 0, 0.1, 1);
+      transition: opacity 0.8s cubic-bezier(0.55, 0, 0.1, 1);
+      pointer-events: none;
+      z-index: 2; }
+    .btcsg-card-2 .btcsg-card-heading img {
+      margin: 0;
+      max-width: 100%;
+      -o-object-fit: cover;
+      object-fit: cover;
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 100% !important;
+      transition: -webkit-transform 0.8s cubic-bezier(0.55, 0, 0.1, 1);
+      -moz-transition: transform 0.8s cubic-bezier(0.55, 0, 0.1, 1), -moz-transform 0.8s cubic-bezier(0.55, 0, 0.1, 1);
+      transition: transform 0.8s cubic-bezier(0.55, 0, 0.1, 1);
+      transition: transform 0.8s cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 0.8s cubic-bezier(0.55, 0, 0.1, 1), -moz-transform 0.8s cubic-bezier(0.55, 0, 0.1, 1); }
+    .btcsg-card-2 .btcsg-card-heading h3 {
+      position: absolute;
+      z-index: 5;
+      bottom: 0;
+      left: 0;
+      background: #fab915;
+      color: #ffffff;
+      padding: 10px 15px;
+      border-radius: 0 3px 0 0;
+      font-size: 1.1em;
+      line-height: 1.2em;
+      margin-right: 40px; }
+  .btcsg-card-2:hover .btcsg-card-heading:before {
+    opacity: 1; }
+  .btcsg-card-2:hover .btcsg-card-heading img {
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    transform: scale(1.05); }
+
+/*
+  Card #3
+
+  Card with style variant #3
+
+  markup:
+  <div class="btcsg-card btcsg-card-3 {$modifiers}">
+    <a href="javascript:;" class="btcsg-card-heading">
+      <img src="/assets/img/alternate_coin_yellow_M.png">
+      <h3>Lorem ipsum dolor sit amet</h3>
+    </a>
+  </div>
+
+  Styleguide 1.2.5
+  */
+/*
+  Card #3 List
+
+  List of cards with style variant #3
+
+  markup:
+  <div class="btcsg-card-list btcsg-card-list-vertical">
+    <sg-insert>1.2.5</sg-insert>
+    <sg-insert>1.2.5</sg-insert>
+    <sg-insert>1.2.5</sg-insert>
+  </div>
+
+  Styleguide 1.2.6
+  */
+.btcsg-card-3 {
+  border-left: none;
+  border-right: none;
+  text-align: left;
+  -moz-transition: background 0.3s cubic-bezier(0.55, 0, 0.1, 1), box-shadow 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: background 0.3s cubic-bezier(0.55, 0, 0.1, 1), box-shadow 0.3s cubic-bezier(0.55, 0, 0.1, 1); }
+  .btcsg-card-3 + .btcsg-card-3 {
+    border-top: none;
+    margin-left: 0 !important; }
+  .btcsg-card-3 .btcsg-card-heading {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 15px 10px;
+    color: #3c3c3c;
+    text-decoration: none;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center; }
+    .btcsg-card-3 .btcsg-card-heading h3 {
+      font-size: 1.1em;
+      -moz-transition: color 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+      transition: color 0.3s cubic-bezier(0.55, 0, 0.1, 1); }
+    .btcsg-card-3 .btcsg-card-heading img {
+      width: 30px;
+      height: 30px;
+      max-width: 100% !important;
+      margin: 0 10px 0 0; }
+  .btcsg-card-3:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22); }
+
+/*
+  Card List 2 Columns
+
+  markup:
+  <div class="btcsg-card-featured-container">
+    <div class="btcsg-card-featured btcsg-card-featured-hero">
+      <sg-insert>1.2.3</sg-insert>
+    </div>
+    <div class="btcsg-card-featured btcsg-card-featured-supplement">
+      <div class="btcsg-card-list btcsg-card-list-vertical">
+        <sg-insert>1.2.5</sg-insert>
+        <sg-insert>1.2.5</sg-insert>
+        <sg-insert>1.2.5</sg-insert>
+      </div>
+    </div>
+  </div>
+
+  Styleguide 1.2.7
+  */
+.btcsg-card-featured-container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+  -webkit-align-items: stretch;
+  -moz-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch; }
+  .btcsg-card-featured-container .btcsg-card-featured.btcsg-card-featured-hero {
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 1 400px;
+    -moz-box-flex: 0;
+    -ms-flex: 0 1 400px;
+    flex: 0 1 400px; }
+  .btcsg-card-featured-container .btcsg-card-featured.btcsg-card-featured-supplement {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -moz-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: stretch;
+    -webkit-align-items: stretch;
+    -moz-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    margin-left: 10px; }
+    .btcsg-card-featured-container .btcsg-card-featured.btcsg-card-featured-supplement .btcsg-card-list {
+      width: 100%; }
+      .btcsg-card-featured-container .btcsg-card-featured.btcsg-card-featured-supplement .btcsg-card-list .btcsg-card {
+        -webkit-box-flex: 1;
+        -webkit-flex: 1 1 auto;
+        -moz-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -webkit-align-items: center;
+        -moz-box-align: center;
+        -ms-flex-align: center;
+        align-items: center; }
+        .btcsg-card-featured-container .btcsg-card-featured.btcsg-card-featured-supplement .btcsg-card-list .btcsg-card .btcsg-card-heading {
+          width: 100%; }
+
+/*
+  Card #4
+
+  Card with style variant #4
+
+  markup:
+  <div class="btcsg-card btcsg-card-4 {$modifiers}">
+    <a href="javascript:;" class="btcsg-card-heading">
+      <img src="/assets/img/city.jpg">
+      <h3>Lorem ipsum dolor sit amet</h3>
+    </a>
+  </div>
+
+  Styleguide 1.2.8
+  */
+/*
+  Card #4 List
+
+  List of cards with style variant #4
+
+  markup:
+  <div class="btcsg-card-list btcsg-card-list-column-2">
+    <sg-insert>1.2.8</sg-insert>
+    <sg-insert>1.2.8</sg-insert>
+    <sg-insert>1.2.8</sg-insert>
+    <sg-insert>1.2.8</sg-insert>
+    <sg-insert>1.2.8</sg-insert>
+    <sg-insert>1.2.8</sg-insert>
+    <sg-insert>1.2.8</sg-insert>
+    <sg-insert>1.2.8</sg-insert>
+  </div>
+
+  Styleguide 1.2.9
+  */
+.btcsg-card-4 {
+  border: none;
+  box-shadow: none;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin-bottom: 15px; }
+  .btcsg-card-4:nth-child(2n) {
+    padding-right: 0;
+    padding-left: 7.5px; }
+  .btcsg-card-4 .btcsg-card-heading {
+    border: 1px solid #CCC;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    text-decoration: none;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    text-align: left;
+    padding: 10px;
+    -moz-transition: box-shadow 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+    transition: box-shadow 0.3s cubic-bezier(0.55, 0, 0.1, 1); }
+    .btcsg-card-4 .btcsg-card-heading img {
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 1 80px;
+      -moz-box-flex: 0;
+      -ms-flex: 0 1 80px;
+      flex: 0 1 80px;
+      width: 80px !important;
+      height: 80px !important;
+      -o-object-fit: cover;
+      object-fit: cover;
+      margin: 0; }
+    .btcsg-card-4 .btcsg-card-heading h3 {
+      -webkit-box-flex: 1;
+      -webkit-flex: 1 1 auto;
+      -moz-box-flex: 1;
+      -ms-flex: 1 1 auto;
+      flex: 1 1 auto;
+      color: #3c3c3c;
+      margin: 0 0 0 15px;
+      font-size: 1.1em;
+      -moz-transition: color 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+      transition: color 0.1s cubic-bezier(0.55, 0, 0.1, 1); }
+  .btcsg-card-4:hover .btcsg-card-heading {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22); }
+
+/*
+Buttons
+
+Styleguide 1.3
+*/
+/*
+  Buttons
+
+  markup:
+  <a class="btcsg-button">Button text</a>
+
+  Styleguide 1.3.1
+  */
+.btcsg-button {
+  display: inline-block;
+  background-color: #fab915;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 3px;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid #fab915;
+  -moz-transition: all 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: all 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  box-shadow: 0 1px 2px #aaa;
+  line-height: 1.1em; }
+  .btcsg-button.small {
+    font-size: 12px; }
+  .btcsg-button:hover {
+    background-color: #ffffff;
+    color: #fab915 !important;
+    border: 1px solid #fab915;
+    text-decoration: none; }
+
+/*
+Index
+
+Styleguide 1.4
+*/
+/*
+  Index Item
+
+  markup:
+  <a class="btcsg-index-item">
+    <img class="icon" src="/assets/img/index_wallet.svg">
+    <div class="title">The index item title</div>
+  </a>
+
+  Styleguide 1.4.1
+  */
+/*
+  Index List
+
+  markup:
+  <div class="btcsg-index-list">
+    <sg-insert>1.4.1</sg-insert>
+    <sg-insert>1.4.1</sg-insert>
+    <sg-insert>1.4.1</sg-insert>
+    <sg-insert>1.4.1</sg-insert>
+    <sg-insert>1.4.1</sg-insert>
+    <sg-insert>1.4.1</sg-insert>
+  </div>
+
+  Styleguide 1.4.2
+  */
+.btcsg-index-item {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  width: 55px;
+  height: 55px;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  cursor: pointer; }
+  .btcsg-index-item .icon {
+    display: block;
+    width: 40px;
+    height: 40px;
+    -o-object-fit: contain;
+    object-fit: contain;
+    opacity: 0.5;
+    -moz-transition: opacity 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+    transition: opacity 0.3s cubic-bezier(0.55, 0, 0.1, 1); }
+  .btcsg-index-item .title {
+    position: absolute;
+    pointer-events: none;
+    left: 100%;
+    margin-left: 10px;
+    top: 50%;
+    -webkit-transform: translate(-20px, -50%);
+    -moz-transform: translate(-20px, -50%);
+    -ms-transform: translate(-20px, -50%);
+    transform: translate(-20px, -50%);
+    font-size: 1em;
+    opacity: 0;
+    -moz-transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+    transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+    color: #CCCCCC;
+    background-color: #3c3c3c;
+    border-radius: 10px;
+    padding: 4px 10px;
+    width: 150px; }
+  .btcsg-index-item:hover .icon {
+    opacity: 1; }
+  .btcsg-index-item:hover .title {
+    -webkit-transform: translate(0, -50%);
+    -moz-transform: translate(0, -50%);
+    -ms-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+    opacity: 1; }
+
+.btcsg-index-list {
+  position: relative;
+  z-index: 5;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 50px;
+  -moz-box-flex: 0;
+  -ms-flex: 0 0 50px;
+  flex: 0 0 50px;
+  width: 55px;
+  border-right: 1px solid #CCCCCC;
+  display: none;
+  /* Helpers */ }
+  @media (min-width: 768px) {
+    .btcsg-index-list {
+      display: block; } }
+  .btcsg-index-list .btcsg-index-item + .btcsg-index-item {
+    border-top: 1px solid #CCCCCC; }
+  .btcsg-index-list.pull-left {
+    float: left; }
+
+.btcsg-index-content {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+  -moz-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto; }
+  @media (min-width: 768px) {
+    .btcsg-index-content {
+      padding-left: 15px;
+      padding-right: 15px; } }
+
+.btcsg-index-container {
+  position: relative; }
+  .btcsg-index-container .btcsg-index-list {
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-transform: translate(-100%, 0);
+    -moz-transform: translate(-100%, 0);
+    -ms-transform: translate(-100%, 0);
+    transform: translate(-100%, 0);
+    z-index: 8; }
+
+/*
+Breadcrumbs
+
+markup:
+<div class="btcsg-breadcrumbs">
+  <ul>
+    <li><a href="javascript:;"><span>Item 1</span></a></li>
+    <li><a href="javascript:;"><span>Item 2</span></a></li>
+    <li><span>Item 3</span></li>
+  </ul>
+</div>
+
+Styleguide 1.6
+*/
+.btcsg-breadcrumbs {
+  position: relative;
+  z-index: 5; }
+  .btcsg-breadcrumbs ul {
+    margin: 0 0 25px;
+    padding: 0;
+    list-style-type: none;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex; }
+    .btcsg-breadcrumbs ul li {
+      position: relative;
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 0 auto;
+      -moz-box-flex: 0;
+      -ms-flex: 0 0 auto;
+      flex: 0 0 auto;
+      min-width: 0; }
+      .btcsg-breadcrumbs ul li:last-child {
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 1 auto;
+        -moz-box-flex: 0;
+        -ms-flex: 0 1 auto;
+        flex: 0 1 auto; }
+      .btcsg-breadcrumbs ul li:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-right: 1px solid #CCCCCC;
+        border-top: 1px solid #CCCCCC;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-transform: skewX(25deg);
+        -moz-transform: skewX(25deg);
+        -ms-transform: skewX(25deg);
+        transform: skewX(25deg); }
+      .btcsg-breadcrumbs ul li a {
+        position: relative;
+        color: #CCCCCC; }
+        .btcsg-breadcrumbs ul li a:hover {
+          color: #fab915; }
+      .btcsg-breadcrumbs ul li span {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 3px 10px; }
+
+/*
+Article Header
+
+markup:
+<div class="btcsg-article-header" style="background: url('/assets/img/city.jpg');">
+  <h1>The article title</h1>
+  <p class="info">April 19, 2017</p>
+</div>
+
+Styleguide 1.5
+*/
+.btcsg-article-header {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px; }
+  .btcsg-article-header:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    pointer-events: none; }
+  .btcsg-article-header h1 {
+    position: relative;
+    font-size: 2.4em;
+    color: #FFFFFF;
+    line-height: 1.2em;
+    margin: 3em 0 0.3em; }
+  .btcsg-article-header p {
+    position: relative; }
+    .btcsg-article-header p.info {
+      color: #FFFFFF;
+      font-size: 1.2em;
+      line-height: 1.2em;
+      margin: 0; }
+
+/*
+Secondary Navigation
+
+markup:
+<nav class="btcsg-nav-secondary">
+  <ul>
+    <li><a href="javascript:;">Item 1</a></li>
+    <li><a href="javascript:;">Item 2</a></li>
+    <li><a href="javascript:;">Item 3</a></li>
+  </ul>
+</nav>
+
+Styleguide 1.7
+*/
+.btcsg-nav-secondary {
+  background-color: #303030;
+  color: #efefef;
+  border-bottom: 5px solid #fab915;
+  padding: 0 15px;
+  white-space: nowrap;
+  overflow: auto; }
+  .btcsg-nav-secondary ul {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    list-style-type: none; }
+    .btcsg-nav-secondary ul li {
+      position: relative;
+      display: inline-block; }
+      .btcsg-nav-secondary ul li + li {
+        margin-left: 0; }
+      .btcsg-nav-secondary ul li:before {
+        content: '';
+        background: rgba(0, 0, 0, 0.7);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        -webkit-transform: scaleX(0);
+        -moz-transform: scaleX(0);
+        -ms-transform: scaleX(0);
+        transform: scaleX(0);
+        -moz-transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+        transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1); }
+      .btcsg-nav-secondary ul li:hover:before, .btcsg-nav-secondary ul li.active:before {
+        -webkit-transform: scaleX(1);
+        -moz-transform: scaleX(1);
+        -ms-transform: scaleX(1);
+        transform: scaleX(1); }
+      .btcsg-nav-secondary ul li a {
+        position: relative;
+        display: block;
+        color: #efefef;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 13px 15px; }
+
+/*
+Table
+
+markup:
+<table class="btcsg-table">
+  <thead>
+    <tr>
+      <th>Column 1 Title</th>
+      <th>Column 2 Title</th>
+      <th>Column 3 Title</th>
+      <th>Column 4 Title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+    </tr>
+    <tr>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+    </tr>
+    <tr>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+    </tr>
+    <tr>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+      <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum nisi nisi, nec interdum odio varius eget. Mauris bibendum ultrices tempor.</td>
+    </tr>
+  </tbody>
+</table>
+
+Styleguide 1.8
+*/
+/*
+  Table - Style 1
+
+  markup:
+  <div class="btcsg-table-responsive">
+    <table class="btcsg-table btcsg-table-1">
+      <thead>
+        <tr>
+          <th>Column 1 Title</th>
+          <th>Column 2 Title</th>
+          <th>Column 3 Title</th>
+          <th>Column 4 Title</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="i in [1, 2, 3, 4]">
+          <td><img src="/assets/img/city.jpg"></td>
+          <td><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at condimentum ante, et gravida sapien. Fusce vitae malesuada erat. Praesent facilisis turpis ex, dignissim mollis orci interdum ut. Aliquam eget dolor quis ex placerat ullamcorper. Pellentesque tempor metus eget finibus mattis. In euismod pellentesque diam, et finibus enim pretium eget. Nulla pellentesque suscipit lorem sed varius. Nullam viverra eu tellus non interdum. Cras quis scelerisque mauris, eget tincidunt risus. Donec metus erat, maximus a semper at, ultrices eu tortor. Nam sodales aliquam dolor ac ultricies. Integer aliquam, diam ac molestie vehicula, quam nisi dictum lectus, nec bibendum libero felis at metus.</p></td>
+          <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus rhoncus tellus, et vehicula arcu. Fusce hendrerit non risus a auctor. Integer vitae metus vitae magna fermentum convallis eu nec ex. Etiam lobortis vel nulla sed malesuada. Sed consequat sodales felis ut scelerisque. Suspendisse dignissim erat ipsum, vitae sagittis ex.</td>
+          <td><sg-insert>1.3.1</sg-insert></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  Styleguide 1.8.1
+  */
+.btcsg-table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+  .btcsg-table thead tr th {
+    border-bottom: 1px solid #CCCCCC;
+    text-align: center;
+    padding: 10px 15px;
+    background-color: #fab915;
+    color: #ffffff; }
+  .btcsg-table tbody tr td {
+    border-bottom: 1px solid #EEEEEE;
+    padding: 10px 15px; }
+    .btcsg-table tbody tr td p {
+      font-size: 12px;
+      line-height: 1.4em; }
+  .btcsg-table.btcsg-table-1 img {
+    width: 150px !important;
+    height: 80px !important;
+    -o-object-fit: cover;
+    object-fit: cover;
+    max-width: 150px !important;
+    border: 1px solid #AAAAAA; }
+
+.btcsg-table-responsive {
+  width: 100%;
+  overflow-y: hidden;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  border: 1px solid #DDDDDD;
+  min-height: 0.01%;
+  overflow-x: auto;
+  margin-bottom: 15px; }
+  @media screen and (min-width: 1024px) {
+    .btcsg-table-responsive {
+      width: auto; }
+      .btcsg-table-responsive > .table {
+        margin-bottom: 0; }
+        .btcsg-table-responsive > .table > thead > tr > th,
+        .btcsg-table-responsive > .table > thead > tr > td,
+        .btcsg-table-responsive > .table > tbody > tr > th,
+        .btcsg-table-responsive > .table > tbody > tr > td,
+        .btcsg-table-responsive > .table > tfoot > tr > th,
+        .btcsg-table-responsive > .table > tfoot > tr > td {
+          white-space: nowrap; } }
+
+/* Page Examples */
+
+/*
+Components
+
+Styleguide 1.0
+*/
+/*
+Pages
+
+Styleguide 2.0
+*/

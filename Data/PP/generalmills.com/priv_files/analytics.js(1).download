@@ -1,0 +1,171 @@
+﻿
+function UtagLink_1(eventType) {
+    utag.link({
+        EventType: eventType        
+    });
+}
+
+function UtagLink_2(eventType, contentTitle) {
+    utag.link({
+        EventType: eventType,
+        ContentTitle: contentTitle
+    });
+}
+
+function UtagLink_3(eventType, contentTitle, rating) {
+    utag.link({
+        EventType: eventType,
+        Rating: rating,
+        ContentTitle: contentTitle        
+    });
+}
+
+function UtagLink_4(eventType, contentTitle, socialNetwork) {
+    utag.link({
+        EventType: eventType,
+        SocialNetwork: socialNetwork,
+        ContentTitle: contentTitle
+    });
+}
+
+function UtagLink_5(eventType, siteSearchPhrase, searchResultCount) { 
+    utag.link({
+        EventType: eventType,        
+        SiteSearchPhrase: siteSearchPhrase,
+        SearchResultCount: searchResultCount
+    });
+}
+
+function UtagLink_6(eventType, navigationCategory) {
+    utag.link({
+        EventType: eventType,
+        NavigationCategory: navigationCategory
+    });
+}
+
+function UtagLink_7(eventType, socialNetwork) {
+    utag.link({
+        EventType: eventType,       
+        SocialNetwork: socialNetwork
+    });
+}
+
+
+$(document).ready(function () {
+
+    // Page Title
+    var contentTitle = $(document).find("title").text();
+
+    // Any Download link click
+    $("a[href$='.ashx']").on("click", function () {
+        var contentTitle = $(this).text();
+        UtagLink_2("Download", contentTitle);        
+    });
+
+    // search Action result
+    if(window.location.href.indexOf("SearchResults?SearchTerm") > -1) {
+        var siteSearchPhrase = $(".searchTerm").text();
+        var searchResultCount =  $(".searchResultCount").text();
+        UtagLink_5("SearchAction", siteSearchPhrase, searchResultCount);        
+    }
+
+    // Search Result Link click
+    $("a[data-rel='search-result']").on("click", function () {
+        // Search Link Title
+        var contentTitle = $(this).text();        
+        UtagLink_2("SearchResult", contentTitle);
+    });   
+
+    // Social Share - Twitter
+    $(".icon-twitter").on("click", function () {
+        UtagLink_4("SocialShare", contentTitle, "Twitter");
+    });
+
+    // Social Share - Facebook
+    $(".icon-facebook").on("click", function () {
+        UtagLink_4("SocialShare", contentTitle, "Facebook");
+    });
+
+    // Social Share - Email
+    $(".icon-email").on("click", function () {
+        UtagLink_2("Email", contentTitle);
+    });
+
+    // Printer
+    $(".icon-printer").on("click", function () {
+        UtagLink_2("Print", contentTitle);
+    });
+
+    // Global Header Navigation
+    $(".main-nav a,.mobile-nav a").on("click", function () {
+        var navigationCategory = $(this).text();
+        UtagLink_6("GlobalNavigation", navigationCategory);        
+    });
+
+    // Social Follow Footer
+    $(".footer-social a").on("click", function () {
+        var socialNetwork = $($(this).children("span").get(0)).text();
+        UtagLink_7("SocialFollow", socialNetwork);
+    });    
+});
+
+
+
+// YouTube Player API Reference for iframe Embeds
+// Reference - https://developers.google.com/youtube/iframe_api_reference#Events
+
+/*
+ * Steps - 
+ * 1. Add "enablejsapi=1" in iframe src query string i.g. - 
+     * <iframe id="player" type="text/html" src="http://www.youtube.com/embed/M7lc1UVf-VE?enablejsapi=1&origin=http://example.com"></iframe>
+ * 2. Add Unique id for each iframe
+ * 3. Add class to each iframe as "video-tracking"
+ * 4. iframe Youtube video start and stop events are captured in onPlayerStateChange below from where analytics tags are fired
+ */
+
+
+// 1. This code loads the IFrame Player API code asynchronously.
+var tag = document.createElement('script');
+
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+// 2. This function creates an <iframe> (and YouTube player)
+//    after the API code downloads.
+var players = {};
+function onYouTubeIframeAPIReady(e) {    
+    $('iframe.video-tracking').each(function (i) {
+        var youtubeiframeClass = $(this).attr('id');        
+        players[youtubeiframeClass] = new YT.Player(youtubeiframeClass, {
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    });
+}
+
+ // 3. The API will call this function when the video player is ready.
+var pauseFlag = false;
+function onPlayerReady(e) {
+    //Player ready functions would go here
+}
+
+// 4. The API calls this function when the player's state changes.
+//    The function indicates that when playing a video (state=1),
+//    the player should play for six seconds and then stop.
+function onPlayerStateChange(e) {
+    var videoTitle = $(e.target.a).parent().parent().children("h3.h1").text();
+
+    if (e.data == YT.PlayerState.PLAYING) {
+        UtagLink_2("VideoStart", videoTitle);        
+        pauseFlag = true;
+    }
+    if (e.data == YT.PlayerState.ENDED) {
+        UtagLink_2("VideoComplete", videoTitle);        
+    }
+    else if (e.data == YT.PlayerState.PAUSED && pauseFlag) {        
+        pauseFlag = false;
+    }    
+}

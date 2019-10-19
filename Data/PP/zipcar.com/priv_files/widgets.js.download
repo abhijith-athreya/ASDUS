@@ -1,0 +1,309 @@
+// NOTE: the dependent module cc.js is currently not cache-busted.  
+// Since we want to be able to cache this file, we cannot cache bust 
+// that one.  This problem will be resolved when we serve member facing 
+// javascript as a concatenated file.
+
+//zc-widget related JavaScript
+define(["modules/cc"],
+    function(widgets) {
+        zc.widgets = (function() {
+            
+            return {
+                //build an ajax call for a widget
+               build_remote_for_widget : function( confirm_q, method, src, before, complete, error, update, success, data )
+                {
+                    var confirmResult = true;
+                    if( confirm_q != "0" ) //argument exists
+                        confirmResult = confirm( confirm_q ) //ask the user
+
+                    if( confirmResult ) 
+                    {
+
+                        var parameters = {
+                           type:    method,
+                           url:     src,
+                           cache:   false    
+                           };
+
+                        if( data && data != "0")
+                            parameters[ 'data' ] = data;
+
+                        if( before != "0" )
+                            parameters[ 'beforeSend' ] = before;
+
+                        if( complete != "0" )
+                             parameters[ 'complete' ] = complete;
+
+                        if( error != "0" )
+                             parameters[ 'error' ] = error;
+
+                        if( update != "0" )
+                        {
+                             parameters[ 'success' ] = function(html) {
+                                  $("#" + update).html( html );
+                             };
+                        }
+
+                        //a success block clobbers the update
+                        if( success != "0")
+                            parameters[ 'success' ] = success;
+
+                        $.ajax( parameters );
+                    }
+                },
+                //build a form ajax call for remote_form_for
+                build_remote_for_widget_form : function ( confirm_q, method, src, before, complete, error, update, success, validate, form  )
+                {
+                    if( !validate || (validate && $(form).valid() ) ) { //make sure we're not submitting an invalid form
+                        var data = $(form).serialize();
+                        this.build_remote_for_widget( confirm_q, method, src, before, complete, error, update, success, data )
+                    }
+                },
+                add_cc_validation : function( cc_input, obj_name ) 
+                {
+                    $( cc_input ).addClass( "creditcard" );
+                    $( cc_input ).addClass( "required" );
+                    
+                    obj_name = obj_name.replace( /\./g, "_" );
+                    $( "#" + obj_name ).addClass( "required" );
+                    
+                },
+                set_cc_note : function( cc_input )
+                {
+                    var cc_num = cc_input.value;
+                    
+                    var type = zc.cc.verisign_checksum( cc_num );
+                    var message = "";
+                    
+                    if( type == "unknown" )
+                        message = zc.Utils.catalog.translate("zipsite.there_is_a_problem_with_your_credit_card_number");
+                    
+                    var cardClass = "";  
+                    
+                    switch( type )
+                    {
+                        case "VISA": 
+                        case "Visa Electron": 
+                            cardClass = "visa";
+                            break;
+                        case "Discover": 
+                            cardClass = "discover";
+                            break;
+                        case "American Express":
+                            cardClass = "amex";
+                            break;
+                        case "MasterCard":
+                            cardClass = "mastercard";
+                            break;
+                        case "Maestro":
+                            cardClass = "maestro";
+                            break;
+                        case "Solo":
+                            cardClass = "solo";
+                            break;
+                        case "Diner's Club / Carte Blanche":
+                            cardClass = "dinersclub";
+                            break;
+                        case "JCB":
+                            cardClass = "jcb";
+                            break;
+                    }
+
+                    if( cardClass != "") {
+                        $('#' + cc_input.id + '_note').html( "<div class='cc "+cardClass+"'><div>" );
+                    } else {
+                        $('#' + cc_input.id + '_note').html( message );
+                    }
+                },
+                toggle_tip : function( event )
+                {   
+
+                    var show_tip = event.data.show_tip || event.target;
+                    var tip_id = event.data.tip_id;
+                    var tip_elt_id = event.data.tip_elt_id;
+
+
+                    if( $(show_tip).hasClass( "show_tip" ) )
+                    {
+                        //hide others
+                        $(".tip_container").fadeOut( "fast" );
+                        $(".hide_tip").removeClass( "hide_tip" ).addClass( "show_tip" );   
+
+
+
+                        $( show_tip ).removeClass( "show_tip" ).addClass( "hide_tip" );
+
+                         //move the tip
+                        var p = $( show_tip ).position();
+                        $('#'+tip_id).css( { position: "absolute", left: Math.round(p.left+42)+"px", top: Math.round(p.top) + "px"});
+
+
+                        //move the arrow
+                        $(".tip_arrow").css( { position: "absolute", left: Math.round(p.left+42-6)+"px", top: Math.round(p.top+7)+"px"});
+
+                        //fade in
+                        $("#"+tip_id+",.tip_arrow").fadeIn( "fast" );
+
+
+                        //track events elsewhere
+                        $("body").bind( "click", {show_tip: show_tip, tip_id: tip_id, tip_elt_id: tip_elt_id}, zc.widgets.toggle_tip );                
+                        $("#"+tip_id+",.tip_arrow,#"+tip_elt_id).bind( "click.capture", function( event ) { return false; } );
+
+                    }
+                    else {
+
+                        //flip show button
+                        $( show_tip ).removeClass( "hide_tip" ).addClass( "show_tip" );         
+
+                        //unbind events as necessary
+                        $(".zc_form_element,.tip_arrow,.zc_form_element input").unbind( "click.capture" );     
+                        $("body").unbind( "click" ); 
+
+                        //fade out
+                        $("#"+tip_id+",.tip_arrow").fadeOut( "fast" );
+
+
+                    }
+
+                    //kill the event (do not allow further propogation)
+                    return false;
+                },
+
+                country_change : function( elt, name, fleet_countries_only, hide_address_type ) 
+                {
+                   
+                   var selection = elt;
+                   var validate = $(selection).attr("data-validate");
+                   validate = (validate == undefined) ? "true" : validate;
+
+                   var error_class = encodeURI($(selection).siblings(".error_container").attr("class"));
+                   
+                   var extension = $("#"+selection.id+" :selected").attr( "id" );
+                   var id = selection.id;
+                   var namespace = id.slice( 0, id.indexOf("_country_id")); 
+                   
+                   var region_id = $("#"+namespace+"_region_id").val();
+                   var country_id = $("#"+selection.id+" :selected").val();
+                   var address_type = $("#"+namespace+"_address_type").val();
+                   
+                   //disable form elements
+                   $("select[id*='"+namespace+"'], input[id*='"+namespace+"']").attr("disabled","disabled");
+
+                   var url = "/registration/address/update?obj_name=" + name + "&country_id=" + country_id + "&fleet_countries_only=" + fleet_countries_only + "&hide_address_type=" + hide_address_type + "&validate=" + validate + "&error_class=" + error_class + "&address_type=" + address_type;
+                   
+                   
+                   $.get( url, function( data ) { 
+                       
+                       //need to save insertion point
+                       var insertion_point = $("li.zc_form_element[id*='"+namespace+"']:first" ).prev();
+                       
+                       var before = false;
+                       if( insertion_point.length == 0 )  {
+                           insertion_point = $("li.zc_form_element[id*='"+namespace+"']:first" ).parent().children( ":last" );
+                           before = true
+                       }
+                      
+                       
+                       data = data.replace( /\<form.*?\>/g, "");
+                       data = data.replace( /\<\/form.*?\>/g, "");
+                       
+                        var saved = $("li.zc_form_element[id*='"+namespace+"']" ).remove();
+                        if( before ) 
+                          insertion_point.before( data );
+                        else
+                          insertion_point.after( data );
+                  
+                         
+                       //add placeholders
+                        if (!("placeholder" in $('<input>')[0])) {
+                        $(".registration .zc_form_element input[placeholder]").addClass( "placeheld" );
+                              $(".registration .zc_form_element input[placeholder]").placeHeld();
+                          } 
+                         
+                        //support registrations vertical rules...
+                         $(".vr").height( $("#elements").height() );
+                       
+                    } );
+                },
+                errorHtmlBase : '<div style="display: none" id="@id@_error" class="error_container @className@">' +
+                                '    <div class="error">' +
+                                '        <div class="tl"></div>' +
+                                '        <div class="horizontal_fill_top"><div class="top_drop"></div></div>' +
+                                '        <div class="tr"></div>' +
+                                '            <div id="@id@_error_content" class="error_content">' +
+                                '                  <div class="error_drop_shadow">' +
+                                '                    <div class="error_message"></div>' +
+                                '                    <div class="bl"></div>' +
+                                '                    <div class="horizontal_fill_bottom">' +
+                                '                        <div class="error_bottom_drop"></div>' +
+                                '                    </div>' +
+                                '                    <div class="br"></div>' +
+                                '            </div>' +
+                                '        </div>' +
+                                '    </div>' +
+                                '    <div class="error_arrow"></div>' +
+                                '</div>',
+                generateErrorHtml : function( id, className ) {
+                    if( className == null ) className = "";
+
+                    return zc.widgets.errorHtmlBase.replace(/@id@/g, id).replace(/@className@/g, className);
+                },
+                showErrors : function( errorMap, errorList )
+                {
+                    var len = errorList.length;
+                    var i = 0;
+
+
+                    for( i; i<len; i++)
+                    {
+                        var elt = errorList[i].element;
+                        var msg = errorList[i].message;
+                        
+                        var eltId = elt.id + "_error";
+                        
+                        if( $("#"+eltId).length == 0 ) //handling datepickers
+                        {
+                            elt = $(elt).parentsUntil(".error_container").children(".error_container")[0];
+                            eltId = elt.id;
+                        }
+
+                        $("#"+eltId+"_content .error_message").html( msg );
+
+                        // find the top by finding the offset of the first element with an offset.
+                        var topEle = $(errorList[i].element);
+                        for( var top=topEle.position().top; top <= 0 && topEle; topEle = topEle.parent() ) {
+                            top = topEle.position().top;
+                        }
+                        $("#"+eltId).css( { top: top-10 });
+
+                        $("#"+eltId).show();
+                        $(errorList[i].element).addClass( "error" );
+
+                    }
+
+                    len = this.successList.length;
+                    i = 0;
+
+                     for( i; i<len; i++)
+                     {
+                            var elt = this.successList[i];
+                            var eltId = elt.id + "_error";
+                            
+                            if( $("#"+eltId).length == 0 ) //handling datepickers
+                            {
+                                elt = $(elt).parentsUntil(".error_container").children(".error_container")[0];
+                                eltId = elt.id;
+                            }
+                            
+                            $("#"+eltId).hide();
+                            $(this.successList[i]).removeClass( "error" );
+
+                     }
+
+                     //$(".registration .zc_form_element input[placeholder]").trigger("blur");
+                }
+                
+            }
+        })();
+    }
+);

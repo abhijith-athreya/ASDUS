@@ -1,0 +1,233 @@
+﻿
+
+$(document).ready(function () {
+
+    setMainArticleVideoHeight();
+    initializeMainVideo();
+
+    // Popup Videos for Mainsection 
+
+    //Set the height of the article video based on 16:9 ratio
+    //setArticleVideoHeight();
+});
+function setMainArticleVideoHeight() {
+
+    //DIMENSIONS FOR MOBILE RESOLUTION   
+    videoWidth = 315;
+    videoHeight = 177.18;    
+    if ($(window).outerWidth() > 767) {        
+        //DIMENSIONS FOR TABLET AND DESKTOP RESOLUTION
+        videoWidth = 640;
+        videoHeight = 360;
+    }
+}
+
+function initializeMainVideo() {
+
+    var MainVideoSection = $("div[id*='hrefYoutubeMainSection']");
+
+    if (MainVideoSection != null) {
+        MainVideoSection.colorbox({
+            iframe: true, innerWidth: videoWidth, innerHeight: videoHeight, href: function () {
+                return MainVideoSection.attr("href");
+            }
+        });
+
+        MainVideoSection.hover(function () { $(this).css("cursor", "pointer"); },
+            function () { $(this).css("cursor", "default"); }
+            );
+    }
+
+    var SubSectionVideo = $("div[id*='hrefYoutubeSubSection']");
+    if (SubSectionVideo != null) {
+        SubSectionVideo.colorbox({
+            iframe: true, innerWidth: videoWidth, innerHeight: videoHeight, href: function () {
+                return SubSectionVideo.attr("href");
+            }
+        });
+
+        SubSectionVideo.hover(function () { $(this).css("cursor", "pointer"); },
+            function () { $(this).css("cursor", "default"); }
+            );
+    }
+
+    var ContentSectionVideo = $("div[id*='hrefYoutubeContentSection']");    
+    if (ContentSectionVideo != null) {        
+        ContentSectionVideo.colorbox({
+            iframe: true, innerWidth: videoWidth, innerHeight: videoHeight, href: function () {
+                return ContentSectionVideo.attr("href");
+            }
+        });
+
+        ContentSectionVideo.hover(function () { $(this).css("cursor", "pointer"); },
+            function () { $(this).css("cursor", "default"); }
+            );
+    }
+
+    /* added for mobile */
+    var MobileSectionVideo = $("div[id*='hrefYoutubeMobileSection']");
+    if (MobileSectionVideo != null) {
+        MobileSectionVideo.colorbox({
+            iframe: true, innerWidth: videoWidth, innerHeight: videoHeight, href: function () {
+                return MobileSectionVideo.attr("href");
+            }
+        });
+
+        MobileSectionVideo.hover(function () { $(this).css("cursor", "pointer"); },
+            function () { $(this).css("cursor", "default"); }
+            );
+    }
+
+}
+
+$(window).resize(function () {
+    setMainArticleVideoHeight();
+    initializeMainVideo();
+});
+
+
+
+
+$(document).ready(function () {
+    setplayerVideoHeight();
+    initializejwVideo();
+    // Popup Videos for Mainsection 
+
+    //Set the height of the article video based on 16:9 ratio
+    //setArticleVideoHeight();
+});
+function setplayerVideoHeight() {
+    //DIMENSIONS FOR MOBILE RESOLUTION           
+    vidWidth = 315;
+    vidHeight = 218;
+    if ($(window).outerWidth() > 767) {
+        //DIMENSIONS FOR TABLET AND DESKTOP RESOLUTION
+        vidWidth = 640;
+        vidHeight = 380;        
+    }
+    
+}
+
+function initializejwVideo() {
+
+    var jwSectionVideo = $("div[id*='jwsectionvideo']");
+    if (jwSectionVideo != null) {
+        jwSectionVideo.colorbox({
+            html: "<div id='container' class='mainVideo cboxElement'/>", width: vidWidth, height: vidHeight,
+            onComplete: SetContainerValue
+
+        });
+
+        jwSectionVideo.hover(function () { $(this).css("cursor", "pointer"); },
+            function () { $(this).css("cursor", "default"); }
+            );
+    }
+
+    var pepsichallengevideo = $("div[id*='pepsichallengesection']");
+    if (pepsichallengevideo != null) {
+        pepsichallengevideo.colorbox({
+            html: "<div id='pepsicontainer' class='mainVideo cboxElement'/>", width: vidWidth, height: vidHeight,
+            onComplete: pepsichallengeValue
+
+        });
+
+        pepsichallengevideo.hover(function () { $(this).css("cursor", "pointer"); },
+            function () { $(this).css("cursor", "default"); }
+            );
+    }
+    var believesection = $("a[id*='believesection']");
+    if (believesection != null) {
+        believesection.colorbox({
+            html: "<div id='believecontainer' class='mainVideo youtube cboxElement'/>", width: vidWidth, height: vidHeight,
+            onComplete: believecontainer
+
+        });
+        believesection.hover(function () { $(this).css("cursor", "pointer"); },
+            function () { $(this).css("cursor", "default"); }
+            );
+    }
+
+    var citizenship = $("div[id*='citizenshipsection']");
+    if (citizenship != null) {
+        citizenship.colorbox({
+            html: "<div id='citizenshipcontainer' class='mainVideo cboxElement'/>", width: vidWidth, height: vidHeight,
+            onComplete: citizenshipcontainer
+
+        });
+
+        citizenship.hover(function () { $(this).css("cursor", "pointer"); },
+            function () { $(this).css("cursor", "default"); }
+            );
+    }
+    var menusection = $("a[id*='menubelievesection']");
+    if (menusection != null) {
+        menusection.colorbox({
+            html: "<div id='menubelievecontainer' class='mainVideo cboxElement'/>", width: vidWidth, height: vidHeight,
+            onComplete: menucontainer
+
+        });
+
+        menusection.hover(function () { $(this).css("cursor", "pointer"); },
+            function () { $(this).css("cursor", "default"); }
+            );
+    }
+}
+
+$(window).resize(function () {
+    setplayerVideoHeight();
+    initializejwVideo();
+});
+
+
+
+function SetContainerValue() {   
+    jwplayer('container').setup({
+        file: '/videos/album/OurHistroy/be_like_mike.mp4?sfvrsn=2',
+        autostart: false,
+        primary: 'flash',
+        width: vidWidth,
+        height: '100%'
+    });
+
+
+}
+
+function pepsichallengeValue() {
+    jwplayer('pepsicontainer').setup({
+        file: '/videos/album/OurHistroy/pepsi_challenge.mp4?sfvrsn=2',
+        autostart: false,
+        primary: 'flash',
+        width: vidWidth,
+        height: '100%'
+    });
+}
+function believecontainer() {
+    jwplayer('believecontainer').setup({
+        file: 'https://secure.footprint.net/pepsico/prod/PWP_IKN_video.mp4',
+        autostart: false,
+        primary: 'flash',
+        width: vidWidth,
+        height: '100%',
+        
+    });
+}
+function citizenshipcontainer() {
+    jwplayer('citizenshipcontainer').setup({
+        file: 'https://secure.footprint.net/pepsico/prod/Purpose_GC_Sue_Tsokris.mp4',
+        autostart: false,
+        primary: 'flash',
+        width: vidWidth,
+        height: '100%'
+    });
+}
+function menucontainer() {
+    jwplayer('menubelievecontainer').setup({
+        file: 'https://secure.footprint.net/pepsico/prod/PWP_IKN_video.mp4',
+        autostart: false,
+        primary: 'flash',
+        width: vidWidth,
+        height: '100%',
+
+    });
+}
+

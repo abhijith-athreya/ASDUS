@@ -1,0 +1,96 @@
+var cartcount=0;var favCount=0;var cartType="";var displayMatrixFlag=false;var nonEditMode=$("#nonEditMode").val();var hideCartModel="";var deviceCount=0;var stickerCount=0;$(document).ready(function(){try{$('#favCount').text(localStorage.favCount);cartListAjax();}
+catch(e){}
+var timerSet=false;$(".icon-cart").hover(function(){if($('html.ua-desktop').length){clearTimeout(hideCartModel);$("#cartModal").slideDown();}},function(){if($('html.ua-desktop').length){hideCartModel=setTimeout(function(){$("#cartModal").slideUp();},5000);}});$("#cartModal").hover(function(){if($('html.ua-desktop').length){clearTimeout(hideCartModel);$("#cartModal").slideDown();}},function(){if($('html.ua-desktop').length){hideCartModel=setTimeout(function(){$("#cartModal").slideUp();},5000);}});$(".close-btn").click(function(){timerSet=false;clearInterval(hideCartModel);$("#cartModal").slideUp();checkEditZipcodeAvailable();});var cartLandingFlag=$("#cartLandingPageFlag").val();if(cartLandingFlag===undefined||cartLandingFlag==='false'){var cartheaderflag=true;$("#cartHeaderLink").click(function(){var currentPage=window.location.href;setCheckShopCookie(currentPage,cartheaderflag);});$("#cartModalViewLink").click(function(){var currentPage=window.location.href;cartheaderflag=false;setCheckShopCookie(currentPage,cartheaderflag);});}
+$('div.pull-right').on('focus','li.icon-cart',function(){if($('html.ua-desktop').length){clearTimeout(hideCartModel);$("#cartModal").slideDown();$(".gbl_btn-close.close-btn.closemodal").focus();}});$('#cartModalList a:last').focusout(function(){checkEditZipcodeAvailable();timerSet=false;clearInterval(hideCartModel);$("#cartModal").slideUp();});$('#cartModalViewLink').focusout(function(){if(cartcount===0){checkEditZipcodeAvailable();timerSet=false;clearInterval(hideCartModel);$("#cartModal").slideUp();}});});function checkEditZipcodeAvailable(){if($('#succZipText').css('display')=='inline'){$("#editLinkForZip").focus();}else{$("#zipcode").focus();}}
+function displayCartModal(result){if(window.location.href.indexOf('/account.html')>-1||window.location.href.indexOf('/account/activation.html')>-1){if($('#cartTypeResponseValue').val()!==undefined&&$('#cartTypeResponseValue').val()!==''){cartType=$('#cartTypeResponseValue').val();}}
+else{var sessionJsonStr=getSessionAttribute('cartType',false);if(sessionJsonStr!==undefined&&sessionJsonStr!==''){var sessionJson=$.parseJSON(sessionJsonStr);if(sessionJson.hasOwnProperty("cartType")){cartType=sessionJson.cartType;}}}
+cartcount=0;if(cartType==="soft"){displaySoftGoodsCartListModal(result);}
+else if(cartType==="hard"){displayCartList(result);}
+else if(cartType==="mixed"||cartType===""){displaySoftGoodsCartListModal(result);displayCartList(result);}
+if(stickerCount>0&&(deviceCount==0||cartType==="mixed"||cartType===""||cartType==="soft"))
+{removeStickersFromCart(result);}
+displayCartModalTotals(result);}
+function removeStickersFromCart(result)
+{if(!(result===undefined||result==="")){var jsonObj=$.parseJSON(result);var arrOrderItem=jsonObj.orderItem;if(arrOrderItem!==undefined&&arrOrderItem!==""&&arrOrderItem.length!==undefined&&arrOrderItem.length!==0){var cartProduct=[];for(index=0;index<arrOrderItem.length;index++){if(arrOrderItem[index]["xcatentry_ProductTypeId"]==="6")
+{cartProduct.push({"partNumber":arrOrderItem[index]["partNumber"],"quantity":'1'});}}
+var myString='inputReqParam=removeCart'+'&requestParam='+JSON.stringify(cartProduct);$.ajax({type:"POST",url:"/apps/mpcs/servlet/cartservlet",data:myString,success:function(result){}});}}}
+function displayCartModalTotals(result){if(!(result===undefined||result==="")){var jsonObj=$.parseJSON(result);var arrOrderItem=jsonObj.orderItem;if(arrOrderItem!==undefined&&arrOrderItem!==""&&arrOrderItem.length!==undefined&&arrOrderItem.length!==0){var totalsum=parseFloat(jsonObj.grandTotal);$('.cartModelTotalAmt').html("$"+addCommas(totalsum.toFixed(2)));$('#cartcount').html(parseInt(cartcount,10));$('.cartModalCount').text(parseInt(cartcount,10));}
+else{$('.cartModelTotalAmt').html("$0.00");$('#cartcount').html(parseInt(cartcount,10));$('.cartModalCount').text(parseInt(cartcount,10));}
+if(cartcount===1){$(".itemTextHeader").text($("#idHiddenItemText").val());$(".textItemDisplay").removeClass("hide");$(".textItemsDisplay").addClass("hide");}
+else{$(".itemTextHeader").text($("#idHiddenItemsText").val());$(".textItemsDisplay").removeClass("hide");$(".textItemDisplay").addClass("hide");}}}
+function errorGetCartActivationModal(error){}
+function setCheckShopCookie(currentPage,cartheaderflag){var myString='inputReqParam=setCheckShop'+'&requestParam='+currentPage;$.ajax({type:"POST",url:"/apps/mpcs/servlet/compareservlet",data:myString,success:function(result){var carturl;if(cartheaderflag){var carturl=($('#cartheaderURL').val());if(carturl!=""&&carturl!=null&&carturl!=undefined)
+{carturl=carturl.replace("/content/metro/en/desktop/metro","")}}
+else{var carturl=($('#cartPageURL').val());if(carturl!=""&&carturl!=null&&carturl!=undefined)
+{carturl=carturl.replace("/content/metro/en/desktop/metro","")}}
+window.location.href=carturl;},error:function(error){var carturl;if(cartheaderflag){var carturl=($('#cartheaderURL').val());console.log("0000"+carturl);if(carturl!=""&&carturl!=null&&carturl!=undefined)
+{carturl=carturl.replace("/content/metro/en/desktop/metro","")
+console.log("final carturl0000"+carturl);}}
+else{var carturl=($('#cartPageURL').val());if(carturl!=""&&carturl!=null&&carturl!=undefined)
+{carturl=carturl.replace("/content/metro/en/desktop/metro","")}}
+window.location.href=carturl;}});}
+function addToCart(itemID){var cartProduct=[];cartProduct.push({"partNumber":itemID,"quantity":'1'});var myString='inputReqParam=addCart'+'&requestParam='+JSON.stringify(cartProduct);tmoCaller.callSync({url:"/apps/mpcs/servlet/cartservlet",data:myString,tmoOptions:{componentEl:".carterrormsg"}},successAddToCart);}
+function addToFav(itemID,type){var favProduct=[];favProduct.push({"partNumber":itemID,"quantity":'1'});var favCount=localStorage.getItem('favCount');if(type=='device'){var phone_favsku=localStorage.getItem('phone_favsku');if(phone_favsku!=undefined&&phone_favsku!=''&&phone_favsku!=null)
+{phone_favsku=phone_favsku+' '+itemID;localStorage.setItem('phone_favsku',phone_favsku);favCount++;localStorage.setItem('favCount',favCount);}
+else
+{localStorage.setItem('phone_favsku',itemID);favCount++;localStorage.setItem('favCount',favCount);}}
+else if(type=='accessories'){var acc_favsku=localStorage.getItem('acc_favsku');var favCount=localStorage.getItem('favCount');if(acc_favsku!=undefined&&acc_favsku!=''&&acc_favsku!=null)
+{acc_favsku=acc_favsku+' '+itemID;localStorage.setItem('acc_favsku',acc_favsku);favCount++;localStorage.setItem('favCount',favCount);}
+else
+{localStorage.setItem('acc_favsku',itemID);favCount++;localStorage.setItem('favCount',favCount);}}
+$('#favCount').text(localStorage.favCount);}
+function successAddToCart(result){(function(d){if(document.addEventListener)document.addEventListener('ltkAsyncListener',d);else{e=document.documentElement;e.ltkAsyncProperty=0;e.attachEvent('onpropertychange',function(e){if(e.propertyName=='ltkAsyncProperty'){d();}});}})
+var resultJsonObj=$.parseJSON(result);var arrOrderItem=resultJsonObj.orderItem;if(typeof(arrOrderItem)!=="undefined"&&arrOrderItem.length>0){var count=arrOrderItem.length;var modifiedImagePath;var cartId=resultJsonObj.orderId;_ltk.SCA.Meta1=cartId;for(index=0;index<count;index++){var URLPath="";if(arrOrderItem[index].hasOwnProperty("fullImage")){URLPath=arrOrderItem[index].fullImage.toUpperCase();modifiedImagePath=URLPath.replace("/WCSSTORE/EXTENDEDSITESCATALOGASSETSTORE","/CONTENT/DAM/MPCS");modifiedImagePath=modifiedImagePath.toLowerCase();}
+URLDetailPage="NA";var deviceName=arrOrderItem[index].name;var productNameURL="NA";if(typeof(deviceName)!=="undefined"){productNameURL=deviceName.toLowerCase();productNameURL=productNameURL.replace(/[^a-zA-Z\s\d ]/g,"");productNameURL=productNameURL.replace(/\s/g,"-");productNameURL=productNameURL.replace(/\-{2,}/g,"-");}
+if(URLPath.search("ACCESSORIES")!==-1){URLDetailPage=$("#accdetailsPg").val()+"/"+productNameURL+"/"+arrOrderItem[index].partNumber+".html";}else if(URLPath.search("PHONE")!==-1){URLDetailPage=$("#phonedetailsPg").val()+"/"+productNameURL+"/"+arrOrderItem[index].partNumber+".html";}
+_ltk.SCA.AddItemWithLinks(arrOrderItem[index]["partNumber"],arrOrderItem[index]["quantity"],arrOrderItem[index]["unitPriceAfterDiscount"],arrOrderItem[index]["name"],modifiedImagePath,URLDetailPage);}
+_ltk.SCA.Submit();scrollForm();displayCartModal(result);if($('html.ua-desktop').length){showModal();}}}
+function scrollForm(){if($(document).scrollTop()>0&&!$("html, body").is(':animated')){$("html, body").animate({scrollTop:0},"slow");}}
+function cartListAjax(){var myString='inputReqParam=getCart';var cartId=GetURLParameter('cartID');if(cartId!==undefined&&cartId!=="undefined"){myString+="&cartId="+cartId;}
+tmoCaller.callSync({url:"/apps/mpcs/servlet/cartservlet",data:myString,tmoOptions:{componentEl:".carterrormsg"}},successCartModalList,errorCartModalList);}
+function successCartModalList(result){if(flagActivationRemoveCart){flagActivationRemoveCart=false;var resultJsonObj=$.parseJSON(result);if(resultJsonObj.recordSetTotal){if(resultJsonObj.recordSetTotal>0){var arrOrderItem=resultJsonObj.orderItem;var count=arrOrderItem.length;for(index=0;index<count;index++){var URLPath="";if(arrOrderItem[index].hasOwnProperty("fullImage")){URLPath=arrOrderItem[index].fullImage.toUpperCase();}
+URLDetailPage="NA";var deviceName=arrOrderItem[index].name;var productNameURL="NA";if(typeof(deviceName)!=="undefined"){productNameURL=deviceName.toLowerCase();productNameURL=productNameURL.replace(/[^a-zA-Z\s\d ]/g,"");productNameURL=productNameURL.replace(/\s/g,"-");productNameURL=productNameURL.replace(/\-{2,}/g,"-");}
+if(URLPath.search("ACCESSORIES")!==-1){URLDetailPage=$("#accdetails").val()+"/"+productNameURL+"/"+arrOrderItem[index].partNumber+".html";imageURL="/content/dam/mpcs/accessories/";}else if(arrOrderItem[index]["xcatentry_CATGROUP_IDENTIFIER"]){if(/Phone/i.test(arrOrderItem[index]["xcatentry_CATGROUP_IDENTIFIER"])){URLDetailPage=$("#phonedetails").val()+"/"+productNameURL+"/"+arrOrderItem[index].partNumber+".html";imageURL="/content/dam/mpcs/phones/";}else if(/Tablet/i.test(arrOrderItem[index]["xcatentry_CATGROUP_IDENTIFIER"])){URLDetailPage=$("#tabletdetails").val()+"/"+productNameURL+"/"+arrOrderItem[index].partNumber+".html";imageURL="/content/dam/mpcs/phones/";}}else if(URLPath.search("PHONE")!==-1){URLDetailPage=$("#phonedetails").val()+"/"+productNameURL+"/"+arrOrderItem[index].partNumber+".html";imageURL="/content/dam/mpcs/phones/";}
+_ltk.SCA.AddItemWithLinks(arrOrderItem[index]["partNumber"],arrOrderItem[index]["quantity"],arrOrderItem[index]["unitPriceAfterDiscount"],arrOrderItem[index]["name"],URLPath,URLDetailPage);}
+_ltk.SCA.Submit();}
+if(resultJsonObj.recordSetTotal==0){(function(d){if(document.addEventListener)document.addEventListener('ltkAsyncListener',d);else{e=document.documentElement;e.ltkAsyncProperty=0;e.attachEvent('onpropertychange',function(e){if(e.propertyName=='ltkAsyncProperty'){d();}});}})
+_ltk.SCA.ClearCart();}}}
+displayCartModal(result);if(typeof(displayCartMatrix)=='function'&&displayMatrixFlag){displayMatrixFlag=false;displayCartMatrix(result);}
+if(typeof(paymentSteps)!=="undefined"&&paymentSteps===true){if(typeof($("#frm-shipping-tab").html())!=="undefined"){getOrderDetails();}
+else{getOrderSoftGoods();}}}
+function errorCartModalList(error){getAttributes();$(".carterrormsg").html("We are sorry, this is currently not available. Please try after sometime.");}
+function displayCartList(result){if(!(result===undefined||result==="")){var jsonObj=$.parseJSON(result);var arrOrderItem=jsonObj.orderItem;var index;var itemName;var imageURL;var quantity;if(arrOrderItem!==undefined&&arrOrderItem!==""&&arrOrderItem.length!==undefined&&arrOrderItem.length!==0){if(cartType==="hard"||cartType===""){$('#cartModalList').html("");}
+var clonedRow;var count=arrOrderItem.length;for(index=0;index<count;index++){if(arrOrderItem[index]["xcatentry_ProductTypeId"]==="1"||arrOrderItem[index]["xcatentry_ProductTypeId"]==="4"){if(arrOrderItem[index]["xcatentry_ProductTypeId"]==="1"&&$("#producttype_phone_"+arrOrderItem[index]["partNumber"]).length==0)
+{var phone_count_in_cart=$('#phone_count_in_cart').val();phone_count_in_cart++;$('#phone_count_in_cart').val(phone_count_in_cart);$('#producttypeincart').append('<input type="hidden" id="producttype_phone_'+arrOrderItem[index]["partNumber"]+'" value="'+arrOrderItem[index]["partNumber"]+'" />');}
+deviceCount++;clonedRow=$("#cartModalListDummy").children().clone();itemName=encodeURI(arrOrderItem[index].name);itemName=decodeURI(itemName.replace("%20L9%C3%A2%C2%84%C2%A2","&#8482"));clonedRow.find(".cartModalname").html(itemName);clonedRow.find(".namelinkdetails span").html(itemName);clonedRow.find(".imgLinkDetails span").html(itemName);imageURL=arrOrderItem[index].thumbnail;var URLPathDetails="";if(arrOrderItem[index].hasOwnProperty("fullImage")){URLPathDetails=arrOrderItem[index].fullImage.toUpperCase();}
+if(URLPathDetails.search("ACCESSORIES")!==-1){imageURL="/content/dam/mpcs/accessories/";}
+else if(URLPathDetails.search("PHONE")!==-1){imageURL="/content/dam/mpcs/phones/";}
+imageURL=imageURL+arrOrderItem[index].partNumber+"/images/front/small/"+arrOrderItem[index].partNumber+".jpg";clonedRow.find(".cartModalimg").attr("src",imageURL);cartModalQuantity=arrOrderItem[index].quantity;cartModalQuantity=cartModalQuantity.substr(0,cartModalQuantity.indexOf("."));clonedRow.find(".cartModalQuantity").html(cartModalQuantity);clonedRow.appendTo('#cartModalList');var URLPath="";if(arrOrderItem[index].hasOwnProperty("fullImage")){URLPath=arrOrderItem[index].fullImage.toUpperCase();}
+var URLDetailPage;var deviceName=arrOrderItem[index].name;if(typeof(deviceName)!=="undefined"){productNameURL=deviceName.toLowerCase();productNameURL=productNameURL.replace(/[^a-zA-Z\s\d ]/g,"");productNameURL=productNameURL.replace(/\s/g,"-");productNameURL=productNameURL.replace(/\-{2,}/g,"-");}
+if(URLPath.search("ACCESSORIES")!==-1){URLDetailPage=$("#accdetailsPg").val()+"/"+productNameURL+"/"+arrOrderItem[index].partNumber+".html";}else if(URLPath.search("PHONE")!==-1){URLDetailPage=$("#phonedetailsPg").val()+"/"+productNameURL+"/"+arrOrderItem[index].partNumber+".html";}
+if(URLDetailPage.indexOf("/content/metro/en/desktop/metro")>=0&&nonEditMode=="true"){URLDetailPage=URLDetailPage.replace("/content/metro/en/desktop/metro","");}
+clonedRow.find(".imgLinkDetails").attr("href",URLDetailPage);cartcount=cartcount+parseInt(arrOrderItem[index].quantity,10);}
+else if(arrOrderItem[index]["xcatentry_ProductTypeId"]==="6")
+{stickerCount++;}}
+if(window.location.href.indexOf("cart.html")>-1){if($('#phone_count_in_cart').val()>0)
+{$('.mob-featurephones').css('display','block');}
+else{$('.mob-featurephones').css('display','none');}}
+var totalsum=parseFloat(jsonObj.grandTotal);$('.cartModelTotalAmt').html("$"+addCommas(totalsum.toFixed(2)));$('#cartcount').html(parseInt(cartcount,10));$('.cartModalCount').text(parseInt(cartcount,10));}
+else{$('#cartModalList').html("");$('.cartModelTotalAmt').html("$0.00");$('#cartcount').html(parseInt(cartcount,10));$('.cartModalCount').text(parseInt(cartcount,10));}
+if(cartcount===1){$(".itemTextHeader").text($("#idHiddenItemText").val());$(".textItemDisplay").removeClass("hide");$(".textItemsDisplay").addClass("hide");}
+else{$(".itemTextHeader").text($("#idHiddenItemsText").val());$(".textItemsDisplay").removeClass("hide");$(".textItemDisplay").addClass("hide");}}
+else{$('#cartModalList').html("");}}
+function displaySoftGoodsCartListModal(result){var resultStr=result;if(!(resultStr===undefined||resultStr==="")){var resultJSON=$.parseJSON(resultStr);var total=0.0;$('#grand-total-soft-goods').html($("#currencytext").val()+total.toFixed(2));if(resultJSON.hasOwnProperty("grandTotal")){total=parseFloat(resultJSON.grandTotal);$("#grand-total-soft-goods").html($("#currencytext").val()+total.toFixed(2));}
+var arrOrderItem=resultJSON.orderItem;if(typeof(arrOrderItem)!=="undefined"&&arrOrderItem.length>0){$('#cartModalList').html("");$("#noItemsFound").addClass('hide');var clonedRow;var count=arrOrderItem.length;var serialNumbers=[];for(var index=0;index<count;index++){if(arrOrderItem[index].hasOwnProperty("xitem_xtm:SerialNumber")&&$.inArray(arrOrderItem[index]["xitem_xtm:SerialNumber"],serialNumbers)===-1){serialNumbers.push(arrOrderItem[index]["xitem_xtm:SerialNumber"]);}}
+for(var i=0;i<serialNumbers.length;i++){$.each(arrOrderItem,function(index,obj){if(serialNumbers[i]===arrOrderItem[index]["xitem_xtm:SerialNumber"]&&arrOrderItem[index]["xcatentry_ProductTypeId"]==="3"){populateRowInSoftGoodsModal(arrOrderItem[index],"3");cartcount=cartcount+parseInt(arrOrderItem[index].quantity,10);}});$.each(arrOrderItem,function(index,obj){if(serialNumbers[i]===arrOrderItem[index]["xitem_xtm:SerialNumber"]&&(arrOrderItem[index]["xcatentry_ProductTypeId"]==="2"||arrOrderItem[index]["xcatentry_ProductTypeId"]==="5")){populateRowInSoftGoodsModal(arrOrderItem[index],arrOrderItem[index]["xcatentry_ProductTypeId"]);cartcount=cartcount+parseInt(arrOrderItem[index].quantity,10);}});if(cartType==="soft"){$('#cartModalList').append("<hr class=\"clearFields\" />");}}
+$('#cartcount').html(parseInt(cartcount,10));$('.cartModalCount').text(parseInt(cartcount,10));if(cartcount===1){$(".itemTextHeader").text($("#idHiddenItemText").val());$(".textItemDisplay").removeClass("hide");$(".textItemsDisplay").addClass("hide");}
+else{$(".itemTextHeader").text($("#idHiddenItemsText").val());$(".textItemsDisplay").removeClass("hide");$(".textItemDisplay").addClass("hide");}}
+else{$('#cartModalList').html("");}}
+else{$('#cartModalList').html("");}}
+function populateRowInSoftGoodsModal(row,productType){var itemName;clonedRow=$("#cartSoftGoodsModalListDummy").children().clone();itemName=encodeURI(row.name);itemName=decodeURI(itemName.replace("%20L9%C3%A2%C2%84%C2%A2","&#8482"));clonedRow.find(".cartModalname").html(itemName);if(productType==="3"){clonedRow.find(".itemImage").removeClass("hide");clonedRow.find(".blankDiv").addClass("hide");var imageURL=row.thumbnail;imageURL="/content/dam/mpcs/plans/"+row.partNumber+"/images/front/small/"+row.partNumber+".jpg";clonedRow.find(".softCartModalimg").attr("src",imageURL);}
+else{clonedRow.find(".itemImage img").addClass("hide");clonedRow.find(".blankDiv").removeClass("hide");}
+var quantity=row.quantity;quantity=quantity.substr(0,quantity.indexOf("."));clonedRow.find(".cartModalQuantity").html(quantity);clonedRow.find(".cartModalimg").remove();clonedRow.appendTo('#cartModalList');}
+function addCommas(nStr){nStr+='';x=nStr.split('.');x1=x[0];x2=x.length>1?'.'+x[1]:'';var rgx=/(\d+)(\d{3})/;while(rgx.test(x1)){x1=x1.replace(rgx,'$1'+','+'$2');}
+return x1+x2;}
+function showModal(){var hideCartModel;var timerSet=false;$("#cartModal").slideDown();if(!timerSet){hideCartModel=setInterval(hideModel,5000);timerSet=true;}
+function hideModel(){timerSet=false;clearInterval(hideCartModel);$("#cartModal").slideUp();}}

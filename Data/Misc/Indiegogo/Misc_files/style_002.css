@@ -1,0 +1,305 @@
+/*
+Template Name:  Carousel
+Template URI:   http://mightyminnow.com
+Author:         MIGHTYminnow
+Author URI:     http://mightyminnow.com
+Description:    Displays tweets formatted as a carousel.
+Version:        1.0.0
+License:        GNU General Public License v2 or later
+License URI:    http://www.gnu.org/licenses/gpl-2.0.html
+Tags:           carousel
+Text Domain:    trestle
+*/
+
+/* Custom CSS
+--------------------------------------------- */
+
+.template-carousel .fetch-tweets {
+	margin: 0 !important;
+}
+
+.template-carousel ul,
+.template-carousel li,
+.template-carousel .fetch-tweets-item {
+	list-style-type: none !important;
+}
+
+.template-carousel .fetch-tweets-item {
+	margin: 0 !important;
+	padding: 0;
+	border-top: none;
+	font-size: 16px;
+	line-height: 1.5;
+	word-wrap: break-word;
+}
+
+.template-carousel .last-slide {
+	text-align: center;
+}
+
+.template-carousel .fetch-tweets-tweet-created-at {
+	margin-bottom: 0.25em;
+}
+
+.template-carousel .fetch-tweets-item h2 {
+	margin-top: 0.5em;
+	margin-bottom: 0.1em;
+	color: #2a2a2a;
+}
+
+.template-carousel .fetch-tweets-item .button {
+	margin-bottom: 1px; /* Fix to clear bottom getting chopped */
+}
+
+.template-carousel .fetch-tweets-item.last-slide p {
+	margin-bottom: 1.25em;
+}
+
+/* Follow link
+--------------------------------------------- */
+
+.template-carousel .fetch-tweets-follow-button {
+	position: relative;
+	padding: 12px 20px 0 95px;
+}
+
+.template-carousel .fetch-tweets-follow-button:before {
+	content: "\f099";
+	position: absolute;
+	top: 0;
+	left: 12px;
+	vertical-align: middle;
+	color: #A8A8A8;
+	font-family: FontAwesome;
+	font-size: 54px;
+	line-height: 1;
+}
+
+@media (min-width: 600px) {
+
+	.template-carousel .fetch-tweets-item {
+		font-size: 18px;
+	}
+}
+
+/**
+ * bxSlider specific CSS.
+ *
+ * These have been moderately adapted from the default bxSlider CSS.
+ */
+
+/** RESET AND LAYOUT
+===================================*/
+
+.template-carousel .bx-wrapper {
+	position: relative;
+	margin-bottom: 35px !important;
+	padding: 0;
+	*zoom: 1;
+	padding: 34px 40px 20px 40px;
+	background-color: #F5F5F5;
+}
+
+.template-carousel .bx-wrapper:after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 78px;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 30px 45px 0 0;
+	border-color: #f5f5f5 transparent transparent transparent;
+	-ms-transform: skewX(-20deg); /* IE 9 */
+    -webkit-transform: skewX(-20deg); /* Safari */
+    transform: skewX(-20deg); /* Standard syntax */
+}
+
+.template-carousel .bx-wrapper img {
+	max-width: 100%;
+	display: block;
+}
+
+/** THEME
+===================================*/
+
+.template-carousel .bx-wrapper .bx-viewport {
+	/*fix other elements on the page moving (on Chrome)*/
+	-webkit-transform: translatez(0);
+	-moz-transform: translatez(0);
+    	-ms-transform: translatez(0);
+    	-o-transform: translatez(0);
+    	transform: translatez(0);
+}
+
+.template-carousel .bx-wrapper .bx-pager,
+.template-carousel .bx-wrapper .bx-controls-auto {
+	position: absolute;
+	bottom: -30px;
+	width: 100%;
+}
+
+/* LOADER */
+
+.template-carousel .bx-wrapper .bx-loading {
+	min-height: 50px;
+	background: url(images/bx_loader.gif) center center no-repeat #fff;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2000;
+}
+
+/* PAGER */
+
+.template-carousel .bx-wrapper .bx-pager {
+	text-align: center;
+	font-size: .85em;
+	font-family: Arial;
+	font-weight: bold;
+	color: #666;
+	padding-top: 20px;
+}
+
+.template-carousel .bx-wrapper .bx-pager .bx-pager-item,
+.template-carousel .bx-wrapper .bx-controls-auto .bx-controls-auto-item {
+	display: inline-block;
+	*zoom: 1;
+	*display: inline;
+}
+
+.template-carousel .bx-wrapper .bx-pager.bx-default-pager a {
+	background: #666;
+	text-indent: -9999px;
+	display: block;
+	width: 10px;
+	height: 10px;
+	margin: 0 5px;
+	outline: 0;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.template-carousel .bx-wrapper .bx-pager.bx-default-pager a:hover,
+.template-carousel .bx-wrapper .bx-pager.bx-default-pager a.active {
+	background: #000;
+}
+
+/* DIRECTION CONTROLS (NEXT / PREV) */
+
+.template-carousel .bx-wrapper .bx-controls-direction {
+	margin-top: 12px;
+	text-align: right;
+}
+
+.template-carousel .bx-wrapper .bx-controls-direction a {
+	outline: none;
+	margin-left: 5px;
+	color: #a8a8a8;
+	font-size: 0;
+}
+
+.template-carousel .bx-wrapper .bx-controls-direction a.disabled,
+.template-carousel .bx-wrapper .bx-controls-direction a.disabled:hover {
+	cursor: default;
+	color: #ddd !important;
+}
+
+.template-carousel .bx-wrapper .bx-prev {
+	left: 10px;
+}
+
+.template-carousel .bx-wrapper .bx-next {
+	right: 10px;
+}
+
+.template-carousel .bx-wrapper .bx-prev:before,
+.template-carousel .bx-wrapper .bx-next:before {
+	content: "\e681";
+	font-size: 34px;
+	font-family: 'igg-glyphs-30';
+}
+
+.template-carousel .bx-wrapper .bx-next:before {
+	content: "\e682";
+}
+
+.template-carousel .bx-wrapper .bx-prev:hover {
+	background-position: 0 0;
+	text-decoration: none !important;
+}
+
+.template-carousel .bx-wrapper .bx-next:hover {
+	background-position: -43px 0;
+	text-decoration: none !important;
+}
+
+/* AUTO CONTROLS (START / STOP) */
+
+.template-carousel .bx-wrapper .bx-controls-auto {
+	text-align: center;
+}
+
+.template-carousel .bx-wrapper .bx-controls-auto .bx-start {
+	display: block;
+	text-indent: -9999px;
+	width: 10px;
+	height: 11px;
+	outline: 0;
+	background: url(images/controls.png) -86px -11px no-repeat;
+	margin: 0 3px;
+}
+
+.template-carousel .bx-wrapper .bx-controls-auto .bx-start:hover,
+.template-carousel .bx-wrapper .bx-controls-auto .bx-start.active {
+	background-position: -86px 0;
+}
+
+.template-carousel .bx-wrapper .bx-controls-auto .bx-stop {
+	display: block;
+	text-indent: -9999px;
+	width: 9px;
+	height: 11px;
+	outline: 0;
+	background: url(images/controls.png) -86px -44px no-repeat;
+	margin: 0 3px;
+}
+
+.template-carousel .bx-wrapper .bx-controls-auto .bx-stop:hover,
+.template-carousel .bx-wrapper .bx-controls-auto .bx-stop.active {
+	background-position: -86px -33px;
+}
+
+/* PAGER WITH AUTO-CONTROLS HYBRID LAYOUT */
+
+.template-carousel .bx-wrapper .bx-controls.bx-has-controls-auto.bx-has-pager .bx-pager {
+	text-align: left;
+	width: 80%;
+}
+
+.template-carousel .bx-wrapper .bx-controls.bx-has-controls-auto.bx-has-pager .bx-controls-auto {
+	right: 0;
+	width: 35px;
+}
+
+/* IMAGE CAPTIONS */
+
+.template-carousel .bx-wrapper .bx-caption {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background: #666\9;
+	background: rgba(80, 80, 80, 0.75);
+	width: 100%;
+}
+
+.template-carousel .bx-wrapper .bx-caption span {
+	color: #fff;
+	font-family: Arial;
+	display: block;
+	font-size: .85em;
+	padding: 10px;
+}

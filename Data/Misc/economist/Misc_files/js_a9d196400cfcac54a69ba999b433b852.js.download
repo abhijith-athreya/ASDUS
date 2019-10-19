@@ -1,0 +1,442 @@
+/* global brightcove, Econ */
+
+(function (brightcove) {
+  "use strict";
+
+  // Determines if brightcove videos are rendered via flash or html5.
+  // Flash players don't require api calls to resize the player.
+  Econ.bcIsFlashPlayer = function() {
+    return typeof brightcove !== 'undefined' &&
+           typeof brightcove.internal !== 'undefined' &&
+           typeof brightcove.internal._instances !== 'undefined' &&
+           Econ.isEmptyObject(brightcove.internal._instances);
+  };
+
+})(brightcove);
+;
+/* global Drupal, jQuery */
+
+(function (Drupal, $) {
+  "use strict";
+
+  var ecCookieMessageName;
+
+  Drupal.cookieMessage = Drupal.cookieMessage || {};
+
+  /**
+   * Function to show cookie message based on user's region.
+   */
+  Drupal.cookieMessage.show = function() {
+    // Make sure we have a cookie message to show.
+    if (typeof Drupal.settings.ecCookieMessage === "undefined") {
+      return;
+    }
+    // Set the cookie to say its been seen.
+    ecCookieMessageName = Drupal.settings.ecCookieMessage.cid + Drupal.settings.ecCookieMessage.version;
+
+    // Expires in 10 years: 10 * 365
+    $.cookie(ecCookieMessageName, "1", {path:'/', expires:3650});
+  };
+
+  /**
+   * Set the messages based on the javascript user's region.
+   */
+  Drupal.behaviors.cookieMessageDisplay = function(context) {
+    if (context !== document) {
+      return;
+    }
+
+    Drupal.cookieMessage.show();
+  };
+
+  Drupal.behaviors.ecCookieMessaging = function(context) {
+    // Sets a persistent cookie for current user.
+    $('.ec-cookie-message a.dismiss-messages', context).click(function(e) {
+      e.preventDefault();
+      var link = $(this).attr('href');
+      $.ajax({
+        url: link
+      });
+      $('#ec-cookie-messages-container').fadeOut(600, function() {
+        $(this).remove();
+      });
+    });
+  };
+})(Drupal, jQuery);
+
+;
+/* global jQuery, Econ */
+
+(function (Econ, $) {
+  "use strict";
+
+  Drupal.messages = Drupal.messages || {};
+
+  /**
+   * Function to show message based on user's region.
+   */
+  Drupal.messages.show = function(region) {
+    var region_selector = 'message-region-' + region;
+    var class_region_selector = '.' + region_selector;
+    // Loop over messages present, to see if they are currently hidden and should be shown.
+    $('div.ec-messages').each(function(index) {
+      if ($(this).is(class_region_selector)) {
+        $(this).removeClass(region_selector).addClass('ec-messages-processed');
+      }
+    });
+  };
+
+  /**
+   * Set the messages based on the javascript user's region.
+   */
+  Drupal.behaviors.messagesDisplay = function(context) {
+    if (context !== document) {
+      return;
+    }
+
+    var region = '';
+
+    if (!Econ.user.loaded) {
+      $(Econ.user).bind('load', function() {
+        // Default to NA if we can't geodetect the user's region.
+        region = Econ.user.user.country.region !== false ? Econ.user.user.country.region : 'NA';
+        Drupal.messages.show(region);
+      });
+    }
+    else {
+      region = Econ.user.user.country.region;
+      Drupal.messages.show(region);
+    }
+  };
+
+  Drupal.behaviors.ec_messaging = function(context) {
+    // Only display Beta bar when user has returned from revamp site and is in B bucket of A/B testing.
+    if ($.cookie('ecdesign') !== null && $.cookie('rvjourney') !== null) {
+     if($.cookie('ecdesign') === 'a' && $.cookie('rvjourney').slice(-1) === 'b') {$('div.ec-messages.message-beta_bar').show()};
+    }
+
+    // Tnis tweak makes betabar looks more like cookie message and perserve general functionality of custom messaging.
+    var element = $('.econmobile .message-beta_bar .dismiss-messages', context).remove();
+    $('.econmobile .message-beta_bar  .ec-messages-buttons').append(element);
+
+    $('.ec-messages a.beta-bar-new-version', context).click(function(e) {
+      e.preventDefault();
+      $.cookie("ecdesign", null, { path: '/', domain: '.economist.com' });
+      // Absence of ecdesign cookie and B bucket ensure revamp version of site will be displayed after site reload.
+      if ($.cookie('ecdesign') === null && $.cookie('rvjourney').slice(-1) === 'b') {
+       location.reload();
+      }
+    });
+
+    // Sets a persistent cookie for current user.
+    $('.ec-messages a.dismiss-messages', context).click(function(e) {
+      e.preventDefault();
+      var link = $(this).attr('href');
+      $.ajax({
+        url: link
+      });
+      if ($("body" ).hasClass( "econmobile" )) {
+        $(this).closest( '.ec-messages').fadeOut();
+      }
+    });
+  };
+})(Econ, jQuery);
+
+;
+  var sp_section = (typeof utag_data !== "undefined" && typeof utag_data.section !== "undefined" && utag_data.section != "") ? utag_data.section : "";
+  var sp_subsection = (typeof utag_data !== "undefined" && typeof utag_data.subsection !== "undefined" && utag_data.subsection != "") ? utag_data.subsection : "";
+  
+  var sp_domain = (window.location.hostname == "www.economist.com") ? "live" : "stage";
+  
+  var tedl = {
+      "screen": {
+        "type": sp_section,
+        "hierarchy": [sp_section, sp_subsection]
+      },
+      "platform": {
+        "id": "economist_mainsite",
+        "brand_parent": "economist",
+        "brand_child": "edotcom",
+        "type": "site",
+        "version": "drupal",
+        "purpose": "content",
+        "environment": sp_domain,
+        "locale_region": "north america",
+        "locale_country": "us",
+        "locale_language": "en"
+      }
+  };
+Drupal.behaviors.socialPlugins = function(context) {
+  if (context == document) {
+    $.each(['//apis.google.com/js/plusone.js', '//platform.linkedin.com/in.js'], function(index, value) {
+      // createElement is faster than jQuery equivalent.
+      var scr = document.createElement('script');
+      scr.type = 'text/javascript';
+      scr.async = true;
+      scr.src = value;
+      var g = $('script')[0];
+      $(scr).insertBefore(g.parentNode);
+    });
+  }
+};
+
+// We can't use the above for twitter because we need to store a special reference
+// to the twttr object for later use.
+window.twttr = (function (d, s, id) {
+  var t, js, fjs = d.getElementsByTagName(s)[0];
+  
+  if (!d.getElementById(id)) {
+    js = d.createElement(s);
+    js.id = id;
+    js.src="//platform.twitter.com/widgets.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }
+  
+  return window.twttr || (t = {
+    _e: [],
+    ready: function(f){
+      t._e.push(f);
+    }
+  });
+}(document, "script", "twitter-wjs"));
+
+Drupal.behaviors.redditLink = function(context) {
+  $('.share-inline-footer-reddit a', context).attr('href', 'javascript:;');
+};
+
+;
+Drupal.settings.omniture = Drupal.settings.omniture || {};
+
+var availableOmnitureVarsForDebug;
+
+Drupal.behaviors.omniture = function(context) {
+  var $context = $(context);
+  // This section handles click tracking of forms, e.g. Post a comment.
+  // Below is the format that it expects.
+  // Drupal.settings.omniture.click_tracking[] = { selector: selector, event: event, name: name, ... }
+  var trackingCode = Drupal.settings.omniture.click_tracking;
+
+  if (trackingCode) {
+
+    $.each(trackingCode, function(k, v) {
+
+      // Append an onclick function to the button if form_id exists in the DOM.
+      var ltData = this;
+      var selector = ltData.selector;
+      // Verify if we are using tracking via css selector or we are using the
+      // HTML data- attribute instead.
+      selector = (selector == "data-ec-omniture") ? selector = "[data-ec-omniture='" + this.name + "']" : selector;
+      selector = selector + ':not(.omniture-tagged)';
+      // Check if there is any tagged element on the page.
+      if (availableOmnitureVarsForDebug != true && $(selector).length) {
+        availableOmnitureVarsForDebug = true;
+      };
+
+      if (Drupal.settings.omniture.debug == true) {
+        // Enable the inline tracking debug.
+        Drupal.omniture.debugVars(selector, ltData.name, trackingCode[k]);
+      }
+      // Add a class to any tagged element and bind the event.
+      $context.find(selector).bind(ltData.event, function(e) {
+        // Append tracking code to elements.
+        Drupal.omniture.trackClick(this, ltData.name, trackingCode[k]);
+      }).addClass('omniture-tagged omniture-tagged-' + k);
+
+    });
+  }
+
+  $context.find('[data-x-omniture]:not(.omniture-tagged)').each(function() {
+    var data = $(this).attr('data-x-omniture');
+    var ltData;
+    try {
+      ltData = JSON.parse(data);
+    } catch(e) {
+      ltData = { name: data };
+    }
+    if (ltData) {
+      var name = ltData.hasOwnProperty('name');
+      var event = ltData.hasOwnProperty('event') ? ltData.event : 'click';
+      var options = ltData.hasOwnProperty('options') ? ltData.options : {};
+      $(this).bind(event, function(e) {
+        Drupal.omniture.trackClick(this, name, options);
+      }).addClass('omniture-tagged');
+    }
+  });
+};
+
+// Enable the omniture button for debugging/trace tracking code on page's elmts.
+Drupal.behaviors.enableDebug = function(context) {
+  if (Drupal.settings.omniture.debug == true && availableOmnitureVarsForDebug == true) {
+    if (!$('.omiture-elements').length) {
+      $('#page').prepend('<div class="omiture-elements">Omniture elements</div>');
+    }
+    $('.omiture-elements', context).click(function() {
+      var activeText = $('.omiture-elements').text();
+      $('.omiture-elements').toggleClass('omniture-elements-on').text(activeText == "Omniture elements" ? "Omniture elements on" : "Omniture elements");
+      $('.omniture-tagged').toggleClass('omniture-tagged-on');
+    });
+  }
+}
+
+// This function sends the link_name to both the Custom Link Tracking and
+// to the Omniture var associated with the form.
+Drupal.omniture = {};
+Drupal.omniture.trackClick = function(obj, name, options) {
+  if (typeof s_gi == "function") {
+    var options = options || {};
+    var edge_server = options.edge_server || Drupal.settings.omniture.edge_server;
+    var s = s_gi(edge_server);
+    var element = obj ? obj : true;
+
+    s.linkTrackVars = [];
+    if (options.link_track_vars) {
+      s.linkTrackVars = options.link_track_vars.split(',');
+    }
+
+    if (options.events) {
+      s.linkTrackEvents = options.events;
+      s.events = options.events;
+      if ($.inArray('events', s.linkTrackEvents) != -1) {
+        s.linkTrackVars.push('events');
+      }
+    }
+    else {
+      s.linkTrackEvents = 'None';
+    }
+
+    for (var p in options) {
+      if (p.indexOf('prop') == 0 || p.indexOf('eVar') == 0) {
+        s[p] = options[p];
+        if ($.inArray(p, s.linkTrackEvents) != -1) {
+          s.linkTrackVars.push(p);
+        }
+      }
+    }
+
+    s.linkTrackVars =  s.linkTrackVars.join(',');
+    s.link_track_vars = name; // Why is this here?
+
+    // Fires a custom event also.
+    // @see https://developer.mozilla.org/hwois en-US/docs/Web/Guide/Events/Creating_and_triggering_events#The_old-fashioned_way
+    // Fire an event so that others can catch this if they want.
+    var event = document.createEvent('Event');
+    event.initEvent('ecOmnitureClick', true, true);
+    event.ecOmnitureClickData = {
+      "clickData": options,
+      "omnitureObject": s
+    };
+    document.dispatchEvent(event);
+
+    s.tl(options.skipDelay ? true : element, 'o', name);
+  }
+};
+
+// This function is used to display omniture variables attached to elements to
+// facilitate the debugging and maintainance process.
+Drupal.omniture.debugVars = function(selector, name, omniVars) {
+  // Add the debugging functionality.
+  $(selector).mouseover(function() {
+    var elm = $(this);
+    var top = elm.offset().top;
+    var height = (elm.height() == 0) ? 20 : elm.height();
+    var left = elm.offset().left;
+    if (elm.hasClass('omniture-tagged-on')) {
+      if (!$('.omniture-wrapper').length) {
+        var omniList = "<ul class='omniture-display'>";
+        for (var vars in omniVars) {
+          omniList += "<li>" + vars + "= " + omniVars[vars] + "</li>";
+        }
+        omniList += "</ul>";
+        $('body').append(omniList);
+        $('.omniture-display').css({'top': + (top + height), 'left': + left});
+      }
+    }
+  }).mouseout(function(){$('.omniture-display').remove()});
+};
+
+
+Drupal.behaviors.socialButtons = function(context) {
+  if (context != document) {
+    return;
+  }
+
+  // Add the callback function for when the user clicks on the twttr btn.
+  if (typeof twttr != "undefined") {
+    twttr.ready(function(twttr) {
+      twttr.events.bind('click', function(intent_event) {
+        clickEventToAnalytics(intent_event, 'twitter');
+      });
+    });
+  }
+
+  // Initiate the Facebook like button, then provide a callback function when the
+  // user clicks it.
+  if (typeof FB != "undefined") {
+    FB.Event.subscribe('edge.create', function(href, widget) {
+      // We use the wrapping div/element as we don't put the data-ec-omniture-frame on the
+      // fb-like link.
+      clickEventToAnalytics(widget, 'facebook');
+    });
+  }
+
+  // Provide the debug functionality for the social buttons.
+  $("[data-ec-omniture-frame]").each(function(){
+    availableOmnitureVarsForDebug = true;
+    var $this = $(this);
+    var thisElm = $this.attr('data-ec-omniture-frame');
+    $this.addClass('omniture-tagged');
+    var trackingCode = Drupal.settings.omniture['click_tracking_' + thisElm];
+    if (trackingCode) {
+      Drupal.omniture.debugVars($this, trackingCode.name, trackingCode[0]);
+    }
+  });
+}
+
+
+// This functions takes care of tracking clicks coming from Twitter and Facebook
+// buttons via callback functions.
+function clickEventToAnalytics(settings, network) {
+  var trackingCode;
+
+  if (network == 'twitter') {
+    if (settings.target.tagName.toLowerCase() == 'a') {
+      return false;
+    }
+
+    var elmToTrack = settings.target;
+    elmToTrack = elmToTrack.parentNode.attributes['data-ec-omniture-frame'];
+    if (elmToTrack) {
+      trackingCode = Drupal.settings.omniture['click_tracking_' + elmToTrack.value][0];
+    }
+  }
+  else if (network == 'facebook') {
+    elmToTrack = settings.parentNode.attributes['data-ec-omniture-frame'];
+    if (elmToTrack) {
+      trackingCode = Drupal.settings.omniture['click_tracking_' + elmToTrack.value][0];
+    }
+  }
+  else if (network == 'plusone') {
+    if (settings.state == 'off') {
+      return false
+    };
+    trackingCode = Drupal.settings.omniture['click_tracking_footer_plusone'][0];
+  }
+
+  if (trackingCode) {
+    Drupal.omniture.trackClick(true, trackingCode.name, trackingCode);
+  }
+}
+
+function clickEventToAnalyticsPlusOne(s) {
+  clickEventToAnalytics(s, 'plusone');
+};
+if ($('#rolling_eco').length) {
+  var banner = new js_rolling('rolling_eco');
+  banner.set_direction(4);
+  banner.move_gap = 10;
+  banner.time_dealy = 3;
+  banner.time_dealy_pause = 5000;
+  banner.start();
+}
+
+;

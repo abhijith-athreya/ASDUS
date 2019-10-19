@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!-- saved from url=(0115)http://assets.adobedtm.com/e157c7ff34e2d6bd3c151937f4c67f693db0150f/scripts/satellite-57eabaac64746d4149001e6f.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"></head><body>
+    <script async="" src="./beacon.js.download"></script><script>
+      (function(){
+        function escapeForHtml(str){
+          if (!str) return str
+          return str
+            .replace(/\&/g, '&amp;')
+            .replace(/\</g, '&lt;')
+            .replace(/\>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#x27;')
+            .replace(/\//g, '&#x2F;')
+        }
+
+        var regexChars = /[.*+?^${}()|[\]\\]/g;
+        function escapeForRegex(str) {
+          return str.replace(regexChars, "\\$&");
+        }
+
+        function parseQueryString(){
+          var ret = {}, parts = location.search.substring(1).split('&');
+          for (var i = parts.length; i--;) {
+            var vardef = parts[i].split('='), varname = vardef[0], value = vardef[1];
+            ret[varname] = unescape(value);
+          }
+          return ret;
+        }
+
+        var queryParams = parseQueryString();
+
+        var markup = "<script>\n    var _comscore = _comscore || [];\n    _comscore.push({ c1: \"2\", c2: \"12938116\" });\n    \n    (function() {\n         var s = document.createElement(\"script\"), el = document.getElementsByTagName(\"script\")[0];\n         s.async = true;\n         s.src = (document.location.protocol == \"https:\" ? \"https://sb\" : \"http://b\") + \".scorecardresearch.com/beacon.js\";\n         el.parentNode.insertBefore(s, el);\n    })();\n    \n\n    \nvar ele = document.createElement('img');\nele.setAttribute('height','1');\nele.setAttribute('width','1');\nele.setAttribute('style','display:none');\nele.setAttribute('src', (document.location.protocol == \"https:\" ? \"https://sb\" : \"http://b\") + \".scorecardresearch.com/p?c1=2&c2=12938116&cv=2.0&cj=1\");\n        \ndocument.body.appendChild(ele);\n</scr"+"ipt>";
+
+        for (var name in queryParams){
+          var regex = new RegExp('%' + escapeForRegex(name) + '%', 'ig');
+          markup = markup.replace(regex, 
+            escapeForHtml(queryParams[name]));
+        }
+
+        document.write(markup)
+      })();
+    </script><script>
+    var _comscore = _comscore || [];
+    _comscore.push({ c1: "2", c2: "12938116" });
+    
+    (function() {
+         var s = document.createElement("script"), el = document.getElementsByTagName("script")[0];
+         s.async = true;
+         s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+         el.parentNode.insertBefore(s, el);
+    })();
+    
+
+    
+var ele = document.createElement('img');
+ele.setAttribute('height','1');
+ele.setAttribute('width','1');
+ele.setAttribute('style','display:none');
+ele.setAttribute('src', (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/p?c1=2&c2=12938116&cv=2.0&cj=1");
+        
+document.body.appendChild(ele);
+</script><img height="1" width="1" style="display:none" src="./p">
+  
+
+</body></html>

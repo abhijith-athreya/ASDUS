@@ -1,0 +1,31 @@
+/**
+ * jQuery behaviors for the Press Center Network Menu block
+ */
+(function($) {
+
+    Drupal.behaviors.network_photo_menu = {
+        attach : function(context, settings) {
+            $('#network-photo-filter', context).change(
+                    function() {
+                        window.location = $(this).val();
+                    });
+
+            $('#show-photo-filter-season', context).change(
+            		function() {
+            			window.location = $(this).val();
+            		});
+            
+            $('#show-photo-filter-episode', context).change(
+            		function() {
+            			window.location = $(this).val();
+            		});
+            
+            $('#show-photo-filter-character', context).change(
+            		function() {
+            			window.location = $(this).val();
+            		});
+            
+            return false;
+        }
+    };
+}(jQuery));

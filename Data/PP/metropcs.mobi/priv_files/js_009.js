@@ -1,0 +1,3 @@
+var currURL=document.location.href;var navItems=$('.ui_news-releases');$.each(navItems,function(index){var navItem=navItems[index];var currLinkCheck=isCurrentLink(navItem);if(currLinkCheck){$(navItem).addClass('active');return false;}});function isCurrentLink(navItem){var navlink=$(navItem).find('a').attr('href');var nav=navlink.split('/').reverse()[0];navlink=navlink.match(/\/[^\/]*$/)[0].replace(".html","");var url=currURL.split('/').reverse()[0];if(url===nav){return true;}
+return false;}
+$("#fb-root").load(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";fjs.parentNode.insertBefore(js,fjs);}(document,'script','facebook-jssdk'));

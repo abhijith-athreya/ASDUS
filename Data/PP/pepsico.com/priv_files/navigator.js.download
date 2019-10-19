@@ -1,0 +1,104 @@
+//Adding 3 Seconds delay in finding offset only for IE8 and IE9 - Works only if we include modernizr.js
+intervalTime = 0;
+if ( $('html').hasClass('ie8') || ($('html').hasClass('ie9'))){
+    intervalTime = 3000;
+}
+
+$(window).load(function(){
+
+    setTimeout(function(){ 
+    
+                navigatorSectionEle = $("section#navigator");
+                headerEle = $(".mainNavbar");
+                contentMargin = 45;
+                eValue = 15;
+
+                if( navigatorSectionEle.length ){
+
+                                var navItemPositionList = [];
+                                $(".navigatorContent").each(function(){
+                                    scrollOffset = 0;
+                                    if($(this).attr('data-scroll-offset')){
+                                        scrollOffset = $(this).attr('data-scroll-offset');
+                                    }
+                                    navItemPositionList.push( $(this).offset().top - headerEle.outerHeight() - parseInt(navigatorSectionEle.outerHeight()) - parseInt(navigatorSectionEle.outerHeight() * 2) - scrollOffset - eValue + contentMargin );
+                                    console.log("navItemPositionList: " + navItemPositionList);
+                                });
+
+                                
+                                /* TO MAKE NAVIGATOR MENU FIXED AT THE TOP WHEN SCROLLED DOWN */   
+                                $("section#navigator").addClass('show');
+                                navigatorOffsetTop = $("section#navigator").offset().top - headerEle.outerHeight();
+                                $("section#navigator").removeClass('show');
+                                //console.log("navigatorOffsetTop: " + $("section#navigator").offset().top);
+                                function setNavigatorPosition(){
+                                    if($(document).scrollTop() > navigatorOffsetTop){
+                                        $("body").addClass('navigatorFixed');
+                                    }
+                                    else{
+                                        $("body").removeClass('navigatorFixed');   
+                                    }
+                                }
+
+                                /* TO MAKE THE APPROPRIATE NAVIGATOR MENU ITEM ACTIVE WHEN SCROLLED DOWN TO CORRESPONDING NAVIGATOR CONTENT */
+                                function activateNavigatorTab(){
+                                    for( i=$(".navigatorContent").length - 1; i >= 0 ; i-- ){                    
+                                        if( $(document).scrollTop() >= navItemPositionList[i]){
+                                            $("ul.navigatorList li").removeClass('active');
+                                            $("ul.navigatorList li:eq(" + i + ")").addClass('active');
+                                            break;
+                                        }
+                                        if( $(document).scrollTop() == 0){
+                                            $("ul.navigatorList li").removeClass('active');
+                                            $("ul.navigatorList li:eq(0)").addClass('active');
+                                            break;
+                                        }
+                                    }
+                                }
+
+
+                                
+
+
+                                $(window).scroll(function(){
+                                    setNavigatorPosition();
+                                    activateNavigatorTab();
+                                });
+                                /* document.addEventListener("touchmove", setNavigatorPosition, false);
+                                document.addEventListener("touchmove", activateNavigatorTab, false); */
+
+                                
+
+                                $(window).resize(function(){    
+                                    setNavigatorPosition();
+                                    activateNavigatorTab(); 
+                                })
+
+                                /* TO SCROLL TO APPROPRIATE NAVIGATOR CONTENT WHEN NAVIGATOR MENU ITEM IS CLICKED */
+                                $("ul.navigatorList li").click(function() {
+                                    console.log("issue");
+                                    stickyVal = 0;
+                                    navIndex = $(this).index("ul.navigatorList li");
+                                    //if( !$("body").hasClass('navigatorFixed') ){
+                                    //    stickyVal = navigatorSectionEle.outerHeight();
+                                    //}              
+                                    console.log($(".navigatorContent:eq(" + navIndex + ")").offset().top);
+                                    console.log(headerEle.outerHeight());
+                                    console.log(parseInt(navigatorSectionEle.outerHeight() * 2));
+                                    console.log(stickyVal);
+                                    console.log(eValue);
+                                    console.log(contentMargin);
+                                    console.log($(".navigatorContent:eq(" + navIndex + ")").offset().top - headerEle.outerHeight() - parseInt(navigatorSectionEle.outerHeight() * 2) - stickyVal - eValue + 5 + contentMargin);
+
+                                    $('html, body').animate({
+                                        scrollTop: $(".navigatorContent:eq(" + navIndex + ")").offset().top - headerEle.outerHeight() - parseInt(navigatorSectionEle.outerHeight() * 2) - stickyVal - eValue + 5 + contentMargin                                        
+                                    }, 600);
+                                    
+                                });
+
+                }
+
+     }, intervalTime);
+
+    
+});

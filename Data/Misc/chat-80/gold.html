@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <title> chat-80</title>
+</head>
+
+<body style=’background-color:#ccc’>
+    <h1>
+        <center><u>chat-80</u></center>
+    </h1>
+    </hr>
+    <h2>Chat-80</h2>
+    <p> Chat-80 was a natural language system which allowed the user to interrogate a Prolog knowledge base in the domain of world geography. It was developed in the early '80s by Warren and Pereira; see  http://acl.ldc.upenn.edu/J/J82/J82-3002.pdf for a description and http://www.cis.upenn.edu/~pereira/oldies.html for the source files.</p>
+   
+    <p> The module contains functions to extract data from the Chat-80 relation files ('the world database'), and convert then into a format that can be incorporated in the FOL models of . The code assumes that the Prolog input files are available in the NLTK corpora directory.</p>
+    <p> nltk.sem.evaluate</p>
+    <p> The Chat-80 World Database consists of the following files:</p>
+    <p> world0.plrivers.plcities.plcountries.plcontain.plborders.pl</p>
+    <p> This module uses a slightly modified version of , in which a set of Prolog rules have been omitted. The modified file is named . Currently, the file is not read in, since it uses a list rather than a string in the second field.</p>
+    </hr>
+    <h2>Reading Chat-80 Files</h2>
+    <p> Chat-80 relations are like tables in a relational database. The relation acts as the name of the table; the first argument acts as the 'primary key'; and subsequent arguments are further fields in the table. In general, the name of the table provides a label for a unary predicate whose extension is all the primary keys. For example, relations in are of the following form:</p>
+    <p> 'city(athens,greece,1368).'</p>
+    <p> Here, is the key, and will be mapped to a member of the unary predicate .</p>
+    <p> By analogy with NLTK corpora, defines a number of 'items' which correspond to the relations.</p>
+    <p> >>> from nltk.sem import chat80>>> print(chat80.items) # doctest: +ELLIPSIS('borders', 'circle_of_lat', 'circle_of_long', 'city', ...)</p>
+    <p> The fields in the table are mapped to binary predicates. The first argument of the predicate is the primary key, while the second argument is the data in the relevant field. Thus, in the above example, the third field is mapped to the binary predicate , whose extension is a set of pairs such as .</p>
+    <p> population_of</p>
+    <p> '(athens, 1368)'</p>
+    <p> An exception to this general framework is required by the relations in the files and . These contain facts of the following form:</p>
+    <p> contains.pl</p>
+    <p> 'borders(albania,greece).''contains0(africa,central_africa).'</p>
+    <p> We do not want to form a unary concept out the element in the first field of these records, and we want the label of the binary relation just to be / respectively.</p>
+    <p> In order to drive the extraction process, we use 'relation metadata bundles' which are Python dictionaries such as the following:</p>
+    <p> city = {'label': 'city', 'closures': [], 'schema': ['city', 'country', 'population'], 'filename': 'cities.pl'}</p>
+    <p> According to this, the file contains a list of relational tuples (or more accurately, the corresponding strings in Prolog form) whose predicate symbol is and whose relational schema is . The notion of a is discussed in the next section.</p>
+    <p> city['filename']</p>
+    <p> city['label']</p>
+    <p> city['schema']</p>
+    </hr>
+    <h2>Concepts</h2>
+    <p> In order to encapsulate the results of the extraction, a class of s is introduced. A object has a number of attributes, in particular a , an arity and .</p>
+    <p> >>> c1 = chat80.Concept('dog', arity=1, extension=set(['d1', 'd2']))>>> print(c1)Label = 'dog'Arity = 1Extension = ['d1', 'd2']</p>
+    <p> The attribute makes it easier to inspect the output of the extraction.</p>
+    <p> >>> schema = ['city', 'country', 'population']>>> concepts = chat80.clause2concepts('cities.pl', 'city', schema)>>> concepts[Concept('city'), Concept('country_of'), Concept('population_of')]>>> for c in concepts: # doctest: +NORMALIZE_WHITESPACE... print("%s:\n\t%s" % (c.prefLabel, c.extension[:4]))city: ['athens', 'bangkok', 'barcelona', 'berlin']country_of: [('athens', 'greece'), ('bangkok', 'thailand'), ('barcelona', 'spain'), ('berlin', 'east_germany')]population_of: [('athens', '1368'), ('bangkok', '1178'), ('barcelona', '1280'), ('berlin', '3481')]</p>
+    <p> In addition, the can be further processed: in the case of the relation, we check that the relation is , and in the case of the relation, we carry out the . The closure properties associated with a concept is indicated in the relation metadata, as indicated earlier.</p>
+    <p> transitive closure</p>
+    <p> >>> borders = set([('a1', 'a2'), ('a2', 'a3')])>>> c2 = chat80.Concept('borders', arity=2, extension=borders)>>> print(c2)Label = 'borders'Arity = 2Extension = [('a1', 'a2'), ('a2', 'a3')]>>> c3 = chat80.Concept('borders', arity=2, closures=['symmetric'], extension=borders)>>> c3.close()>>> print(c3)Label = 'borders'Arity = 2Extension = [('a1', 'a2'), ('a2', 'a1'), ('a2', 'a3'), ('a3', 'a2')]</p>
+    <p> The of a object is then incorporated into a object.</p>
+    </hr>
+    <h2>Persistence</h2>
+    <p> The functions and are provided to allow a valuation to be stored in a persistent database and re-loaded, rather than having to be re-computed each time.</p>
+    </hr>
+    <h2>Individuals and Lexical Items</h2>
+    <p> As well as deriving relations from the Chat-80 data, we also create a set of individual constants, one for each entity in the domain. The individual constants are string-identical to the entities. For example, given a data item such as , we add to the valuation a pair . In order to parse English sentences that refer to these entities, we also create a lexical item such as the following for each individual constant:</p>
+    <p> ('zloty', 'zloty')</p>
+    <p> PropN[num=sg, sem=
+        <\P.(P zloty)>] -> 'Zloty'</p>
+    <p> The set of rules is written to the file in the current directory.</p>
+    <p> chat_pnames.fcfg</p>
+    </hr>
+    <h2>SQL Query</h2>
+    <p> The relation is also available in RDB form and can be queried using SQL statements.</p>
+    <p> >>> import nltk>>> q = "SELECT City, Population FROM city_table WHERE Country = 'china' and Population > 1000">>> for answer in chat80.sql_query('corpora/city_database/city.db', q):... print("%-10s %4s" % answer)canton 1496chungking 1100mukden 1551peking 2031shanghai 5407tientsin 1795</p>
+    <p> The (deliberately naive) grammar translates from English to SQL:</p>
+    <p> >>> nltk.data.show_cfg('grammars/book_grammars/sql0.fcfg')% start SS[SEM=(?np + WHERE + ?vp)] -> NP[SEM=?np] VP[SEM=?vp]VP[SEM=(?v + ?pp)] -> IV[SEM=?v] PP[SEM=?pp]VP[SEM=(?v + ?ap)] -> IV[SEM=?v] AP[SEM=?ap]NP[SEM=(?det + ?n)] -> Det[SEM=?det] N[SEM=?n]PP[SEM=(?p + ?np)] -> P[SEM=?p] NP[SEM=?np]AP[SEM=?pp] -> A[SEM=?a] PP[SEM=?pp]NP[SEM='Country="greece"'] -> 'Greece'NP[SEM='Country="china"'] -> 'China'Det[SEM='SELECT'] -> 'Which' | 'What'N[SEM='City FROM city_table'] -> 'cities'IV[SEM=''] -> 'are'A[SEM=''] -> 'located'P[SEM=''] -> 'in'</p>
+    <p> Given this grammar, we can express, and then execute, queries in English.</p>
+    <p> >>> cp = nltk.parse.load_parser('grammars/book_grammars/sql0.fcfg')>>> query = 'What cities are in China'>>> for tree in cp.parse(query.split()):... answer = tree.label()['SEM']... q = " ".join(answer)... print(q)...SELECT City FROM city_table WHERE Country="china"</p>
+    <p> >>> rows = chat80.sql_query('corpora/city_database/city.db', q)>>> for r in rows: print("%s" % r, end=' ')canton chungking dairen harbin kowloon mukden peking shanghai sian tientsin</p>
+    <h2> Using Valuations</h2>
+    <p> In order to convert such an extension into a valuation, we use the method; setting creates and returns a new object which contains the results.</p>
+    <p> make_valuation()</p>
+    <p> >>> val = chat80.make_valuation(concepts, read=True)>>> 'calcutta' in val['city']True>>> [town for (town, country) in val['country_of'] if country == 'india']['bombay', 'calcutta', 'delhi', 'hyderabad', 'madras']>>> dom = val.domain>>> g = nltk.sem.Assignment(dom)>>> m = nltk.sem.Model(dom, val)>>> m.evaluate(r'population_of(jakarta, 533)', g)True</p>

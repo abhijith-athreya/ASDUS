@@ -1,0 +1,882 @@
+/*!
+ * AKC SocialLogin Library v1.0
+ *
+ * Date: 2014-10-08
+ */
+(function(undefined) {
+	"use strict";
+
+	/****************************************************************************************************************************
+	 * Closure function to get the actual status of internal debuggin
+	 ***************************************************************************************************************************/
+	function debugFlag(closure) {
+
+		var eventdebugFlag = false;
+
+		return {
+			changeTo: function(value) {
+				eventdebugFlag = value;
+			},
+			get: function() {
+				return eventdebugFlag;
+			}
+		};
+	}
+
+	// Define the two listeners
+	var debugFlagListener = debugFlag('debugFlagListener');
+	debugFlagListener.changeTo(false);
+	/****************************************************************************************************************************
+	 * Debug functionlity
+	 ***************************************************************************************************************************/
+	function debug(TurnOn) {
+
+		if (TurnOn || TurnOn === undefined) {
+			gigya.debug();
+			debugFlagListener.changeTo(true);
+		} else {
+			debugFlagListener.changeTo(false);
+		}
+
+	}
+	/****************************************************************************************************************************
+	 * Closure function to get the actual listener on Login or Logout
+	 ***************************************************************************************************************************/
+	function listener(closure) {
+
+		var eventListener = false;
+
+		return {
+			changeTo: function(value) {
+				eventListener = value;
+			},
+			get: function() {
+				return eventListener;
+			}
+		};
+	}
+// Define the two listeners
+	var loginListener = listener('loginListener');
+	var logoutListener = listener('logoutListener');
+	/****************************************************************************************************************************
+	 * Display the gigya screenset for Login and Registration
+	 * @param {Object} callbacks to manage Login,Logout, Registration and Registration Completion events (Success and Failure)
+	 ***************************************************************************************************************************/
+	function showPopups(args) {
+		// Check if args are undefined. Prevents undefined error
+		args = (args !== undefined) ? args : '';
+		// Calls to gigya standard function that manage all the screen sets builts in UI.
+		gigya.accounts.showScreenSet({
+			 screenSet: 'Login-web-2', // Define Site Screen-Set
+			startScreen: 'gigya-login-screen', // Start with screen login
+			mobileScreenSet: 'Login-web-2', // Define Mobile Screen-Set
+			onAfterSubmit: function(response) { //Manage all the callbacks on After Submit Event
+				onSubmitHandler(response, {
+					//onLogin: args.onLogin,
+					onAfterSubmit: args.onAfterSubmit,
+					onLoginError: args.onLoginError, // Callback on Login Failure
+					onRegistration: args.onRegistration, // Callback on Registration Success
+					onRegistrationError: args.onRegistrationError, // Callback on Registration Failure
+					onRegistrationCompletion: args.onRegistrationCompletion, // Callback on Registration Completion Success
+					onRegistrationCompletionError: args.onRegistrationCompletionError // Callback on Registration Completion Failure
+				});
+			}, // Call event when submit
+			onAfterScreenLoad: args.onAfterScreenLoad
+			//onAfterScreenLoad: addCountryListener()
+		});
+		// The value assigned to this parameter is a name of an Event Handler
+		// function that will be called when the user is successfully authenticated by Gigya.
+		if (args.onLogin && typeof(args.onLogin) == "function" && !loginListener.get()) {
+			gigya.socialize.addEventHandlers({
+				onLogin: args.onLogin
+			});
+			loginListener.changeTo(true); // Flag login listenner for Login
+		}
+	}
+	/****************************************************************************************************************************
+	 * Display the gigya screenset for Registration
+	 * @param {Object} callbacks to manage Registration (Success and Failure)
+	 ***************************************************************************************************************************/
+	function showRegistrationScreen(args) {
+		// Check if args are undefined. Prevents undefined error
+		args = (args !== undefined) ? args : '';
+		// Calls to gigya standard function that manage all the screen sets builts in UI.
+		gigya.accounts.showScreenSet({
+			 screenSet: 'Login-web-2', // Define Site Screen-Set
+			startScreen: 'gigya-register-screen', // Start with screen
+			mobileScreenSet: 'Login-web-2', // Define Mobile Screen-Set
+			onAfterSubmit: function(response) { //Manage all the callbacks on After Submit Event
+				onSubmitHandler(response, {
+					onRegistration: args.onRegistration, // Callback on Registration Success
+					onRegistrationError: args.onRegistrationError // Callback on Registration Failure
+				});
+			}, // Call event when submit
+			onAfterScreenLoad: args.onAfterScreenLoad
+		});
+	}
+	/****************************************************************************************************************************
+	 * Update profile data for logged user
+	 * @param {Object} callbacks to manage Update Profile event (Success and Failure)
+	 * @returns
+	 ***************************************************************************************************************************/
+	function updateProfile(args) {
+		// Check if args are undefined. Prevents undefined error
+		args = (args !== undefined) ? args : '';
+		gigya.accounts.showScreenSet({
+			screenSet: 'Update-Profile-ProfileUpdate', // Define Site Screen Set
+			startScreen: 'gigya-update-profile-screen', // Start with update profile screen
+			mobileScreenSet: 'MUpdate-Profile-ProfileUpdate', // Define Mobile Screen Set
+			onAfterSubmit: function(response) {
+				onSubmitHandler(response, {
+					onUpdate: args.onUpdate, // Callback on Update Success
+					onUpdateError: args.onUpdateError // Callback on Update Failure
+				});
+			}, // Call event when submit.
+			onAfterScreenLoad: function(eventObj) {checkCountryFieldValue(eventObj);},
+			onFieldChanged: function(eventObj) {checkFieldChanged(eventObj);}
+		});
+	}
+	/****************************************************************************************************************************
+	 * @param {Object} callbacks to manage Second Registration event (Success and Failure)
+	 * @returns
+	 ***************************************************************************************************************************/
+	function secondRegistration(args) {
+		// Check if args are undefined. Prevents undefined error
+		args = (args !== undefined) ? args : '';
+		gigya.accounts.showScreenSet({
+			screenSet: 'Profile-web', // Define Site Screen Set
+			startScreen: 'gigya-update-profile-screen', // Start with supdate profile screen
+			mobileScreenSet: 'Mobile-profile', // Define Mobile Screen Set
+			onAfterSubmit: function(response) {
+				onSecondRegistrationHandler(response, {
+					onSecondRegistration: args.onSecondRegistration, // Callback on Second Registration Success
+					onSecondRegistrationError: args.onSecondRegistrationError // Callback on Second Registration Failure
+				});
+			}, // Call event when submit
+			onAfterScreenLoad: function(eventObj) {checkCountryFieldValue(eventObj);},
+			onFieldChanged: function(eventObj) {checkFieldChanged(eventObj);}
+		});
+	}
+	/****************************************************************************************************************************
+	 * @param {Object} callbacks to manage Submit event (Success and Failure) and eventObj to perform the action
+	 * @returns
+	 ***************************************************************************************************************************/
+	function onSubmitHandler(eventObj, callBackArgs) {
+		// Analyzes the operation when submit according to the Gigya's Screen without FAIL.
+		if (eventObj.response.status != "FAIL") {
+			switch (eventObj.screen) {
+				case "gigya-login-screen":
+					if (callBackArgs.onLogin && typeof(callBackArgs.onLogin) == "function") {
+						callBackArgs.onLogin(eventObj.response); // callback Login Success
+					}
+
+					if (callBackArgs.onAfterSubmit && typeof(callBackArgs.onAfterSubmit) == "function") {
+						callBackArgs.onAfterSubmit(eventObj.response); // callback onAfterSubmit Success, where actual myAKC data is provided
+					}
+					break;
+				case "gigya-register-screen":
+					if (callBackArgs.onRegistration && typeof(callBackArgs.onRegistration) == "function") {
+						callBackArgs.onRegistration(eventObj.response); // callback Registration Success
+					}
+					break;
+				case "gigya-complete-registiration-screen":
+					if (callBackArgs.onRegistrationCompletion && typeof(callBackArgs.onRegistrationCompletion) == "function") {
+						callBackArgs.onRegistrationCompletion(eventObj.response); // callback Registration Completion Success
+					}
+					break;
+				case "gigya-update-profile-screen":
+					if (callBackArgs.onUpdate && typeof(callBackArgs.onUpdate) == "function") {
+						callBackArgs.onUpdate(eventObj.response); // callback Update Profile Success
+					}
+					break;
+			}
+			// Analyzes the operation when submit according to the Gigya's Screen with FAIL.
+		} else {
+			switch (eventObj.screen) {
+				case "gigya-login-screen":
+					if (callBackArgs.onLoginError && typeof(callBackArgs.onLoginError) == "function") {
+						callBackArgs.onLoginError(); // callback Login Failure
+					}
+					break;
+				case "gigya-register-screen":
+					if (callBackArgs.onRegistrationError && typeof(callBackArgs.onRegistrationError) == "function") {
+						callBackArgs.onRegistrationError(); // callback Registration Failure
+					}
+					break;
+				case "gigya-complete-registiration-screen":
+					if (callBackArgs.onRegistrationCompletionError && typeof(callBackArgs.onRegistrationCompletionError) == "function") {
+						callBackArgs.onRegistrationCompletionError(); // callback Registration Completion Failure
+					}
+					break;
+				case "gigya-update-profile-screen":
+					if (callBackArgs.onUpdateError && typeof(callBackArgs.onUpdateError) == "function") {
+						callBackArgs.onUpdateError(); // callback Update Profile Failure
+					}
+					break;
+			}
+		}
+	}
+	/****************************************************************************************************************************
+	 * @param {Object} callbacks to manage Submit event (Success and Failure) and eventObj to perform the action
+	 * @returns
+	 ***************************************************************************************************************************/
+	function onSecondRegistrationHandler(eventObj, callBackArgs) {
+		// Analyzes the operation when submit according to the Gigya's Screen without FAIL.
+		if (eventObj.response.status != "FAIL") {
+			switch (eventObj.screen) {
+				case "gigya-update-profile-screen":
+					if (callBackArgs.onSecondRegistration && typeof(callBackArgs.onSecondRegistration) == "function") {
+						callBackArgs.onSecondRegistration(eventObj.response); // callback Second Registration Success
+					}
+					break;
+			}
+		} else { // Analyzes the operation when submit according to the Gigya's Screen with FAIL.
+			switch (eventObj.screen) {
+				case "gigya-update-profile-screen":
+					if (callBackArgs.onSecondRegistrationError && typeof(callBackArgs.onSecondRegistrationError) == "function") {
+						callBackArgs.onSecondRegistrationError(); // callback Second Registration Failure
+					}
+					break;
+			}
+		}
+	}
+	/****************************************************************************************************************************
+	 * Perform logout session on GIGYA
+	 * @param {Object} callbacks to manage Logout event (Success and Failure)
+	 ***************************************************************************************************************************/
+	function logout(args) {
+		// Check if args are undefined. Prevents undefined error
+		args = (args !== undefined) ? args : '';
+		// The value assigned to this parameter is a name of an Event Handler
+		// function that will be called when the user logs out.
+		if (args.onLogout && typeof(args.onLogout) == "function" && !logoutListener.get()) {
+			gigya.socialize.addEventHandlers({
+				onLogout: args.onLogout
+			});
+			logoutListener.changeTo(true); // Flag logout listener was added
+		}
+		//Performs the Gigya logout
+		gigya.socialize.logout(); // This method logs out the current user of the Gigya platform.
+	}
+	/****************************************************************************************************************************
+	 * Check if user is logged into GIGYA
+	 * @param {Object} callbacks to manage Login event (Success and Failure)
+	 ***************************************************************************************************************************/
+	function isLoggedIn(args) {
+		// Check if args are undefined. Prevents undefined error
+		args = (args !== undefined) ? args : '';
+		gigya.socialize.getUserInfo({ // This method is used to retrieve extended information regarding the current user.
+			callback: function(response) {
+				manageLoginStatus(response, {
+					loggedInCallback: args.loggedInCallback, // Callback if the user is Logged In.
+					notLoggedInCallback: args.notLoggedInCallback // Callback if the user is not logged in.
+				});
+			}
+		}); // Check Gigya Session
+	}
+	/****************************************************************************************************************************
+	 * Check the user 'isLoggedIn' value
+	 * @param {Object} callbacks to manage Login event (Success and Failure) and User Object
+	 ***************************************************************************************************************************/
+	function manageLoginStatus(response, callBackArgs) {
+
+		if (response.errorCode === 0) {
+			if (response.user.isLoggedIn) { // Check if the user is logged in
+				if (callBackArgs.loggedInCallback && typeof(callBackArgs.loggedInCallback) == "function") {
+					callBackArgs.loggedInCallback(response); // Callback on loggedIn Success
+				}
+			} else {
+				if (callBackArgs.notLoggedInCallback && typeof(callBackArgs.notLoggedInCallback) == "function") {
+					callBackArgs.notLoggedInCallback(response); // Callback on loggedIn Failure
+				}
+			}
+		}
+	}
+	/****************************************************************************************************************************
+	 * Look up for logged user account details
+	 * @param {Object}
+	 * @returns
+	 ***************************************************************************************************************************/
+	function lookupUserDetails(callBackArgs) {
+		var callback = callBackArgs.userCallBack;
+		gigya.socialize.getUserInfo({
+			callback: callback
+		}); // Check Gigya Session
+	}
+	/****************************************************************************************************************************
+	 * Look up for logged user account details
+	 * @param {Object}
+	 * @returns
+	 ***************************************************************************************************************************/
+	function lookupAccountDetails(callBackArgs) {
+		var callback = callBackArgs.userCallBack;
+		gigya.accounts.getAccountInfo({
+			callback: callback
+		}); // Check Gigya Session
+	}
+	/****************************************************************************************************************************
+	 * @param {Object} callbacks to manage Update Shadow ID event (Success and Failure) and response to perform the action
+	 * @returns
+	 ************************************************************************************************************************** */
+	function setAccountInfoResponse(response, callBackArgs) {
+		// When there is no error
+		if (response.errorCode === 0) {
+			if (callBackArgs.updateAccount && typeof(callBackArgs.updateAccount) === "function") {
+				gigya.accounts.getAccountInfo({
+					callback: function(response) {
+						callBackArgs.updateAccount(response); // Callback update success
+					}
+				});
+			}
+		} else { // When error
+			if (callBackArgs.updateAccountError && typeof(callBackArgs.updateAccountError) == "function") {
+				callBackArgs.updateAccountError(); // Callback update error
+			}
+		}
+	}
+	/****************************************************************************************************************************
+	 * @param {Object} callbacks to manage Update Shadow ID event (Success and Failure) , the site which invokes the method
+	 * and the ShadowID for the user
+	 * @returns
+	 ************************************************************************************************************************** */
+	function updateSiteUId(SiteUserId, args) {
+		// Check if args are undefined. Prevents undefined error
+		args = (args !== undefined) ? args : '';
+		// Set the param to update the ShadowID on Gigya's IS.
+		if (config.ShadowField !== undefined && SiteUserId !== undefined) {
+			var data = {};
+			data[config.ShadowField] = SiteUserId;
+			var params = {
+				data: data,
+				callback: function(response) {
+					setAccountInfoResponse(response, {
+						updateAccount: args.updateAccount, // Callback on Update Success
+						updateAccountError: args.updateAccountError // Calback on Update Error
+					});
+				}
+			};
+			gigya.accounts.setAccountInfo(params); // This method sets account data into a user's account.
+		} else {
+			if (args.updateAccountError && typeof(args.updateAccountError) === "function")
+				updateAccountError();
+			return false;
+		}
+	}
+	/****************************************************************************************************************************
+	 * Check if the country drop down list was changed
+	 * @param {Object} event details returned by GIGYA
+	 ************************************************************************************************************************** */
+	function checkFieldChanged( e ){
+		if ( e.field == 'profile.country' ){
+			checkCountryField( $( "#" + e.sourceContainerID + " select[name='profile.country']") , e.sourceContainerID );
+		}
+	}
+	/****************************************************************************************************************************
+	 * Check initial value of the country drop down list
+	 * @param {Object} event details returned by GIGYA
+	 ************************************************************************************************************************** */
+	function checkCountryFieldValue(e){
+		firstCheckCountryField( $( "#" + e.sourceContainerID + " select[name='profile.country']") , e.sourceContainerID );
+	}
+	/****************************************************************************************************************************
+	 * Manage the behavior on States drop dow list dependeing on value selected for country list
+	 * @param {Object} Country drop down list object
+	 * @param {Object} Container Id. If more than one country list exists in the same screen set
+	 ************************************************************************************************************************** */
+	function checkCountryField( obj, containerId ){
+		if (containerId !== ''){ //Check for container
+			var $stateList = $("#"+containerId+" [name='profile.state']"); // Select STATES drop down list
+			var $stateValue;
+			switch( $(obj).val() ) { //CHECK WHAT COUNTRY WAS SELECTED
+				case 'United States': //OPTION 1 - COUNTRY WAS CHANGED TO UNITED STATES
+					if($stateList.attr('type') == 'text'){ //First of all check if the STATES was list or a text field.
+						$stateList = replaceField( $stateList , "select value=''" , containerId );
+					} else { // In order to avoid blank option in drop down list
+						$stateValue = $stateList.val();
+					}
+					replaceDropDownOptions( $stateList , USCountryOptions , $stateValue );
+					break;
+				case 'Canada': //OPTION 2 - COUNTRY WAS CHANGED TO CANADA
+					if($stateList.attr('type') == 'text'){
+						$stateList = replaceField( $stateList , "select value=''" , containerId );
+					} else { // In order to avoid blank option in drop down list
+						$stateValue = $stateList.val();
+					}
+					replaceDropDownOptions( $stateList , CACountryOptions , $stateValue );
+					break;
+				default: //OPTION 3 - COUNTRY WAS CHANGED TO ANOTHER VALUE
+					var jsonProp = "input type='text' value=''";
+					$stateList = replaceField( $stateList , jsonProp , containerId );
+					if ($stateValue) $stateList.val($stateValue); // Assign value to field
+			}
+		}
+	}
+	/****************************************************************************************************************************
+	 * Manage the behavior on States drop down on initial load
+	 * @param {Object} Country drop down list object
+	 * @param {Object} Container Id. If more than one country list exists in the same screen set
+	 ************************************************************************************************************************** */
+	function firstCheckCountryField( obj, containerId ){
+		if (containerId !== ''){ //Check for container
+			var $stateList = $("#"+containerId+" [name='profile.state']"); // Select STATES drop down list
+			var $stateValue = $stateList.val();
+			switch( $(obj).val() ) { //CHECK WHAT COUNTRY WAS SELECTED
+				case 'United States': //OPTION 1 - COUNTRY WAS CHANGED TO UNITED STATES
+					$stateList = replaceField( $stateList , "select value=''" , containerId );
+					replaceDropDownOptions( $stateList , USCountryOptions , $stateValue );
+					break;
+				case 'Canada': //OPTION 2 - COUNTRY WAS CHANGED TO CANADA
+					$stateList = replaceField( $stateList , "select value=''" , containerId );
+					replaceDropDownOptions( $stateList , CACountryOptions , $stateValue );
+					break;
+			}
+		}
+	}
+	/****************************************************************************************************************************
+	 * Replace field type creating a new object with the same attributes but a different type
+	 * @param {Object} object to be replace
+	 * @param initial properties. Input type
+	 ************************************************************************************************************************** */
+	function replaceField( obj , props , containerId ){
+		var jsonProp = props;
+		$(obj).each(function() { //Loop in all the object attributes and copy to a json variable.
+			$.each(this.attributes, function() {
+				if(this.specified) {
+					jsonProp += this.name+"='"+this.value+"'";
+				}
+			});
+		});
+		obj.replaceWith($('<'+jsonProp+'>'));
+		return $("#"+containerId+" [name='profile.state']");
+	}
+	/****************************************************************************************************************************
+	 * Replace all the values in a drop down list
+	 * @param {Object} object to be replace
+	 * @param initial properties. Input type
+	 ************************************************************************************************************************** */
+	function replaceDropDownOptions($dropDownList , options , $value){
+		$dropDownList.empty(); // remove old options
+		$.each(options, function(value,key) { //Assign new options
+			$dropDownList.append($("<option></option>").attr("value", value).text(key));
+		});
+		if ($value) $dropDownList.val($value); // Assign value to field
+	}
+
+
+    /****************************************************************************************************************************
+     Optimizely Variation Login
+     ***************************************************************************************************************************/
+    function showPopups_opt(args) {
+        // Check if args are undefined. Prevents undefined error
+        args = (args !== undefined) ? args : '';
+        // Calls to gigya standard function that manage all the screen sets builts in UI.
+        gigya.accounts.showScreenSet({
+            screenSet: 'Login-web-2', // Define Site Screen-Set
+            startScreen: 'gigya-login-screen', // Start with screen login
+            mobileScreenSet: 'Login-web-2', // Define Mobile Screen-Set
+            onAfterSubmit: function(response) { //Manage all the callbacks on After Submit Event
+                onSubmitHandler(response, {
+                    //onLogin: args.onLogin,
+                    onAfterSubmit: args.onAfterSubmit,
+                    onLoginError: args.onLoginError, // Callback on Login Failure
+                    onRegistration: args.onRegistration, // Callback on Registration Success
+                    onRegistrationError: args.onRegistrationError, // Callback on Registration Failure
+                    onRegistrationCompletion: args.onRegistrationCompletion, // Callback on Registration Completion Success
+                    onRegistrationCompletionError: args.onRegistrationCompletionError // Callback on Registration Completion Failure
+                });
+            }, // Call event when submit
+            onAfterScreenLoad: args.onAfterScreenLoad
+            //onAfterScreenLoad: addCountryListener()
+        });
+        // The value assigned to this parameter is a name of an Event Handler
+        // function that will be called when the user is successfully authenticated by Gigya.
+        if (args.onLogin && typeof(args.onLogin) == "function" && !loginListener.get()) {
+            gigya.socialize.addEventHandlers({
+                onLogin: args.onLogin
+            });
+            loginListener.changeTo(true); // Flag login listenner for Login
+        }
+    }
+
+	/****************************************************************************************************************************
+	 Display Sign up Form First
+	 ***************************************************************************************************************************/
+	function showPopups_SignUp(args) {
+		// Check if args are undefined. Prevents undefined error
+		args = (args !== undefined) ? args : '';
+		// Calls to gigya standard function that manage all the screen sets builts in UI.
+		gigya.accounts.showScreenSet({
+			screenSet: 'Login-web-2', // Define Site Screen-Set
+			startScreen: 'gigya-register-screen', // Start with screen Register
+			mobileScreenSet: 'Login-web-2', // Define Mobile Screen-Set
+			onAfterSubmit: function(response) { //Manage all the callbacks on After Submit Event
+				onSubmitHandler(response, {
+					//onLogin: args.onLogin,
+					onAfterSubmit: args.onAfterSubmit,
+					onLoginError: args.onLoginError, // Callback on Login Failure
+					onRegistration: args.onRegistration, // Callback on Registration Success
+					onRegistrationError: args.onRegistrationError, // Callback on Registration Failure
+					onRegistrationCompletion: args.onRegistrationCompletion, // Callback on Registration Completion Success
+					onRegistrationCompletionError: args.onRegistrationCompletionError // Callback on Registration Completion Failure
+				});
+			}, // Call event when submit
+			onAfterScreenLoad: args.onAfterScreenLoad
+			//onAfterScreenLoad: addCountryListener()
+		});
+		// The value assigned to this parameter is a name of an Event Handler
+		// function that will be called when the user is successfully authenticated by Gigya.
+		if (args.onLogin && typeof(args.onLogin) == "function" && !loginListener.get()) {
+			gigya.socialize.addEventHandlers({
+				onLogin: args.onLogin
+			});
+			loginListener.changeTo(true); // Flag login listenner for Login
+		}
+	}
+    window.isLoggedIn                  = isLoggedIn;
+    window.logout                      = logout;
+    window.lookupAccountDetails        = lookupAccountDetails;
+    window.manageLoginStatus           = manageLoginStatus;
+    window.onSecondRegistrationHandler = onSecondRegistrationHandler;
+    window.onSubmitHandler             = onSubmitHandler;
+    window.secondRegistration          = secondRegistration;
+    window.setAccountInfoResponse      = setAccountInfoResponse;
+    window.showPopups                  = showPopups;
+    window.updateProfile               = updateProfile;
+    window.updateSiteUId               = updateSiteUId;
+    window.showPopups_opt              = showPopups_opt;
+	window.showPopups_SignUp		   = showPopups_SignUp;
+}());
+/* jshint ignore:start */
+window.loginSuccessCallback = (function () {
+
+	var timesTriedLoggingIn = 0;
+	var url = window.location.pathname.toLowerCase();
+
+	return function lambda(response, redirectUrl) {
+
+	if (timesTriedLoggingIn > 3)
+	{
+		$(".hideLoggedIn").hide();
+		$(".hideLoggedOut").hide();
+		return;
+	}
+
+	$.post("/partials/jspersonalization/", {favid : $('main').data('fav-id')}, function(data, textStatus) {
+	  AKC.memberId = data[0].memberId;
+	  AKC.memberGroupTitle = data[0].memberGroupTitle;
+	  AKC.gigyaUid = $.cookie('gigya_uid') || null;
+	  if (AKC.memberGroupTitle == 'Members')
+	  {
+		  
+		  $(".hideLoggedOut").hide();
+		  if (data[0].fav)
+		  {
+			  AKCFavOn();
+		  }
+		  $("a[href*='shop.akc.org/']").each(function(){
+			  $(this).attr("href","/multipass/?SURL=" + encodeURIComponent($(this).attr("href")));
+		  });
+
+	  }
+	  else
+	  {
+		  $(".hideLoggedIn").hide();
+		  $(".showLoggedOut").show();
+	  }
+		var isLoggedIn = !!AKC.memberId,
+			userObj,
+			isLoggingInAsADifferentMember
+		;
+
+		// don't log in admins on the backend CP
+		if (AKC.memberGroupTitle.toLowerCase().indexOf('admin') !== -1) {
+			if ($('.gigya-login-form').is(':visible')) {
+				alert('You are currently logged in as an admin.  Please logout of the control panel first and refresh this page.');
+			}
+			gigya.accounts.logout();
+			gigya.socialize.logout();
+			return;
+		}
+
+		if (response.event && response.event.user) {
+			userObj = response.event.user;
+		} else if (response.user) {
+			userObj = response.user;
+		} else {
+			userObj = null;
+		}
+
+        gigyaScreenName = document.getElementById("gigya-screen-name");
+        if(gigyaScreenName) {
+            if (userObj && userObj.firstName) {
+                //$("#gigya-screen-name").html(userObj.firstName);
+				// Replacing all the occurrence
+				$('*[id*=gigya-screen-name]').each(function() {
+					$(this).html(userObj.firstName);
+				});
+				$(".hideLoggedIn").hide();
+				$(".showLoggedIn").show();
+            } else {
+                $.removeCookie('gigya_uid');
+                console.log('removing gigya cookie');
+            }
+        }
+
+		avatar = document.getElementById("avatar");
+		if (avatar) {
+			if (userObj && userObj.thumbnailURL) {
+				document.getElementById("avatar").src = userObj.thumbnailURL;
+			} else if (userObj) {
+				document.getElementById("avatar").src = "/assets/default-avatar.png";
+			} else {
+				document.getElementById("avatar").style.display= 'none';
+			}
+		}
+		
+		
+
+		isLoggingInAsADifferentMember = (AKC.gigyaUid !== userObj.UID);
+
+		if (AKC.memberGroupTitle === 'Members' && isLoggedIn && !isLoggingInAsADifferentMember) { // if PHP Session already recognizes this user and user is in 'member' group, return
+			return;
+		}
+
+		timesTriedLoggingIn += 1;
+
+		console.log('loginSuccessCallback');
+		console.dir(arguments);
+
+		function ajaxFail () {
+			console.log('Login success callback ajax fail');
+
+			return;
+		}
+		$.ajax({
+			type: 'POST',
+			url: '?ACT=' + AKC.loginActionId, // Akc_Member::loginMember
+			timeout: /*timesTriedLoggingIn === 1 ? 2000 : */10000,
+			data: {
+				data: response.data,
+				user: userObj
+			}
+		})
+		.done(function (data) {
+			var siteUid,
+				isNewMember = +data > 0
+			;
+
+			function refreshPage () {
+				timesTriedLoggingIn = 0;
+
+				if (/^\/homepage\/reset-password\//.test(url))
+				{
+					redirectUrl = "/";
+				}
+
+				if (!redirectUrl) {
+					if (/^\/delegate\/delegates-portal\//.test(url) || /^\/my-favorites\//.test(url))
+					{
+						window.location.reload();
+					}
+					else
+					{
+						lambda(response, redirectUrl);
+					}
+				} else {
+					window.location.href = redirectUrl;
+				}
+			}
+
+			if (isNewMember) {
+				siteUid = +data;
+
+				updateSiteUId(siteUid, {
+					updateAccount: function () {
+						refreshPage();
+					},
+					updateAccountError: function () {
+						refreshPage();
+					}
+				});
+			} else if (data === 'success' || data.indexOf('ALREADY LOGGED IN') !== -1 || $.cookie('gigya_uid') === userObj.UID) {
+				refreshPage();
+			} else {
+				ajaxFail.apply(this, arguments);
+			}
+		})
+		.fail(ajaxFail);
+
+		}, "json");
+	}
+}());
+
+
+function loginFailureCallback () {
+	console.log('Login Failure');
+	console.dir(arguments);
+
+	$(".hideLoggedOut").hide();
+	$(".showLoggedOut").show();
+
+//	var isLoggedIn = !!AKC.gigyaUid && !$('#my-akc-nav-sign-in').is(':visible'),
+//		$logoutButton = $('[data-sign-out]')
+//	;
+//
+//	$.removeCookie('gigya_uid');
+//
+//	if (isLoggedIn) {
+//		$logoutButton.trigger('click');
+//	}
+}
+
+function logoutSuccessCallback () {
+//	if (window.alreadyLoggedOut) {
+//		return;
+//	}
+
+	var $form = $('<form></form>');
+
+	$form
+		.attr('method', 'post')
+		.append('<input type="hidden" name="return_to" value="' + encodeURIComponent(location.href) + '" />')
+		.attr('action', location.origin + '?ACT=' + AKC.logoutActionId)
+		.submit()
+	;
+
+//	window.alreadyLoggedOut = true;
+}
+
+function logoutFailureCallback () {
+	console.log('Logout Failure');
+	console.dir(arguments);
+}
+
+function registrationSuccessCallback (response) {
+	console.log('Registration Success');
+	loginSuccessCallback(response);
+}
+
+function registrationFailureCallback () {
+	console.log('Registration Failure');
+	console.dir(arguments);
+}
+
+function registrationCompletionSuccessCallback (response) {
+	console.log('Registration Completion Success');
+	console.dir(arguments);
+}
+
+function registrationCompletionFailureCallback () {
+	console.log('Registration Completion Failure');
+	console.dir(arguments);
+}
+
+function updateSuccessCallback (response) {
+	console.log('Update Profile Success');
+	console.dir(arguments);
+}
+
+function updateFailureCallback () {
+	console.log('Update Profile Failure');
+	console.dir(arguments);
+}
+
+function secondRegistrationSuccessCallback (response) {
+	console.log('Second Registration Success');
+	console.dir(arguments);
+}
+
+function secondRegistrationFailureCallback () {
+	console.log('Second Registration Profile Failure');
+	console.dir(arguments);
+}
+
+function updateAccount (response) {
+	console.log("Update Site UID Success");
+	console.dir(arguments);
+}
+
+function updateAccountError () {
+	console.log("Update Site UID Error");
+	console.dir(arguments);
+}
+
+$(function () {
+	isLoggedIn({
+		loggedInCallback: loginSuccessCallback,
+		notLoggedInCallback: loginFailureCallback
+	});
+});
+
+/* jshint ignore:end */
+
+var config = {
+	ShadowField: 'akc_shadow_id' 			/*Value for AKC.org*/
+	// ShadowField: 'akcapps_shadow_id' 		/*Value for apps.AKC.org*/
+	// ShadowField: 'woofipedia_shadow_id' 	/*Value for woofipedia.com*/
+};
+var USCountryOptions = {
+	"Alabama":"Alabama",
+	"Alaska":"Alaska",
+	"Arizona":"Arizona",
+	"Arkansas":"Arkansas",
+	"California":"California",
+	"Colorado":"Colorado",
+	"Connecticut":"Connecticut",
+	"Delaware":"Delaware",
+	"District Of Columbia":"District Of Columbia",
+	"Florida":"Florida",
+	"Georgia":"Georgia",
+	"Hawaii":"Hawaii",
+	"Idaho":"Idaho",
+	"Illinois":"Illinois",
+	"Indiana":"Indiana",
+	"Iowa":"Iowa",
+	"Kansas":"Kansas",
+	"Kentucky":"Kentucky",
+	"Louisiana":"Louisiana",
+	"Maine":"Maine",
+	"Maryland":"Maryland",
+	"Massachusetts":"Massachusetts",
+	"Michigan":"Michigan",
+	"Minnesota":"Minnesota",
+	"Mississippi":"Mississippi",
+	"Missouri":"Missouri",
+	"Montana":"Montana",
+	"Nebraska":"Nebraska",
+	"Nevada":"Nevada",
+	"New Hampshire":"New Hampshire",
+	"New Jersey":"New Jersey",
+	"New Mexico":"New Mexico",
+	"New York":"New York",
+	"North Carolina":"North Carolina",
+	"North Dakota":"North Dakota",
+	"Ohio":"Ohio",
+	"Oklahoma":"Oklahoma",
+	"Oregon":"Oregon",
+	"Pennsylvania":"Pennsylvania",
+	"Rhode Island":"Rhode Island",
+	"South Carolina":"South Carolina",
+	"South Dakota":"South Dakota",
+	"Tennessee":"Tennessee",
+	"Texas":"Texas",
+	"Utah":"Utah",
+	"Vermont":"Vermont",
+	"Virginia":"Virginia",
+	"Washington":"Washington",
+	"West Virginia":"West Virginia",
+	"Wisconsin":"Wisconsin",
+	"Wyoming":"Wyoming"
+};
+var CACountryOptions = {
+	"Alberta": "Alberta",
+	"British Columbia": "British Columbia",
+	"Manitoba": "Manitoba",
+	"New Brunswick": "New Brunswick",
+	"Newfoundland and Labrador": "Newfoundland and Labrador",
+	"Nova Scotia": "Nova Scotia",
+	"Ontario": "Ontario",
+	"Prince Edward Island": "Prince Edward Island",
+	"Quebec": "Quebec",
+	"Saskatchewan": "Saskatchewan"
+};

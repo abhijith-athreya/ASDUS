@@ -1,0 +1,80 @@
+addLoadListener(setRollovers);
+
+
+
+var whichPict = "";			// this is to grab the name of the pict for the if statements in the xmlHTTPresponse
+
+function setRollovers()  {
+	if (!document.getElementsByTagName)  {
+		return;
+	}
+	
+	var allLinks = document.getElementsByTagName('a');
+	for (var i = 0; i < allLinks.length; i++) {
+		var currLink = allLinks[i];
+		if (currLink.className && (" " + currLink.className + " ").indexOf(" rollover ") != -1)  {
+			if (currLink.hasChildNodes && currLink.childNodes.length == 1 && currLink.childNodes[0].nodeName.toLowerCase() == 'img') {
+				currLink.onmouseover = doRollover;
+				currLink.onmouseout = restoreImage;			
+
+				
+				// preload images:
+				myImage = "currRollImage_" + i;
+				myImage = new Image();
+				myImage.src = currLink.childNodes[0].src.replace(/(\.[^.]+)$/, '_over$1');;
+			}
+		}
+	}
+}		// end setRollovers
+
+function doRollover(e)  {
+	var currTarget = findTarget(e);
+	if (!currTarget) return;
+	var currImage = currTarget.childNodes[0];
+	currImage.src = currImage.src.replace(/(\.[^.]+)$/, '_over$1');
+}
+
+function restoreImage(e) {
+	var currTarget = findTarget(e);
+	if (!currTarget) return;	
+	var currImage = currTarget.childNodes[0];
+	currImage.src = currImage.src.replace(/_over(\.[^.]+)$/, '$1');	
+}
+
+
+
+function findTarget(e) {
+  var t; 
+
+  if (window.event && window.event.srcElement) t = window.event.srcElement;
+  else if (e && e.target) t = e.target;
+  if (!t) return null;
+  
+  while (t != document.body && t.nodeName.toLowerCase() != 'a') t = t.parentNode;
+  if (t.nodeName.toLowerCase() != 'a') return null;
+  return t;
+}
+
+
+
+
+function addLoadListener(fn) {
+  if (typeof window.addEventListener != 'undefined') {
+    window.addEventListener('load', fn, false);
+  } else if (typeof document.addEventListener != 'undefined') {
+    document.addEventListener('load', fn, false);
+  } else if (typeof window.attachEvent != 'undefined') {
+    window.attachEvent('onload', fn);
+  } else {
+    var oldfn = window.onload;
+    if (typeof window.onload != 'function') {
+      window.onload = fn;
+    } else {
+      window.onload = function() {
+        oldfn();
+        fn();
+      };
+    }
+  }
+}
+

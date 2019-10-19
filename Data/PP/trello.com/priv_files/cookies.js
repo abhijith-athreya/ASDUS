@@ -1,0 +1,3 @@
+var slice=[].slice;
+(function(){var g,d;d=function(b){return encodeURIComponent(b)};g=function(b){return decodeURIComponent(b)};return window.cookie={get:function(b){var c,a,f,d,e;d=null!=(a=null!=(f=document.cookie)?f.split("; "):void 0)?a:[];a=0;for(f=d.length;a<f;a++)if(c=d[a],e=c.split("="),c=e[0],e=2<=e.length?slice.call(e,1):[],c=g(c),c===b)return b=e.join("="),g(b.replace(/\+/g," "));return null},set:function(b,c,a){null==a&&(a=1);"number"===typeof a&&(a=new Date(864E5*a+ +new Date));b=[d(b)+"="+d(String(c)),
+"expires="+a.toUTCString(),"path=/"];/^https:/.test(location)&&b.push("secure");document.cookie=b.join("; ")}}})();

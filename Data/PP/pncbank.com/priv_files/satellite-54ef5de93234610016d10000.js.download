@@ -1,0 +1,99 @@
+_satellite.pushBlockingScript(function(event, target, $variables){
+  var rec_id,rec_catid;
+  var p = _satellite.getVar('dl_page_name');
+  
+  if (p.indexOf('pnc|personal-banking')>-1){
+  if (p=='pnc|personal-banking|banking|checking') {rec_id='1';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|banking|savings') {rec_id='2';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|banking|credit-cards') {rec_id='3';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|banking|debit-and-prepaid-cards') {rec_id='4';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|banking|online-and-mobile-banking') {rec_id='5';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|banking|workplace-banking') {rec_id='6';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|topics|pnc-student-center') {rec_id='7';rec_catid='Products_Services : Borrowing';}
+  else if (p=='pnc|personal-banking|banking|university-banking') {rec_id='8';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|borrowing|home-equity-loans') {rec_id='11';rec_catid='Products_Services : Lending';}
+  else if (p=='pnc|personal-banking|borrowing|auto-loans') {rec_id='12';rec_catid='Products_Services : Lending';}
+  else if (p=='pnc|personal-banking|borrowing|education-loan-center') {rec_id='13';rec_catid='Products_Services : Lending';}
+  else if (p=='pnc|personal-banking|borrowing|personal-loans-and-lines-of-credit') {rec_id='14';rec_catid='Products_Services : Lending';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|brokerage-accounts') {rec_id='15';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|managed-accounts') {rec_id='16';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|education-accounts1') {rec_id='17';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|investment-products1') {rec_id='18';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|insurance') {rec_id='19';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|retirement-iras') {rec_id='20';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|retirement-401k-403b') {rec_id='21';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|small-business-retirement-plans') {rec_id='22';rec_catid='Products_Services';}
+  else if (p=='pnc|personal-banking|virtual-wallet-overview') {rec_id='27';rec_catid='Banking';}
+  else if (p=='pnc|personal-banking|banking|savings|s-is-for-savings') {rec_id='28';rec_catid='Banking : Savings';}
+  else if (p=='pnc|personal-banking|topics|always-open-24-7') {rec_id='29';rec_catid='Banking';}
+  else if (p=='pnc|personal-banking|banking|services|make-the-most-of-your-money') {rec_id='30';rec_catid='Banking';}
+  else if (p=='pnc|personal-banking|topics|why-pnc') {rec_id='35';rec_catid='Investments & Retirement';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|investments-retirement-center') {rec_id='36';rec_catid='Investments & Retirement';}
+  else if (p=='pnc|personal-banking|topics|portfolio-builder') {rec_id='37';rec_catid='Investments & Retirement';}
+  else if (p=='pnc|personal-banking|topics|brexit') {rec_id='38';rec_catid='Investments & Retirement';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|investments-retirement-center|articles|bear-market-s') {rec_id='39';rec_catid='Investments & Retirement';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|retirement-iras|when-leaving-an-employer') {rec_id='40';rec_catid='Investments & Retirement';}
+  else if (p=='pnc|personal-banking|topics|tax-favored-college-savings-plans') {rec_id='41';rec_catid='Investments & Retirement';}
+  else if (p=='pnc|personal-banking|topics|retirement-income') {rec_id='42';rec_catid='Investments & Retirement';}
+  else if (p=='pnc|personal-banking|topics|price-of-oil-bill-stone') {rec_id='43';rec_catid='Investments & Retirement';}
+  else if (p=='pnc|personal-banking|wealth-management|wealth-insight') {rec_id='44';rec_catid='Wealth Management';}
+  else if (p=='pnc|personal-banking|wealth-management|investment-corner|investment-corner') {rec_id='45';rec_catid='Wealth Management';}
+  else if (p=='pnc|personal-banking|wealth-management|investment-perspectives|smart-beta') {rec_id='46';rec_catid='Wealth Management';}
+  else if (p=='pnc|personal-banking|wealth-management|investment-perspectives|oil-prices-going-down') {rec_id='47';rec_catid='Wealth Management';}
+  else if (p=='pnc|personal-banking|banking|checking|virtual-wallet-with-performance-select') {rec_id='48';rec_catid='Checking';}
+  else if (p=='pnc|personal-banking|banking|checking|virtual-wallet-with-performance-spend') {rec_id='49';rec_catid='Checking';}
+  else if (p=='pnc|personal-banking|banking|checking|virtual-wallet') {rec_id='50';rec_catid='Checking : Savings';}
+  else if (p=='pnc|personal-banking|banking|checking|performance-select-checking') {rec_id='51';rec_catid='Checking';}
+  else if (p=='pnc|personal-banking|banking|checking|performance-checking') {rec_id='52';rec_catid='Checking';}
+  else if (p=='pnc|personal-banking|banking|checking|standard-checking') {rec_id='53';rec_catid='Checking';}
+  else if (p=='pnc|personal-banking|banking|savings|premiere-money-market') {rec_id='55';rec_catid='Savings';}
+  else if (p=='pnc|personal-banking|banking|savings|standard-savings') {rec_id='56';rec_catid='Savings';}
+  else if (p=='pnc|personal-banking|banking|savings|certificate-of-deposits') {rec_id='58';rec_catid='Savings';}
+  else if (p=='pnc|personal-banking|banking|savings|pnc-benefit-plus') {rec_id='60';rec_catid='Savings';}
+  else if (p=='pnc|personal-banking|banking|credit-cards|pnc-core-visa-credit-card') {rec_id='61';rec_catid='Credit Cards';}
+  else if (p=='pnc|personal-banking|banking|credit-cards|pnc-points-visa-credit-card') {rec_id='62';rec_catid='Credit Cards';}
+  else if (p=='pnc|personal-banking|banking|credit-cards|pnc-cashbuilder-visa-credit-card') {rec_id='63';rec_catid='Credit Cards';}
+  else if (p=='pnc|personal-banking|banking|credit-cards|pnc-premier-traveler-visa-credit-card') {rec_id='64';rec_catid='Credit Cards';}
+  else if (p=='pnc|personal-banking|banking|debit-and-prepaid-cards|pnc-bank-visa-debit-card') {rec_id='65';rec_catid='Debit & Prepaid Cards';}
+  else if (p=='pnc|personal-banking|banking|debit-and-prepaid-cards|pnc-smartaccess-prepaid-visa-card') {rec_id='66';rec_catid='Debit & Prepaid Cards';}
+  else if (p=='pnc|personal-banking|banking|debit-and-prepaid-cards|pnc-bank-visa-gift-card') {rec_id='67';rec_catid='Debit & Prepaid Cards';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|brokerage-accounts|brokerage-plus-account') {rec_id='68';rec_catid='Investing';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|retirement-iras|traditional-ira') {rec_id='70';rec_catid='Investing';}
+  else if (p=='pnc|personal-banking|investments-and-retirement|retirement-iras|roth-ira') {rec_id='71';rec_catid='Investing';}
+  else if (p=='pnc|personal-banking|borrowing|home-equity-loans|home-equity-loans') {rec_id='72';rec_catid='Lending';}
+  else if (p=='pnc|personal-banking|borrowing|home-equity-loans|choice-home-equity-line-of-credit') {rec_id='73';rec_catid='Lending';}
+    else if (p=='pnc|personal-banking|borrowing|home-lending|refinancing') {rec_id='10';rec_catid='Products_Services : Lending';}
+    else if (p=='pnc|personal-banking|borrowing|home-lending|mortgages') {rec_id='69';rec_catid='Lending';}
+  }
+
+
+  if (rec_id && rec_catid) {
+    	document.documentElement.style.opacity = "0";
+      adobe.target.getOffer({  
+  			"mbox": 'TargetGlobalMbox',  
+    		"params": {"cp" : _satellite.getVar('ck_customer'),"olbpr" : _satellite.getVar('olbpr'),"olbex" : _satellite.getVar('olbex'),"entity.id" : rec_id,"entity.categoryId" : rec_catid, "pagename" : _satellite.getVar('dl_page_name')},
+				"success": function(offers) {          
+        	adobe.target.applyOffer( { "mbox": 'TargetGlobalMbox',"offer": offers } );
+          document.documentElement.style.opacity = "1";
+  			},
+    		"error": function(status, error){document.documentElement.style.opacity = "1";}
+			});
+    }
+    else {
+      document.documentElement.style.opacity = "0";
+      adobe.target.getOffer({  
+  			"mbox": 'TargetGlobalMbox',  
+    		"params": {"cp" : _satellite.getVar('ck_customer'),"olbpr" : _satellite.getVar('olbpr'),"olbex" : _satellite.getVar('olbex'), "pagename" : _satellite.getVar('dl_page_name')},
+				"success": function(offers) {  
+          window.offerx = offers;
+        	adobe.target.applyOffer( { "mbox": 'TargetGlobalMbox',"offer": offers } );
+          if (JSON.stringify(offers).indexOf('"action":"redirect"')>-1){
+          }
+          document.documentElement.style.opacity = "1";
+  			},
+        "error": function(status, error){document.documentElement.style.opacity = "1";}
+			});
+      
+    }
+
+});

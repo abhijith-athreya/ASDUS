@@ -1,0 +1,724 @@
+_satellite.pushAsyncScript(function(event, target, $variables){
+  var hostname = window.location.host.toLowerCase();
+var p = po = _satellite.getVar('dl_page');
+var pn = _satellite.getVar('dl_page_name');
+var pt = _satellite.getVar('dl_page_type').toLowerCase();
+var ck_customer = _satellite.getVar('ck_customer');
+var olbex = _satellite.getVar('olbex');
+var q, re,bing, cly, neu, lnk, samba;
+var atlas, atlasu, dbase, dfp, fbd_event, fbd_type, fbd_name, fbd_cat, fbmkl, fbmklhe, flsrc, rlsa, pind, visa;
+
+// DATA LAYER
+if (p != '') {
+    if (p.match(/^personal-banking/gi)) {
+        if (p == 'personal-banking') {
+            rlsa = 1;
+          	neu = 'PB009';
+            if (olbex.indexOf('ex1=y') > -1) {
+              fbd_event='ViewContent'; fbd_type='ExistingCustomerOnLP'; fbd_name='Supression';
+            }
+          samba='pncbank/personalbanking';
+        }
+        else {
+            p = p.replace('personal-banking|', '');
+
+            //demandbase
+            if (p == 'banking|services|foreign-currency-exchange-services') {
+                dbase = 1;
+            }
+
+            //visa checkout
+            if (p == 'banking|online-and-mobile-banking|visa-checkout') {
+                visa = 1;
+            }
+						//userzoom
+  					if (p == 'banking|savings') {_satellite.track('userzoom savings');}
+
+          	//pinterest
+          if (p=='borrowing|home-lending|campaigns|planner') {pind='PageVisit';}
+          
+            //fb2 fbmkl        
+            if (p=='banking|credit-cards' || p=='banking|credit-cards|pnc-core-visa-credit-card' || p=='banking|credit-cards|pnc-cashbuilder-visa-credit-card'|| p=='banking|credit-cards|pnc-points-visa-credit-card'||p=='banking|credit-cards|pnc-premier-traveler-visa-credit-card'||p=='banking|credit-cards|credit-card-comparison'||p=='banking|credit-cards|campaigns|credit-card-premium-offers-all'||p=='banking|credit-cards|pnc-cash-rewards-visa-credit-card'||p=='banking|credit-cards|campaigns|pnc-cash-rewards-visa-credit-card-offer'||p=='banking|credit-cards|campaigns|credit-card-offers-all') {fbmkl = '1';}
+          else if (p.indexOf('borrowing|home-equity-loans')>-1) {fbmklhe=1;}
+          else if (p.indexOf('borrowing|education-loan-center')>-1) {fbmklhe='EdLendSiteVisitors';}
+          else if (p=='banking|online-and-mobile-banking|digital-payments' || p=='banking|online-and-mobile-banking|android-pay' || p=='banking|online-and-mobile-banking|zelle') {fbmklhe=2;}
+          
+          	//fbd
+	          if (p=='virtual-wallet-overview') {fbd_event='ViewContent'; fbd_type='LP1'; fbd_name='Non-offerFBMessage';}
+	          else if (p=='banking|checking|campaigns|checking-vw-tiered-offer') {fbd_event='ViewContent'; fbd_type='LP2'; fbd_name='OfferFBMessage';}
+	          else if (p=='banking|checking|checking-comparison') {fbd_event='ViewContent'; fbd_type='LP1'; fbd_name='CompareandApplyClick';}
+          else if (p=='virtual-wallet-overview|campaigns|virtual-wallet-overview') {fbd_event='ViewContent'; fbd_type='LP3'; fbd_name='HearStories';}
+          else if (p=='borrowing|home-lending|campaigns|planner') {fbd_event='AddToCart';}
+          else if (p=='borrowing|home-lending|campaigns|first-time-homebuyers-guide') {fbd_event='ViewContent';fbd_name='FTHBGuide'; fbd_type='LP1';}
+					else if (p=='borrowing|home-lending|campaigns|thank-you|download-local'||p=='borrowing|home-lending|campaigns|thank-you|download-national') {fbd_event='CompleteRegistration';fbd_name='FTHBThankYou';}    
+          else if (p=='borrowing|home-lending|campaigns|homebuyers-guide'){fbd_event='ViewContent';fbd_name='HBGuide'; fbd_type='LP2';}
+          else if (p=='borrowing|home-lending|campaigns|thank-you|home-buyer-download-local'||p=='borrowing|home-lending|campaigns|thank-you|home-buyer-download-national'){fbd_event='CompleteRegistration';fbd_name='HBThankYou'}
+          else if (p=='borrowing|home-lending|campaigns|thank-you|refi-download-local'||p=='borrowing|home-lending|campaigns|thank-you|refi-download-national'){fbd_event='GuideDownload';fbd_name='RefiGuide';fbd_type='GuideDownload';}
+        //neustar
+         if (p.match(/^banking/gi)) {
+            p = p.replace('banking|', '');
+            if (p.match(/^checking/gi)) {
+              if (p == 'checking'){neu = 'PB010';}
+              else if (p == 'checking|campaigns|checking-vw-tiered-offer'){neu = 'PB011';}
+              else if (p == 'checking|campaigns|vw-tiered-offer-dot'){neu = 'PB012';}
+              else if (p == 'checking|checking'){neu = 'PB013';}
+              else if (p == 'checking|checking-comparison'){neu = 'PB014';}
+              else if (p == 'checking|find-the-right-checking-account'){neu = 'PB015';}
+              else if (p == 'checking|performance-checking'){neu = 'PB016';}
+              else if (p == 'checking|performance-select-checking'){neu = 'PB017';}
+              else if (p == 'checking|standard-checking'){neu = 'PB018';}
+              else if (p == 'checking|virtual-wallet'){neu = 'PB019';}
+              else if (p == 'checking|virtual-wallet-with-performance-select'){neu = 'PB020';}
+              else if (p == 'checking|virtual-wallet-with-performance-spend'){neu = 'PB021';}
+            }
+            else if (p.match(/^credit-cards/gi)) {
+              if (p == 'credit-cards'){neu = 'PB022';}
+              else if (p == 'credit-cards|benefits|premier-traveler-benefits'){neu = 'PB023';}
+              else if (p == 'credit-cards|campaigns|credit-card-offers-all'){neu = 'PB024';}
+              else if (p == 'credit-cards|campaigns|pnc-cash-rewards-visa-credit-card-offer'){neu = 'PB026';}
+              else if (p == 'credit-cards|campaigns|pnc-core-visa-credit-card-offer'){neu = 'PB027';}
+              else if (p == 'credit-cards|campaigns|pnc-points-visa-credit-card-offer'){neu = 'PB028';}
+              else if (p == 'credit-cards|credit-card-comparison'){neu = 'PB030';}
+              else if (p == 'credit-cards|pnc-cashbuilder-visa-credit-card'){neu = 'PB031';}
+              else if (p == 'credit-cards|pnc-cash-rewards-visa-credit-card'){neu = 'PB032';}
+              else if (p == 'credit-cards|pnc-core-visa-credit-card'){neu = 'PB033';}
+              else if (p == 'credit-cards|pnc-points-visa-credit-card'){neu = 'PB034';}
+              else if (p == 'credit-cards|pnc-premier-traveler-visa-credit-card'){neu = 'PB035';}
+            }
+            else if (p.match(/^debit-and-prepaid-cards/gi)) {
+              if (p == 'debit-and-prepaid-cards'){neu = 'PB036';}
+              else if (p == 'debit-and-prepaid-cards|affinity|pittsburgh-steelers'){neu = 'PB037';}
+              else if (p == 'debit-and-prepaid-cards|pnc-bank-visa-debit-card'){neu = 'PB038';}
+              else if (p == 'debit-and-prepaid-cards|pnc-smartaccess-prepaid-visa-card'){neu = 'PB039';}
+              else if (p == 'debit-and-prepaid-cards|pnc-smartaccess-prepaid-visa-card|smartaccess-l'){neu = 'PB040';}
+            }
+            else if (p.match(/^savings/gi)) {
+              if (p == 'savings'){neu = 'PB041';}
+              else if (p == 'savings|certificate-of-deposits'){neu = 'PB043';}
+              else if (p == 'savings|find-the-right-savings-account'){neu = 'PB044';}
+              else if (p == 'savings|pnc-benefit-plus'){neu = 'PB045';}
+              else if (p == 'savings|pnc-benefit-plus|debit-card'){neu = 'PB046';}
+              else if (p == 'savings|premiere-money-market'){neu = 'PB047';}
+              else if (p == 'savings|s-is-for-savings'){neu = 'PB048';}
+            }
+            else if (p.match(/^student-banking/gi)) {
+              if (p == 'student-banking'){neu = 'PB049';}
+              else if (p == 'student-banking|bowling-green-state-university'){neu = 'PB050';}
+              else if (p == 'student-banking|caldwell-university'){neu = 'PB051';}
+              else if (p == 'student-banking|carnegie-mellon-university'){neu = 'PB052';}
+              else if (p == 'student-banking|case-western-reserve-university'){neu = 'PB053';}
+              else if (p == 'student-banking|duquesne-university'){neu = 'PB054';}
+              else if (p == 'student-banking|georgetown-university'){neu = 'PB055';}
+              else if (p == 'student-banking|indiana-university-of-pennsylvania'){neu = 'PB056';}
+              else if (p == 'student-banking|loyola-university-chicago'){neu = 'PB057';}
+              else if (p == 'student-banking|marshall'){neu = 'PB058';}
+              else if (p == 'student-banking|miami-university-of-ohio'){neu = 'PB059';}
+              else if (p == 'student-banking|penn-state-university'){neu = 'PB060';}
+              else if (p == 'student-banking|temple-university'){neu = 'PB061';}
+              else if (p == 'student-banking|the-university-of-akron'){neu = 'PB062';}
+              else if (p == 'student-banking|towson-university'){neu = 'PB063';}
+              else if (p == 'student-banking|university-of-cincinnati'){neu = 'PB064';}
+              else if (p == 'student-banking|university-of-delaware'){neu = 'PB065';}
+              else if (p == 'student-banking|university-of-kentucky'){neu = 'PB066';}
+              else if (p == 'student-banking|university-of-michigan'){neu = 'PB067';}
+              else if (p == 'student-banking|university-of-pennsylvania'){neu = 'PB068';}
+              else if (p == 'student-banking|university-of-pittsburgh'){neu = 'PB069';}
+              else if (p == 'student-banking|west-virginia-university'){neu = 'PB070';}
+              else if (p == 'student-banking|wilkes-university'){neu = 'PB071';}
+            }
+          }
+        	else if (p.match(/^borrowing/gi)) {
+            p = p.replace('borrowing|', '');
+            if (p.match(/^auto-loans/gi)) {
+              if (p == 'auto-loans'){neu = 'PB072';}
+            	else if (p == 'auto-loans|check-ready-auto-loan'){neu = 'PB073';}
+            	else if (p == 'auto-loans|pnc-auto-loans|buying-from-a-private-party'){neu = 'PB074';}
+            	else if (p == 'auto-loans|pnc-auto-loans|refinancing-an-auto-loan'){neu = 'PB075';}
+            	else if (p == 'auto-loans|rates-search'){neu = 'PB076';}
+            }
+            else if (p.match(/^education-loan-center/gi)) {
+              if (p == 'education-loan-center'){neu = 'PB077';}
+            	else if (p == 'education-loan-center|educationrefinancing'){neu = 'PB078';}
+            	else if (p == 'education-loan-center|pnc-solution-graduate-loan'){neu = 'PB079';}
+            	else if (p == 'education-loan-center|pnc-solution-health-profession-loan'){neu = 'PB080';}
+            	else if (p == 'education-loan-center|pnc-solution-health-profession-residency-loan'){neu = 'PB081';}
+            	else if (p == 'education-loan-center|pnc-solution-loan-for-bar-study'){neu = 'PB082';}
+            	else if (p == 'education-loan-center|pnc-solution-loan-learning-center'){neu = 'PB083';}
+            	else if (p == 'education-loan-center|pnc-solution-undergraduate-loan'){neu = 'PB084';}
+            }
+            else if (p.match(/^home-equity-loans/gi)) {
+              if (p == 'home-equity-loans'){neu = 'PB085';}
+            	else if (p == 'home-equity-loans|choice-home-equity-line-of-credit'){neu = 'PB086';}
+            	else if (p == 'home-equity-loans|home-equity-loans'){neu = 'PB087';}
+            	else if (p == 'home-equity-loans|home-equity-rapid-refinance'){neu = 'PB088';}
+            	else if (p == 'home-equity-loans-and-lines|compare-home-equity-products'){neu = 'PB089';}
+            }
+            else if (p.match(/^home-lending/gi)) {
+              if (p == 'home-lending|campaigns|planner'){neu = 'PB090';}
+            	else if (p == 'home-lending|contact-us|find-mlo'){neu = 'PB091';}
+            	else if (p == 'home-lending|contact-us|forms|refinance-alf'){neu = 'PB092';}
+            	else if (p == 'home-lending|mortgages'){neu = 'PB093';}
+            	else if (p == 'home-lending|understanding-home-lending-center|home-insight'){neu = 'PB094';}
+              else if (p=='home-lending|campaigns|first-time-homebuyers-guide') {neu='MO002';}
+              else if (p=='home-lending|campaigns|homebuyers-guide'){neu='MO003';}
+            }
+            else if (p.match(/^personal-loans-and-lines-of-credit/gi)) {
+              if (p == 'personal-loans-and-lines-of-credit'){neu = 'PB095';}
+            	else if (p == 'personal-loans-and-lines-of-credit|compare-personal-loans-and-lines'){neu = 'PB096';}
+            	else if (p == 'personal-loans-and-lines-of-credit|personal-installment-loan-secured'){neu = 'PB097';}
+            	else if (p == 'personal-loans-and-lines-of-credit|personal-loan-unsecured'){neu = 'PB098';}
+            }
+          }
+          else if (p.match(/^investments-and-retirement/gi)) {
+            p = p.replace('investments-and-retirement|', '');
+            if (p.match(/^investments-retirement-center/gi)) {
+              if (p == 'investments-retirement-center'){neu = 'PB104';}
+            	else if (p == 'investments-retirement-center|articles|four-steps-ba'){neu = 'PB105';}
+            	else if (p == 'investments-retirement-center|articles|how-much-life'){neu = 'PB106';}
+            	else if (p == 'investments-retirement-center|articles|protect-retir'){neu = 'PB107';}
+            	else if (p == 'investments-retirement-center|articles|ramp-up-retir'){neu = 'PB108';}
+            	else if (p == 'investments-retirement-center|articles|retirement-ch'){neu = 'PB109';}
+            	else if (p == 'investments-retirement-center|ir-center-already-unde'){neu = 'PB110';}
+            }
+            else if (p == 'brokerage-accounts'){neu = 'PB099';}
+            else if (p == 'education-accounts|education-529-plan'){neu = 'PB101';}
+            else if (p == 'insurance'){neu = 'PB102';}
+            else if (p == 'investment-products1'){neu = 'PB103';}
+            else if (p == 'managed-accounts'){neu = 'PB111';}
+            else if (p == 'managed-accounts|pnc-directions'){neu = 'PB112';}
+            else if (p == 'retirement-iras'){neu = 'PB113';}
+            else if (p == 'retirement-iras|when-leaving-an-employer'){neu = 'PB114';}
+            else if (p == 'small-business-retirement-plans'){neu = 'PB115';}
+          }
+          else if (p.match(/^wealth-management/gi)) {
+            p = p.replace('wealth-management|', '');
+            if (p == 'investment-corner|investment-corner'){neu = 'PB123';}
+            else if (p == 'investment-management'){neu = 'PB124';}
+            else if (p == 'investment-perspectives|pnc-european-vacation'){neu = 'PB125';}
+            else if (p == 'investment-perspectives|repatriation'){neu = 'PB126';}
+            else if (p == 'pnc-wealth-management'){neu = 'PB127';}
+            else if (p == 'private-banking-services'){neu = 'PB128';}
+            else if (p == 'wealth-insight'){neu = 'PB129';}
+            else if (p == 'wealth-management-contact-form'){neu = 'PB130';}
+            else if (p == 'wealth-strategy'){neu = 'PB131';}
+          }
+          else if (p.match(/^virtual-wallet-overview/gi)) {
+            if (p == 'virtual-wallet-overview'){neu = 'PB118';}
+            else {
+              p = p.replace('virtual-wallet-overview|', '');
+              if (p == 'campaigns|virtual-wallet-overview'){neu = 'PB119';}
+              else if (p == 'campaigns|virtual-wallet-overview-foodie'){neu = 'PB120';}
+              else if (p == 'campaigns|virtual-wallet-overview-runner'){neu = 'PB122';}
+            }
+          }
+          else if (p.match(/^topics/gi)) {
+            if (p == 'topics|retirement-income'){neu = 'PB116';}
+            else if (p == 'topics|why-pnc'){neu = 'PB117';}
+          }
+        }
+    }
+    else if (p.match(/^small-business/gi)) {
+        if (p == 'small-business') {
+            rlsa = 1;
+          	neu = 'SB001';
+            if (olbex.indexOf('ex1=y') > -1) {
+              fbd_event='ViewContent'; fbd_type='ExistingCustomerOnLP'; fbd_name='Supression';
+            }
+        }
+        else {
+            p = p.replace('small-business|', '');
+
+            //atlas
+            if (p.match(/^banking\|business-checking-overview/gi)) {
+                q = p.replace('banking|business-checking-overview|', '');
+                if (q == 'banking|business-checking-overview') {
+                    neu = 'SB002';
+                }
+                else if (q == 'checking-comparison') {
+                    neu = 'SB003';
+                }
+            }
+            else if (p == 'borrowing|business-credit-cards') {
+                neu = 'SB004';
+            }
+            else if (p == 'borrowing|business-credit-cards|credit-card-comparison') {
+                neu = 'SB007';
+            }
+            else if (p == 'borrowing|business-credit-cards|pnc-cash-rewards-visa-signature-business-credit-c') {
+                neu = 'SB008';
+            }
+            else if (p == 'borrowing|business-credit-cards|pnc-points-visa-business-credit-card') {
+                neu = 'SB009';
+            }
+          	else if (p.indexOf('topics|veteran-owned-businesses')>-1) {
+              	lnk = '9729';
+            }
+          	if (p.indexOf('topics|cash-flow-challenges|')>-1||p.indexOf('topics|women-in-business|women-who-achieve')>-1||p=='business-insights|merchant-enews|data-security|reduce-risk'||p=='topics|women-in-business|benefits-of-journaling|leadership-tool-pen-on-paper'||p=='business-insights|women-enews|management|become-a-thought-leader'||p=='business-insights|merchant-enews|data-security|reduce-risk'||p=='business-insights|merchant-enews|data-security|reduce-risk'){_satellite.track('userzoom sb');}
+        }
+    }
+    else if (p.match(/^corporate-and-institutional/gi)) {
+        //home page
+        if (p == 'corporate-and-institutional') {
+            dbase = 1;
+          	neu = 'CA001';
+        }
+        else {
+            p = p.replace('corporate-and-institutional|', '');
+          	
+          	if (p == 'campaigns|commercial') {
+          		neu = 'CA002';             
+            }
+            else if (p == 'campaigns|dallas') {
+          		neu = 'CA003';             
+            }
+            else if (p == 'campaigns|kansascity') {
+          		neu = 'CA004';             
+            }
+
+          	else if (p == 'capital-markets|municipal-strategy') {
+               	neu = 'CA005';
+            }
+            else if (p == 'financing|lending-options|pnc-equipment-finance') {
+              	neu = 'CA006';
+            }
+          	else if (p == 'financing|lending-options|pnc-equipment-finance|aviation') {
+              	neu = 'CA007';
+            }
+         		else if (p == 'financing|lending-options|pnc-equipment-finance|golf-finance-pnc-equ') {
+              	neu = 'CA008';
+            }
+            else if (p == 'financing|lending-options|pnc-real-estate') {
+              	neu = 'CA009';
+            }
+            else if (p == 'financing|lending-options|pnc-real-estate|midland-loan-services') {
+              	neu = 'CA010';
+            }
+            else if (p == 'financing|lending-options|pnc-real-estate|midland-loan-services|cons') {
+              	neu = 'CA011';
+            }
+            else if (p == 'financing|lending-options|pnc-real-estate|news-articles-and-transact') {
+              	neu = 'CA012';
+            }
+            else if (p == 'financing|lending-options|pnc-real-estate|real-estate-events|real-ev') {
+              	neu = 'CA013';
+            }
+            else if (p == 'financing|lending-options|pnc-real-estate|relationships|treasury-man') {
+              	neu = 'CA014';
+            }
+            else if (p == 'financing|lending-options|pnc-real-estate|research-reports') {
+              	neu = 'CA015';
+            }
+            else if (p == 'financing|lending-options|pnc-real-estate|tax-credit-investments-gro') {
+								neu = 'CA016';
+            }
+        	else if (pn == 'institutional-investment-management|institutional-insights|insights') {
+            neu = 'CA017';
+        	}
+          else if (p == 'institutional-investment-management|institutional-investment-managem') {
+              	neu = 'CA018';
+            }
+            else if (p == 'institutional-investment-management|vested-interest-retirement-servi') {
+              	neu = 'CA019';
+            }
+            else if (p == 'international-services|china') {
+                neu = 'CA020';
+            }
+            else if (p == 'international-services|foreign-exchange') {
+              	neu = 'CA021';
+            }
+            else if (p == 'international-services|international-services-overview') {
+              	neu = 'CA022';
+            }
+            else if (p == 'pnc-general-disclosure') {
+                neu = 'CA023';
+            }
+            else if (p == 'topics|specialty-segments|healthcare') {
+                 neu = 'CA024';
+            }
+            else if (p == 'topics|specialty-segments|mcdonalds') {
+                 neu = 'CA025';
+            }
+            else if (p == 'topics|trending-top-5') {
+                 neu = 'CA026';
+            }
+            else if (p == 'treasury-management|payables|invoice-automation') {
+                neu = 'CA027';
+            }
+            else if (p == 'treasury-management|pncbenefitplus') {
+                neu = 'CA028';
+            }
+            else if (p == 'treasury-management|receivables|deposit-on-site') {
+                neu = 'CA029';
+            }
+            else if (p == 'treasury-management|resources|ohio-collateral-pool-reports') {
+                neu = 'CA030';
+            }
+            else if (p == 'treasury-management|resources|pa-collateral-pool-reports') {
+                neu = 'CA031';
+            }
+            else if (p == 'treasury-management|resources|payment-solutions-news') {
+                neu = 'CA032';
+            }
+            else if (p == 'treasury-management|resources|payment-solutions-news|commercial-paym') {
+                neu = 'CA033';
+            }
+            else if (p == 'treasury-management|resources|payment-solutions-news|corporate-card-') {
+                neu = 'CA034';
+            }
+            else if (p == 'treasury-management|resources|payment-solutions-news|drive-for-payme') {
+                neu = 'CA035';
+            }
+            else if (p == 'treasury-management|resources|payment-solutions-news|mobile-wallets') {
+                neu = 'CA036';
+            }
+            else if (p == 'treasury-management|resources|payment-solutions-news|mobile-wallets-') {
+                neu = 'CA037';
+            }
+            else if (p == 'treasury-management|resources|payment-solutions-news|payment-solutio') {
+                neu = 'CA038';
+            }
+            else if (p == 'treasury-management|resources|payment-solutions-news|pnc-fleet-card') {
+                neu = 'CA039';
+            }
+
+			
+          	//contently
+          if (p.indexOf('financing|lending-options|pnc-equipment-finance')>-1&&p.indexOf('article')>-1){cly=1;}
+          
+            //demandbase
+            if (p == 'capital-markets|asset-backed-securities' ||
+                p == 'capital-markets|capital-market-overview' ||
+                p == 'capital-markets|fixed-income-securities' ||
+                p == 'capital-markets|loan-syndications' ||
+                p == 'capital-markets|mergers-and-acquisitions' ||
+                p == 'capital-markets|private-placements' ||
+                p == 'capital-markets|public-finance' ||
+                p == 'capital-markets|public-market-securities' ||
+                p == 'campaigns|dallas' ||
+                p == 'campaigns|kansascity' ||
+                p == 'campaigns|minneapolis' ||
+                p == 'campaigns|commercial' ||
+                p == 'financing|capital-markets' ||
+                p == 'financing|dealer-finance' ||
+                p == 'financing|debt-capital-markets' ||
+                p == 'financing|financing-overview' ||
+                p == 'financing|lending-options' ||
+                p == 'financing|lending-options|pnc-equipment-finance' ||
+                p == 'financing|lending-options|pnc-equipment-finance|cib-structured-finan' ||
+                p == 'financing|lending-options|pnc-equipment-finance|commercial-finance' ||
+                p == 'financing|lending-options|pnc-equipment-finance|energy-capital-pnc-e' ||
+                p == 'financing|lending-options|pnc-equipment-finance|golf-finance-pnc-equ' ||
+                p == 'financing|lending-options|pnc-equipment-finance|healthcare-finance-p' ||
+                p == 'financing|lending-options|pnc-equipment-finance|large-corporations-p' ||
+                p == 'financing|lending-options|pnc-equipment-finance|managed-services-pnc' ||
+                p == 'financing|lending-options|pnc-equipment-finance|middle-market-pnc-eq' ||
+                p == 'financing|lending-options|pnc-equipment-finance|municipal-finance-pn' ||
+                p == 'financing|lending-options|pnc-equipment-finance|program-finance-pnc-' ||
+                p == 'financing|lending-options|pnc-equipment-finance|railcar-finance' ||
+                p == 'financing|lending-options|pnc-equipment-finance|smaller-businesses-p' ||
+                p == 'financing|lending-options|pnc-equipment-finance|sports-entertainment' ||
+                p == 'financing|lending-options|pnc-equipment-finance|technology-finance-p' ||
+                p == 'financing|lending-options|pnc-real-estate' ||
+                p == 'financing|lending-options|pnc-real-estate|affordable-housing-preserv' ||
+                p == 'financing|lending-options|pnc-real-estate|agency-finance' ||
+                p == 'financing|lending-options|pnc-real-estate|midland-loan-services' ||
+                p == 'financing|lending-options|pnc-real-estate|midland-loan-services|borr' ||
+                p == 'financing|lending-options|pnc-real-estate|midland-loan-services|cmbs' ||
+                p == 'financing|lending-options|pnc-real-estate|midland-loan-services|cons' ||
+                p == 'financing|lending-options|pnc-real-estate|midland-loan-services|gove' ||
+                p == 'financing|lending-options|pnc-real-estate|midland-loan-services|loan' ||
+                p == 'financing|lending-options|pnc-real-estate|midland-loan-services|midl' ||
+                p == 'financing|lending-options|pnc-real-estate|midland-loan-services|real' ||
+                p == 'financing|lending-options|pnc-real-estate|midland-loan-services|sing' ||
+                p == 'financing|lending-options|pnc-real-estate|midland-loan-services|tech' ||
+                p == 'financing|lending-options|pnc-real-estate|real-estate-banking' ||
+                p == 'financing|lending-options|pnc-real-estate|research-reports' ||
+                p == 'financing|lending-options|pnc-real-estate|tax-credit-capital' ||
+                p == 'financing|lending-options|pnc-real-estate|tax-credit-investments-gro' ||
+                p == 'financing|lending-options|pnc-real-estate|transactions' ||
+                p == 'financing|mezzanine-and-equity-capital' ||
+                p == 'institutional-investment-management|i-link-demos-v2' ||
+                p == 'institutional-investment-management|institutional-insights|insights' ||
+                p == 'institutional-investment-management|institutional-investment-managem' ||
+                p == 'institutional-investment-management|liability-driven-investments' ||
+                p == 'institutional-investment-management|planned-giving-solutions' ||
+                p == 'institutional-investment-management|vested-interest-retirement-servi' ||
+                p == 'international-services|china' ||
+                p == 'international-services|foreign-exchange' ||
+                p == 'international-services|foreign-exchange|foreign-currency-loans' ||
+                p == 'international-services|foreign-exchange|international-payments' ||
+                p == 'international-services|foreign-exchange|multicurrency-accounts' ||
+                p == 'international-services|foreign-exchange|online-foreign-exchange' ||
+                p == 'international-services|foreign-exchange|risk-management' ||
+                p == 'international-services|international-services-overview' ||
+                p == 'international-services|manage-international-cash-flow' ||
+                p == 'international-services|risk-management' ||
+                p == 'topics|specialty-segments' ||
+                p == 'topics|specialty-segments|corporate-banking' ||
+                p == 'topics|specialty-segments|energy-and-metals' ||
+                p == 'topics|specialty-segments|equity-and-interest-rate-derivatives' ||
+                p == 'topics|specialty-segments|federal-services' ||
+                p == 'topics|specialty-segments|financial-institutions-group|financial-ins' ||
+                p == 'topics|specialty-segments|healthcare' ||
+                p == 'topics|specialty-segments|mcdonalds' ||
+                p == 'treasury-management|deposit-and-account-services' ||
+                p == 'treasury-management|fraud-prevention-tools' ||
+                p == 'treasury-management|liquidity-and-investments' ||
+                p == 'treasury-management|online-and-mobile-banking' ||
+                p == 'treasury-management|online-and-mobile-banking|mobile-solutions' ||
+                p == 'treasury-management|online-and-mobile-banking|pinacle-mobile' ||
+                p == 'treasury-management|payables' ||
+                p == 'treasury-management|payables|card-services' ||
+                p == 'treasury-management|receivables' ||
+                p == 'treasury-management|resources|nacha-rule-changes' ||
+                p == 'treasury-management|treasury-management-overview' ||
+                p == 'treasury-management|treasury-management-overview') {
+                dbase = 1;
+            }
+
+        }
+    }
+    else if (p.match(/^about-pnc/gi)) {
+        p = p.replace('about-pnc|', '');
+      	if (p=='topics|pnc-pov|community|pnc-pov-veterans-daycare'||p=='topics|pnc-pov|economy|fall-17-economic-outlook'||p=='topics|pnc-pov|community|pnc-pov-veterans-daycare'){_satellite.track('userzoom sb');}
+    }
+    else if (p.match(/^lp/gi)) {
+        if (p == 'lp|corporate-and-institutional|deposit-onsite') {
+            dbase = 1;
+        }
+    }
+    else if (pn.match(/^landing pages/gi)) {
+        p = pn.replace('landing pages|', '');
+        //fb2
+        if (p == 'coupon|signup|vwperf') {
+          	fbd_event='Lead'; fbd_name='EmailCouponButton'; fbd_cat='CouponStart'; 
+          	neu = 'PB004';
+        }
+        else if (p == 'borrowing|auto-loans|driving-down-your-monthly-payments') {
+          	neu = 'PB001';
+        }
+
+    }
+    else if (p.indexOf('admin|reusable-content|coupons|') > -1) {
+        if (_satellite.getVar('qs_couponproduct') == 'vwperf') {
+        }
+    }
+    else if (p == 'customer-service') {
+    }
+    else if (p == 'locator|search') {
+    }
+  else if (pn.indexOf('microsite|')>-1){
+  }
+  else if (p=='security-privacy'){atlasu=1;}
+}
+
+//rlsa
+if (rlsa) {
+    var dcIMG = document.createElement('img');
+    dcIMG.setAttribute('src', '//20735970p.rfihub.com/ca.html?rb=25139&ca=20735970&ra=' + Math.floor(Math.random() * 1000000000) + '&_o=25139&_t=pncrlsaadword&redirect=https:%2F%2Fgoogleads.g.doubleclick.net%2Fpagead%2Fviewthroughconversion%2F997344344%2F%3Fvalue%3D0%26amp%3Bguid%3DON%26amp%3Bscript%3D0%26url%3Dhttp%253A%252F%252Fwww.xplusonermktg.net%252Faudiences%252F~poe_encoded.64652173.nodes.%2C~');
+    dcIMG.setAttribute('height', '1');
+    dcIMG.setAttribute('width', '1');
+    dcIMG.setAttribute('border', '0');
+    dcIMG.setAttribute('style', 'display:none');
+    document.body.appendChild(dcIMG);
+}
+
+//demandbase
+if (dbase) {
+    (function(d, b, a, s, e) {
+        var t = b.createElement(a),
+            fs = b.getElementsByTagName(a)[0];
+        t.async = 1;
+        t.id = e;
+        t.src = s;
+        fs.parentNode.insertBefore(t, fs);
+    })
+    (window, document, 'script', 'https://scripts.demandbase.com/Dx9qr6Zf.min.js', 'demandbase_js_lib');
+}
+
+
+
+//fbmkl
+if (fbmkl) {
+    ! function(f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function() {
+            n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s)
+    }(window,
+        document, 'script', '//connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '347970465545480');
+    fbq('track', 'PageView');
+  	if (fbmkl!='1') {fbq('track', fbmkl);}
+}
+
+//fbmklhe
+if (fbmklhe) {
+    ! function(f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function() {
+            n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s)
+    }(window,
+        document, 'script', '//connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '640389332826786');
+  if (fbmklhe==1) {
+    fbq('track', 'PageView', {page_name: 'HE'});
+  }
+  else if (fbmklhe==2){
+    fbq('track', 'PageView');
+  }
+  else {
+    fbq('track', 'PageView');
+  	if (fbmklhe!='1') {fbq('track', fbmklhe);}
+  }
+}
+
+
+//fbd
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1245038832243111'); // Insert your pixel ID here.
+fbq('track', 'PageView');
+if (fbd_event){
+  if (fbd_type && fbd_name) {fbq('track',fbd_event,{content_type: fbd_type, content_name: fbd_name});}
+  else if (fbd_cat && fbd_name) {fbq('track',fbd_event,{content_name: fbd_name,content_category: fbd_cat});}
+  else if (fbd_name) {fbq('track',fbd_event,{content_name: fbd_name});}
+  else {fbq('track',fbd_event);}
+}
+
+//linkedin
+if (lnk){
+  _linkedin_data_partner_id = lnk;
+(function(){var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})();
+}
+
+//visa checkout
+if (visa) {
+    var axel = Math.random() + "";
+    var a = axel * 10000000000000;
+    var ifrm = document.createElement('iframe');
+    ifrm.setAttribute('src', 'https://2592736.fls.doubleclick.net/activityi;src=2592736;type=vcote0;cat=0_iss0;u1=' + encodeURIComponent(document.referrer) + ';u5=[Merchant Name];u6=PNC;u10=[Country];u11=[Existing User];u12=[Visitor];u13=[Intent Amount];u14=[Flow Type];u15=[Event Action];u16=[Event Label];u17=Landing Page;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;ord=' + a + '?');
+    ifrm.setAttribute('height', '1');
+    ifrm.setAttribute('width', '1');
+    ifrm.setAttribute('style', 'display:none');
+    ifrm.setAttribute('frameBorder', '0');
+    document.body.appendChild(ifrm);
+}
+
+//bing
+if (bing){
+	(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"5563276"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");  
+}
+
+//pinterest
+if (pind){
+!function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var n=window.pintrk;n.queue=[],n.version="3.0";var t=document.createElement("script");t.async=!0,t.src=e;var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
+  pintrk('load','2617495286755');
+pintrk('page');
+  pintrk ( 'track', pind);
+}
+
+//neustar
+if (neu){
+    var dcIMG = document.createElement('img');
+    dcIMG.setAttribute('src', 'https://d.agkn.com/pixel/8958/?che=' + Math.floor(Math.random() * 1000000000) + '&type=' + neu);
+    dcIMG.setAttribute('height', '1');
+    dcIMG.setAttribute('width', '1');
+    dcIMG.setAttribute('border', '0');
+    dcIMG.setAttribute('style', 'display:none');
+    document.body.appendChild(dcIMG);  
+}
+
+//contently
+if (cly){
+  (function(){
+  function initInsights() {
+    if (!window._contently) {
+      var _contently = { siteId: "8a7c09eb4262e5c9fac3acfb0149184a" }
+      _contently.insights = new ContentlyInsights({site_id: _contently.siteId});
+      window._contently = _contently
+    }
+  }
+
+  var s = document.createElement('script');
+  s.setAttribute('type', 'text/javascript');
+  s.setAttribute('src', '//assets.contently.com/insights/insights.js')
+  s.onreadystatechange = function() {
+    if (this.readyState == 'complete' || this.readyState == 'loaded') {
+      initInsights();
+    }
+  };
+  s.onload = initInsights;
+  document.body.appendChild(s);
+})();
+
+}
+
+//samba
+if (samba){
+        (function() {
+            var a = window.SambaTV = window.SambaTV || [];
+            if (a.track) return;
+            if (a.invoked) {
+                if (window.console && window.console.error) window.console.error('Samba Metrics snippet included twice.');
+                return;
+            }
+            a.invoked = true;
+            a.methods = ['track', 'Impression', 'Purchase', 'Register', 'Click', 'Login', 'Register'];
+            a.factory = function(b) {
+                return function() {
+                    var c = Array.prototype.slice.call(arguments);
+                    c.unshift(b);
+                    a.push(c);
+                    return a;
+                };
+            };
+            for (var b = 0; b < a.methods.length; b++) {
+                var c = a.methods[b];
+                a[c] = a.factory(c);
+            }
+            a.load = function(a) {
+                var b = document.createElement('script');
+                b.type = 'text/javascript';
+                b.async = true;
+                b.src = ('https:' === document.location.protocol ?
+                    'https://' : 'http://') + 'tag.mtrcs.samba.tv/v3/tag/' + a + '/sambaTag.js';
+                var c = document.getElementsByTagName('script')[0];
+                c.parentNode.insertBefore(b, c);
+            };
+            a.attrs || (a.attrs = {});
+            a.SNIPPET_VERSION = '1.0.1';
+            a.load(samba);
+        })();
+}
+});

@@ -1,0 +1,1659 @@
+/** ----------------------------------------------------
+//  Index
+//  0. Accessibility fixes
+//  0. Global
+//  1. Icons
+//  2. Headings
+//  3. Media Excerpt List
+//  4. Links & Nav
+//  4.1 Links group with and without icons
+//  4.1.1 "_v1" Variation of Links Nav
+//  4.2 links group with title (vertical display)
+//  4.3 A-Z catalog nav (index style)
+//  5. Excerpt Coponent
+//  5.1 Basic Excerpt
+//  5.2 Dated Excerpt
+//  6. Buttons
+//  7. Pagination
+//  8. RSS
+//  9. Table (responsive)
+//  10. Forms
+//  10.1 Forms - Feedback helpful
+//  11. Calendar
+//  12. Collapsable Panel
+//  13. Resets NSF general css
+//  13.1 Reset TOOLTIP (used on links & nav implementation with tooltips 4.1.1)
+//  14. list(pair key) as table
+// ---------------------------------------------------- **/
+/** ----------------------------------------------------
+// 0. Accessibility fixes
+// ---------------------------------------------------- **/
+
+#inner-content {
+    background-color: #FFFFFF!important;
+}
+.text-hide{
+    font:0/0 a!important;
+    color: #000000;
+}
+
+.nsb-blue-link.text-hide{ color: #FFFFFF!important;}
+
+.navbar.main ul li ul li a,
+.navbar.main ul li:hover ul li a{
+    color: #0c72b5;
+    background-color: inherit;
+}
+
+@media (max-width: 991px){
+    .navbar.main ul li ul li a,
+    .navbar.main ul li:hover ul li a{
+        color: #FFFFFF;
+    }
+}
+
+caption,
+caption.sr-only {
+    color: #333;
+}
+
+
+/*  font-size test
+    All the fonts are in Rem and
+    based on HTML font-size 14px
+*/
+
+title,
+script,
+style,
+.nsb-blue-link.text-hide,
+.logo.text-hide,
+.sr-only { font-size: 0; }
+
+
+.navbar-default li a,
+.left-nav li h2,
+footer h5,
+.l-footer h2{
+    font-size: 18px;
+    font-size: 1.286rem;
+}
+#utility-links a,
+.left-nav li a,
+#page-utilities .breadcrumb a,
+.pageheadsubline{
+    font-size: 14px;
+    font-size: 1rem;
+}
+
+.l-footer h2{
+    color: #303b53;
+    font-family: 'Georgia', serif;
+    margin-bottom: 4px;
+}
+
+#page-utilities a,
+footer .list-group li a,
+footer a.seeall,
+footer .nav-pills > li > a,
+footer .seeall-grp .nav-pills > li,
+footer p{
+    font-size: 12px;
+    font-size: 0.8571rem;
+}
+
+footer .btn{
+    font-size: 13px;
+    font-size: 0.9286rem;
+}
+
+
+/* using strong and em with % to be based on parent size
+It covers strong inside p, because paragraph has correct font-size*/
+strong, em, a{
+    font-size: 100%;
+}
+
+.skip-link-sr-text{
+    color: #000001;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+    position: absolute;
+    height: 1px;
+    width: 1px;
+}
+.skip-link-sr-text:hover,
+.skip-link-sr-text:active,
+.skip-link-sr-text:focus{
+    color: #000001;
+    clip: auto !important;
+    height: auto;
+    width: auto;
+    z-index: 99999;
+    top: -23px;
+    left: 1px;
+
+}
+
+
+
+/** ----------------------------------------------------
+// 0.1 Accessibility  - page specific
+// ---------------------------------------------------- **/
+
+.speeches_content{
+    padding: 10px 0 15px;
+}
+.speeches_content .l-exc{
+    padding: 0 0;
+    margin-bottom: 15px;
+}
+
+.publication__list-stats{
+    padding: 6px 0 2px;
+    background-color: #f5f5f5;
+}
+.publication__list > div{
+    padding-right: 0;
+    padding-left: 0;
+}
+.publication__list .l-exc{
+    border-top: 0;
+    padding: 0;
+}
+.publication__list .l-exc__meta{ margin-top: 0; }
+.publication__list .l-links,
+.publication__list-stats .l-links{ margin-bottom: 0; }
+.publication__list .title,
+.publication__list-stats .l-links__label{ font-weight: normal; }
+
+
+
+/** ----------------------------------------------------
+// 0. GENERAL SETTINGS
+// ---------------------------------------------------- **/
+
+/** the !important is needed due to nsfgov.css line 1569 setting padding top to zero
+.panel:not(.announcements):not(.news):not(.divisions):not(.links-events):not(.opps-due-links)
+**/
+.extra__panel,
+.l-add__padding--top{ padding-top: 15px!important; }
+.l-add__padding--bottom{ padding-bottom: 15px!important; }
+.l-add__padding--top-10{ padding-top: 10px!important; }
+.l-add__padding--bottom-10{ padding-bottom: 10px!important; }
+
+.l-add__margin--top{ margin-top: 15px!important; }
+.l-add__margin--bottom{ margin-bottom: 15px!important; }
+.l-add__margin--top-10{ margin-top: 10px!important; }
+.l-add__margin--bottom-10{ margin-bottom: 10px!important; }
+
+.l-no-margin__bottom{ margin-bottom: 0!important; }
+.l-no-padding__bottom{ padding-bottom: 0!important; }
+
+
+/** Utils **/
+.l-no-border{ border: none!important; }
+.l-no-border__top{ border-top: none!important; }
+.l-no-border__bottom{ border-bottom: none!important; }
+@media (max-width: 768px){ .l-no-border__mob{ border-bottom: none!important; } }
+
+.l-add-border__top{ border-top: 1px solid #E2E2E2!important; }
+.l-add-border__bottom{ border-bottom: 1px solid #E2E2E2!important; }
+
+.l-nowrap{ white-space: nowrap; }
+
+/** use with inline elements images, buttons, or text **/
+.l-inline__center{ text-align: center; }
+
+/** links or elements with dark color **/
+.dark-color{  color: #333333; }
+
+.inline--group,
+.l-ele__block{ display: inline-block; }
+
+footer .l-h__footer{
+    font-family: 'Georgia', serif;
+    font-size: 18px;
+    font-size: 1.286rem;
+    color: #303B53;
+    margin-bottom: 4px;
+}
+
+
+.l-h__rule{ border-top: 1px solid #E2E2E2; }
+
+/** fix row on inside #inner-content **/
+.row_fixer{
+    margin-left: -15px!important;
+    margin-right: -15px!important;
+}
+
+
+/** hide all element with the classe below if JS is not enabled **/
+.no-js .l-no__js--hide{
+    display: none;
+}
+
+/** show only on js disabled **/
+.js .l-show-on__no-js{ display: none; }
+
+.no-js .collapse.l-panel__collapse{
+    display: block;
+}
+
+.no-js .meta__content--more{
+    display: inline-block;
+}
+
+/* add this class to fix links extension breaking width */
+.l-fix__links{
+    /* These are technically the same, but use both */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+
+    -ms-word-break: break-all;
+    /* This is the dangerous one in WebKit, as it breaks things wherever */
+    word-break: break-all;
+    /* Instead use this non-standard one: */
+    word-break: break-word;
+
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+
+/** ----------------------------------------------------
+// 1. ICONS
+// ---------------------------------------------------- **/
+
+.l-icon{ margin-right: 5px;}
+.l-icon__small{
+    font-size: 13px;
+    font-size: 0.9286rem;
+}
+.l-icon__medium{}
+
+.l-icon__custom{
+    font-family: 'Arial',sans-serif;
+    font-weight: bold;
+    line-height: 1;
+    color: #333333;
+
+    /*display: inline-block;*/
+    padding: 2px 4px;
+
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px; /* future proofing */
+    -khtml-border-radius: 3px; /* for old Konqueror browsers */
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.l-icon--yellow{ background: #FFCC00; }
+.l-icon--green{ background: #66CD66; }
+.l-icon--terracota{
+    background: #C64B00;
+    color: #ffffff;
+}
+
+.l-icon.l-icon--off{
+    /* For IE 8 & 9 (more valid) */
+    /* should come BEFORE filter */
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"!important;
+
+    /* This works in IE 8 & 9 too */
+    /* ... but also 5, 6, 7 */
+    filter: alpha(opacity=50)!important;
+
+    /* Modern Browsers */
+    opacity: 0.5!important;
+ }
+
+/** Fix plus saure icon on news/more.jsp page **/
+ .fa-plus-square:before { padding-left: 1px; }
+
+/** ----------------------------------------------------
+// 2. HEADINGS
+// ---------------------------------------------------- **/
+
+.l-h__main,
+.l-h__sub,
+.l-h__panel-title{
+    color: #313A53!important;
+    border-bottom: 1px solid #dddddd;
+}
+/** It should be used with h1 and/or h2 **/
+.l-h__main{
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    font-size: 2rem;
+    padding-bottom: 15px;
+    margin-bottom: 5px;
+}
+
+.l-h__sub{ font-weight: normal!important;}
+
+.l-h__sub,
+.l-h__panel-title{
+    font-family: 'Georgia', serif!important;
+    font-size: 20px!important;
+    font-size: 1.429rem!important;
+    padding-bottom: 15px!important;
+    background: none!important;
+    margin-bottom: 6px;
+}
+
+/* heading links align right*/
+.link-r{
+    font-family: Arial;
+    font-size: 14px;
+    font-size: 1rem;
+    line-height: inherit;
+    float: right;
+}
+.l-h__panel-title .link-r{ padding-top: 7px; }
+
+/** It should be used with h3 **/
+.l-h__caps{
+    /*font-weight: 600;*/
+    margin: 10px 0!important;
+    padding-bottom: 13px;
+    text-transform: uppercase;
+}
+
+/** It should be used with h3 and h4 **/
+.l-h__caps,
+.l-h__base{
+    font-family: 'Arial', sans-serif!important;
+    font-size: 14px!important;
+    font-size: 1rem!important;
+    color: #313A53!important;
+    margin: 10px 0;
+}
+
+.l-h__base{ font-weight: bold!important; }
+
+/** ----------------------------------------------------
+// 3. MEDIA EXCERPT LIST
+// ---------------------------------------------------- **/
+
+.l-media{
+    border-bottom: 1px solid #E2E2E2;
+    padding: 5px 0;
+    margin-top: 0;
+}
+.l-media:last-child{ border-bottom: 0; }
+
+/* To use on multipe column display */
+.l-media__multi-col .l-media:last-child{ border-bottom: 1px solid #E2E2E2; }
+/* use the class .l-no-border__mob
+* to remove the last item border bottom from dynamic or static list */
+
+.l-add__border .l-media:first-child{ border-top: 1px solid #E2E2E2; }
+.l-media .media-left, .l-media .media > .pull-left{ padding-right: 15px; }
+
+.l-media__link{ display:block; }
+.l-media__link--heading{ font-weight: bold; }
+
+.l-media__link--thumb{
+    display: block;
+    width: 84px;
+    height: auto;
+    overflow: hidden;
+}
+.l-media__link--thumb.small{
+    width: 63px;
+    height: 39px;
+    overflow: hidden;
+    margin: 5px 0;
+}
+.l-media__thumb{ width: 100%; }
+.l-media__thumb.small{
+    width: 63px;
+    height: 39px;
+    margin: 5px 0;
+}
+.l-media__date .l-media__icon{
+    vertical-align: text-bottom;
+}
+
+.l-media__date{
+    text-transform: uppercase;
+    font-size: 10px;
+    font-size: 0.7143rem;
+    line-height: 1;
+}
+/*
+!imporatant is being used due to nsfgov.css line 1595 (for .l-media__heading and .media-body p:last-child)
+.panel:not(.announcements):not(.news):not(.divisions):not(.links-events):not(.opps-due-links):not(.programs) p
+*/
+.l-media .media-body{ vertical-align: middle; }
+.l-media .media-body p{  margin-bottom: 0!important; }
+
+
+/** ----------------------------------------------------
+// 4. LINKS & NAV
+// ---------------------------------------------------- **/
+
+/** 4.1 inline links group with and without icon **/
+
+.l-links{
+    font-size: 0;
+    list-style: none;
+    padding-left: 0;
+}
+.l-links.inline--group{ display: inline-block; }
+.l-links__label{
+    padding-right: 6px;
+    font-weight: bold;
+}
+.l-links__item{
+    font-size: 14px;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0 10px;
+    border-left: 1px solid #dadada;
+    white-space: nowrap;
+
+    display: inline-block;
+}
+.l-links__item:first-child{
+    border-left: none;
+    padding-left: 0;
+}
+.l-links__item.active,
+.l-links__item .active{
+    color: #333333;
+    cursor: text;
+}
+.l-links__label{
+    font-size: 14px;
+    font-size: 1rem;
+}
+.l-links .l-icon{
+    margin-right: 8px;
+    margin-right: 3px;
+}
+
+@media (max-width: 400px){
+    .l-links__item{ padding: 0px 7px; }
+}
+
+
+/** Add the _v1 to the files to force list vertically **/
+@media (max-width: 768px){
+    .l-links._v1,
+    .l-links._v1 .l-links__item{ display:block; }
+    .l-links._v1 .l-links__item{
+        border-left: none;
+        padding: 3px 0;
+    }
+}
+
+
+/** 4.2 links group with title (vertical display) **/
+.l-links__label._v2{
+    font-family: Arial!important;
+    font-weight: bold!important;
+    font-size: 14px!important;
+    font-size: 1rem!important;
+    margin: 20px 0 5px!important;
+}
+._v2 a.l-links__item{
+    display: block;
+    padding: 5px 0;
+    border-left: none;
+    white-space: normal;
+}
+
+
+/** 4.2 A-Z catalog nav (index style) **/
+.l-index{ overflow: hidden; }
+.l-index__item{
+    color: #FFFFFF;
+    background: #333E54;
+    text-align: center;
+    float: left;
+    margin: 5px 5px 0 0;
+    padding: 3px 6px;
+    text-decoration: none;
+    min-width: 25px;
+    font-size: 12px;
+    font-size: 0.8571rem;
+}
+
+.l-index__item:hover,
+.l-index__item:focus{
+    color: #FFFFFF;
+    background: #171C26;
+}
+
+.l-index__item.active{ background: #0F71AF; }
+
+
+/** ----------------------------------------------------
+// 5. EXCERPT COMPONENT
+// ---------------------------------------------------- **/
+
+/** 5.1 Basic Excerpt **/
+.l-exc{
+    border-top: 1px solid #E2E2E2;
+    padding: 16px 0;
+}
+.l-exc:first-child{ border-top:0; }
+.l-exc .l-exc__body p{ margin-bottom: 3px!important; }
+
+.l-exc__paragraph.v_1{
+    text-transform: uppercase;
+    font-size: 10px;
+    font-size: 0.7143rem;
+    line-height: 1.5;
+}
+
+
+.l-exc__body, .l-exc__left {
+    display: table-cell;
+    vertical-align: top;
+}
+
+.l-exc .l-exc__left{ padding-right: 15px; }
+.l-exc__link--heading{ font-weight: bold; }
+.l-exc__simple-date{
+    font-weight: bold;
+}
+
+/** meta data **/
+.l-exc__meta{ margin: 12px 0; }
+
+.meta__main,
+.meta__list{
+    font-size: 14px;
+    font-size: 1rem;
+}
+.meta__main--item:first-child{
+    padding-right: 10px;
+    border-right: 1px solid #E2E2E2;
+    margin-right: 10px;
+}
+
+.meta__list{ margin-bottom: 0; }
+.meta__list--partial.title:before{
+  content: "";
+  display: block;
+}
+.meta__list--partial{ display: inline; }
+
+.collapse.in.meta__content--more{ display: inline; }
+.meta__link--more[aria-expanded=false]:after{ content:'more'; }
+.meta__link--more[aria-expanded=true]:after{ content:'less'; }
+
+
+/** 5.2 Dated Excerpt **/
+.l-exc__date{
+    width: 39px;
+    padding: 3px 8px;
+    background: #4186ba;
+    background: -moz-linear-gradient(top, #4186ba 0%, #005495 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4186ba), color-stop(100%,#005495));
+    background: -webkit-linear-gradient(top, #4186ba 0%,#005495 100%);
+    background: -o-linear-gradient(top, #4186ba 0%,#005495 100%);
+    background: -ms-linear-gradient(top, #4186ba 0%,#005495 100%);
+    background: linear-gradient(to bottom, #4186ba 0%,#005495 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4186ba', endColorstr='#005495',GradientType=0 );
+}
+
+.l-date__day, .l-date__month{
+    color: #ffffff;
+    text-align: center;
+    display: block;
+}
+
+.l-date__day{
+    font-size: 14px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+.l-date__month{
+    font-size: 10px;
+    font-size: 0.7143rem;
+    text-transform: uppercase;
+    border-top: 1px solid #4186ba;
+}
+
+
+/** ----------------------------------------------------
+// 6. BUTTONS
+// ---------------------------------------------------- **/
+    .l-btn__wrap.inline{ margin-top: 26px; }
+    .l-btn__wrap .btn{ margin-left: 10px }
+    .l-btn__wrap .btn:first-child{ margin-left: 0; }
+
+    .scoll_btn{ padding: 10px 0; }
+
+/** ----------------------------------------------------
+// 7. PAGINATION (parially using bootstrap style)
+// ---------------------------------------------------- **/
+#inner-content .l-row__pag{
+    margin-left: -15px!important;
+    margin-right: -15px!important;
+}
+
+.l-pag__wrap{
+    padding-top: 15px;
+    padding-bottom: 15px;
+    position: relative;
+}
+.l-pag--bottom{  border-top: 1px solid #E2E2E2; }
+.l-pag--top{  border-bottom: 1px solid #E2E2E2; }
+
+.l-pag__show{ display: none; }
+.l-pag__nav{ overflow: hidden; }
+
+.l-pag__nav .pagination{
+    margin: 0 0;
+    border-radius: 0;
+    float: right;
+}
+.l-pag__nav .pagination>li:first-child>a,
+.l-pag__nav .pagination>li:first-child>span{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.l-pag__nav li{ display: inline-block; }
+
+.l-pag__nav li a, .l-pag__nav .active a{
+    padding: 4px 10px;
+    font-size: 12px;
+    font-size: 0.8571rem;
+    margin: 0;
+    border: none;
+    border-radius: 0!important;
+}
+
+.l-pag__nav .disabled,
+.pagination__general .disabled{ display: none; }
+
+.l-pag__results{
+    font-size: 12px;
+    font-size: 0.8571rem;
+    line-height: 2.33;
+    display: inline-block;
+}
+
+/** Display show dropdown "numb of items per page" **/
+._v0 .l-pag__nav{
+    float: right;
+    padding-top: 3px;
+}
+._v0 .l-pag__results{ float: left; }
+
+@media (min-width: 768px){
+    ._v0 .pagination{
+        border-left: 1px solid #CCCCCC;
+        padding-left: 15px;
+        margin-left: 10px;
+    }
+}
+
+._v0 .l-pag__show{
+    position: relative;
+    font-size: 0;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+._v0 .l-pag__show--label{
+    font-size: 12px;
+    font-size: 0.8571rem;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+.l-pag__show .dropdown-menu{
+    left: 45px;
+    border-radius: 0;
+}
+.l-pag__show .dropdown-menu a{ padding: 8px 15px; }
+.l-pag__show .control-label{ vertical-align: bottom; }
+
+.l-pag__show--toggle{
+    color: #777;
+    padding: 6px 60px 6px 10px;
+    font-size: 12px;
+    font-size: 0.8571rem;
+    background: #fff url(../images/new_arrow.png) right no-repeat;
+    display: inline-block;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+
+}
+
+.l-pag__show--toggle:focus{
+    outline: auto 1px Highlight;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+}
+
+
+
+
+@media (max-width: 767px){
+
+    .l-pag__nav, ._v0 .l-pag__nav{ text-align: center; }
+    .l-pag__nav .pagination{ width: 100%; }
+    .l-pag__results{
+        text-align: left;
+        width: 100%;
+    }
+
+    /** pagination with show dropdown **/
+    ._v0 .l-pag__show{ position: absolute; }
+    ._v0 .l-pag__show,
+    ._v0 .l-pag__nav{
+        float: none;
+        display: block;
+    }
+    /*._v0 .l-pag__results{ border-right: none;}*/
+    ._v0 .l-pag__results{
+        border-right: none;
+        border-bottom: 1px solid #CCCCCC;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        float: none;
+        text-align: right;
+    }
+}
+
+/** ----------------------------------------------------
+// 7.(old) PAGINATION (parially using bootstrap style)
+// ---------------------------------------------------- **/
+
+.pagination>li:first-child>a, .pagination>li:first-child>span{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.pagination__tools{ padding: 15px 0 20px; }
+.pagination__tools-bottom{ padding-bottom: 0; }
+
+.pagination__label{
+    font-family: arial;
+    padding-right: 10px;
+}
+.pagination__limit-btn{
+    padding: 3px 10px;
+    background: #ffffff;
+    border: 1px solid #cccccc;
+}
+.pagination__limit-btn .caret{ margin-left: 10px; }
+
+.pagination__general{
+    overflow: hidden;
+    float: right;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.pagination__result,
+.pagination__nav{
+    float: left;
+}
+.pagination__result{
+    font-size: 12px;
+    font-size: 0.8571rem;
+    line-height: 2.33;
+    padding-right: 15px;
+    margin-right: 10px;
+    border-right: 1px solid #CCCCCC;
+}
+.pagination__nav .pagination{
+    margin: 0 0;
+    border-radius: 0;
+}
+
+@media (max-width: 767px){
+
+    .pagination__general{ float:none; }
+    .pagination__nav{
+        width: 100%;
+        text-align: center;
+    }
+    .pagination__result{
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #CCCCCC;
+        margin-bottom: 15px;
+    }
+}
+
+
+/** ----------------------------------------------------
+// 8. RSS
+// ---------------------------------------------------- **/
+
+.panel .l-rss,
+.l-rss{
+    padding-top: 10px;
+    margin-bottom: 10px;
+}
+
+.panel:not(.announcements):not(.news):not(.divisions):not(.links-events):not(.opps-due-links):not(.programs) p.l-rss__item,
+.l-rss__item{
+    margin-bottom: 5px;
+}
+
+
+
+/** ----------------------------------------------------
+// 9. Table (responsive)
+// ---------------------------------------------------- **/
+
+.l-table__wrapper{ padding: 0 15px; }
+.l-table{
+    width: 100%;
+    border-spacing: 0;
+    padding: 0;
+}
+
+.l-table .l-table__head{ border: 1px solid #2E6DA4; }
+.l-table .l-table__body{ border: 1px solid #c2c2c2; }
+
+.l-table__header{
+    color: #FFFFFF;
+    white-space: nowrap;
+    padding: 15px;
+    background-color: #0b69a8;
+    background-image: linear-gradient(to bottom, #0f87c3 0px, #084e8f 100%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0f87c3',endColorstr='#084e8f');
+}
+.l-table__header a{ color: #FFFFFF; }
+
+.table-striped .l-table__row:nth-of-type(odd) { background-color: #F0F0F0; }
+
+.l-table__cell{
+    padding: 10px 15px;
+    vertical-align: top;
+}
+.l-table__header a .l-icon{ color: #ffffff; }
+.l-table__dt,
+.l-table__dd{ display: block;}
+
+
+/** table sort on mobile **/
+.l-table__sort{ display: inline-block; }
+.l-table__sort.dropdown.open{ background: none; }
+.l-table__sort--btn{
+  background: transparent;
+  border: 0;
+}
+.l-table__sort--menu.dropdown-menu > li > a {
+    font-size: 14px;
+    font-size: 1rem;
+}
+.no-js .l-table__sort--btn{ display: none; }
+.no-js .l-table__sort--menu,
+.no-js .dropdown.l-table__sort{ display: block!important; }
+.no-js .l-table__sort--menu{
+    width: 100%;
+    position: relative;
+    text-align: center;
+}
+.no-js .l-table__sort--menu li{
+    display: inline-block;
+    border-left: 1px solid #E2E2E2;
+
+}
+.no-js .l-table__sort--menu li:first-child{ border-left: 0; }
+
+
+.l-table__mob-header{ display: none;  }
+
+@media (max-width: 767px){
+    .l-table__mob-header{ display: block; }
+
+    .l-table [data-label]:before{
+        display: block;
+        font-weight: bold;
+    }
+
+    /* hidde head and footer on mobile*/
+   /* .l-table .l-table__head:not(.has__sort),*/
+    .l-table thead,
+    .l-table .l-table__head,
+    .l-table .l-table__header:not(.to__keep),
+    .l-table tfoot{
+        position: absolute;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        border: 0;
+    }
+
+    /* Make cells float left and take the full width **/
+    .l-table td,
+    .l-table th{
+        box-sizing: border-box;
+        float: left;
+        width: 100%;
+    }
+
+
+    .l-table__cell:before{ content: attr(data-label);}
+    .l-table__cell{ padding: 10px 20px 0; }
+    .l-table__cell:first-child{ padding-top: 20px; }
+    .l-table__cell:last-child{ padding-bottom: 20px; }
+
+
+
+    /** Description title & Description
+        Best use on displayin dates with title dates
+    **/
+    .l-table__dt{ padding-top: 5px; }
+    .l-table__dt:first-child{ padding-top: 0 }
+
+}
+
+
+/** ----------------------------------------------------
+// 10. Forms
+// ---------------------------------------------------- **/
+
+.l-form{
+    background-color: #f5f5f5;
+    padding: 15px 0;
+    margin-left: -5px;
+    margin-right: -5px;
+}
+/* if form inside ".panel-orange"/#inner-content" */
+#inner-content .l-form{
+    margin-left: -18px;
+    margin-right: -18px;
+}
+
+/** no gray background used wit a single element. I.e Funding landing page search **/
+.l-form.single__ele{
+    background: none;
+    padding: 5px 15px;
+}
+
+
+.l-form-group input[type=radio] {
+    vertical-align: text-bottom;
+}
+
+.l-form p.control-label{
+    margin-bottom: 0!important;
+    padding-bottom: 5px;
+}
+
+
+@media (min-width: 767px){
+    .l-form{
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+    /** Reset for the forms inside the first "panel-orange" with IE="inner-content**/
+    #inner-content .l-form{
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /** no gray background used wit a single element. I.e Funding landing page search **/
+    .l-form.single__ele{  padding: 5px 0; }
+}
+
+@media( max-width: 768px ){
+    /** form in #inner-content, with extra margin bottom and that has a second box below **/
+    .l-form.ext-margin__btm._v1{ margin-bottom: -1px; }
+}
+
+.l-form__legend{
+    font-family:'Georgia', serif;
+    font-size: 20px;
+    font-size: 1.429rem;
+    padding-bottom: 10px;
+    margin-top: 10px;
+}
+.legend--heading{
+    margin: 0 15px 20px;
+    width: calc(100% - 30px);
+    position: relative;
+    top: 10px;
+}
+.l-form__legend--label,
+.l-form__legend--label a{
+    font-size: 12px;
+    font-size: 0.8571rem;
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+    border-bottom: none;
+}
+
+.l-form-group .radio-inline{
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+/** Inline buttons (go) **/
+.l-form__btn--inline.go,
+.l-form__btn--inline.go:hover{
+    padding: 4px 10px;
+    font-size: 18px;
+    font-size: 1.286rem;
+    margin-top: -1px;
+}
+.l-form__btn--inline.blue,
+.l-form__btn--inline.blue:hover{
+    color: #FFFFFF;
+    background: #303A53;
+}
+
+
+.l-form__links.inline{  display: inline-block; }
+@media (min-width: 767px){
+    .l-form__links.inline{ margin-top: 30px; }
+}
+
+/** due to some irregularities with the form location you can add an extra margin bottom **/
+.ext-margin__btm{ margin-bottom: 15px; }
+
+/** reset selec.js issues with click options **/
+.select__long .dropdownvisible,
+.select__long .dropdown-menu{
+    max-height: 400px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+.dropcontainerpre ul li,
+.dropcontainer ul li{ padding: 0; }
+
+.dropcontainerpre ul li a,
+.dropcontainer ul li a{
+    /*padding: 0 5px;*/
+    padding: 5px;
+    display: block;
+}
+
+.selectjs ul{
+    border-top: none;
+    border-radius: 0;
+    background: #fff;
+    list-style-type: none;
+    /*padding: 10px;*/
+    margin: 0;
+    width: calc(100% - 30px);
+    z-index: 100;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+.selectjs ul li{
+    font-size: 12px;
+    font-size: 0.8571rem;
+    padding: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+.selectjs ul a{
+    color: #2f394c;
+    padding: 8px 15px;
+    display: block;
+}
+
+.dropdown-menu.dropulpre{
+    width: auto;
+}
+
+
+/** ----------------------------------------------------
+// 10.1 Forms - Feedback helpful
+// ---------------------------------------------------- **/
+
+/* Form feedback helpful */
+.feedback__helpful--answer{ display: none; }
+.feedback__helpful--answer.showit{ display: inline; }
+
+
+.feedback__helpful--options .l-links__label{ font-weight: normal; }
+
+/** local CSS or part of the form feedback **/
+.feedback__helpful--options._text-right{ text-align: right; }
+@media (max-width: 767px){
+ .feedback__helpful--options._text-right{ text-align: left; }
+}
+
+@media (max-width: 768px){
+  .row_fixer .l-form{
+    padding: 15px;
+  }
+}
+
+
+/** ----------------------------------------------------
+// 11. CALENDAR
+// ---------------------------------------------------- **/
+
+/** using calendar grouped with time options **/
+.l-calendar__group{}
+.glyphicon-calendar{ top: 0; }
+
+[data-calendar="time-options"]{
+    padding-right: 0;
+    padding-left: 0;
+    float: left;
+}
+[data-calendar="time-options"] .triggerpre,
+[data-calendar="time-options"] .activetriggerpre{
+    padding-right: 50px;
+    border-right: none;
+}
+[data-calendar="time-options"] .triggerpre{
+    background: #ffffff url(../images/new_arrow.png) right no-repeat;
+}
+[data-calendar="time-options"] .activetriggerpre:hover{
+    background: #FFFFFF url(../images/new_arrow_pre_close.png) right no-repeat;
+}
+[data-calendar="time-options"] .dropcontainerpre{
+    position: absolute;
+    z-index: 9999999;
+}
+[data-calendar="time-options"] .dropcontainerpre ul{  position: relative; }
+[data-calendar="time-options"] .dropcontainerpre ul li a{ padding: 5px 12.5px; }
+
+[data-calendar="date-picker"]{  padding-left: 0; }
+
+
+
+/** Fix calendar colour **/
+/* Calendar */
+.ui-widget-header{
+    background: #005495;
+    color: #ffffff;
+}
+
+.ui-state-highlight,
+.ui-widget-content .ui-state-highlight,
+.ui-widget-header .ui-state-highlight{ background: #005495; }
+
+.ui-state-hover .ui-icon,
+.ui-state-focus .ui-icon{ background-image: url("../css/images/ui-icons_ffffff_256x240.png"); }
+
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus{
+  border: 1px solid #4391D7;
+  background: #4391D7;
+  color: #FFFFFF;
+}
+
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next{ top: 3px; }
+
+
+
+/** ----------------------------------------------------
+// 12. Collapsable Panel
+// ---------------------------------------------------- **/
+
+.l-panel__toggle{
+    font-size: 14px;
+    font-size: 1rem;
+    font-family: 'Arial',sans-serif;
+}
+/* use within main page title */
+.l-panel__toggle._v0{ padding-top: 13px; }
+
+/* align right */
+.l-panel__toggle.l-f__right{
+    float: right;
+}
+@media (max-width: 767px){
+  .l-panel__toggle.l-f__right{
+    display: block;
+    float: none;
+  }
+}
+
+.l-panel__toggle[aria-expanded="false"]:before,
+.l-panel__toggle[aria-expanded="false"]:after,
+.l-panel__toggle[aria-expanded="true"]:before,
+.l-panel__toggle[aria-expanded="true"]:after{ font-family: FontAwesome; }
+
+.l-panel__toggle[aria-expanded="false"]:before,
+.l-panel__toggle[aria-expanded="true"]:before{
+  padding-right: 5px;
+  font-family: inherit;
+}
+.l-panel__toggle[aria-expanded="false"]:after,
+.l-panel__toggle[aria-expanded="true"]:after{ padding-left: 5px; }
+
+/*.l-panel__toggle[aria-expanded="false"]:before{ content: "View"; }*/
+.l-panel__toggle[aria-expanded="false"]:after{ content: "\f107"; }
+
+/*.l-panel__toggle[aria-expanded="true"]:before{ content: "Close"; }*/
+.l-panel__toggle[aria-expanded="true"]:after{ content: "\f106"; }
+
+
+.l-panel__collapse{  padding-top: 20px; }
+
+
+/** ----------------------------------------------------
+// 13. ALERTS & LABELS
+// ---------------------------------------------------- **/
+
+/** 13.1 - Label **/
+.l-label__pretext,
+.l-label{ vertical-align: middle; }
+.l-label__pretext{ padding-right: 10px; }
+.l-label{
+    font-family: arial;
+    font-size: 11px;
+    font-size: 0.7857rem;
+    font-weight: bold;
+    background: #FCEDDC;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 5px 12px 5px 7px;
+    letter-spacing: 0.05em;
+}
+.l-label .l-icon{ color: #E98412; }
+
+/** 13.2 - Alert **/
+.l-alert{
+    font-size: 14px;
+    font-size: 1rem;
+    color: #333333;
+    font-weight: normal;
+    padding: 16px 20px 13px;
+    background: #FCEDDC;
+}
+
+.l-alert__warning,
+.l-alert__text{ vertical-align: middle; }
+.l-alert__text a,
+.l-alert a{
+    color: #1467a2;
+    background-color: transparent;
+}
+
+.l-alert__warning{
+    color: #E98412;
+    font-size: 25px;
+    font-size: 1.786rem;
+    line-height: 0.85;
+    margin-right: 10px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+/** Alert inside div (#inner-content with class panel panel-orange) > div (.contentHead) (inside pubs/2016/nsf16018) **/
+.l-alert._v1{ margin: -16px -19px 15px -18px; }
+
+/** Alert inside tables (solicitations files inside pubs/2013/) **/
+.l-alert._v2{ border-top: 3px solid #e98412; }
+
+/** ----------------------------------------------------
+// 13. RESETS NSF general css
+// ---------------------------------------------------- **/
+
+@media (min-width: 992px){
+    #searchbarmobilecontainer{
+        display: none!important;
+    }
+}
+
+#searchbarmob{
+    font-size: 14px;
+    font-size: 1rem;
+    clear: right;
+    margin: 10px 0;
+    display: inline-table;
+}
+#searchbarmob .btn {
+    background-color: #c64b00;
+    background-image: none;
+    color: #ffffff;
+}
+
+#searchbarmob input, #searchbarmob .btn {
+    border: 1px solid #70afde;
+    border-radius: 0;
+}
+#searchbarmob input {
+    font-size: 14px;
+    font-size: 1rem;
+}
+
+
+/** Responsive Left and top Nav on mobile */
+@media (max-width: 991px) and (min-width: 768px){
+
+    .navbar-collapse.collapse{ top: -20px!important; }
+    .header-mob-nav__wrap{ padding-top: 15px; }
+    .header{ margin-bottom: 20px; }
+
+    .navbar-default ul.nav.nav-justified .megamenu {
+        display: block;
+        position: relative;
+        right: 0;
+        left: 0;
+        top: 0;
+        width: 330px;
+        background-color: #313a53;
+        padding: 0;
+        margin: 0 0 20px 0;
+        border: 0;
+        box-shadow: 0;
+    }
+
+    /*.left-nav ul li a {
+        padding: 15px 15px 15px 30px;
+    }*/
+}
+
+
+/* Iphone 5 portrait */
+@media (max-width: 375px){
+    .header .logo{
+        background: transparent url(../images/nsf_logo@2x.png) no-repeat 0px 4px!important;
+        background-size: 205px 36px!important;
+        width: 205px!important;
+    }
+}
+
+
+/*
+    SM version size based on bootstrap breakpoints
+    Inital point where left nav is becoming mobile version
+ */
+@media (max-width: 991px){
+    #page-utilities {
+        margin: 0 -15px 0px 0!important;
+    }
+
+    .container{ width: 100%; }
+
+    button.navbar-toggle {
+        color: #005495;
+        position: relative;
+        top: -4px;
+        right: -10px;
+    }
+
+    button.navbar-toggle:focus {
+        outline: -webkit-focus-ring-color auto 5px;
+    }
+
+    .navbar-toggle {  display: block!important; }
+
+    .navbar-default li .closenav {
+        z-index: 4000 !important;
+        position: absolute!important;
+        top: 0;
+        right: 0;
+        left: initial;
+    }
+    .navbar-default {
+        position: absolute;
+        background-color: rgba(12,30,44,0.75);
+        width: 100%;
+        height: 100vh;
+        right: -100vw;
+        transition: right 0.2s ease;
+    }
+
+    .navbar-collapse.in {
+        overflow-y: visible;
+        transition: right 0.2s ease;
+        right: 0;
+    }
+
+    .navbar-default ul.nav.nav-justified {
+        width: 100%;
+        max-width: 320px!important;
+        background-color: #313a53;
+        float: right;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .nav-justified>li {
+        display: block;
+        width: 100%;
+        /*overflow: hidden;*/
+    }
+
+    .nav-justified>li:after{
+        content: '';
+        clear: both;
+        display: table;
+    }
+
+    .navbar-collapse.collapse{
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        overflow: hidden!important;
+    }
+
+    .nav-justified .megamenu {
+        margin-bottom: 0!important;
+        width: 100%!important;
+    }
+
+    .navbar.main li a {
+        height: auto!important;
+        vertical-align: middle;
+    }
+
+    .navbar-default ul.nav.nav-justified .megamenu .sublinks {
+        margin: 0;
+        padding-right: 0;
+        border-right: 0;
+    }
+
+    .navbar-default ul.nav.nav-justified .megamenu .sublinks ul li a {
+        /*width: 330px;*/
+        width: 100%!important;
+    }
+    .navbar-default ul.nav.nav-justified .megamenu a,
+    .navbar-default ul.nav.nav-justified .megamenu a:active,
+    .navbar-default ul.nav.nav-justified .megamenu a:focus,
+    .navbar-default ul.nav.nav-justified .megamenu a:visited {
+        color: #ffffff;
+        padding: 12px 12px 12px 30px;
+        border-bottom: 1px solid #616b85 !important;
+    }
+    .navbar-default ul.nav.nav-justified .megamenu li a {
+        border: 0;
+    }
+
+    .navbar-default ul.nav.nav-justified li a {
+        margin: 0;
+        text-align: left;
+        border-bottom: 1px solid #616b85;
+        border-left: 0;
+    }
+
+    .navbar-default ul.nav.nav-justified .dropdown-toggle,
+    .navbar-default ul.nav.nav-justified .dropdown-toggle:hover,
+    .navbar-default ul.nav.nav-justified .dropdown-toggle:visited,
+    .navbar-default ul.nav.nav-justified .dropdown-toggle:active,
+    .navbar-default ul.nav.nav-justified .dropdown-toggle:focus {
+        color: #ffffff;
+    }
+
+    .navbar-default ul.nav.nav-justified .dropdown-toggle {
+        background: #313a53 url(../images/caret-right.png) no-repeat right center;
+    }
+
+    .megamenu> li > ul > li > a:hover{
+        display: block;
+    }
+
+    .megamenu> li{ margin-top: 0; }
+    .megamenu> li.relatedlinks{
+        padding-left: 0;
+        padding-right: 0;
+        border-left: 0!important;
+    }
+    .relatedlinks .dropdown-header,
+    .relatedlinks .dropdown-subheader{
+        color: #FFFFFF;
+        border-bottom: 1px solid #616b85 !important;
+    }
+    .relatedlinks .dropdown-header{ padding: 20px 0 15px 30px; }
+    .relatedlinks .dropdown-subheader{  padding: 10px 0 19px 30px; }
+
+
+
+    /** left Nav added in the main nav **/
+    #leftnavdivid .left-nav h2 {
+        font-family: 'Arial', sans-serif;
+        font-size: 14px;
+        font-size: 1rem;
+        font-weight: normal;
+        background: #005495!important;
+        padding: 15px 15px 15px 15px!important;
+        border-bottom: 1px solid #4391d7!important;
+    }
+    /* header to trigger collapse menu */
+    #leftnavdivid > h2 {
+        cursor: pointer;
+        color: #ffffff;
+        font-family: 'Georgia', serif;
+        font-size: 18px;
+        font-size: 1.286rem;
+        background-color: #005495;
+        padding: 7px 10px;
+        box-shadow: 0 0 0 1px #a1c0dc inset;
+        border: 8px solid #005495;
+    }
+
+    #leftnavdivid > h2:after{
+        font-size: 20px;
+        font-size: 1.429rem;
+        line-height: .75em;
+        float: right;
+        vertical-align: -15%;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    #leftnavdivid > h2[aria-expanded = "false"]:after{
+        font-weight: normal;
+        font-family: FontAwesome;
+        font-size: 20px;
+        font-size: 1.429rem;
+        line-height: 1;
+        content: '\f0c9';
+    }
+    #leftnavdivid > h2[aria-expanded = "true"]:after{
+        font-family: 'Glyphicons Halflings';
+        content: '\e014';
+        padding-top: 3px;
+        -webkit-text-stroke: 2px #005495;
+        text-shadow: 0 1px 0 #005495;
+    }
+
+    #leftnavdivid .left-nav .dropdown a,
+    #leftnavdivid .left-nav .add-references a {
+        /*color: #FFFFFF!important;*/
+        color: #FFFFFF;
+    }
+
+    #leftnavdivid .left-nav ul.dropdown-list li a {
+        padding: 15px 15px 15px 30px!important;
+    }
+
+    #leftnavdivid .left-nav .dropdown a{
+        padding: 15px 15px 15px 15px!important;
+    }
+
+    #leftnavdivid .left-nav .add-references a{
+        padding: 10px 15px 10px 15px!important;
+    }
+
+    #leftnavdivid .dropdown-backdrop {
+        display: none!important;
+    }
+
+}
+
+/** ----------------------------------------------------
+// 13.1 RESET TOOLTIP
+// ---------------------------------------------------- **/
+.tooltip > .tooltip-inner {
+    text-align: left;
+    padding: 15px;
+    color: #333;
+    background-color: #ffffff;
+    -moz-box-shadow:0 0 3px 0 rgba(161,158,161 ,1);
+    -webkit-box-shadow: 0 0 3px 0 rgba(161,158,161 ,1);
+    box-shadow: 0 0 3px 0 rgba(161,158,161 ,1);
+}
+.tooltip > .tooltip-arrow {  display: none; }
+
+.tooltip.in {
+    filter: alpha(opacity=100);
+    opacity: 1;
+}
+
+
+/** ----------------------------------------------------
+// 14. LIST(PAIR KEY) AS TABLE
+// ---------------------------------------------------- **/
+.l-grid{
+  display: table;
+}
+.l-grid__item{
+  display: table-row;
+}
+.l-grid__item [role = "gridcell"] {
+    padding: 10px 0;
+}
+.l-grid__term,
+.l-grid__desc{
+  display: table-cell;
+}
+.l-grid__term{
+  font-weight: bold;
+}
+
+@media (max-width: 767px){
+    .l-grid__term,
+    .l-grid__desc{
+        display: block;
+    }
+
+    .l-grid__item [role = "gridcell"]{
+        padding: 0 0;
+        margin-bottom: 5px!important;
+    }
+
+    .l-grid__item .empty{
+        margin-bottom: 0!important;
+    }
+}
+}

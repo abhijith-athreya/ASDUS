@@ -1,0 +1,52 @@
+// Google Analytics
+//var _gaq = _gaq || [];
+//_gaq.push(['_setAccount', 'UA-21916759-1']);
+//_gaq.push(['_setLocalRemoteServerMode']);
+//_gaq.push(['_trackPageview']);
+
+//(function () {
+//    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+//    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+//    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+//})();
+//var _gaq = _gaq || [];
+//_gaq.push(['_setAccount', 'UA-21916759-1']);
+//_gaq.push(['_setDomainName', 'pepsico.com']);
+//_gaq.push(['_addIgnoredRef', 'pepsico.com']);
+//_gaq.push(['_setAllowLinker', true]);
+//_gaq.push(['_setLocalRemoteServerMode'])
+//_gaq.push(['_trackPageview']);
+
+//(function () {
+//    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+//    //ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+//    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+//    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+//})();
+
+
+function doEventTracking() {
+    var section = $(".site_brandingInterior img").attr("alt");
+    if (section == null) {
+        section = "Index";
+    }
+    $("[href]").each(function () {
+        var href = $(this).attr("href");
+        //pdf
+        if (href.toLowerCase().indexOf("pdf") != -1) {
+            $(this).click(function () {
+                var filename = href.substr(href.lastIndexOf("/") + 1);
+                _gaq.push(['_trackEvent', 'Downloads', section, section + "-" + filename]);
+            });
+        }
+        //mp3
+        if (href.toLowerCase().indexOf("mp3") != -1) {
+            $(this).click(function () {
+                var filename = href.substr(href.lastIndexOf("/") + 1);
+                _gaq.push(['_trackEvent', 'Downloads', section, section + "-" + filename]);
+            });
+        }
+    });
+}
+
+//doEventTracking();

@@ -1,0 +1,26 @@
+var ref = document.referrer;
+if (ref == null ||!ref || ref == undefined)
+{
+	ref = document.domain;
+}
+else if(window.location == ref)
+{
+	ref = document.domain;
+}
+else if(ref.length > 1500)
+{
+	ref = ref.substring(0, 1500);
+}
+
+var loc = document.location;
+if(loc.length > 1500)
+{
+	loc = loc.substring(0, 1500);
+}
+
+var tit = document.title;
+if(tit.length > 1000)
+{
+	tit = tit.substring(0, 1000);
+}
+

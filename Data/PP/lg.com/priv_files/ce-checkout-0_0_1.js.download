@@ -1,0 +1,52 @@
+var bby = {};
+bby.everywhere = {};
+bby.everywhere.ce = {};
+bby.everywhere.ce.createFrame = function(element) {
+  var createPropertyName = function(propertyParts) {
+    var i, j, len, name, result;
+    result = '';
+    for (i = j = 0, len = propertyParts.length; j < len; i = ++j) {
+      name = propertyParts[i];
+      if (i === 0) {
+        result = name;
+      } else {
+        result = result + name.charAt(0).toUpperCase() + name.slice(1);
+      }
+    }
+    return result;
+  };
+
+  var createProperties = function(element) {
+    var attribute, j, len, parts, properties, ref3;
+    properties = [];
+    ref3 = element.attributes;
+    for (j = 0, len = ref3.length; j < len; j++) {
+      attribute = ref3[j];
+      parts = attribute.name.split('-');
+      if (parts[0] === 'data') {
+        if (parts.length >= 2) {
+          properties.push({
+            name: createPropertyName(parts.slice(1)),
+            value: attribute.value
+          });
+        }
+      }
+    }
+    properties.getProperty = function(name) {
+      var k, len1, property, ref4;
+      ref4 = this;
+      for (k = 0, len1 = ref4.length; k < len1; k++) {
+        property = ref4[k];
+        if (property.name === name) {
+          return property.value;
+        }
+      }
+      return null;
+    };
+    return properties;
+  };
+  var properties = createProperties(element);
+  var sku = properties.getProperty('sku');
+  window.open('http://www.bestbuy.com/site/-/' + sku + '.p?cmp=RMX-bbyce', '_blank', 'bby');
+  return;
+};

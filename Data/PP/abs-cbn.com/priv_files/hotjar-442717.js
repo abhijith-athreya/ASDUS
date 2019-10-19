@@ -1,0 +1,7 @@
+window.hjSiteSettings = window.hjSiteSettings || {"testers_widgets":[],"surveys":[],"record_targeting_rules":[],"recording_capture_keystrokes":true,"polls":[],"site_id":442717,"forms":[],"record":false,"heatmaps":[],"deferred_page_contents":[],"feedback_widgets":[],"r":0.0788225162,"state_change_listen_mode":"automatic"};
+
+window.hjBootstrap=window.hjBootstrap||function(d){var e=function(){},a=document,f=a.head||a.getElementsByTagName("head")[0],c,b;a.addEventListener&&(c=a.createElement("script"),c.async=1,c.src=d,f.appendChild(c),c=["iframe#_hjRemoteVarsFrame {","display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;","}"],d=a.createElement("style"),d.type="text/css",d.styleSheet?d.styleSheet.cssText=c.join(""):d.appendChild(a.createTextNode(c.join(""))),
+f.appendChild(d),b=a.createElement("iframe"),b.style.cssText=c[1],b.name="_hjRemoteVarsFrame",b.title="_hjRemoteVarsFrame",b.id="_hjRemoteVarsFrame",b.src="https://"+(window._hjSettings.varsHost||"vars.hotjar.com")+"/rcj-99d43ead6bdf30da8ed5ffcb4f17100c.html",b.onload=function(){e.varsLoaded=!0;"undefined"!=typeof hj&&hj.event&&hj.event.signal("varsLoaded")},e.varsJar=b,a.body?a.body.appendChild(b):a.addEventListener("DOMContentLoaded",function(){a.body.appendChild(b)}),window.hjBootstrap=e)};
+
+
+hjBootstrap('https://script.hotjar.com/modules-6d735a6d66d71e4b5154e075915a0fc8.js');

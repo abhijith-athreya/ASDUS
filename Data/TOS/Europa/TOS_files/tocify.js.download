@@ -1,0 +1,36 @@
+/**
+ * @file
+ * Defines Javascript behaviors for the tocify module.
+ */
+
+(function ($) {
+    Drupal.behaviors.tocify = {
+        attach: function (context, settings) {
+            settings.tocify.hashGenerator = function (text, element) {
+                var title = element.attr('title');
+                var hashValue = (title || text);
+                // Prettify the text.
+                hashValue = hashValue.toLowerCase().replace(/\s/g, "_");
+
+                // Fix double hyphens.
+              while (hashValue.indexOf("__") > -1) {
+                  hashValue = hashValue.replace(/__/g, "_");
+              }
+
+                // Fix colon-space instances.
+              while (hashValue.indexOf(":_") > -1) {
+                  hashValue = hashValue.replace(/:_/g, "_");
+              }
+
+                return hashValue;
+            }
+            $('#tocify').tocify(
+
+                settings.tocify
+            );
+            $('.tocify-item').hover(function() {
+                $(this).css("cursor", "").addClass('pointer');
+            });
+        }
+  };
+})(jQuery);

@@ -1,0 +1,111 @@
+<html>
+
+<head>
+    <title> dresden</title>
+</head>
+
+<body style=’background-color:#ccc’>
+    <h1>
+        <center><u>dresden</u></center>
+    </h1>
+    </hr>
+    <h2>125M Web Data Tables</h2>
+    <p> This page is the home of the Dresden Web Tables Corpus, a collection of about 125 million data tables extracted from the Common Crawl.</p>
+    
+    </hr>
+    <h2>Easy to use</h2>
+    <p> Each extracted table's data and metadata is provided as one JSON document, in a simple one-table-per-line corpus file format.</p>
+    </hr>
+    <h2>Tools included</h2>
+    <p> Includes a Java companion library to work with the data set. Iterate, process, index, analyze.</p>
+    <p> The corpus was initially created for and published in conjunction with the following paper.</p>
+    </hr>
+    <h2>About</h2>
+    <p> The Common Crawl is a freely available web crawl created and maintained by the foundation of the same name. The July 2014 incarnation of this corpus, which was used as the basis for this corpus, contains 3.6 billion web pages and is 266TB in size. The data is hosted on Amazon S3, and could thus be easily processed using EC2. The data tables were recognized through a combination of simple heuristics for pre-filtering and a trained classifier to distinguish layout and various kinds of data tables. We included not only (pseudo-)relational tables, but also other kinds of data tables, such as the vertical schema/single entity tables that are common on the web. The features used are similar to the features used in related work, e.g., Cafarella et al. WebTables: exploring the power of tables on the web.</p>
+   
+    <p> We discovered that the Common Crawl contains many physically identical pages under various logical URLs, as providing multiple URLs variants for a single page is common practice on the web today. This led to many duplicate tables in the initial extracted data. While we originally extracted 174M tables from the Common Crawl, which is consistent with numbers from , after content-based deduplication only 125M tables remained.</p>
+    <p> related work</p>
+    <p> The final corpus includes only the extracted table data and some metadata described below, not the complete HTML pages from which each table originated. We instead provide code that can automatically retrieve the full HTML text from the Common Crawl S3 bucket using the metadata bundled with the data. This reduces corpus size to 70GB of Gzip compressed data.</p>
+    <p> 25.02.2015: Published version 1.1.0 of the the corpus and companion libraries. The new version is based on the July 2014 version of the Common Crawl. It contains more tables, fixes errors of the old version, and also contains some new attributes, such as table classification results that allow distinguishing relational and single-entity tables (see for details)</p>
+  
+    </hr>
+    <h2>Getting Started</h2>
+    <p> The corpus consists of 500 individual files directly downloadable from the TU Dresden Database Technology Group's web server, with URLs of the form To download the first file as a sample click . To download the full dataset (or a subset of any size), you can use a shell command such as</p>
+    <p> http://wwwdb.inf.tu-dresden.de/misc/dwtc/data_feb15/dwtc-XXX.json.gz</p>
+    <p> for i in $(seq -w 0 500); do wget http://wwwdb.inf.tu-dresden.de/misc/dwtc/data_feb15/dwtc-$i.json.gz; done</p>
+    <p> The easiest way to work with the dataset is to use the provided Java library, documented at its Github repository page. We also provide a description of the corpus data format and schema below.</p>
+   
+    </hr>
+    <h2>Schema</h2>
+    <p> The corpus consists of a set of GZip compressed text files. Each line of text contains one JSON document representing one extracted table and its metadata. The easiest way to use these documents is to use the provided Java library, but you can also decompress, read line by line, and use any JSON parser. We provide a JSON schema.</p>
+  
+    </hr>
+    <h2>Code</h2>
+    <p> We provide both the code for the extractor, which is partly based on published by the Web Data Commons project, as well as a companion library for working with the data set.The library is found at https://github.com/JulianEberius/dwtc-tools and the extractor at https://github.com/JulianEberius/dwtc-extractor.</p>
+   
+    </hr>
+    <h2>Related Work</h2>
+    <p> The recently published a very similar web table corpus, based on an older version of the Common Crawl, and using a different extraction method and storage format. A very good overview of the related work can be found on their .</p>
+    <p> Web Data Commons project</p>
+    <p> project page</p>
+    </hr>
+    <h2>Corpus Statistics</h2>
+    <p> Table Statistics</p>
+    <p> Table Type: entity</p>
+    <p> Table Type: relation</p>
+    <p> Total number:</p>
+    <p> Total number:</p>
+    <p> Avg. #column:</p>
+    <p> Avg. #column:</p>
+    <p> Min. #column:</p>
+    <p> Min. #column:</p>
+    <p> Max. #column:</p>
+    <p> Max. #column:</p>
+    <p> Table Type: matrix</p>
+    <p> Table Type: other</p>
+    <p> Total number:</p>
+    <p> Total number:</p>
+    <p> Avg. #column:</p>
+    <p> Avg. #column:</p>
+    <p> Min. #column:</p>
+    <p> Min. #column:</p>
+    <p> Max. #column:</p>
+    <p> Max. #column:</p>
+    <p> Most common TLDs</p>
+    <p> Most common domains</p>
+    <p> wikipedia.org</p>
+    <p> worldcat.org</p>
+    <p> godlikeproductions.com</p>
+    <p> flightaware.com</p>
+    <p> itjobswatch.co.uk</p>
+    <p> stackexchange.com</p>
+    <p> cricketarchive.com</p>
+    <p> e90post.com</p>
+    <p> mixedmartialarts.com</p>
+    <p> wowprogress.com</p>
+    <p> sports-reference.com</p>
+    <p> baseball-reference.com</p>
+    <p> macrumors.com</p>
+    <p> stackoverflow.com</p>
+    <p> weatherbase.com</p>
+    <p> Estimated Distinct Attributes</p>
+    <p> 108,884,792</p>
+    <p> description</p>
+    <p> publication date</p>
+    <p> filing date</p>
+    </hr>
+    <h2>Citation</h2>
+    <p> @inproceedings{Eberius:2015, Author = {Eberius, Julian and Thiele, Maik and Braunschweig, Katrin and Lehner, Wolfgang}, Title = {Top-k Entity Augmentation Using Consistent Set Covering}, Series = {SSDBM '15}, Year = {2015}, Doi = {10.1145/2791347.2791353}}</p>
+    </hr>
+    <h2>License</h2>
+    <p> The corpus data is provided according the same terms of use, disclaimer of warranties and limitation of liabilities that apply to the Common Crawl corpus. The code, which derives partly from the code used by the can be used under the terms of the same license, the Apache Software License.</p>
+    <p> Web Data Commons project</p>
+    </hr>
+    <h2>Credits</h2>
+    <p> The extraction of the Web Table Corpus was supported by an .</p>
+    <p> Amazon Web Services in Education Grant award</p>
+    </hr>
+    <h2>Contact</h2>
+    <p> Mail: Address: Phone: Fax:</p>
+    <p> julian.eberius@tu-dresden.de</p>
+    <p> Dep. of Computer Science Technische Universität Dresden</p>

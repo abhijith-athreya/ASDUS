@@ -1,0 +1,342 @@
+var SPARK = SPARK || {};
+(function (SPARK) {
+
+    var pluses = /\+/g;
+
+    function raw(s) {
+        return s;
+    }
+
+    function decoded(s) {
+        return decodeURIComponent(s.replace(pluses, ' '));
+    }
+
+    function converted(s) {
+        if (s.indexOf('"') === 0) {
+            // This is a quoted cookie as according to RFC2068, unescape
+            s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+        }
+        try {
+            return config.json ? JSON.parse(s) : s;
+        } catch(er) {}
+    }
+
+    var config = SPARK.cookie = function (key, value, options) {
+
+        // write
+        if (value !== undefined) {
+            options = options || {};
+            if (typeof options.expires === 'number') {
+                var days = options.expires, t = options.expires = new Date();
+                t.setDate(t.getDate() + days);
+            }
+
+            value = config.json ? JSON.stringify(value) : String(value);
+
+            return (document.cookie = [
+                config.raw ? key : encodeURIComponent(key),
+                '=',
+                config.raw ? value : encodeURIComponent(value),
+                options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+                options.path    ? '; path=' + options.path : '',
+                options.domain  ? '; domain=' + options.domain : '',
+                options.secure  ? '; secure' : ''
+            ].join(''));
+        }
+
+        // read
+        var decode = config.raw ? raw : decoded;
+        var cookies = document.cookie.split('; ');
+        var result = key ? undefined : {};
+        for (var i = 0, l = cookies.length; i < l; i++) {
+            var parts = cookies[i].split('=');
+            var name = decode(parts.shift());
+            var cookie = decode(parts.join('='));
+
+            if (key && key === name) {
+                result = converted(cookie);
+                break;
+            }
+
+            if (!key) {
+                result[name] = converted(cookie);
+            }
+        }
+
+        return result;
+    };
+
+    SPARK.removeCookie = function (key, options) {
+        options = options||{};
+        if (SPARK.cookie(key) !== undefined) {
+            options['expires'] = -1;
+            SPARK.cookie(key, '', options);
+            return true;
+        }
+        return false;
+    };
+
+})(SPARK);
+
+//https://gist.github.com/ricardobeat/1718845
+SPARK.addEventListener = function(evt, fn){
+    window.addEventListener
+        ? this.addEventListener(evt, fn, false)
+        : (window.attachEvent)
+            ? this.attachEvent('on' + evt, fn)
+            : this['on' + evt] = fn;
+}
+
+SPARK.parseUrl=function(url){
+    if(url == null) return null;
+    var result = {},
+        keys = ['url', 'scheme', 'slash', 'host', 'port', 'path', 'query', 'hash'],
+        regGroups = /^(?:([A-Za-z]+):)?(\/{0,3})([-\w\.]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:\#(.*))?$/.exec( url );
+    if(regGroups == null) return null;
+    for(var i = 0; i < regGroups.length; i++){
+        result[keys[i]] = regGroups[i];
+    }
+    if(result.query){
+        var e,
+        a = /\+/g,  // Regex for replacing addition symbol with a space
+        r = /([^&=]+)=?([^&]*)/g,
+        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+        q = result.query;
+        result.query = {};
+        while (e = r.exec(q))
+           result.query[d(e[1])] = d(e[2]);
+    }else{
+        result.query = {};
+    }
+    return result;
+};
+
+SPARK.invert = function (obj) {
+    var new_obj = {};
+    for (var prop in obj) {
+        if(obj.hasOwnProperty(prop)) {
+            new_obj[obj[prop]] = prop;
+        }
+    }
+    return new_obj;
+};
+
+//copy from sizzle
+SPARK.contains = function( a/*container*/, b/*contained*/ ) {
+    var adown = a.nodeType === 9 ? a.documentElement : a,
+        bup = b && b.parentNode;
+    return  a === bup || !!( bup && bup.nodeType === 1 && adown.contains(bup) );
+};
+
+SPARK.hasClass = function(el, name) {
+    return new RegExp('(\\s|^)'+name+'(\\s|$)').test(el.className);
+};
+
+//element's index in parent
+SPARK.index = function(el){
+    if (el && el.parentNode){
+        var k=0;
+        while (el = el.previousSibling) { ++k;}
+        return k;
+    }
+    return -1
+}
+
+!(function(SPARK){
+    var channelList = [
+        {
+            'id':'ad',
+            'rid':/^(th|br|eg)_(fb|adw|ads)$/,
+            'filter':function(url,referrer){
+                if(url.query['id'] == null) return null;
+                match = this.rid.exec(url.query['id']);
+                if(match == null)return null;
+                if (match[1] == 'br' && match[2] == "adw")  return "BR_OLad";
+                if (match[1] == 'eg' && match[2] == "adw")  return "EG_OLad";
+                if(match[1] == "th" && match[2] == "ads") return "TH_Adsense";
+                return "TH_OLad";
+            },
+            'validator':function(channel){
+                if(channel == "TH_OLad" || channel == "TH_Adsense" || channel == "BR_OLad" || channel == "EG_OLad") return true;
+                return false;
+            }
+        },
+        {
+            'id':'th_id',
+            'para2channel':{
+                'th_orgw':'TH_ORG_Water',
+                'th_orgb':'TH_ORG_Blogger',
+            },
+            'filter':function(url,referrer){
+                var source = url.query['id'];
+                if(source == null) return null;
+                if(source in this.para2channel)
+                    return this.para2channel[source];
+                return null;
+            },
+            'validator':function(channel){
+                if (channel in SPARK.invert(this.para2channel)) return true;
+                return false;
+            }
+        },
+        {
+            'id':'banner',
+            'para2channel':{
+                'web-1':'TH_WEB-1',
+                'web-2':'TH_WEB-2',
+                'web-3':'TH_WEB-3',
+                'web-4':'TH_WEB-4',
+                'web-5':'TH_WEB-5',
+                'web-6':'TH_WEB-6',
+                'web-7':'TH_WEB-7',
+                'web-8':'TH_WEB-8',
+                'web-9':'TH_WEB-9',
+                'web-10':'TH_WEB-10'
+            },
+            'filter':function(url,referrer){
+                var source = url.query['utm_source'];
+                if(source == null) return null;
+                if(source in this.para2channel)
+                    return this.para2channel[source];
+                return null;
+            },
+            'validator':function(channel){
+                if (channel in SPARK.invert(this.para2channel)) return true;
+                return false;
+            }
+        },
+        {
+            'id':'referrer_param',
+            'referrer2channel':{
+                "aladdin":"TH_Aladdin-Web",
+                "sm":"GB_SM-OW",
+                "localbr":"BR_Local-OP",
+                "pcfth":"TH_PCF",
+                "pcfbr":"BR_PCF",
+                "pcfen":"EN_PCF",
+                "sjbbr":"BR_MKT-OP",
+                "sjfbr":"BR_MKT-OP",
+                "hphao123": "GB_hao123",
+                "thfbads": "TH_FBAds",
+                "thfbpost": "TH_FBPost",
+                "thlocalblog": "TH_Local-Blog",
+                "thlocalbanner": "TH_Local-Banner",
+                "thaiblog": "TH_ThaiBlog_32_3511",
+                "thaiyoutube": "TH_ThaiYouTube_32_3511"
+            },
+            'filter':function(url,referrer){
+                var ref = url.query['referrer'];
+                if(ref == null) return null;
+                if(ref in this.referrer2channel)
+                    return this.referrer2channel[ref];
+                return null;
+            },
+            'validator':function(channel){
+                if (channel in SPARK.invert(this.referrer2channel)) return true;
+                return false;
+            }
+        },
+        {
+            'id':'referrer',
+            //'rref':/[^.]+\.hao123\.com/,
+            'host2channel':{
+                'br.hao123.com':'BR_hao123',
+                'ar.hao123.com':'EG_hao123',
+                'tw.hao123.com':'TW_hao123',
+                'th.hao123.com':'TH_hao123',
+                'id.hao123.com':'ID_hao123',
+                'dooeii.com':'TH_Dooeii',
+                'sabeydee.com':'TH_Sabeydee',
+                'madoolakorn.com':'TH_Madoolakorn',
+                'vojkudee.com':'TH_Vojkudee'
+            },
+            'filter':function(url,referrer){
+                if(referrer == null) return null;
+                for(var r in this.host2channel){
+                    if  (referrer.host.indexOf(r) != -1) return this.host2channel[r];
+                }
+                return null;
+            },
+            'validator':function(channel){
+                if (channel in SPARK.invert(this.host2channel)) return true;
+                return false;
+            }
+        },
+        {
+            'id':'search engine',
+            'filter':function(url,referrer){
+                if (referrer == null) return null;
+                if (referrer.host.indexOf('google') != -1){
+                    return "GB_Google";
+                }
+                return null;
+            },
+            'validator':function(channel){
+                if (channel == "GB_Google") return true;
+                return false;
+            }
+        }
+    ],
+    _refer = SPARK.parseUrl(document.referrer),
+    _url = SPARK.parseUrl(window.location.href),
+    _ptn,_ck;
+
+    for(var i=0,len=channelList.length;i<len;i++){
+        _ptn  = channelList[i].filter.call(channelList[i],_url,_refer);
+        if(_ptn != null){
+            SPARK.cookie('ptn',_ptn,{expires:30,path:'/'});
+            return;
+        }
+    }
+
+    if((_ck = SPARK.cookie('ptn')) != null){
+        for(var i=0,len=channelList.length;i<len;i++){
+            if(channelList[i].validator.call(channelList[i],_ck)) return;
+        }
+        SPARK.removeCookie('ptn',{expires:30,path:'/'});
+    }
+
+})(SPARK);
+
+// record ga event
+var _gaq = _gaq || [];
+!(function(){
+
+    SPARK.addEventListener.call(
+        document,
+        'click',
+        function(e){
+            var e = e || window.event,
+                target = e.target || e.srcElement || document;
+            if (
+                SPARK.hasClass(target,'ga-dl') 
+                || (target.parentNode && SPARK.hasClass(target.parentNode,'ga-dl'))
+            ){
+                _gaq.push(['_trackEvent', 'installer_download', window.location.href, SPARK.cookie('ptn') || "official" ]);
+            }
+            if (
+                SPARK.hasClass(target,'ga-dl-offline')
+            ){
+                _gaq.push(['_trackEvent', 'installer_download', 'click', 'ga-dl-offline' ]);
+            }
+            if (
+                SPARK.hasClass(target,'facebook-page-link') 
+                || (target.parentNode && SPARK.hasClass(target.parentNode,'facebook-page-link'))
+            ){
+                _gaq.push(['_trackEvent', 'facebook', window.location.href, SPARK.cookie('ptn') || "official" ]);
+            }
+            if (
+                target.tagName.toUpperCase() == 'A'
+                && target.getAttribute('data-faq-index')
+            ){
+                _gaq.push(['_trackEvent', 'faq_quality', target.innerText||target.textContent, target.getAttribute('data-faq-index')]);
+            }
+            if (
+                SPARK.hasClass( target, 'js-feature-nav-link') || (target.parentNode && SPARK.hasClass(target.parentNode,'js-feature-nav-link')) 
+            ){
+                _gaq.push(['_trackEvent', 'feature_nav', window.location.href ,  target.getAttribute('href')]);
+            }
+        }
+    );
+
+})(SPARK);

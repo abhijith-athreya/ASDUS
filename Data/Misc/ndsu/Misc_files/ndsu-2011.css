@@ -1,0 +1,1955 @@
+@font-face {
+       	font-family: 'MuliK-L';
+       	src: url('https://static.ndsu.edu/templates/fonts/muli-jkistner/muli_light-webfont.eot');
+       	src: url('https://static.ndsu.edu/templates/fonts/muli-jkistner/muli_light-webfont.eot?#iefix') format('embedded-opentype'),
+       		url('https://static.ndsu.edu/templates/fonts/muli-jkistner/muli_light-webfont.woff') format('woff'),
+       		url('https://static.ndsu.edu/templates/fonts/muli-jkistner/muli_light-webfont.ttf') format('truetype'),
+       		url('https://static.ndsu.edu/templates/fonts/muli-jkistner/muli_light-webfont.svg#MuliLight') format('svg');
+       	font-weight: 300;
+       	font-style: normal;
+}
+@font-face {
+       	font-family: 'MuliK';
+       	src: url('https://static.ndsu.edu/templates/fonts/muli-jkistner/muli-webfont.eot');
+       	src: url('https://static.ndsu.edu/templates/fonts/muli-jkistner/muli-webfont.eot?#iefix') format('embedded-opentype'),
+       		url('https://static.ndsu.edu/templates/fonts/muli-jkistner/muli-webfont.woff') format('woff'),
+       		url('https://static.ndsu.edu/templates/fonts/muli-jkistner/muli-webfont.ttf') format('truetype'),
+       		url('https://static.ndsu.edu/templates/fonts/muli-jkistner/muli-webfont.svg#MuliRegular') format('svg');
+       	font-weight: 400;
+	font-style: normal;
+}
+
+/* based on http://meyerweb.com/eric/tools/css/reset/ */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+.body {
+	min-width: 960px;
+}
+
+
+
+/* NDSU STYLES */
+br.clear {
+	clear: both;
+	height: 1px;
+	overflow: hidden;
+}
+#top_bar_container {
+	background-color: #002119;
+	background-image: url(https://static.ndsu.edu/templates/images/NDSU_bg_header.png);
+	background-repeat: no-repeat;
+	background-position: top left;
+background-position: center center;
+padding-bottom: 1px;
+}
+#top_bar {
+	margin: 0 auto;
+	width: 766px;
+	color: #fff;
+}
+#top_bar a {
+	color: #fc0;
+	text-decoration: none;
+}
+#top_bar a:hover,
+#top_bar a:focus,
+#top_bar a:active {
+	color: #fff;
+	text-decoration: underline;
+}
+#top_bar img {
+	float: left;
+}
+#top_bar ul {
+	float: right;
+	margin: 14px 0 0 0;
+}
+#nav {
+	background: #fff url(https://static.ndsu.edu/templates/images/nav-bottom-2011.png) repeat-x top left;;
+	min-height: 20px;
+	line-height: 20px;
+}
+#nav a {
+	color: #000;
+	text-decoration: none;
+}
+#nav a:hover,
+#nav a:focus,
+#nav a:active {
+	color: #666;
+	text-decoration: underline;
+}
+#nav ul {
+	width: 940px;
+}
+#container {
+	margin: 0 auto;
+	width: 767px;
+	padding: 33px 0 9px 0;
+}
+#alpha_links {
+	padding-top: 9px;
+	font-weight: bold;
+	height: 25px;
+	font-size: 0.8em;
+}
+#alpha_links ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+#alpha_links a {
+	display: block;
+	height: 21px;
+	line-height: 21px;
+	width: 100%;
+	float: left;
+	text-decoration: none;
+	color: #fff;
+	font-family: MuliK, sans-serif;
+	font-weight: 800;
+}
+#alpha_links li {
+	background-color: #333;
+	width: 21px;
+	height: 21px;
+	margin-right: 2px;
+	float: left;
+	text-align: center;
+}
+#alpha_links .index {
+	width: 162px;
+width: 140px;
+	background-color: #fc0;
+}
+#alpha_links li:hover {
+	background-color: #bbb;
+}
+#alpha_links li:hover a {
+	color: #000;
+}
+#alpha_links .index a {
+	color: #000;
+	text-transform: uppercase;
+}
+/* END NDSU STYLES */
+
+#searchform {
+	border: 1px solid #aaa;
+	border-radius: 7px 7px 7px 7px;
+-moz-border-radius: 7px;
+-webkit-border-radius: 7px;
+	background: #fff;
+	color: #666;
+	width: 220px;
+	height: 18px;
+	padding: 3px 0 3px 0;
+}
+/*
+.ie7 #searchform,
+.ie8 #searchform {
+	behavior: url(/fileadmin/templates/css/border-radius.htc);
+}
+*/
+#searchform label {
+	position: absolute;
+	top: -5000px;
+	left: -5000px;
+}
+#searchform input[type=text], #searchinput {
+	border: none;
+	width: 185px;
+	height: 18px;
+	font-size: inherit;
+	line-height: 18px;
+	padding-left: 8px;
+	padding-top: 3px;
+	float: left;
+	color: #666;
+	background-color: transparent;
+}
+#searchform input[type="image"] {
+	padding-right: 5px;
+}
+.search_paging li {
+	display: inline;
+	list-style-type: none;
+}
+
+acronym {
+	border-bottom: 1px dotted;
+	cursor: help;
+}
+body {
+	text-rendering: optimizelegibility;
+	font-family: Arial, sans-serif;
+	/* 13px / line height 19px. */
+	font-size: 0.8125em;
+	line-height: 1.4615em;
+}
+/* Hide from TYPO3 RTE */
+.body {
+	background-color: #000;
+	color: #fff;
+}
+
+/* contrast accessibility */
+.body > .mask > a {
+	color: #fc0;
+}
+.body #nav > .mask {
+	color: #000;
+}
+
+/* end Hide from TYPO3 RTE */
+
+a {
+	color: #363;
+	font-weight: bold;
+	text-decoration: underline;
+}
+a:hover,
+a:active,
+a:focus,
+a.fontSize {
+	color: #939598;
+	text-decoration: underline;
+}
+a:hover img,
+a:focus img,
+a:active img {
+	opacity: 0.6;
+}
+a.button-link {
+        padding: 4px;
+        background-color: #eee;
+        color: #363;
+        border: 1px solid #363;
+        line-height: 2em;
+	text-decoration: none;
+}
+a.button-link:hover {
+        background-color: #ddd;
+}
+a[href^="http"],
+a.external-link {
+        padding-right: 12px;
+        background: url("https://static.ndsu.edu/templates/images/icon.external.gif") no-repeat top right;
+}
+a[href^="http://www.ndsu.edu"],
+a[href^="https://workspaces.ndsu.edu"],
+a[href^="http://workspaces.ndsu.edu"],
+a[href^="https://www.ndsu.edu"],
+a[href^="https://cms-devel.ndsu.nodak.edu"],
+a[href^="https://bulletin.ndsu.edu"],
+#sitenav a[href^="http"],
+#nav a,
+#top_bar a,
+#alpha_links a,
+#follow a {
+	padding-right: 0;
+	background: none;
+}
+a.internal-link {
+}
+a.mail-link,
+a[href^="mailto"] {
+	padding: 3px 0 0 23px;
+	background: url("https://static.ndsu.edu/templates/images/meta/email.gif") no-repeat 3px 1px;
+}
+/* Meta icons by Mark James <http://www.famfamfam.com/lab/icons/silk/> */
+a.download-link {
+        padding: 3px 0 0 23px;
+        background: url("https://static.ndsu.edu/templates/images/meta/download.png") no-repeat 3px 1px;
+}
+a.pdf-link,
+a[href$="pdf"], a[href$="PDF"] {
+        padding: 3px 0 0 23px;
+        background: url("https://static.ndsu.edu/templates/images/meta/acrobat.png") no-repeat 0px 1px;
+}
+.ie7 #sitenav a[href$="pdf"], .ie7 #sitenav a[href$="PDF"],
+.ie7 li a.pdf-link,
+.ie7 li a[href$="pdf"], .ie7 a[href$="PDF"] {
+        padding: 3px 23px 0 0;
+        background: url("https://static.ndsu.edu/templates/images/meta/acrobat.png") no-repeat right top;
+}
+#sitenav a[href$="pdf"], #sitenav a[href$="PDF"],
+li a[href$="pdf"], li a[href$="PDF"] {
+	padding: 0;
+	background-image: none;
+}
+#sitenav a[href$="pdf"]:after, #sitenav a[href$="PDF"]:after,
+li a[href$="pdf"]:after, li a[href$="PDF"]:after {
+	content: " " url("https://static.ndsu.edu/templates/images/meta/acrobat.png");
+}
+a.doc-link {
+        padding: 3px 0 0 23px;
+        background: url("https://static.ndsu.edu/templates/images/meta/office.png") no-repeat 3px 1px;
+}
+a[href$="doc"],a[href$="DOC"],
+a[href$="docx"],a[href$="DOCX"] {
+        padding: 3px 0 0 23px;
+        background: url("https://static.ndsu.edu/templates/images/meta/word.png") no-repeat 3px 1px;
+}
+a[href$="xls"],a[href$="XLS"],
+a[href$="xlsx"],a[href$="XLSX"] {
+        padding: 3px 0 0 23px;
+        background: url("https://static.ndsu.edu/templates/images/meta/excel.png") no-repeat 3px 1px;
+}
+a[href$="ppt"],a[href$="PPT"],
+a[href$="pptx"],a[href$="PPTX"],
+a[href$="pps"],a[href$="PPS"] {
+        padding: 3px 0 0 23px;
+        background: url("https://static.ndsu.edu/templates/images/meta/powerpoint.png") no-repeat 3px 1px;
+}
+a.media-link,
+a[href$="wmv"],a[href$="WMV"],
+a[href$="mov"],a[href$="MOV"],
+a[href$="mp3"],a[href$="MP3"],
+a[href$="mpeg"],a[href$="MPEG"],
+a[href$="avi"],a[href$="AVI"] {
+        padding: 3px 0 0 23px;
+        background: url("https://static.ndsu.edu/templates/images/meta/media.png") no-repeat 3px 1px;
+}
+a.navigation-link, .body .navigation {
+        padding: 0px !important;
+        background: none !important;
+        border-width: 0px;
+}
+a.navigation-link:hover, .body .navigation:hover {
+        text-decoration: underline;
+}
+a.navigation-link:after {
+	content: none;
+	content: "" !important;
+}
+/* Try to fix the flicker on hover/multi-line */
+/*
+#main a, #border a {
+	line-height: 1em;
+	display: inline-block;
+	padding-top: 0.25em;
+	padding-bottom: 0.25em;
+}
+*/
+
+address {
+	font-style: normal;
+}
+address p {
+	padding: 0;
+	margin: 0;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote {
+	margin: 1em 0 1em 2em;
+	padding-left: 1em;
+	border-left: 3px solid #ccc;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+caption {
+	text-align: left;
+}
+object, embed, div, video {
+	max-width: 100%;
+}
+video::cue,
+.video-js-box .vjs-subtitles {
+	background-color: rgba(0,0,0,0.5);
+	color: #fff;
+	line-height: 1em !important;
+}
+.csc-textpic,
+.csc-textpic-imagewrap,
+.csc-textpic-image,
+.frame1 .csc-textpic-image img {
+	max-width: 100%;
+	width: auto;
+	height: auto;
+}
+.ie8 .csc-textpic-image {
+	max-width: none;
+}
+.ie7 div {
+	max-width: none;
+}
+del {
+	text-decoration: line-through;
+	color: red;
+}
+figure {
+	display: table;
+}
+figcaption {
+	display: table-caption;
+	caption-side: bottom;
+}
+
+h3,
+.h2,
+h4,
+h5,
+h6,
+#sitenav .h4 {
+	margin-top: 40px;
+margin-top: 2.5em;
+	margin-bottom: 0.25em;
+margin-bottom: 0;
+	font-weight: bold;
+	line-height: 1.05em;
+}
+.csc-firstHeader,
+h3.nomargin,
+h4.nomargin,
+h5.nomargin,
+h6.nomargin,
+#main .csc-frame.frame1.col0:first-child h3,
+#main .csc-frame.frame1.col0:first-child + div h3:first-of-type,
+#main .csc-frame.frame2.col0:first-child h3,
+#main .csc-frame.frame2.col0:first-child + div h3:first-of-type,
+.csc-frame.frame1.col0:first-child + .csc-default h3:first-of-type, /* ndsu News first heading is in the content element (news) */
+.csc-frame.frame1.col0:first-child + .csc-default .csc-header h3, /* After floating one, squish the next? */
+h3 + h4, h3 + div h4, .csc-header + h4:first-of-type,
+h4 + h5, h4 + div h5, .csc-header + h5:first-of-type,
+h5 + h6, h5 + div h6, .csc-header + h6:first-of-type,
+table td h3,
+table td h4,
+table td h5,
+table td h6 {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.h2, h3 {
+/* Give everyone what /news tries to achieve */
+/*
+	color: #fff;
+	background-color: #4f4c40;
+	font-size: 14px;
+	font-family: MuliK, sans-serif;
+	font-weight: 400;
+	text-transform: uppercase;
+	padding: 8px 10px 5px 10px !important;
+	margin-bottom: 0.5em;
+*/
+	color: #030;
+	font-size: 2em;
+	font-weight: normal;
+}
+caption, h4 {
+	color: #030;
+	font-size: 1.6em;
+	font-weight: normal;
+}
+caption.csc-textpic-caption {
+	font-size: inherit;
+	color: inherit;
+}
+h5 {
+	color: #030;
+color: #363;
+	font-size: 1.3em;
+	font-weight: normal;
+	font-style: italic;
+}
+h6 {
+	color: #8a8c8e;
+	font-size: 1.077em;
+font-size: 1em;
+	text-transform: uppercase;
+}
+/*h1 strong, h1 em,
+h2 strong, h2 em,*/
+h3 strong, h3 em,
+h4 strong, h4 em,
+h5 strong, h5 em,
+h6 strong, h6 em {
+	font-weight: normal;
+	font-style: normal;
+}
+hr {
+	border: none;
+	border-top: 1px dotted #ccc;
+	margin: 5em 0;
+	height: 1px;
+}
+.ie7 hr {
+	margin: 2em 0;
+}
+/* These styles interfere with RTE */
+.body img {
+	max-width: 100%;
+	width: auto;
+	height: auto;
+}
+div.csc-textpic-border div.csc-textpic-imagewrap .csc-textpic-image img,
+div.csc-textpic-border div.csc-textpic-single-image img,
+img.imgborder {
+	padding: 5px;
+	border: 1px solid #939598;
+}
+#mainborder #main .csc-textpic-border img {
+	max-width: 450px;
+}
+#mainborder #border .csc-textpic-border img {
+	max-width: 210px;
+}
+/* These styles interfere with RTE */
+.body table img {
+	max-width: 675px;
+}
+ins {
+	text-decoration: none;
+	color: green;
+}
+
+ol, ul {
+	margin: 0.5em 0 0.5em 25px;
+}
+ul {
+	list-style-type: disc;
+}
+ul.check-list {
+	list-style-image: url('https://static.ndsu.edu/templates/images/meta/bul.checkbox.png');
+}
+ul.link-list {
+	/* makes selection menu, do not remove */
+}
+.link-list, .link-list li {
+	margin-bottom: 0.75em;
+}
+ol.alpha-list {
+	list-style-type: lower-alpha;
+}
+
+/* legal-style lists
+ol {
+	counter-reset: item;
+}
+ol li {
+	counter-increment: item;
+	list-style-type: none;
+}
+ol li:before {
+	content: counters(item,".") ". ";
+	display: marker;
+	font-weight: bold;
+	margin-left: -1.2em;
+}
+ol ol li:before {
+	margin-left: -2.25em;
+}
+*/
+p {
+	margin: 1.5em 0 1.5em 0;
+	line-height: 1.5em;
+}
+/*h1 + p,
+h2 + p,*/
+h3 + p,
+h4 + p,
+h5 + p,
+h6 + p,
+.csc-header + p {
+	margin-top: 0;
+}
+sub, sup {
+	height: 0;
+	line-height: 1;
+	vertical-align: baseline;
+	_vertical-align: bottom;
+	position: relative;
+	font-size: 0.9em;
+}
+sup {
+	bottom: 1ex;
+}
+sub {
+	top: 0.5ex;
+}
+table {
+	margin: 0 0 1.5em 0;
+	color: #000;
+	background-color: #fff;
+}
+table, td, th {
+	border: 0;
+}
+table, thead, tbody, td, th, tr,
+textarea, input {
+	font-family: inherit;
+	font-size: inherit;
+	vertical-align: inherit;
+	/*text-align: inherit;*/
+}
+table tr td:first-child,
+table tr th:first-child {
+	padding-left: 0;
+}
+table tr td:last-of-type,
+table tr th:last-of-type {
+	padding-right: 0;
+}
+table.border1,
+.border1 td,
+.border1 th {
+	border: 1px solid #939598;
+	border-collapse: collapse;
+}
+table.stripeRows1, .striperows1, .stripeRows1 td, .striperows1 td, .stripeRows1 th, .striperows1 th {
+	border-bottom: 1px dotted #939598;
+	border-collapse: collapse;
+}
+.stripeRows1 th, .striperows1 th,
+.stripeRows2 th, .striperows2 th {
+	color: #939598;
+}
+.stripeRows1 th[scope="col"], .striperows1 th[scope="col"],
+.stripeRows2 th[scope="col"], .striperows2 th[scope="col"] {
+	border-bottom: 2px solid #939598;
+	font-size: 1.1em;
+}
+.stripeRows1 tr:hover td, .striperows1 tr:hover td,
+.stripeRows1 tr:hover th, .striperows1 tr:hover th {
+	background-color: #f7e8aa;
+background-color: #e0ebd8;
+}
+.stripeRows1 tr:hover th[scope="col"], .striperows1 tr:hover th[scope="col"] {
+	background-color: #fff;
+}
+table.stripeRows2, .striperows2, .stripeRows2 td, .striperows2 td, .stripeRows2 th, .striperows2 th {
+	border-collapse: collapse;
+}
+.stripeRows2 td, striperows2 td,
+.stripeRows2 th[scope="row"], .striperows2 th[scope="row"] {
+	border: 1px dotted #939598;
+}
+.stripeRows2 tr:nth-child(even) td, .striperows2 tr:nth-child(even),
+.stripeRows2 tr:nth-child(even) th[scope="row"], .striperows2 tr:nth-child(even) th[scope="row"] {
+	background-color: #f7e8aa;
+background-color: #e0ebd8;
+}
+.contenttable-1 th[scope="col"] {
+	color: #030;
+	font-size: 1.1em;
+	border-bottom: 1px solid #030;
+}
+table td p:first-child,
+table th p:first-child {
+	padding-top: 0;
+	margin-top: 0;
+}
+table td p:last-of-type,
+table th p:last-of-type {
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+.hidden {
+	display: none;
+}
+.mask {
+	position: absolute;
+	top: -5000px;
+	left: -5000px;
+}
+/* IE can't handle if this is just one declaration with forcejustify */
+#navfooter > ul > li:last-of-type {
+	width: 100%;
+	display: inline-block !important;
+	height: 0 !important;
+	min-height: 0 !important;
+	max-height: 0 !important;
+	font-size: 0 !important;
+	line-height: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+overflow: hidden !important;
+border: none !important;
+position: relative;
+top: 0;
+left: 0;
+}
+.forcejustify {
+	width: 100%;
+	display: inline-block !important;
+	height: 0 !important;
+	min-height: 0 !important;
+	max-height: 0 !important;
+	font-size: 0 !important;
+	line-height: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+overflow: hidden !important;
+border: none !important;
+position: relative;
+top: 0;
+left: 0;
+}
+
+
+/* Overcoming the default page */
+#top_bar {
+	width: 940px;
+}
+#searchform {
+	margin-bottom: 0;
+}
+#container {
+	width: auto;
+	padding-top: 0;
+}
+/* end Overcoming the default page */
+
+
+#top_bar img {
+	display: none;
+}
+#top_bar h1 {
+	float: left;
+	height: 33px;
+	width: 309px;
+}
+#top_bar h1 a {
+	display: block;
+	height: 33px;
+	width: 309px;
+}
+#top_bar,
+#nav {
+	font-size: 0.8em;
+}
+#top_bar ul,
+#nav ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 15px 0 0 0;
+	text-transform: uppercase;
+	font-family: MuliK, sans-serif;
+	font-weight: 400;
+}
+#top_bar ul a,
+#nav ul a {
+	font-weight: 400;
+}
+#nav ul {
+	margin: 0 auto;
+	padding: 0;
+	text-align: justify;
+	position: relative;
+min-height: 22px;
+}
+#top_bar li {
+	display: inline;
+	padding-left: 1em;
+}
+#nav li {
+	display: inline;
+}
+#nav a {
+	display: inline-block;
+}
+#top_bar ul ul,
+#nav ul ul {
+	text-transform: none;
+	font-weight: 600;
+	display: none;
+}
+#nav ul li:hover ul {
+	display: block;
+	position: absolute;
+	top: auto;
+	border-top: 2px solid #000;
+	bottom: auto;
+	left: 0;
+	z-index: 100;
+	background-color: #f0f0f0;
+	padding: 4px 8px;
+	width: 120px;
+}
+/* webkit only */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	#nav ul li:hover ul {
+		top: 10px;
+		margin-top: 10px;
+	}
+}
+.ie8 #univservices {
+	z-index: -100;
+}
+.ie7 #nav ul li:hover ul {
+	display: none;
+}
+#nav ul ul li {
+	display: block;
+}
+#nav ul ul li a:hover,
+#nav ul ul li a:focus,
+#nav ul ul li a:active {
+	color: #666;
+}
+
+#univservices {
+	background-color: #fff;
+	color: #000;
+	border-bottom: 3px solid #fc0;
+	padding-top: 20px;
+	padding-bottom: 8px;
+	position: relative;
+	height: 50px;
+}
+.college #univservices {
+	background-color: black;
+	border-top: 18px solid black;
+	border-bottom-color: black;
+	position: relative;
+	top: -18px;
+	margin-bottom: -18px;
+	overflow: hidden;
+}
+#univservices h2 {
+	float: left;
+	text-transform: uppercase;
+	font-size: 2em;
+	line-height: 0.85em;
+	width: 700px;
+	font-family: MuliK-L, sans-serif;
+	font-weight: 300;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	bottom: 10px;
+}
+#univservices h2 a {
+	color: #000;
+	text-decoration: none;
+	font-weight: 400;
+}
+#univservices h2 a:hover,
+#univservices h2 a:focus,
+#univservices h2 a:active {
+	color: #939598;
+	text-decoration: underline;
+}
+.college #bannerwords a {
+	color: #fc0;
+}
+.college #bannerwords a:hover
+.college #bannerwords a:focus
+.college #bannerwords a:active {
+	color: #939598;
+}
+#widgets {
+	float: right;
+	text-align: right;
+	font-size: 0.85em;
+line-height: 10px;
+}
+#textresize {
+	color: #939598;
+line-height: 10px;
+padding: 0 0 10px 0;
+margin: 0;
+}
+#textresize a {
+	text-transform: uppercase;
+	font-weight: bold;
+	text-decoration: none;
+padding-left: 5px;
+}
+#textresize a:hover,
+#textresize a:focus,
+#textresize a:active,
+#textresize a.fontSize {
+	text-decoration: underline;
+}
+
+.contentwrapper {
+	width: 940px;
+	margin: 0 auto;
+}
+#breadcrumbs {
+	padding-top: 10px;
+	margin-bottom: 40px;
+}
+#breadcrumbs a {
+	font-weight: normal;
+	color: #000;
+	text-decoration: none;
+}
+#breadcrumbs a:hover,
+#breadcrumbs a:active,
+#breadcrumbs a:focus {
+	color: #939598;
+	text-decoration: underline;
+}
+#breadcrumbs span {
+	color: #939598;
+}
+#typo3content {
+	clear: both;
+	background-color: #fff;
+	color: #000;
+	padding-bottom: 130px;
+
+	width: 100%;
+	/*overflow: auto;*/
+}
+#sitenav {
+	width: 220px;
+	padding: 0;
+	float: left;
+	/* 12px / line height 17px. */
+	font-size: 0.92307em;
+	line-height: 1.4166em;
+}
+#sitenav a {
+	color: #000;
+	font-weight: normal;
+	text-decoration: none;
+}
+#sitenav a:hover,
+#sitenav a:focus,
+#sitenav a:active {
+	color: #939598;
+	text-decoration: underline;
+}
+#sitenav ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0.4em 0 0 0;
+}
+#sitenav li {
+	line-height: 1em;
+	padding: 0.4em 0;
+	margin: 0;
+}
+#sitenav .cur,
+#sitenav .act .cur,
+#sitenav .act .act .cur,
+#sitenav .act,
+#sitenav .act a,
+#sitenav .act .act,
+#sitenav .act .act a,
+#sitenav .act li a:hover,
+#sitenav .act li a:focus,
+#sitenav .act li a:active,
+#sitenav .act .act li a:hover,
+#sitenav .act .act li a:focus,
+#sitenav .act .act li a:active {
+	color: #939598;
+}
+#sitenav .cur li,
+#sitenav .act li,
+#sitenav .act li a,
+#sitenav .act .act li,
+#sitenav .act .act li a {
+	color: #000;
+}
+#sitenav ul ul {
+	list-style-type: disc;
+	padding: 0.4em 0 0 2em;
+}
+#sitenav ul ul ul {
+	list-style-image: url(https://static.ndsu.edu/templates/images/right-arrow-black.png);
+}
+#sitenav ul ul ul .cur {
+	list-style-image: url(https://static.ndsu.edu/templates/images/right-arrow-939598.png);
+}
+#sitenav .cur span {
+	text-decoration: underline;
+}
+#sitenav #homelink,
+#sitenav .csc-firstHeader {
+	margin-top: 0;
+	padding-top: 0;
+}
+#sitenav a#homelink,
+#sitenav .csc-firstHeader a {
+	color: #363;
+	font-weight: bold;	
+}
+#sitenav h3 {
+	margin-top: 0;
+	padding-top: 0;
+	font-size: 1.3em;
+	font-weight: bold;	
+}
+#sitenav div.h4 {
+	font-size: 1.3em;
+	margin-top: 20px;
+}
+
+
+
+
+#main {
+	width: 460px;
+	padding: 0 20px;
+	float: left;
+}
+#main.noborder,
+#mainborder {
+	width: 700px;
+	padding-right: 0;
+	float: right;
+}
+#mainborder {
+	width: 720px;
+}
+#border {
+	width: 220px;
+	padding: 0;
+	float:right;
+	clear: none;
+}
+
+#sflgru {
+	text-align: center;
+	clear: both;
+	background: #002119 url(https://static.ndsu.edu/templates/images/sflgru_bar.png) no-repeat center center;
+	height: 29px;
+}
+#sflgru p {
+	padding: 0;
+	margin: 0;
+	visibility: hidden;
+}
+#alpha_links {
+	float: left;
+	height: 30px;
+}
+#follow {
+	margin-top: 9px;
+	float: right;
+	background-color: #333;
+	height: 21px;
+	width: 178px;
+width: 200px;
+}
+#follow ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+#follow img {
+	padding-top: 1px;
+	float: left;
+}
+#follow a:hover img,
+#follow a:focus img,
+#follow a:active img {
+	opacity: 0.6;
+}
+#follow span {
+	font-family: MuliK, sans-serif;
+	font-weight: 800;
+	text-transform: uppercase;
+	float: left;
+	color: #fc0;
+	font-size: 0.8em;
+	padding: 0 11px;
+padding: 0 5px;
+	line-height: 21px;
+}
+#follow ul {
+	display: inline;
+}
+#follow li {
+	display: inline;
+}
+#navfooter a {
+	font-family: MuliK, sans-serif;
+	font-weight: 400;
+	text-transform: uppercase;
+	font-size: 0.8em;
+	text-decoration: none;
+	color: #fff;
+padding: 0;
+background-image: none;
+}
+#navfooter a:hover,
+#navfooter a:focus,
+#navfooter a:active {
+	color: #fc0;
+	text-decoration: underline;
+}
+#navfooter {
+	clear: both;
+	padding: 0;
+	margin: 0;
+	background-color: #fff;
+	height: 20px;
+	min-height: 24px;
+}
+#navfooter ul {
+	text-align: justify;
+	margin: 0 auto;
+	list-style-type: none;
+}
+#navfooter li {
+	display: inline;
+	float: none;
+}
+/* scoot the justification li out of the way for Webkit */
+#navfooter > ul {
+	line-height: 1px;
+}
+#navfooter > ul > li {
+	line-height: 24px;
+}
+#navfooter > ul > li:last-of-type {
+	line-height: 0px;
+}
+#navfooter a {
+	display: inline-block;
+}
+#navfooter ul ul a {
+	color: #000;
+	text-transform: none;
+	font-weight: 400;
+}
+#navfooter ul ul a:hover,
+#navfooter ul ul a:focus,
+#navfooter ul ul a:active {
+	color: #666;
+}
+#navfooter ul ul {
+	background-color: #ddd;
+	width: 10em;
+	padding: 0.7em 10px;
+	margin: 0;
+	display: none;
+	line-height: 16px;
+}
+#navfooter ul li:nth-child(2) ul {
+	width: 12em;
+}
+#navfooter ul li:hover {
+	position: relative;
+}
+#navfooter ul li:hover ul {
+	display: block;
+	position: absolute;
+	top: 16px;
+	left: 0;
+}
+#navfooter ul li:hover ul {
+	top: auto;
+	bottom: 16px;
+	left: 0;
+}
+#navfooter ul li:hover ul li {
+	display: block;
+}
+#navfooter {
+	background: url(//www.ndsu.edu/images/bg_footernav.png) repeat-x center center;
+}
+#navfooter ul {
+/*	text-align: center;*/
+	width: 940px;
+}
+#navfooter ul ul {
+	text-align: left;
+}
+#navfooter li {
+	margin: 0 0.7em;
+margin: 0;
+}
+#navfooter li li {
+	margin: 0;
+}
+.ie7 #navfooter .forcejustify {
+	display: none;
+}
+.ie7 #navfooter ul {
+	text-align: center;
+}
+.ie7 #navfooter ul li {
+	padding: 0 1em;
+}
+.ie7 #navfooter ul ul li {
+	padding: 0;
+	text-align: left;
+}
+.ie7 #nav ul li:hover ul {
+	top: 1.99em;
+}
+.ie7 #univservices,
+.ie7 #univservices .contentwrapper,
+.ie7 #univservices #bannerwords {
+	/* links are less important than search ... z-index: -1;*/
+}
+
+#typo3footers {
+	color: #fff;
+	width: 940px;
+	margin: 1em auto 0 auto;
+	padding-bottom: 50px;
+	line-height: 1.2em;
+	font-size: 0.769em;
+}
+#typo3footers a {
+	color: #fff;
+	font-weight: normal;
+	text-decoration: underline;
+}
+#typo3footers a:hover,
+#typo3footers a:focus,
+#typo3footers a:active {
+	color: #fc0;
+}
+a#switchView {
+	color: #fc0;
+	z-index: 100;
+	display: inline-block;
+	line-height: 1.5em;
+}
+a#switchView:hover {
+	color: #fff;
+}
+#contact {
+	float: left;
+	width: 68%; /* for IE */
+}
+#lastupdate {
+	text-align: right;
+	float: right;
+}
+
+
+
+
+#main .buttons.three,
+#main .buttons.four,
+#main.noborder .buttons.five {
+        margin: 0 auto 1em auto;
+        padding-top: 1em;
+        padding-bottom: 1em;
+        padding-left: 0;
+        height: 40px;
+        overflow: hidden;
+}
+#main .buttons.three {
+        width: 300px;
+}
+#main .buttons.four {
+        width: 400px;
+}
+#main.noborder .buttons.five {
+        width: 500px;
+}
+#main .buttons.three,
+#main .buttons.four,
+#main.noborder .buttons.five,
+#main .buttons.three li,
+#main .buttons.four li,
+#main.noborder .buttons.five li {
+        list-style-image: none;
+        list-style-type: none;
+}
+#main .buttons.three li,
+#main .buttons.four li,
+#main.noborder .buttons.five li,
+#main .buttons.three li a,
+#main .buttons.four li a,
+#main.noborder .buttons.five li a{
+        float:left;
+        height: 40px;
+        width: 100px;
+        text-decoration: none;
+        margin: 0;
+        padding: 0;
+}
+#main .buttons.three li a span,
+#main .buttons.four li a span,
+#main.noborder .buttons.five li a span {
+        display: none;
+}
+#main .buttons.three li a,
+#main .buttons.four li a,
+#main.noborder .buttons.five li a {
+        background: transparent url(https://static.ndsu.edu/templates/images/buttons-2011.gif) no-repeat 0 0;
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+#main .buttons li#wm a {
+        background-position: 0 0;
+}
+#main .buttons li#wm a:hover,
+#main .buttons li#wm a:focus,
+#main .buttons li#wm a:active {
+        background-position: 0 -40px;
+}
+#main .buttons li#bb a {
+        background-position: -100px 0;
+}
+#main .buttons li#bb a:hover,
+#main .buttons li#bb a:focus,
+#main .buttons li#bb a:active {
+        background-position: -100px -40px;
+}
+#main .buttons li#cc a {
+        background-position: -200px 0;
+}
+#main .buttons li#cc a:hover,
+#main .buttons li#cc a:focus,
+#main .buttons li#cc a:active {
+        background-position: -200px -40px;
+}
+#main .buttons li#gw a {
+        background-position: -300px 0;
+}
+#main .buttons li#gw a:hover,
+#main .buttons li#gw a:focus,
+#main .buttons li#gw a:active {
+        background-position: -300px -40px;
+}
+#main .buttons li#gw:first-child {
+	width: 99px;
+}
+#main .buttons li#gw:first-child a {
+	background-position: -301px 0;
+}
+#main .buttons li#gw:first-child a:hover,
+#main .buttons li#gw:first-child a:focus,
+#main .buttons li#gw:first-child a:active {
+        background-position: -301px -40px;
+}
+#main .buttons li#bc a {
+        background-position: -400px 0;
+}
+#main .buttons li#bc a:hover,
+#main .buttons li#bc a:focus,
+#main .buttons li#bc a:active {
+        background-position: -400px -40px;
+}
+
+
+
+
+
+.fixed-label label {
+	display: block;
+	font-weight: bold;
+}
+.fixed-label input {
+	border: 1px solid #939598;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin-bottom: 1em;
+}
+.next-footer + p {
+	background-color: #000;
+	color: #fff;
+	padding: 10px;
+	font-size: 0.9em;
+}
+.next-footer + p a {
+	color: #fff;
+	font-weight: normal;
+}
+.next-footer + p a:hover,
+.next-footer + p a:focus,
+.next-footer + p a:active {
+	color: #fc0;
+}
+
+
+.csc-linkToTop {
+	text-align: right;
+}
+.csc-linkToTop a {
+	text-transform: uppercase;
+	font-size: 0.8em;
+	font-family: MuliK, sans-serif;
+	font-weight: bold;
+}
+
+
+.csc-menu li a,
+.csc-menu-3indented li a {
+	padding-bottom: 0.75em;
+display: inline-block;
+}
+.csc-menu li,
+.csc-menu-3indented li{
+	color: #66993c;
+}
+.csc-menu-3:before {
+	content: "In this page: ";
+	font-weight: bold;
+	color: #aaa;
+	position: relative;
+	right: 1em;
+}
+#sitenav .csc-menu-3:before {
+	content: none;
+	content: "";
+}
+#sitenav .csc-menu-3 {
+}
+#sitenav .csc-menu-3 li a {
+	padding-bottom: 0;
+}
+.csc-menu-3 {
+	list-style-type: square;
+}
+.csc-menu-4 dd {
+	color: #666;
+	font-size: 0.95em;
+	line-height: 1.1em;
+	padding-bottom: 0.5em;
+}
+.csc-menu-3indented .l0 {
+	margin-left: 0em;
+}
+.csc-menu-3indented .l3 {
+	margin-left: 1em;
+}
+.csc-menu-3indented .l4 {
+	margin-left: 2em;
+}
+.csc-menu-3indented .l5 {
+	margin-left: 3em;
+}
+.csc-menu-3indented .l6 {
+	margin-left: 4em;
+}
+
+/* Force the first item in each column to the top of the column */
+#main > :first-child,
+#main > :first-child > :first-child,
+#main > :first-child > :first-child > :first-child,
+#main > :first-child > :first-child > :first-child > :first-child,
+#main > :first-child > :first-child > :first-child > :first-child > :first-child,
+#border > :first-child,
+#border > :first-child > :first-child,
+#border > :first-child > :first-child > :first-child,
+#border > :first-child > :first-child > :first-child > :first-child,
+#border > :first-child > :first-child > :first-child > :first-child > :first-child {
+	margin-top: 0;
+	padding-top: 0;
+	line-height: 22px;
+	margin-bottom: 0.15em;
+}
+/* Force the first p in each column to the top of the column */
+#main > p:first-child,
+#main > :first-child > p:first-child,
+#main > :first-child > :first-child > p:first-child,
+#main > :first-child > :first-child > :first-child > p:first-child,
+#main > :first-child > :first-child > :first-child > :first-child > p:first-child {
+	line-height: 1.5em;
+}
+
+#homelink,
+#sitenav .csc-firstHeader a {
+	line-height: 20px;
+}
+#main > :first-child .imgborder,
+#main > :first-child > :first-child .imgborder,
+#main > :first-child > :first-child > :first-child .imgborder,
+#main > :first-child > :first-child > :first-child > :first-child .imgborder,
+#main > :first-child > :first-child > :first-child > :first-child > :first-child .imgborder,
+#border > :first-child .imgborder,
+#border > :first-child > :first-child .imgborder,
+#border > :first-child > :first-child > :first-child .imgborder,
+#border > :first-child > :first-child > :first-child > :first-child .imgborder,
+#border > :first-child > :first-child > :first-child > :first-child > :first-child .imgborder {
+	padding-top: 5px;
+}
+
+.csc-frame.frame1.col0 {
+	background-color: #fff;
+	width: 230px;
+	float: right;
+	clear: right;
+	padding-left: 10px;
+	margin-left: 10px;
+	border-left: 2px dotted #fc0;
+}
+.csc-frame.frame1.col0.mailform {
+	width: auto;
+	float: none;
+	clear: none;
+	padding-left: inherit;
+	margin-left: inherit;
+	border-left: none;
+}
+.csc-frame.frame2.col0 {
+	width: 48%;
+	margin-right: 2%;
+	float: left;
+}
+
+span.caption,
+caption.csc-textpic-caption,
+dd.csc-textpic-caption,
+#typo3content .news-single-imgcaption {
+	font-size: 0.95em;
+	color: #333;
+	padding-bottom: 1em;
+}
+span.key {
+	outline: 1px solid black;
+	background-color: #ddd;
+	font-family: monospace;
+	display: inline-block;
+	max-width: 8em;
+	max-height: 1.9em;
+	padding: 1px;
+	overflow: hidden;
+}
+.align-left {
+	text-align: left;
+}
+.align-right {
+	text-align: right;
+}
+.align-center {
+	text-align: center;
+}
+.align-justify {
+	text-align: justify;
+}
+.indent {
+	padding-left: 4em;
+}
+.width-full {
+	width: 100%;
+}
+p.statement {
+	font-size: 1.3em;
+	line-height: 1.2em;
+	color: #939598;
+}
+
+p.tip,
+p.note,
+p.warning {
+	padding: 10px 10px 10px 50px;
+	margin: 20px;
+	border: 1px solid #eee;
+	background: #fbfbfb url('https://static.ndsu.edu/templates/images/icon.help_yellow.png') 5px 5px no-repeat;
+}
+#typo3content p.tip,
+#typo3content p.note,
+#typo3content p.warning {
+	display: table;
+}
+table p.tip,
+table p.note,
+table p.warning {
+	display: block;
+}
+p.warning {
+	background-image: url(https://static.ndsu.edu/templates/images/icon.important_yellow.png);
+}
+p.note {
+	background-image: url(https://static.ndsu.edu/templates/images/icon.note_yellow.png);
+}
+
+.news-latest-container {
+	margin-left: 25px;
+}
+#p85340 .news-latest-container {
+	margin-left: 0;
+}
+.news-latest-item,
+.news-list-item {
+	list-style-image: url(https://static.ndsu.edu/templates/images/latest-news.png);
+	list-style-type: none;
+	padding-bottom: 0.7em;
+}
+.news-latest-item .h3,
+.news-latest-item .h3 a {
+	font-weight: bold;
+}
+.news-latest-container p,
+.news-list-container p {
+	display: inline;
+}
+.news-latest-item .h3 {
+	font-size: 1.075em;
+}
+.news-latest-date,
+.news-list-date {
+	font-size: 0.9em;
+}
+.news-single-img {
+/*
+	float: right;
+	padding-left: 20px;
+*/
+}
+.news-single-timedata {
+	margin: 0;
+	line-height: 1.5em;
+}
+/* Class Notes */
+.article {
+	list-style-type: none;
+	padding: 0;
+	margin: 0 0 1em 0;
+	clear: both;
+}
+.share {
+	margin-bottom: 1.5em;
+	font-weight: bold;
+}
+.share ul,
+.share li {
+	list-style-type: none;
+	margin: 0;
+	display: inline;
+}
+.share li {
+	padding: 0 2px;
+}
+.share a {
+	padding: 0;
+	margin: 0;
+	background-image: none;
+}
+
+.bias_report a {
+        display: block;
+        height: 45px;
+        width: 220px;
+        background: transparent url('https://static.ndsu.edu/templates/images/bias_report.gif') no-repeat center center;
+        margin: 0 auto;
+}
+
+
+
+
+/* **********
+ *   FORMS  *
+ * **********/
+
+/* "all" forms */
+.csc-mailform form > ol,
+.csc-mailform form fieldset > ol {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.req label:before {
+	content: "* ";
+	color: red;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+.csc-mailform form:invalid:before {
+	content: "Required fields";
+	float: right;
+	padding: 1px 1px 1px 15px;
+	background: #fffcf0 url(/fileadmin/templates/images/required_icon.png) 4px no-repeat;
+}
+:valid {
+	padding-left: 15px;
+}
+form:valid, fieldset:valid {
+	padding-left: initial;
+}
+:required {
+	padding-left: 15px;
+}
+:required:invalid {
+	background: #fffcf0 url(/fileadmin/templates/images/required_icon.png) 4px no-repeat;
+}
+input[type="checkbox"]:required:invalid,
+input[type="radio"]:required:invalid {
+	outline: 1px dashed red;
+}
+.fieldset-horizontal li {
+	display: inline-block;
+}
+
+.csc-mailform legend {
+	white-space: normal;
+}
+.csc-form-confirmation-false input,
+.csc-form-confirmation-true input {
+	padding-left: 3px;
+}
+.csc-form-confirmation-false {
+	float: left;
+	padding-right: 2em;
+}
+/* linear form */
+/* Default */
+.csc-frame-default .csc-form-element {
+	padding-top: 1em;
+}
+.csc-frame-default .csc-mailform fieldset .csc-form-element-radio,
+.csc-frame-default .csc-mailform .csc-form-element-radio + .csc-form-element-radio,
+.csc-frame-default .csc-mailform .csc-form-element-checkbox + .csc-form-element-checkbox {
+	padding-top: 0;
+}
+.csc-frame-default .csc-mailform .label,
+.csc-frame-default .csc-mailform legend,
+.csc-frame-default .csc-mailform label {
+	font-weight: bold;
+}
+.csc-frame-default .csc-mailform .csc-form-element-radio label,
+.csc-frame-default .csc-mailform .csc-form-element-checkbox label {
+	font-weight: normal;
+}
+.csc-frame-default .csc-mailform .csc-form-element-radio,
+.csc-frame-default .csc-mailform .csc-form-element-checkbox {
+	clear: left;
+}
+.csc-frame-default .csc-mailform .csc-form-element-radio input,
+.csc-frame-default .csc-mailform .csc-form-element-checkbox input {
+	float: left;
+}
+.csc-frame-default .csc-mailform .csc-form-element-radio > label:first-of-type {
+	/*font-weight: bold;*/
+}
+.csc-frame-default .csc-mailform input[type="file"],
+.csc-frame-default .csc-mailform input[type="email"],
+.csc-frame-default .csc-mailform input[type="tel"],
+.csc-frame-default .csc-mailform input[type="text"],
+.csc-frame-default .csc-mailform textarea,
+.csc-frame-default .csc-mailform select {
+	display: block;
+}
+.csc-frame-default .csc-mailform textarea {
+	max-width: 100%;
+}
+/* fixed label size */
+/* Layout 1 / frame1 */
+.frame1 #ndsumailform label,
+.frame1 .mailform label {
+	display: inline-block;
+	vertical-align: top;
+	width: 14em;
+}
+.frame1 #ndsumailform .radio label,
+.frame1 .mailform .radio label {
+	width: auto;
+	display: inline;
+	padding-right: 1em;
+}
+.frame1 #ndsumailform .label,
+.frame1 .mailform .label {
+	font-weight: bold;
+	margin-top: 1.5em;
+}
+.frame1 #ndsumailform .label,
+.frame1 .mailform .label,
+.frame1 #ndsumailform .field,
+.frame1 .mailform .field,
+.frame1 #ndsumailform .check,
+.frame1 .mailform .check,
+.frame1 #ndsumailform .radio,
+.frame1 .mailform .radio {
+	clear: both;
+	margin-bottom: 0.5em;
+}
+.frame1 .field .req {
+	display: none;
+}
+
+
+/*
+#typo3content input[disabled] {
+        background-color: #ddd;
+        color: #888;
+}
+*/
+
+/*
+#typo3content .csc-frame.frame1.col0 .csc-firstHeader {
+        padding-left: 17px;
+        background: url(/fileadmin/cms/docs/this_page-sm.jpg) no-repeat left 2px;
+}
+*/
+
+
+/**************/
+/* Accordions */
+/**************/
+.accordion-handle,
+#main > .accordion-handle:first-child {
+	margin: 0 0 5px 0;
+	padding: 5px 5px 5px 35px;
+	font-size: 1em;
+	font-weight: normal;
+	color: #333;
+	line-height: inherit;
+}
+.accordion-handle {
+	border: 1px solid #aaa;
+	border-radius: 3px;
+	background: #ddd url(https://static.ndsu.edu/templates/images/mobile/icon-link-arrow-sitenav.png) no-repeat 5px center;
+background: url(https://static.ndsu.edu/templates/images/mobile/icon-link-arrow-sitenav.png) no-repeat 5px center, -moz-linear-gradient(top,  #eee,  #ccc);
+background: url(https://static.ndsu.edu/templates/images/mobile/icon-link-arrow-sitenav.png) no-repeat 5px center, -ms-linear-gradient(top,  #eee,  #ccc);
+background: url(https://static.ndsu.edu/templates/images/mobile/icon-link-arrow-sitenav.png) no-repeat 5px center, -o-linear-gradient(top,  #eee,  #ccc);
+background: url(https://static.ndsu.edu/templates/images/mobile/icon-link-arrow-sitenav.png) no-repeat 5px center, -webkit-linear-gradient(top,  #eee,  #ccc);
+background: url(https://static.ndsu.edu/templates/images/mobile/icon-link-arrow-sitenav.png) no-repeat 5px center, linear-gradient(top,  #eee,  #ccc);
+}
+.accordion-handle.active,
+#main > .accordion-handle.active:first-child {
+	background-color: #fff;
+	background-image: url(/fileadmin/templates/images/mobile/icon-link-arrow-down.png);
+	border-bottom: none;
+	margin-bottom: 0;
+	border-radius: 3px 3px 0 0;
+}
+.accordion-handle:not(.active):hover {
+	border-color: #333;
+}
+.csc-frame-accordion {
+	border: 1px solid #aaa;
+	border-radius: 0 0 3px 3px;
+	border-top: none;
+	margin-bottom: 5px;
+	padding: 1em 1em 0 1em;
+}
+.csc-frame-accordion p:first-of-type {
+	margin-top: 0;
+}
+
+/**
+ * @author	 Jan Pecha, <janpecha@email.cz>
+ * @version	 2012-08-30-2
+ */
+#czbox-box {position:fixed;top:0;left:0;width:100%;height:100%;background-color:#222;background-color:rgba(17,17,17,0.97);color:#fff;display:none;overflow:hidden;font-size:90%;z-index:5000;}@media print {#czbox-box {display:none !important;}}#czbox-box.czbox-open {display:block;}#czbox-background {display:none;}#czbox-image-wrapper {opacity:0;width:100%;height:100%;overflow:hidden;display:block;position:absolute;text-align:center;visibility:hidden;}#czbox-image-wrapper:before {content:'';display:inline-block;height:100%; vertical-align:middle;}#czbox-image {opacity:inherit;max-width:100%;max-height:100%;display:block;margin-left:auto;margin-right:auto;z-index:5200;vertical-align:middle;display:inline-block;vertical-align:middle;}#czbox-description {position:absolute;bottom:0;left:0;width:100%;line-height:1.6em;font-size:90%;z-index:5250;background:#111;background-color:rgba(17,17,17,0.9);color:#ddd;border-top:1px solid #333;padding:6px 6px;display:none;}#czbox-btn-close, #czbox-btn-next, #czbox-btn-prev {text-decoration:none;color:inherit;outline:none;}#czbox-btn-next, #czbox-btn-prev {width:50%;height:100%;display:block;position:absolute;top:0;font-size:110%;z-index:5300;}#czbox-btn-next {right:0;text-align:right;}#czbox-btn-prev {left:0;}#czbox-btn-next span, #czbox-btn-prev span {background:#444;background:rgba(68,68,68,0.8);position:absolute;top:50%;padding:9px 20px;opacity:0.4;border:2px solid #555;}#czbox-btn-next span {right:0;-webkit-border-top-left-radius:4px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-topleft:4px;-moz-border-radius-bottomleft:4px;border-top-left-radius:4px;border-bottom-left-radius:4px;}#czbox-btn-prev span {left:0;-webkit-border-top-right-radius:4px;-webkit-border-bottom-right-radius:4px;-moz-border-radius-topright:4px;-moz-border-radius-bottomright:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;}#czbox-btn-next:hover span, #czbox-btn-prev:hover span {opacity:1;}#czbox-btn-close {position:absolute;right:4px;top:4px;text-align:center;width:auto;display:table-cell;padding:2px 14px;border:2px solid #666;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;line-height:2em;background:#444;background:rgba(68,68,68,0.8);opacity:0.6;z-index:5400;}#czbox-btn-close:hover {background:#555;background:rgba(85,85,85,0.8);opacity:1;}#czbox-info-bar {color:#ccc;position:absolute;top:0;left:0;width:100%;font-size:90%;line-height:1.6em;z-index:5250;background:#111;background-color:rgba(17,17,17,0.7);padding:4px 6px;}@media only screen and (max-width:700px) {#czbox-info-bar .czbox-text {display:none;}#czbox-info-bar {width:auto;-webkit-border-bottom-right-radius:4px;-moz-border-radius-bottomright:4px;border-bottom-right-radius:4px;border:1px solid #333;border-width:0 1px 1px 0;}#czbox-image-number:after {content:" /";color:gray;}#czbox-images-count {color:gray;}}#czbox-loading {display:block;border:1px solid #444;padding:3px;width:60px;height:20px;-webkit-border-radius:4px;-moz-border-radius:4px;-o-border-radius:4px;border-radius:4px;overflow:hidden;position:absolute;left:50%;top:50%;margin-left:-34px;}#czbox-loading span {width:0px;height:20px;border:20px solid transparent;border-width:0 20px;border-left-color:#aaa;background:#888;border-right-color:#666;display:block;padding-left:20px;overflow:hidden;-o-animation:czboxloader 1s infinite linear;-moz-animation:czboxloader 1s infinite linear;-webkit-animation:czboxloader 1s infinite linear;-ms-animation:czboxloader 1s infinite linear;animation:czboxloader 1s infinite linear;}@-o-keyframes czboxloader {0% {border-left-color:#aaa;background:#888;border-right-color:#666;}33% {border-left-color:#666;background:#aaa;border-right-color:#888;}66% {border-left-color:#888;background:#666;border-right-color:#aaa;}}@-moz-keyframes czboxloader {0% {border-left-color:#aaa;background:#888;border-right-color:#666;}33% {border-left-color:#666;background:#aaa;border-right-color:#888;}66% {border-left-color:#888;background:#666;border-right-color:#aaa;}}@-webkit-keyframes czboxloader {0% {border-left-color:#aaa;background:#888;border-right-color:#666;}33% {border-left-color:#666;background:#aaa;border-right-color:#888;}66% {border-left-color:#888;background:#666;border-right-color:#aaa;}}@-ms-keyframes czboxloader {0% {border-left-color:#aaa;background:#888;border-right-color:#666;}33% {border-left-color:#666;background:#aaa;border-right-color:#888;}66% {border-left-color:#888;background:#666;border-right-color:#aaa;}}@keyframes czboxloader {0% {border-left-color:#aaa;background:#888;border-right-color:#666;}33% {border-left-color:#666;background:#aaa;border-right-color:#888;}66% {border-left-color:#888;background:#666;border-right-color:#aaa;}}
+
+a.lightbox:hover img,
+a.lightbox:focus img,
+a.lightbox:active img {
+	opacity: 1;
+}
+a.lightbox:hover,
+a.lightbox:focus,
+a.lightbox:active {
+	cursor: url(/fileadmin/templates/images/cursor-zoom-in.png), pointer;
+}
+
+/**************/
+
+#main .compact_list a,
+#border .compact_list a,
+#main .compact_list .news-latest-item a,
+#border .compact_list .news-latest-item a {
+	line-height: 1em;
+	display: inline;
+}
+#main .compact_list li,
+#border .compact_list li,
+#main .compact_list .news-latest-item,
+#border .compact_list .news-latest-item {
+	line-height: 1em;
+	display: list-item;
+	list-style-type: disc;
+	margin: 1em 0;
+}
+
+/* admission */
+#dept-intro {
+	height: 396px;
+	width: 200px;
+	padding-left: 735px;
+	background: #fff url(/fileadmin/templates/images/dept-intro.png) no-repeat left top;
+	border-top: 1em solid #fff;
+}
+#dept-intro ul {
+	margin: 0;
+	padding: 180px 0 0 0;
+	list-style-type: none;
+}
+#dept-intro a {
+	display: block;
+	height: 38px;
+	width: 200px;
+	float: left;
+}
+#dept-intro ul li a:hover,
+#dept-intro ul li a:focus,
+#dept-intro ul li a:active {
+	background-color: rgba(255,255,255,0.2) !important;
+}
+/* end admission */
+
+
+.beUserMsg {
+	position: absolute;
+	right: 10px;
+	top: 20px;
+	background-color: #fff;
+	color: #000;
+	z-index: 100;
+	border: 2px solid red;
+}
+
+#p59451 .csc-default .csc-default {
+	border: 1px dashed blue;
+}
+
+/* new news */
+.page-navigation ul,
+.page-navigation li {
+	list-style-type: none;
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+.page-navigation li {
+	padding: 0 0.5em;
+}
+.page-navigation li:first-of-type {
+	padding-left: 0;
+}
+.teaser-text {
+	font-size: 1.2em;
+	font-family: serif;
+	color: #333;
+	margin-top: 1em;
+}
+.news-img-wrap {
+	float: right;
+	padding-left: 10px;
+}
+.news-img-caption {
+	margin: 0;
+	font-size: 0.95em;
+	color: #333;
+	padding-bottom: 1em;
+}
+
+
+
+/* css-styled-content 6.2 attempts to fix */
+div.csc-textpic, ul.csc-uploads li { 
+        overflow: visible;
+}
+div.csc-textpic:after, ul.csc-uploads li:after { 
+	/* requires IE8+ */
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.csc-linkToTop { display: none; }

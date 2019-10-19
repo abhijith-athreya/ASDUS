@@ -1,0 +1,68 @@
+(function (d,w) { // eslint-disable-line max-statements
+    function htmlToElement(html) { // eslint-disable-line no-unused-vars
+      var div = d.createElement('div');
+      div.innerHTML = html;
+      var r = div.content ? div.content.firstChild : div.firstChild;
+      return r;
+    }  
+
+    // INSERT PAGELOAD PIXELS HERE
+    // ex: d.body.appendChild(htmlToElement('<img src="https://secure.adnxs.com/seg?add=10486409&t=2" width="1" height="1" />'));
+
+    // END PAGELOAD PIXELS HERE
+  
+    w.aupixels = {
+        linkfire: {
+            // INSERT LINKFIRE PIXELS HERE
+            /* ex:
+                'itunes': [
+                    'https://secure.adnxs.com/px?id=911725&t=2&adgt=true',
+                    'https://ad.doubleclick.net/ddm/activity/src=8005553;type=invmedia;cat=hs0rirok;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;ord=1?'
+                ],
+                'google-play': [
+                    'https://secure.adnxs.com/px?id=911726&t=2&adgt=true',
+                    'https://ad.doubleclick.net/ddm/activity/src=8005553;type=invmedia;cat=bphkhwr5;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;ord=1?'
+                ],
+            */
+
+            // END LINKFIRE PIXELS HERE
+        },
+        ec: {
+            // INSERT ECOMMERCE PIXELS HERE
+            /* ex:
+                'view': [
+                    'https://secure.adnxs.com/px?id=911725&t=2&adgt=true',
+                    'https://ad.doubleclick.net/ddm/activity/src=8005553;type=invmedia;cat=hs0rirok;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;ord=1?'
+                ],
+                'add': [
+                    'https://secure.adnxs.com/px?id=911725&t=2&adgt=true',
+                    'https://ad.doubleclick.net/ddm/activity/src=8005553;type=invmedia;cat=hs0rirok;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;ord=1?'
+                ],
+                'checkout': [
+                    'https://secure.adnxs.com/px?id=911725&t=2&adgt=true',
+                    'https://ad.doubleclick.net/ddm/activity/src=8005553;type=invmedia;cat=hs0rirok;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;ord=1?'
+                ],
+                'transaction': [
+                    'https://secure.adnxs.com/px?id=911725&t=2&adgt=true',
+                    'https://ad.doubleclick.net/ddm/activity/src=8005553;type=invmedia;cat=hs0rirok;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;ord=1?'
+                ]
+            */
+        }
+    };
+  
+    function createEvent() {
+        if (typeof window.CustomEvent === 'function') {
+            return new CustomEvent('aupixels'); // eslint-disable-line
+        }
+        var p = {
+            bubbles: false,
+            cancelable: false,
+            detail: undefined // eslint-disable-line
+        };
+        var evt = document.createEvent('CustomEvent'); // eslint-disable-line
+        evt.initCustomEvent('aupixels', p.bubbles, p.cancelable, p.detail);
+        return evt
+    }
+    var event = createEvent();
+    w.dispatchEvent(event);
+})(document, window);

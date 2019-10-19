@@ -1,0 +1,75 @@
+$(document).ready( function() {
+	if (!document.getElementById('switchView')) {
+		$('#typo3footers #contact address').before('<a id="switchView" href="' + window.location.pathname + '#?display=mobile" title="Mobile view">Mobile Site</a><span class="mask">.</span>');
+
+	}
+	$('#switchView').click( function() {
+		switchView();
+	});
+
+	/* Switch display type */
+	function switchView() {
+
+		if (getCookie('displayMobile')) {
+			// remove the cookie
+			document.cookie = 'displayMobile=;expires=Fri, 27 Jul 2001 02:47:11 UTC; path=/';
+		}
+		else {
+			// set cookie with no expiration
+			var display = gup('display');
+
+			if (document.all && !(window.opera)) {
+				var cookieValue = 'displayMobile=' + display + '; path=/';
+			}
+			else {
+				var cookieValue = 'displayMobile=' + display + '; expires=0; path=/';
+			}
+			document.cookie = cookieValue;
+		}
+
+		// reload the page (to show the new version)
+		if (document.all && !(window.opera)) {
+			// for all versions of Internet Explorer, reload different
+			window.location.href = window.location;
+			window.location.reload(false);
+		}
+		else {
+			window.location.reload(false);
+			if (typeof scrollTop == 'function') {
+				// scrollTop is jQuery only
+				$(this).scrollTop(0);
+			}
+		}
+
+		return false;
+	}
+
+	// from http://www.w3schools.com/js/js_cookies.asp
+	function getCookie(name) {
+		var i,x,y,ARRcookies=document.cookie.split(";");
+		for (i=0;i<ARRcookies.length;i++) {
+			x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+			y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+			x=x.replace(/^\s+|\s+$/g,"");
+			if (x==name) {
+				return unescape(y);
+			}
+		}
+	}
+
+	/* URL parsing */
+	/* From http://www.netlobo.com/url_query_string_javascript.html */
+	function gup(name) {
+		name = name.replace(/[\[]/,'\\\[').replace(/[\]]/,'\\\]');
+		var regexS = '[\\?&]' + name + '=([^&#]*)';
+		var regex = new RegExp( regexS );
+		var results = regex.exec( document.getElementById('switchView').href );
+
+		if( results == null ) {
+			return '';
+		}
+		else {
+			return results[1];
+		}
+	}
+});

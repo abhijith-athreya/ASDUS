@@ -1,0 +1,275 @@
+#autocomplete-results img {
+    border:none;
+    display: block;
+    height:auto;
+    max-width:100%;
+}
+
+#autocomplete-results {
+    display: none;
+}
+#autocomplete-results.autocompleted {
+    display: block;
+    position: absolute;
+    z-index: 10;
+    width: 246px;
+
+    background: #fff;
+    border: 1px solid #bebebe;
+    box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.05);
+
+    font-size: 11px;
+    line-height: 14px;
+    text-align: left;
+
+    -webkit-animation: fadeinmenu 0.3s ease-out;
+    -moz-animation: fadeinmenu 0.3s ease-out;
+    -o-animation: fadeinmenu 0.3s ease-out;
+    animation: fadeinmenu 0.3s ease-out;
+}
+
+@-webkit-keyframes fadeinmenu {
+    0% {
+        display: none;
+        opacity: 0;
+    }
+
+    1% {
+        display: block;
+        opacity: 0;
+    }
+
+    100% {
+        display: block;
+        opacity: 1;
+    }
+}
+/*List styles reset*/
+#autocomplete-results .autocomplete-tags,
+#autocomplete-results .results-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/*Genre button: Explore...*/
+
+#autocomplete-results .results-genre {
+    display: block;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 10px 8px;
+    background-color: #408294;
+}
+#autocomplete-results .results-genre .genre-label {
+    position: relative;
+    display: inline-block;
+    text-align: left;
+    white-space: normal;
+}
+#autocomplete-results .results-genre .genre-label span {
+    text-transform: lowercase;
+}
+#autocomplete-results .results-genre .shape-container {
+    display: inline-block;
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    -moz-transform: rotateZ(45deg);
+    -webkit-transform: rotateZ(45deg);
+    transform: rotateZ(45deg);
+}
+#autocomplete-results .results-genre .arrow::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-top: 3px solid #ffffff;
+    border-right: 3px solid #ffffff;
+}
+#autocomplete-results .results-genre {
+    padding: 10px 6px;
+}
+
+/*Label for search results if genre button is displayed*/
+
+#autocomplete-results .results-label {
+    color: #666666;
+    font-size: 12px;
+    padding: 10px 0 4px 6px;
+    margin: 0;
+    white-space: normal;
+}
+#autocomplete-results .results-label span {
+    text-transform: lowercase;
+    font-weight: 500;
+}
+#autocomplete-results .results-label span::before {
+    content: '\201C';
+}
+#autocomplete-results .results-label span::after {
+    content: '\201D';
+}
+
+/*Search results*/
+
+#autocomplete-results .results-list {
+    margin-top: 3px;
+}
+#autocomplete-results .results-list .results-item {
+    margin: 0;
+}
+#autocomplete-results .results-list .results-item a {
+    height: 50px;
+    display: block;
+    padding: 4px 6px;
+    line-height: 0;
+}
+#autocomplete-results .results-list .elem-selected {
+    background: #edf1f2;
+}
+#autocomplete-results .results-list .results-item .results-art {
+    width: 50px;
+    display: inline-block;
+    background: rgba(0,0,0,0.05);
+    outline: 1px solid rgba(0,0,0,0.05);
+    outline-offset: -1px;
+}
+#autocomplete-results .results-list .results-item .square {
+    height: 50px;
+}
+#autocomplete-results .results-list .results-item .package-thumb {
+    height: 37.5px;
+}
+#autocomplete-results .results-list .results-item .results-info {
+    display: inline-block;
+    vertical-align: top;
+    max-width: 170px;
+    padding: 0 0 0 6px;
+    line-height: 14px;
+}
+#autocomplete-results .results-list .results-item .results-name,
+#autocomplete-results .results-list .results-item .results-title,
+#autocomplete-results .results-list .results-item .results-type {
+    display: block;
+    color: #161113;
+}
+#autocomplete-results .results-list .results-item .results-title {
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#autocomplete-results .results-list .results-item .results-name,
+#autocomplete-results .results-list .results-item .results-type {
+    padding: 2px 0 0 0;
+    margin: 0;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 170px;
+}
+
+/*"See all results" button*/
+
+#autocomplete-results .see-all {
+    position: relative;
+    display: block;
+    padding: 10px 6px;
+    margin-top: 6px;
+    border-top: 1px solid #eeeeee;
+
+    color: #3c8ea4;
+    font-size: 12px;
+
+    -webkit-transition: all 0.1s ease-in;
+    -moz-transition: all 0.1s ease-in;
+    -o-transition: all 0.1s ease-in;
+    transition: all 0.1s ease-in;
+}
+#autocomplete-results .selected {
+    background-color: #edf1f2;
+    background: #edf1f2;
+
+}
+#autocomplete-results .see-all .shape-container,
+#autocomplete-results .autocomplete-tags .shape-container {
+    display: inline-block;
+    position: absolute;
+    top: 13px;
+    right: 10px;
+    -moz-transform: rotateZ(45deg);
+    -webkit-transform: rotateZ(45deg);
+    transform: rotateZ(45deg);
+}
+#autocomplete-results .see-all .arrow::after,
+#autocomplete-results .autocomplete-tags .arrow::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-top: 3px solid #cccccc;
+    border-right: 3px solid #cccccc;
+}
+#autocomplete-results .selected .arrow::after{
+    border-top: 3px solid #666666;
+    border-right: 3px solid #666666;
+
+
+    -webkit-transition: all 0.1s ease-in;
+    -moz-transition: all 0.1s ease-in;
+    -o-transition: all 0.1s ease-in;
+    transition: all 0.1s ease-in;
+}
+
+/*Link to tag*/
+
+#autocomplete-results .autocomplete-tags {
+    position: relative;
+    display: block;
+    padding: 10px 6px;
+
+    border-top: 1px solid #eeeeee;
+
+    color: #161113;
+    font-size: 12px;
+    line-height: 14px;
+    text-decoration: none;
+    white-space: normal;
+
+    -webkit-transition: all 0.1s ease-in;
+    -moz-transition: all 0.1s ease-in;
+    -o-transition: all 0.1s ease-in;
+    transition: all 0.1s ease-in;
+}
+body:lang(ja) #autocomplete-results .autocomplete-tags {
+    line-height: 1.4;
+}
+#autocomplete-results .autocomplete-tags .tag {
+    white-space: nowrap;
+    color: #3c8ea4;
+    text-transform: lowercase;
+    padding-right: 15px;
+}
+#autocomplete-results .autocomplete-tags .tag::before {
+    content: '\201C';
+    display: inline-block;
+}
+#autocomplete-results .autocomplete-tags .tag::after {
+    content: '\201D';
+    display: inline-block;
+}
+#autocomplete-results .autocomplete-tags .hide-tags {
+	display: none;
+}
+
+/*positions specific to homepage and menubar*/
+#homepage-autocomplete-results .autocompleted {
+    top: 27px;
+    right: 0;
+}
+#menubar-autocomplete-results .autocompleted {
+    top: 40px;
+}

@@ -1,0 +1,529 @@
+/*
+* Mailing List 
+* version 2
+* 10th Jan 2012
+*/
+var userEmail = "";
+var aSiteUserId = "";
+var auserName = "";
+
+var first_form_submit = true;
+var additional_submit = false;
+var callback_completed = false;
+var first_form_click_done = false;
+var mobileFilter = /^[.]{0}$|^\d{10,15}$/;
+var mobileFilterUS = /^[.]{0}$|^\d{10}$/;
+var mobileFilterOTHER = /^[.]{0}$|^\d{10,15}$/;
+
+var noOfTries = 2;
+var tryCount = 0;
+
+var chkRS = false;
+var isAccountQuestions = false;
+
+function copyElementData(srcContainer, srcElementSuffix, destElementSuffix) {
+  var elements = document.getElementById(srcContainer).getElementsByTagName(
+      '*');
+  for ( var i = 0; i < elements.length; i++) {
+    var element = elements[i];
+    if (element.type == 'text' || element.type == 'hidden'
+        || element.type == 'checkbox' || element.type == 'select-one') {
+      srcElementId = element.id;
+      expDestElementId = srcElementId.substring(0, srcElementId
+          .indexOf(srcElementSuffix))
+          + destElementSuffix;
+      if (document.getElementById(expDestElementId)
+          && element.value != "") {
+        document.getElementById(expDestElementId).value = element.value;
+      }
+    } else if (element.type == 'select') {
+    
+      srcElementId = element.id;
+      expDestElementId = srcElementId.substring(0, srcElementId
+              .indexOf(srcElementSuffix))
+              + destElementSuffix;
+              
+      if (document.getElementById(expDestElementId)
+          && element.value != "") {
+        jQuery(expDestElementId + " option[@selected='selected']").removeAttr("selected");
+        jQuery(expDestElementId + " option[@value='" + element.value + "']").attr("selected","selected");  
+      }
+      
+    }
+  }
+};
+function resetElementData(srcContainer) {
+  var elements = document.getElementById(srcContainer).getElementsByTagName(
+      '*');
+  for ( var i = 0; i < elements.length; i++) {
+    var element = elements[i];
+    if (element.type == 'text') {
+        document.getElementById(element.id).value = "";
+    }
+  }
+};
+
+function replaceContent(topContainerId, formContainerId, isUpdate, isAdditional, maskMobile) {
+
+  if (jQuery("#replaceScript").length > 0) {
+    script = jQuery("#replaceScript");
+    if (jQuery(script).length > 0) {
+      jQuery("#replaceScript").empty();
+    }
+  }
+
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.id = 'replaceScript';
+  var src = 'http://sms.wmg.com/sms/register?js=true';
+  if(isUpdate) {
+    src += '&updateprofile=yes';
+  }
+
+  var elements = document.getElementById(formContainerId)
+      .getElementsByTagName('*');
+  for ( var i = 0; i < elements.length; i++) {
+    var element = elements[i];
+    if (element.type == 'text' || element.type == 'hidden'
+        || (element.type == 'checkbox' && element.checked == 1)
+        || element.type == 'select-one') {
+      
+      var id = element.id;
+      if((maskMobile && element.name == "mobile") ||(isUpdate && element.name == "mobile" &&
+        jQuery.trim(jQuery("#mListMobile1").val()) == jQuery.trim(jQuery("#mListMobile2").val()))) {
+        //Masking mobile number be sent the second time.
+        src += "&mobile=";
+      } else if (isUpdate && id && id.match("^additional_") == "additional_") {
+        //Masking additional List Ids be sent the second time.
+        continue;
+      } else if (isAdditional && id && id.match("^newsletterId") == "newsletterId") {
+        //Masking regular List Ids be sent the third time.
+        continue;
+      } else if (isAdditional && id && id.match("^keywordId") == "keywordId") {
+        //Masking regular mobile keyword Ids be sent the third time.
+        continue;        
+      } else {
+        // Business as usual
+        src += "&" + element.name + "=" + jQuery.trim(element.value);
+      }
+    }
+  }
+
+  script.src = src;
+  try {
+    document.getElementById(topContainerId).appendChild(script);
+  } catch (err) {
+    // Skip error as this will be take care by the alertTimeoutError method.
+    // alert(err);
+  }
+  setTimeout("alertTimeoutError()", 10000); // wait for 8 seconds
+
+};
+
+/* Setting ErrorMessage on Time out */
+function alertTimeoutError() {
+
+  if (!callback_completed) {
+    setError("Unable to process your request at this time");
+  }
+
+};
+
+/* Registering event handlers for the submit(Layer1 and Layer2) and close button */
+jQuery( function() {
+
+  jQuery("#mobilePinForm").children("a.closeButton").click( function(event) {
+    jQuery("#mobilePinForm").hide();
+    jQuery("#mobilePinForm").removeClass("form2");
+    jQuery("#mobilePinForm").removeClass("form3");
+    jQuery("#mobilePinForm").addClass("form1");
+    event.preventDefault();
+    first_form_click_done = false;
+    tryCount = 0;
+  });
+  jQuery(".mlistCloseText").click( function(event) {
+    jQuery("#mobilePinForm").hide();
+    jQuery("#mobilePinForm").removeClass("form2");
+    jQuery("#mobilePinForm").removeClass("form3");
+    jQuery("#mobilePinForm").addClass("form1");
+    event.preventDefault();
+    first_form_click_done = false;
+    tryCount = 0;
+  });
+  /*
+   * Event Handling on click of "Signup for mailing List" Button This block
+   * displays the Layer1(form 1)
+   */
+  jQuery("#mContainer").children("a.mailButton").click( function() {
+    first_form_submit = true;
+    setError("");
+    jQuery("#mobilePinForm").show();
+    jQuery('#formContainer1').show();
+    jQuery("#formContainer2").hide();
+    jQuery('#formContainer3').hide();
+    jQuery("#mobilePinForm").addClass("form1");
+    jQuery("#mobilePinForm").removeClass("form2");
+    jQuery("#mobilePinForm").removeClass("form3");
+    jQuery("#formContainer1").find("a.submit").removeClass("disabled");
+    jQuery("#formContainer2").find("a.submit").removeClass("disabled");
+    resetElementData('formContainer1');
+    resetElementData('formContainer2');
+    first_form_submit = true;
+    callback_completed = false;
+    first_form_click_done = false;
+    tryCount = 0;
+  });
+
+  /*
+   * Event Handling for onclick on TEXTFIELDS in Layer1(Form1) Removes the
+   * default text in the TEXTFIELD,allows the user to give inputs
+   */
+  jQuery("#mListEmail1").focus( function() {
+    jQuery("#mListEmail1").removeClass("err");
+  });
+
+  jQuery("#mListMobile1").focus( function() {
+    jQuery("#mListMobile1").removeClass("err");
+  });
+
+  jQuery("#mListZip1").focus( function() {
+    jQuery("#mListZip1").removeClass("err");
+  });
+
+  /*
+   * Event Handling for onclick of Submit Button in Layer1(Form1) Validation
+   * Fields - Email, Mailing list and Postal code Returns false when
+   * validation fails
+   */
+  jQuery("#formContainer1")
+      .find("a.submit")
+      .click(
+      function(event) {
+        if (first_form_click_done) {
+          event.preventDefault();
+          return false;
+        }
+        var errorOccured = false;
+        var email = jQuery("#mListEmail1").val();
+        var zipCode = jQuery("#mListZip1").val();
+        var mobile = jQuery.trim(jQuery("#mListMobile1").val());
+        var newsletterId,keywordId;
+        var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+        if (!filter.test(email)) {
+          jQuery("#mListEmailForm1").find(".error").fadeIn('slow');
+          jQuery("#mListEmail1").fadeIn('slow', function() {
+            jQuery(this).addClass('err');
+          });
+          errorOccured = true;
+        } else {
+          jQuery("#mListEmailForm1").find(".error").hide();
+        }
+        if (zipCode == "Postal Code" || zipCode.length == 0) {
+          jQuery("#mListZipForm1").find(".error").fadeIn('slow');
+          jQuery("#mListZip1").fadeIn('slow', function() {
+            jQuery(this).addClass('err');
+          });
+          errorOccured = true;
+        } else {
+          jQuery("#mListZipForm1").find(".error").hide();
+        }
+        
+        mobile = mobile.replace(/\s|\+|\-/g,'');
+        var country = jQuery.trim(jQuery("#mListCountry1").val());
+        
+        if (country == 'United States'){
+          mobileFilter = mobileFilterUS;          
+        } else{
+          mobileFilter = mobileFilterOTHER;
+        }
+        
+        if (!mobileFilter.test(mobile)) {
+          /*  setError("Please Enter a valid Mobile Number"); */
+               jQuery("#mListMobileForm1").find(".error").fadeIn('slow');
+            jQuery("#mListMobile1").fadeIn('slow', function() {
+            jQuery(this).addClass('err');
+          }); 
+            errorOccured = true;
+        }
+        else {
+               jQuery("#mListMobileForm1").find(".error").hide(); 
+        /*   jQuery('.mlistError').empty(); */
+        }
+        
+        if (errorOccured) {
+          first_form_click_done = false;
+          return false;
+        }
+
+          
+        if(WMG.MailingList.EmailListIds[country]) {
+          newsletterId = WMG.MailingList.EmailListIds[country];          
+        } else {
+          newsletterId = WMG.MailingList.EmailListIds['United States'];
+        } 
+        
+
+      
+        if(WMG.MailingList.MobileKeywordIds[country]) {
+          keywordId = WMG.MailingList.MobileKeywordIds[country];          
+        } else {
+          keywordId = WMG.MailingList.MobileKeywordIds['United States'];
+        } 
+
+        jQuery("#newsletterId1").val(newsletterId);
+        jQuery("#keywordId1").val(keywordId);              
+
+        callback_completed = false;
+        setError("");
+        jQuery("#formContainer1").find("a.submit").addClass("disabled");
+        if(mobile.length > 0) {
+          jQuery("#signuptype1").val("all");
+        } else {
+          jQuery("#signuptype1").val("any");
+        }
+
+        replaceContent('mContainer', 'formContainer1');
+        first_form_click_done = true;
+        event.preventDefault();
+      });
+
+  jQuery("#mListMobile2").focus( function() {
+    jQuery("#mListMobile2").removeClass("err");
+  });
+
+  jQuery("#mListZip2").focus( function() {
+    jQuery("#mListZip2").removeClass("err");
+  });
+
+  /*
+   * Event Handling for onclick of Submit Button in Layer2(Form2) Validation
+   * Fields - Postal code and Mailing list Returns false when validation fails
+   */
+  jQuery("#formContainer2").find("a.submit").click( function(event) {
+    var errorOccured = false;
+    var zipCodeForm2 = jQuery("#mListZip2").val();
+    var mobile = jQuery.trim(jQuery("#mListMobile2").val());
+    var countryLyr2 = jQuery.trim(jQuery("#mListCountry2").val());
+    var newsletterId,keywordId;
+
+    mobile = mobile.replace(/\s|\+|\-/g,'');
+    
+    if (countryLyr2 == 'United States'){
+      mobileFilter = mobileFilterUS;
+    }else{
+      mobileFilter = mobileFilterOTHER;
+    }
+    if (!mobileFilter.test(mobile)) {
+/*       setError("Please Enter a valid Mobile Number"); */
+      jQuery("#mListMobileForm2").find(".error").fadeIn('slow');
+        jQuery("#mListMobile2").fadeIn('slow', function() {
+        jQuery(this).addClass('err');
+      }); 
+      errorOccured = true;
+    } else {
+      jQuery("#mListMobileForm2").find(".error").hide(); 
+      /* jQuery('.mlistError').empty(); */
+    }
+
+
+    if(jQuery.trim(jQuery("#mListMobile2").val()) == jQuery.trim(jQuery("#mListMobile1").val())) {
+      mobile = "";
+    }
+    // var zipFilter = /(^\d{5}jQuery)|(^\d{5}-\d{4}jQuery)/;
+
+    if (zipCodeForm2.length == 0) {
+      jQuery("#mListZipForm2").find(".error").fadeIn('slow');
+      jQuery("#mListZip2").fadeIn('slow', function() {
+        jQuery(this).addClass('err');
+      });
+      jQuery("#mlistForm2Left").height(
+          jQuery("#mlistForm2Right").height() + 'px');
+      errorOccured = true;
+    } else {
+      jQuery("#mListZipForm2").find(".error").hide();
+    }
+    
+    if (errorOccured) {
+      return false;
+    }
+
+    var dobMonth = jQuery("#mlMonthDropDown").val();
+    var dobDate = jQuery("#mlDateDropDown").val();
+    
+    var country = jQuery.trim(jQuery("#mListCountry2").val());
+
+    if(WMG.MailingList.EmailListIds[country]) {
+      newsletterId = WMG.MailingList.EmailListIds[country];          
+    } else {
+      newsletterId = WMG.MailingList.EmailListIds['United States'];
+    }   
+      
+  
+  
+    if(WMG.MailingList.MobileKeywordIds[country]) {
+      keywordId = WMG.MailingList.MobileKeywordIds[country];
+    } else {
+      keywordId = WMG.MailingList.MobileKeywordIds['United States'];
+    }
+
+    jQuery("#newsletterId2").val(newsletterId);
+    jQuery("#keywordId2").val(keywordId);    
+    
+    callback_completed = false;
+    setError("");
+    jQuery("#formContainer2").find("a.submit").addClass("disabled");
+    if(mobile.length > 0) {
+      jQuery("#signuptype2").val("all");
+    } else {
+      jQuery("#signuptype2").val("any");
+    }
+    replaceContent('mContainer', 'formContainer2', true);
+    event.preventDefault();
+  });
+});
+
+/*
+ * This Callback function is used for retrieving the status of the submitted
+ * Form(User details).
+ */
+function callback(status, response) {
+  
+  if (chkRS) {
+    chkRS = false;
+    if (jQuery(joinScrId).length > 0) {
+      jQuery.wmgfeature.spCallback(joinScrVal, "joinScreen");
+    }
+    else if (jQuery(editProfId).length > 0) {
+      jQuery.wmgfeature.spCallback(editProfVal, "editProfile");
+    }
+    else if (jQuery(editAccId).length > 0) {
+      if (isAccountQuestions) {
+        isAccountQuestions = false;
+        jQuery.wmgfeature.spCallback(editAccQueVal, "editAccOues");
+      }
+      else {
+        jQuery.wmgfeature.spCallback(editAccDataVal, "editAccNormal");
+      }
+    }
+  }
+  else {
+    if (status == 'success') {
+      if (jQuery('toReplace').length > 0) {
+        document.getElementById('toReplace').innerHTML = response;
+      }
+      if (additional_submit) {
+        showMListThankyouScreen();
+        additional_submit = false;
+      }
+      else if (first_form_submit) {
+        jQuery("#formContainer1").hide();
+        copyElementData('formContainer1', '1', '2');
+        jQuery("#mobilePinForm").removeClass("form1");
+        jQuery("#mobilePinForm").addClass("form2");
+        jQuery("#formContainer2").show();
+        setMlistOmniture(s_account, s);
+        jQuery("#mlistForm2Left").height(jQuery("#mlistForm2Right").height() + 'px');
+        first_form_submit = false;
+        tryCount = 0;
+      }
+      else {
+        additional_submit = false;
+        jQuery("#additionalIds input[type=checkbox]:checked").each(function(){
+          if (jQuery(this).val() != null) {
+            additional_submit = true;
+            jQuery("#signuptype2").val("any");
+            return false;
+          }
+        });
+        if (additional_submit) {
+          replaceContent('mContainer', 'formContainer2', false, true);
+        }
+        else {
+          showMListThankyouScreen();
+        }
+      }
+    }
+    else {
+      if (null != response && response.toLowerCase().indexOf("already subscribed") > 1 && tryCount < noOfTries) {
+        tryCount++;
+        if (first_form_submit) {
+          jQuery("#signuptype1").val("any");
+          replaceContent('mContainer', 'formContainer1', false, false, true);
+        }
+        else {
+          jQuery("#signuptype2").val("any");
+          replaceContent('mContainer', 'formContainer2', true, false, true);
+        }
+        
+      }
+      else if (null != response && response.toLowerCase().indexOf("keyword does not") > 1 && tryCount < noOfTries) {
+        tryCount++;
+        if (first_form_submit) {
+          jQuery("#signuptype1").val("any");
+          replaceContent('mContainer', 'formContainer1', false, false, true);
+        }
+        else {
+          jQuery("#signuptype2").val("any");
+          replaceContent('mContainer', 'formContainer2', true, false, true);
+        }
+          
+      }
+      else {
+        setError(response);
+      }
+    }
+    callback_completed = true;
+  }  
+};
+
+
+function showMListThankyouScreen() {
+
+  jQuery("#formContainer2").hide();
+  jQuery("#mobilePinForm").removeClass("form2");
+  jQuery("#mobilePinForm").addClass("form3");
+  
+ 
+
+  jQuery("#formContainer3").show( function() {
+    setTimeout( function() {
+      jQuery("#mobilePinForm").hide()
+    }, 5000);
+  });
+
+  first_form_submit = true;
+};
+
+function setError(msg) { 
+  if (chkRS) {
+    chkRS = false;
+    if (jQuery(joinScrId).length > 0) {
+      jQuery.wmgfeature.spCallback(joinScrVal, "joinScreen");
+    }
+    else if (jQuery(editProfId).length > 0) {
+      jQuery.wmgfeature.spCallback(editProfVal, "editProfile");
+    }
+    else if (jQuery(editAccId).length > 0) {
+      if (isAccountQuestions) {
+        isAccountQuestions = false;
+        jQuery.wmgfeature.spCallback(editAccQueVal, "editAccOues");
+      }
+      else {
+        jQuery.wmgfeature.spCallback(editAccDataVal, "editAccNormal");
+      }
+    }
+  }
+  else {
+    if (msg.indexOf(":") > 0) {
+      msg = msg.substring(msg.indexOf(":") + 1);
+    }
+    if (jQuery('.mlistError')) {
+      jQuery('.mlistError').html(msg);
+    }
+    jQuery("#formContainer1").find("a.submit").removeClass("disabled");
+    jQuery("#formContainer2").find("a.submit").removeClass("disabled");
+    first_form_click_done = false;
+    jQuery("#mlistForm2Left").height(jQuery("#mlistForm2Right").height() + 'px');
+  }
+};

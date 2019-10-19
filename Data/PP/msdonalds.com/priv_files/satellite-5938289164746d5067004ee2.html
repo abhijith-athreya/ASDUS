@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!-- saved from url=(0116)https://assets.adobedtm.com/b1e0f2f1c887c13d5a8d850fc709d9f680d2011c/scripts/satellite-5938289164746d5067004ee2.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"></head><body>
+    <script>
+      (function(){
+        function escapeForHtml(str){
+          if (!str) return str
+          return str
+            .replace(/\&/g, '&amp;')
+            .replace(/\</g, '&lt;')
+            .replace(/\>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#x27;')
+            .replace(/\//g, '&#x2F;')
+        }
+
+        var regexChars = /[.*+?^${}()|[\]\\]/g;
+        function escapeForRegex(str) {
+          return str.replace(regexChars, "\\$&");
+        }
+
+        function parseQueryString(){
+          var ret = {}, parts = location.search.substring(1).split('&');
+          for (var i = parts.length; i--;) {
+            var vardef = parts[i].split('='), varname = vardef[0], value = vardef[1];
+            ret[varname] = unescape(value);
+          }
+          return ret;
+        }
+
+        var queryParams = parseQueryString();
+
+        var markup = "<script src=\"//platform.twitter.com/oct.js\" type=\"text/javascript\"></scr"+"ipt>\n<script type=\"text/javascript\">twttr.conversion.trackPid('l6prw', { tw_sale_amount: 0, tw_order_quantity: 0 });</scr"+"ipt>\n<noscript>\n<img height=\"1\" width=\"1\" style=\"display:none;\" alt=\"\" src=\"https://analytics.twitter.com/i/adsct?txn_id=l6prw&p_id=Twitter&tw_sale_amount=0&tw_order_quantity=0\" />\n<img height=\"1\" width=\"1\" style=\"display:none;\" alt=\"\" src=\"//t.co/i/adsct?txn_id=l6prw&p_id=Twitter&tw_sale_amount=0&tw_order_quantity=0\" />\n</noscript>";
+
+        for (var name in queryParams){
+          var regex = new RegExp('%' + escapeForRegex(name) + '%', 'ig');
+          markup = markup.replace(regex, 
+            escapeForHtml(queryParams[name]));
+        }
+
+        document.write(markup)
+      })();
+    </script><script src="https://platform.twitter.com/oct.js" type="text/javascript"></script></body></html>

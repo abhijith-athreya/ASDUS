@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://www.w3schools.com/html/html_responsive.asp -->
+<html lang="en-US" style="height: 100%;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>HTML Responsive Web Design</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="Keywords" content="HTML,CSS,JavaScript,SQL,PHP,jQuery,XML,DOM,Bootstrap,Web development,W3C,tutorials,programming,training,learning,quiz,primer,lessons,references,examples,source code,colors,demos,tips">
+<meta name="Description" content="Well organized and easy to understand Web building tutorials with lots of examples of how to use HTML, CSS, JavaScript, SQL, PHP, and XML.">
+<link rel="icon" href="https://www.w3schools.com/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="./Misc_files/w3.css">
+<style>
+a:hover,a:active{color:#4CAF50}
+table.w3-table-all{margin:20px 0}
+/*OPPSETT AV TOP, TOPNAV, SIDENAV, MAIN, RIGHT OG FOOTER:*/
+.top {
+position:relative;
+background-color:#ffffff;
+height:68px;
+padding-top:20px;
+line-height:50px;
+overflow:hidden;
+z-index:2;
+}
+.w3schools-logo {
+font-family:fontawesome;
+text-decoration:none;
+line-height:1;
+-webkit-font-smoothing:antialiased;
+-moz-osx-font-smoothing:grayscale;
+font-size:37px;
+letter-spacing:3px;
+color:#555555;
+display:block;
+position:absolute;
+top:17px;
+}
+.w3schools-logo .dotcom {color:#4CAF50}
+.topnav {
+position:relative;
+z-index:2;
+font-size:17px;
+background-color:#5f5f5f;
+color:#f1f1f1;
+width:100%;
+padding:0;
+letter-spacing:1px;
+font-family:"Segoe UI",Arial,sans-serif;
+}
+.topnav a{
+padding:10px 15px 9px 15px !important;
+}
+.topnav .w3-bar a:hover,.topnav .w3-bar a:focus{
+background-color:#000000 !important;
+color:#ffffff !important;
+}
+.topnav .w3-bar a.active {
+background-color:#4CAF50;
+color:#ffffff;
+}
+a.topnav-icons {
+width:52px !important;
+font-size:20px !important;
+padding-top:11px !important;
+padding-bottom:13px !important;
+}
+a.topnav-icons.fa-home {font-size:22px !important}
+a.topnav-icons.fa-menu {font-size:22px !important}
+a.topnav-localicons {
+font-size:20px !important;
+padding-top:6px !important;
+padding-bottom:12px !important;
+}
+i.fa-caret-down,i.fa-caret-up{width:10px}
+#sidenav h2 {
+font-size:21px;
+padding-left:16px;
+margin:-4px 0 4px 0;
+width:204px;
+}
+#sidenav a {font-family:"Segoe UI",Arial,sans-serif;text-decoration:none;display:block;padding:2px 1px 1px 16px}
+#sidenav a:hover,#sidenav a:focus {color:#000000;background-color:#cccccc;}
+#sidenav a.active {background-color:#4CAF50;color:#ffffff}
+#leftmenuinner {
+position:fixed;
+top:0;
+padding-top:112px;
+padding-bottom:0;    
+height:100%;
+width:220px;
+background-color:transparent;
+}
+#leftmenuinnerinner {
+height:100%;
+width:100%;
+overflow-y:scroll;
+overflow-x:hidden;
+padding-top:20px;
+}
+#main {padding:16px}
+#mainLeaderboard {height:90px}
+#right {text-align:center;padding:16px 16px 0 0}
+#right a {text-decoration:none}
+#right a:hover {text-decoration:underline}
+#skyscraper {min-height:600px}
+.sidesection {margin-bottom:32px;}
+.bottomad {padding:0 16px 16px 0;float:left;width:auto;}
+.footer a {text-decoration:none;}
+.footer a:hover{text-decoration:underline;}
+#nav_tutorials,#nav_references,#nav_examples{-webkit-overflow-scrolling:touch;overflow:auto;}
+#nav_tutorials::-webkit-scrollbar,#nav_references::-webkit-scrollbar,#nav_examples::-webkit-scrollbar {width: 12px;}
+#nav_tutorials::-webkit-scrollbar-track,#nav_references::-webkit-scrollbar-track,#nav_examples::-webkit-scrollbar-track {background:#555555;}
+#nav_tutorials::-webkit-scrollbar-thumb,#nav_references::-webkit-scrollbar-thumb,#nav_examples::-webkit-scrollbar-thumb {background: #999999;}
+#nav_tutorials,#nav_references,#nav_examples {
+display:none;
+letter-spacing:0;
+margin-top:44px;
+}
+#nav_tutorials a,#nav_references a,#nav_examples a{
+padding:2px 0 2px 6px!important;
+}
+#nav_tutorials a:focus,#nav_references a:focus,#nav_examples a:focus{
+color: #000;
+background-color: #ccc;
+}
+#nav_tutorials h3,#nav_references h3,#nav_examples h3{
+padding-left:6px;
+}
+.w3-example{background-color:#f1f1f1;padding:0.01em 16px;margin:20px 0;box-shadow:0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)!important}
+.nextprev a {font-size:17px;border:1px solid #cccccc;}
+.nextprev a:link,.nextprev a:visited {background-color:#ffffff;color:#000000;}
+.w3-example a:focus,.nextprev a:focus{box-shadow:0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.nextprev a.w3-right {background-color:#4CAF50;color:#ffffff;border-color:#4CAF50}
+.w3-theme {color:#fff !important;background-color:#73AD21 !important;background-color:#4CAF50 !important}
+.w3-theme-border {border-color:#4CAF50 !important}
+.sharethis a:hover {color:inherit;}
+.fa-facebook-square,.fa-twitter-square,.fa-google-plus-square {padding:0 8px;}
+.fa-facebook-square:hover, .fa-thumbs-o-up:hover {color:#3B5998;}
+.fa-twitter-square:hover {color:#55acee;}
+.fa-google-plus-square:hover {color:#dd4b39;}
+#google_translate_element img {margin-bottom:-1px;}
+#googleSearch {color:#000000;}
+#googleSearch a {padding:0 !important;}
+.searchdiv {max-width:400px;margin:auto;text-align:left;font-size:16px}
+div.cse .gsc-control-cse, div.gsc-control-cse {background-color:transparent;border:none;padding:6px;margin:0px}
+td.gsc-search-button input.gsc-search-button {background-color:#4CAF50;border-color:#4CAF50}
+td.gsc-search-button input.gsc-search-button:hover {background-color:#46a049;}
+input.gsc-input, .gsc-input-box, .gsc-input-box-hover, .gsc-input-box-focus, .gsc-search-button {
+box-sizing:content-box; line-height:normal;}
+.gsc-tabsArea div {overflow:visible;}
+/*"nullstille" w3css:*/
+.w3-main{transition:margin-left 0s;}
+/*"nullstilling" slutt*/
+@media (min-width:1675px) {
+#main {width:79%}
+#right {width:21%}
+}
+@media (max-width:992px) {
+.top {height:100px}
+.top img {display:block;margin:auto;}
+.top .w3schools-logo {position:relative;top:0;width:100%;text-align:center;margin:auto}
+.toptext {width:100%;text-align:center}
+#sidenav {width:260px;}
+#sidenav h2 {font-size:26px;width:100%;}
+#sidenav a {padding:3px 2px 3px 24px;font-size:17px}
+#leftmenuinner {  
+box-shadow:0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+overflow:auto;
+-webkit-overflow-scrolling:touch;
+height:100%;
+position:relative;
+width:auto;
+padding-top:0;
+background-color:#f1f1f1;
+}
+#leftmenuinnerinner {overflow-y:scroll}
+.bottomad {float:none;text-align:center}
+#skyscraper {min-height:60px}
+}
+@media screen and (max-width:600px) {
+.top {height:68px}
+.toptext {display:none}
+}
+@font-face {
+font-family:'fontawesome';
+src: url('../lib/fonts/fontawesome.eot?14663396');
+src:url('../lib/fonts/fontawesome.eot?14663396#iefix') format('embedded-opentype'),
+url('../lib/fonts/fontawesome.woff?14663396') format('woff'),
+url('../lib/fonts/fontawesome.ttf?14663396') format('truetype'),
+url('../lib/fonts/fontawesome.svg?14663396#fontawesome') format('svg');
+font-weight:normal;
+font-style:normal;
+}
+.fa {
+display:inline-block;
+font:normal normal normal 14px/1 FontAwesome;
+font-size:inherit;
+text-rendering:auto;
+-webkit-font-smoothing:antialiased;
+-moz-osx-font-smoothing:grayscale;
+transform:translate(0, 0);
+}
+.fa-2x {
+ font-size:2em;
+}
+.fa-home:before {content:'\e800';}
+.fa-menu:before {content: '\f0c9';}
+.fa-globe:before {content:'\e801';}
+.fa-search:before {content:'\e802'; }
+.fa-thumbs-o-up:before {content:'\e803';}
+.fa-left-open:before {content:'\e804';}
+.fa-right-open:before {content:'\e805';}
+.fa-facebook-square:before {content:'\e806';}
+.fa-google-plus-square:before {content:'\e807';}
+.fa-twitter-square:before {content:'\e808';}
+.fa-caret-down:before {content:'\e809';}
+.fa-caret-up:before {content:'\e80a';}
+span.marked, span.deprecated {
+ color:#e80000;
+ background-color:transparent;
+}
+.intro {font-size:16px}
+.w3-btn, .w3-btn:link, .w3-btn:visited {color:#FFFFFF;background-color:#4CAF50}
+a.w3-btn[href*="exercise.asp"] {margin:10px 5px 0 0}
+a.btnplayit,a.btnplayit:link,a.btnplayit:visited {background-color:#FFAD33;padding:1px 10px 2px 10px}
+a.btnplayit:hover,a.btnplayit:active {background-color:#ffffff;color:#FFAD33}
+a.btnplayit:hover {box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);}
+a.btnsmall:link,a.btnsmall:visited,a.btnsmall:active,a.btnsmall:hover {
+float:right;padding:1px 10px 2px 10px;font:15px Verdana, sans-serif;}
+a.btnsmall:hover {box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);}
+a.btnsmall:active,a.btnsmall:hover {color:#4CAF50;background-color:#ffffff}
+@media screen and (max-width:700px) {
+#mainLeaderboard {height:60px}
+#div-gpt-ad-1422003450156-0 {float:none;margin-left:auto;margin-right:auto}
+#div-gpt-ad-1422003450156-3 {float:none;margin-left:auto;margin-right:auto}
+}
+@media (max-width:1700px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(17){display:none;}}
+@media (max-width:1600px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(13){display:none;}}
+@media (max-width:1510px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(12){display:none;}}
+@media (max-width:1450px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(11){display:none;}}
+@media (max-width:1330px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(10){display:none;}}
+@media (max-width:1200px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(9){display:none;}}
+@media (max-width:1100px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(8){display:none;}}
+@media (max-width:1000px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(7){display:none;}}
+@media (max-width:992px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(6){display:none;}}
+@media (max-width:930px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(18){display:none;}}
+@media (max-width:800px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(19){display:none;}}
+@media (max-width:650px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(5){display:none;} #topnav .w3-bar:nth-of-type(1) a:nth-of-type(16){display:none;}}
+@media (max-width:460px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(4){display:none;}}
+@media (max-width:400px) {#topnav .w3-bar:nth-of-type(1) a:nth-of-type(3){display:none;}}
+.w3-note{background-color:#ffffcc;border-left:6px solid #ffeb3b}
+.w3-warning{background-color:#ffdddd;border-left:6px solid #f44336}
+.w3-info{background-color:#ddffdd;border-left:6px solid #4CAF50}
+hr[id^="ez-insert-after-placeholder"] {margin-top: 0;}
+</style>
+<script async="" src="./Misc_files/async-ads.js.download"></script><script type="text/javascript" async="" src="./Misc_files/cse.js.download"></script><script async="" type="text/javascript" src="./Misc_files/gpt.js.download"></script><script async="" src="./Misc_files/analytics.js.download"></script><script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-3855518-1', 'auto');
+ga('require', 'displayfeatures');
+ga('send', 'pageview');
+</script>
+<script type="text/javascript">
+var googletag = googletag || {};
+googletag.cmd = googletag.cmd || [];
+(function() {
+var gads = document.createElement('script');
+gads.async = true;
+gads.type = 'text/javascript';
+gads.src = 'https://www.googletagservices.com/tag/js/gpt.js';
+var node = document.getElementsByTagName('script')[0];
+node.parentNode.insertBefore(gads, node);
+})();
+</script>
+<script type="text/javascript">
+// GPT slots
+var gptAdSlots = [];
+googletag.cmd.push(function() {
+var leaderMapping = googletag.sizeMapping().
+// Mobile ad
+addSize([0, 0], [320, 50]). 
+// Vertical Tablet ad
+addSize([480, 0], [468, 60]). 
+// Horizontal Tablet
+addSize([780, 0], [728, 90]).
+// Small Desktop
+addSize([993, 0], [468, 60]).
+// Normal Desktop
+addSize([1150, 0], [728, 90]).
+// Large Desktop and bigger ad
+addSize([1425, 0], [[728, 90], [970, 90]]).build();
+gptAdSlots[0] = googletag.defineSlot('/16833175/MainLeaderboard', [[728, 90], [970, 90]], 'div-gpt-ad-1422003450156-2').
+defineSizeMapping(leaderMapping).addService(googletag.pubads());
+var skyMapping = googletag.sizeMapping().
+// Mobile ad
+addSize([0, 0], [320, 50]). 
+// Tablet ad
+addSize([975, 0], [120, 600]). 
+// Desktop
+addSize([1135, 0], [160, 600]).   
+// Large Desktop
+addSize([1675, 0], [[160, 600], [300, 600], [300, 1050]]).build();
+gptAdSlots[1] = googletag.defineSlot('/16833175/WideSkyScraper', [[160, 600], [300, 600], [300, 1050]], 'div-gpt-ad-1422003450156-5').
+defineSizeMapping(skyMapping).addService(googletag.pubads());
+var stickyMapping = googletag.sizeMapping().
+// Mobile ad
+addSize([0, 0], []). 
+// Tablet ad
+addSize([975, 0], [120, 600]). 
+// Desktop
+addSize([1135, 0], [160, 600]).   
+// Large Desktop
+addSize([1675, 0], [[160, 600], [300, 600], [300, 250]]).build();
+gptAdSlots[4] = googletag.defineSlot('/16833175/StickySkyScraper', [[300, 600], [120, 600], [300, 250], [160, 600]], 'div-gpt-ad-1472547360578-0').
+defineSizeMapping(stickyMapping).addService(googletag.pubads());
+var mcontMapping = googletag.sizeMapping().
+// Mobile ad
+addSize([0, 0], [[300, 250], [336, 280], [320, 50]]). 
+// Vertical Tablet ad
+addSize([490, 0], [[300, 250], [336, 280], [468, 60]]). 
+// Horizontal Tablet
+addSize([750, 0], [728, 90]).
+// Small Desktop
+addSize([993, 0], [[300, 250], [336, 280], [468, 60]]).
+// Normal Desktop
+addSize([1135, 0], [728, 90]).
+// Large Desktop and bigger ad
+addSize([1440, 0], [[728, 90], [970, 90], [970, 250]]).build();
+gptAdSlots[5] = googletag.defineSlot('/16833175/MidContent', [[300, 250], [336, 280]], 'div-gpt-ad-1493883843099-0').
+defineSizeMapping(mcontMapping).setCollapseEmptyDiv(true).addService(googletag.pubads());
+var bmrMapping = googletag.sizeMapping().
+// Smaller
+addSize([0, 0], [[300, 250], [336, 280]]). 
+// Large Desktop
+addSize([1240, 0], [[300, 250], [336, 280], [970, 250]]).build();
+gptAdSlots[2] = googletag.defineSlot('/16833175/BottomMediumRectangle', [[300, 250], [336, 280], [970, 250]], 'div-gpt-ad-1422003450156-0').
+defineSizeMapping(bmrMapping).setCollapseEmptyDiv(true).addService(googletag.pubads());
+var rbmrMapping = googletag.sizeMapping().
+// Smaller
+addSize([0, 0], []). 
+// Large Desktop
+addSize([975, 0], [[300, 250], [336, 280]]).build();
+gptAdSlots[3] = googletag.defineSlot('/16833175/RightBottomMediumRectangle', [[300, 250], [336, 280]], 'div-gpt-ad-1422003450156-3').
+defineSizeMapping(rbmrMapping).setCollapseEmptyDiv(true).addService(googletag.pubads());
+googletag.pubads().setTargeting("content",(function () {
+  var folder = location.pathname;
+  folder = folder.replace("/", "");
+  folder = folder.substr(0, folder.indexOf("/"));
+  return folder;
+})()
+);
+googletag.enableServices();
+});
+</script>
+<script type="text/javascript">
+var stickyadstatus = "";
+function fix_stickyad() {
+  document.getElementById("stickypos").style.position = "sticky";
+  var elem = document.getElementById("stickyadcontainer");
+  if (!elem) {return false;}
+  if (document.getElementById("skyscraper")) {
+    var skyWidth = Number(w3_getStyleValue(document.getElementById("skyscraper"), "width").replace("px", ""));  
+    }
+  else {
+    var skyWidth = Number(w3_getStyleValue(document.getElementById("right"), "width").replace("px", ""));  
+  }
+  elem.style.width = skyWidth + "px";
+  if (window.innerWidth <= 992) {
+    elem.style.position = "";
+    elem.style.top = stickypos + "px";
+    return false;
+  }
+  var stickypos = document.getElementById("stickypos").offsetTop;
+  var docTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  var adHeight = Number(w3_getStyleValue(elem, "height").replace("px", ""));
+  if (stickyadstatus == "") {
+    if ((stickypos - docTop) < 60) {
+      elem.style.position = "fixed";
+      elem.style.top = "60px";
+      stickyadstatus = "sticky";
+      document.getElementById("stickypos").style.position = "sticky";
+
+    }
+  } else {
+    if ((docTop + 60) - stickypos < 0) {  
+      elem.style.position = "";
+      elem.style.top = stickypos + "px";
+      stickyadstatus = "";
+      document.getElementById("stickypos").style.position = "static";
+    }
+  }
+  if (stickyadstatus == "sticky") {
+    if ((docTop + adHeight + 60) > document.getElementById("footer").offsetTop) {
+      elem.style.position = "absolute";
+      elem.style.top = (document.getElementById("footer").offsetTop - adHeight) + "px";
+      document.getElementById("stickypos").style.position = "static";
+    } else {
+        elem.style.position = "fixed";
+        elem.style.top = "60px";
+        stickyadstatus = "sticky";
+        document.getElementById("stickypos").style.position = "sticky";
+    }
+  }
+}
+function w3_getStyleValue(elmnt,style) {
+  if (window.getComputedStyle) {
+    return window.getComputedStyle(elmnt,null).getPropertyValue(style);
+  } else {
+    return elmnt.currentStyle[style];
+  }
+}
+</script>
+
+<style>
+img.viewport {
+ border:10px solid #f1f1f1;
+ border-radius:3px;
+}
+</style>
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.w3schools.com" as="script"><script type="text/javascript" src="https://adservice.google.com/adsid/integrator.js?domain=www.w3schools.com"></script><script src="https://securepubads.g.doubleclick.net/gpt/pubads_impl_203.js" async=""></script><link type="text/css" rel="stylesheet" charset="UTF-8" href="./Misc_files/translateelement.css"><script type="text/javascript" charset="UTF-8" src="./Misc_files/main.js.download"></script><style type="text/css">:root .tooltip + div[style="height:90px;"], :root a[rel="nofollow"], :root a[href^="http://ad-apac.doubleclick.net/"], :root .GKJYXHBF2 > .GKJYXHBE2 > .GKJYXHBH5, :root a[href^="http://www.amazon.co.uk/exec/obidos/external-search?"], :root #\5f _mom_ad_2, :root #rhs_block .mod > .luhb-div > div[data-async-type="updateHotelBookingModule"], :root #\5f _admvnlb_modal_container, :root #MAIN.ShowTopic > .ad, :root a[href^="http://pubads.g.doubleclick.net/"], :root .GB3L-QEDGY .GB3L-QEDF- > .GB3L-QEDE-, :root #main_col > #center_col div[style="font-size:14px;margin:0 4px;padding:1px 5px;background:#fff7ed"], :root div[class*="-storyBodyAd-"], :root #center_col > #main > .dfrd > .mnr-c > .c._oc._zs, :root a[href^="http://ul.to/ref/"], :root #\5f _nq__hh[style="display:block!important"], :root a[href^="http://cdn.adstract.com/"], :root a[href^="//tracking.content-recommendation.net/"][href*="/sponsored/click.html?"], :root div[class^="ads-partner-"], :root #\5f _mom_ad_12, :root a[href^="http://lp.ncdownloader.com/"], :root .inlineNewsletterSubscription + .inlineNewsletterSubscription div[class$="_item"], :root a[href^="https://intrev.co/"], :root div[id^="google_ads_iframe_"], :root #ads > .dose > .dosesingle, :root a[href^="http://3wr110.net/"], :root a[href^="http://bestorican.com/"], :root div[id^="ad_script_"], :root a[href^="http://get.slickvpn.com/"], :root .gbfwa > div[class$="_item"], :root #assetsListings[style="display: block;"], :root #center_col > #\5f Emc, :root a[href^="http://marketgid.com"], :root #rhs_block > ol > .rhsvw > .kp-blk > .xpdopen > ._OKe > ol > ._DJe > .luhb-div, :root a[href^="http://go.mobisla.com/"], :root #center_col > #res > #topstuff + #search > div > #ires > #rso > #flun, :root a[href^="http://www.webtrackerplus.com/"], :root a[href^="http://www.affbuzzads.com/affiliate/"], :root #center_col > #resultStats + #tads, :root #main-content > [style="padding:10px 0 0 0 !important;"], :root #center_col > #resultStats + #tads + #res + #tads, :root #cnt #center_col > #taw > #tvcap > .c._oc._Lp, :root a[href^="http://www.paddypower.com/?AFF_ID="], :root a[onmousedown^="this.href='http://staffpicks.outbrain.com/network/redir?"][target="_blank"], :root #center_col > #resultStats + div + #res + #tads, :root div[id^="crt-"][style], :root div[class^="Ad__container"], :root a[href^="http://centertrust.xyz/"], :root a[href^="http://g1.v.fwmrm.net/ad/"], :root a[href^="http://www.fbooksluts.com/"], :root #center_col > #resultStats + div[style="border:1px solid #dedede;margin-bottom:11px;padding:5px 7px 5px 6px"], :root a[href^="http://ads.integral-marketing.com/"], :root div[id^="advads_"], :root a[data-obtrack^="http://paid.outbrain.com/network/redir?"], :root .__y_inner > .__y_item, :root div[id^="ads300_100-widget"], :root #center_col > #taw > #tvcap > .rscontainer, :root #center_col > div[style="font-size:14px;margin-right:0;min-height:5px"] > div[style="font-size:14px;margin:0 4px;padding:1px 5px;background:#fff8e7"], :root div[id^="MarketGid"], :root #cnt #center_col > #res > #topstuff > .ts, :root #content > #center > .dose > .dosesingle, :root a[href^="http://www.text-link-ads.com/"], :root #content > #right > .dose > .dosesingle, :root #flowplayer > div[style="position: absolute; width: 300px; height: 275px; left: 222.5px; top: 85px; z-index: 999;"], :root a[href^="http://ads.betfair.com/redirect.aspx?"], :root #flowplayer > div[style="z-index: 208; position: absolute; width: 300px; height: 275px; left: 222.5px; top: 85px;"], :root a[href*="emprestimo.eu"], :root #header + #content > #left > #rlblock_left, :root .__zinit .__y_item, :root a[href^="//40ceexln7929.com/"], :root #mbEnd[cellspacing="0"][cellpadding="0"], :root a[href^="http://banners.victor.com/processing/"], :root #mn #center_col > div > h2.spon:first-child, :root .ch[onclick="ga(this,event)"], :root #mn #center_col > div > h2.spon:first-child + ol:last-child, :root a[href^="http://affiliate.coral.co.uk/processing/"], :root #mn div[style="position:relative"] > #center_col > ._Ak, :root a[href*=".clksite.com/"], :root #mn div[style="position:relative"] > #center_col > div > ._dPg, :root .__yinit .__y_item, :root a[href^="http://finaljuyu.com/"], :root div[id^="mainads"], :root #rhs_block > .ts[cellspacing="0"][cellpadding="0"][style="padding:0"], :root #resultspanel > #topads, :root #rhs_block > #mbEnd, :root #rhs_block .mod > .gws-local-hotels__booking-module, :root #rhs_block .xpdopen > ._OKe > div > .mod > ._yYf, :root a[href^="http://data.ad.yieldmanager.net/"], :root .mw > #rcnt > #center_col > #taw > #tvcap > .c, :root #rhs_block > script + .c._oc._Ve.rhsvw, :root a[data-redirect^="https://paid.outbrain.com/network/redir?"], :root a[href^="http://track.adform.net/"], :root #tads + div + .c, :root #rhswrapper > #rhssection[border="0"][bgcolor="#ffffff"], :root a[href^="http://admingame.info/"], :root #ssmiwdiv[jsdisplay], :root a[href^="http://www.dealcent.com/register.php?affid="], :root #topstuff > #tads, :root .GFYY1SVD2 > .GFYY1SVC2 > .GFYY1SVF5, :root a[href^="http://www.linkbucks.com/referral/"], :root .GHOFUQ5BG2 > .GHOFUQ5BF2 > .GHOFUQ5BG5, :root .GFYY1SVE2 > .GFYY1SVD2 > .GFYY1SVG5, :root .jobs-information-call-to-action + .jobs-information-call-to-action div[class$="_item"], :root a[href^="https://ad.atdmt.com/"], :root .__ywvr .__y_item, :root a[href*=".qertewrt.com/"], :root a[href^="http://www.terraclicks.com/"], :root .GJJKPX2N1 > .GJJKPX2M1 > .GJJKPX2P4, :root .GPMV2XEDA2 > .GPMV2XEDP1 > .GPMV2XEDJBB, :root a[href^="http://aff.ironsocket.com/"], :root .Mpopup + #Mad > #MadZone, :root aside[itemtype="https://schema.org/WPAdBlock"], :root .__y_elastic .__y_item, :root a[href^="http://www.adxpansion.com"], :root .__ywl .__y_item, :root .l-container > #fishtank, :root .icons-rss-feed + .icons-rss-feed div[class$="_item"], :root a[href^="http://dethao.com/"], :root .lads[width="100%"][style="background:#FFF8DD"], :root iframe[src^="http://cdn2.adexprt.com/"], :root .mod > ._jH + .rscontainer, :root a[href^="http://clicks.binarypromos.com/"], :root .mw > #rcnt > #center_col > #taw > .c, :root .nrelate .nr_partner, :root a[href^="http://tezfiles.com/pr/"], :root .ob_container .item-container-obpd, :root a[href^="http://partner.sbaffiliates.com/"], :root a[href^="http://www.firstload.com/affiliate/"], :root a[href^="http://www.myfreepaysite.com/sfw_int.php?aid"], :root a[href^="//srv.buysellads.com/"], :root a[href^="http://pwrads.net/"], :root .ob_dual_right > .ob_ads_header ~ .odb_div, :root .plistaList > .itemLinkPET, :root a[href^="http://www.download-provider.org/"], :root .plistaList > .plista_widget_underArticle_item[data-type="pet"], :root .plista_widget_belowArticleRelaunch_item[data-type="pet"], :root a[href^="http://www.pinkvisualgames.com/?revid="], :root .ra[align="left"][width="30%"], :root a[href^="http://ads.affbuzzads.com/"], :root a[href^="http://promos.bwin.com/"], :root .ra[align="right"][width="30%"], :root a[href^="http://bs.serving-sys.com/"], :root .ra[width="30%"][align="right"] + table[width="70%"][cellpadding="0"], :root a[href^="https://www.googleadservices.com/pagead/aclk?"], :root a[href^="http://api.content.ad/"], :root a[href^="http://n217adserv.com/"], :root .rc-cta[data-target], :root .rhsvw[style="background-color:#fff;margin:0 0 14px;padding-bottom:1px;padding-top:1px;"], :root .widget-pane-section-result[data-result-ad-type], :root a[href^="http://adserver.adtechus.com/"], :root .rscontainer > .ellip, :root .section-result[data-result-ad-type], :root .trc_rbox .syndicatedItem, :root .trc_rbox_border_elm .syndicatedItem, :root a[href^="http://taboola-"][href*="/redirect.php?app.type="], :root .trc_rbox_div .syndicatedItem, :root .trc_rbox_div .syndicatedItemUB, :root div[id^="div_openx_ad_"], :root .trc_rbox_div a[target="_blank"][href^="http://tab"], :root a[href^="//porngames.adult/?SID="], :root a[href^="http://engine.newsmaxfeednetwork.com/"], :root a[href^="http://ddownload39.club/"], :root .trc_related_container div[data-item-syndicated="true"], :root ADS-RIGHT, :root a[href^="http://campaign.bharatmatrimony.com/track/"], :root a[href*="/adServe/banners?"], :root AFS-AD, :root a[href^="https://www.secureupload.eu/suprerefid="], :root a[href^="http://www.myvpn.pro/"], :root a[onmousedown^="this.href='http://paid.outbrain.com/network/redir?"][target="_blank"], :root AMP-AD, :root A[href^="https://www.friendlyduck.com/AF_"], :root a[href^="http://server.cpmstar.com/click.aspx?poolid="], :root a[href^="http://dwn.pushtraffic.net/"], :root a[href^="http://sharesuper.info/"], :root [ad-id^="googlead"], :root a[href^="http://www.ringtonematcher.com/"], :root [id*="MGWrap"], :root a[href^="//ads.ad-center.com/"], :root a[href^="http://websitedhoome.com/"], :root [id*="MarketGid"], :root [id*="ScriptRoot"], :root a[href="http://track.freemmo2017.com/"], :root a[onmousedown^="this.href='http://staffpicks.outbrain.com/network/redir?"][target="_blank"] + .ob_source, :root a[href^="http://games.ucoz.ru/"][target="_blank"], :root [lazy-ad="lefttop_banner"], :root [onclick*="content.ad/"], :root a[href^="http://see-work.info/"], :root a[href^="http://www.graboid.com/affiliates/"], :root a[href^="http://papi.mynativeplatform.com:80/pub2/"], :root [onclick^="window.open('http://adultfriendfinder.com/search/"], :root a[href^="http://www.ducksnetwork.com/"], :root a[data-oburl^="http://paid.outbrain.com/network/redir?"], :root a[href^="https://atomidownload.com/"], :root a[data-oburl^="https://paid.outbrain.com/network/redir?"], :root a[data-redirect^="http://click.plista.com/pets"], :root a[data-redirect^="http://paid.outbrain.com/network/redir?"], :root a[href^="http://go.ad2up.com/"], :root a[href^="http://adtransfer.net/"], :root a[href^="http://adclick.g.doubleclick.net/"], :root a[data-redirect^="this.href='http://paid.outbrain.com/network/redir?"], :root div[class*="_AdInArticle_"], :root a[data-url^="http://paid.outbrain.com/network/redir?"], :root a[data-url^="http://paid.outbrain.com/network/redir?"] + .author, :root a[href^="http://ad.yieldmanager.com/"], :root a[href^="http://www.myfreepaysite.com/sfw.php?aid"], :root a[href^="http://lp.ezdownloadpro.info/"], :root a[data-widget-outbrain-redirect^="http://paid.outbrain.com/network/redir?"], :root a[href$="/vghd.shtml"], :root a[href^="http://amzn.to/"] > img[src^="data"], :root a[href*=".adk2x.com/"], :root a[href^="//z6naousb.com/"], :root a[href*=".adsrv.eacdn.com/"] > img, :root a[href^="//www.mgid.com/"], :root a[href^="http://www.clkads.com/adServe/"], :root a[href^="http://ad.doubleclick.net/"], :root div[id^="ad-position-"], :root a[href*=".bang.com/"][href*="&aff="], :root a[href*=".clkcln.com/"], :root a[href^="http://guideways.info/"], :root a[href*=".ichlnk.com/"], :root a[href*=".revimedia.com/"], :root a[href*=".trust.zone"], :root a[href^="http://www.1clickmoviedownloader.info/"], :root div[id^="dfp-ad-"], :root a[href*="/adrotate-out.php?"], :root a[href*="/cmd.php?ad="], :root a[href^="https://servedbyadbutler.com/"], :root a[href^="http://xtgem.com/click?"], :root a[href*="=Adtracker"], :root a[href^="http://www.downloadweb.org/"], :root a[href*="ad2upapp.com/"], :root a[href^="https://members.linkifier.com/public/affiliateLanding?refCode="], :root a[href*="googleme.eu"], :root a[href*="letsadvertisetogether.com"], :root a[href*="onclkds."], :root a[href^="http://www.streamtunerhd.com/signup?"], :root a[href^="http://bonusfapturbo.nmvsite.com/"], :root a[href*="pussl3.com"], :root a[href^=" http://ads.ad-center.com/"], :root a[href^=" http://n47adshostnet.com/"], :root a[href^="//adbit.co/?a=Advertise&"], :root a[href^="http://secure.signup-way.com/"], :root a[href^="http://landingpagegenius.com/"], :root a[href^="//api.ad-goi.com/"], :root a[href^="//bwnjijl7w.com/"], :root a[href^="//db52cc91beabf7e8.com/"], :root a[href^="http://tracking.deltamediallc.com/"], :root a[href^="//go.onclasrv.com/"], :root a[href^="//jsmptjmp.com/"], :root a[href^="http://www.revenuehits.com/"], :root a[href^="http://click.plista.com/pets"], :root a[href^="http://www.streamate.com/exports/"], :root a[href^="//t.MtagMonetizationA.com/"], :root a[href^="http://1phads.com/"], :root div[id^="ads250_250-widget"], :root a[href^="http://2pxg8bcf.top/"], :root a[href^="http://www.clickansave.net/"], :root a[href^="http://360ads.go2cloud.org/"], :root a[href^="http://NowDownloadAll.com"], :root a[href^="http://www.mysuperpharm.com/"], :root a[href^="http://www.sex.com/videos/?utm_"], :root a[href^="http://a.adquantix.com/"], :root a[href^="http://abc2.mobile-10.com/"], :root a[href^="http://ad-emea.doubleclick.net/"], :root a[href^="http://ad.au.doubleclick.net/"], :root a[href^="http://adexprt.me/"], :root a[href^="http://adf.ly/?id="], :root a[href^="http://api.ringtonematcher.com/"], :root a[href^="http://adfarm.mediaplex.com/"], :root a[href^="http://www.babylon.com/welcome/index?affID"], :root a[href^="http://adserving.unibet.com/"], :root a[href^="http://adlev.neodatagroup.com/"], :root a[href^="http://adprovider.adlure.net/"], :root a[href^="http://pan.adraccoon.com?"], :root div[id^="lazyad-"], :root a[href^="http://bcp.crwdcntrl.net/"], :root a[href^="http://adrunnr.com/"], :root a[href^="http://www.fpcTraffic2.com/blind/in.cgi?"], :root a[href^="http://ads.activtrades.com/"], :root a[href^="http://mmo123.co/"], :root a[href^="http://ads.ad-center.com/"], :root a[href^="http://ads.expekt.com/affiliates/"], :root a[href^="http://zevera.com/afi.html"], :root a[href^="http://ads.sprintrade.com/"], :root a[href^="http://ads.pheedo.com/"], :root a[href^="http://ads2.williamhill.com/redirect.aspx?"], :root a[href^="http://adserver.adtech.de/"], :root a[href^="http://www.1clickdownloader.com/"], :root a[href^="http://cdn3.adbrau.com/"], :root a[href^="http://adserver.itsfogo.com/"], :root a[href^="http://adserving.liveuniversenetwork.com/"], :root a[href^="http://adsrv.keycaptcha.com"], :root a[href^="http://adtrack123.pl/"], :root a[href^="http://green.trafficinvest.com/"], :root a[href^="http://clickserv.sitescout.com/"], :root a[href^="http://www.adshost2.com/"], :root a[href^="http://adtrackone.eu/"], :root a[href^="http://adultfriendfinder.com/p/register.cgi?pid="], :root a[href^="http://linksnappy.com/?ref="], :root a[href^="http://affiliate.glbtracker.com/"], :root a[href^="http://affiliate.godaddy.com/"], :root a[href^="http://www.accuserveadsystem.com/accuserve-go.php?"], :root a[href^="http://lp.ilivid.com/"], :root a[href^="http://searchtabnew.com/"], :root a[href^="http://affiliates.pinnaclesports.com/processing/"], :root a[href^="http://affiliates.score-affiliates.com/"], :root div[id^="block-views-topheader-ad-block-"], :root a[href^="http://www.gamebookers.com/cgi-bin/intro.cgi?"], :root a[href^="http://aflrm.com/"], :root a[href^="http://anonymous-net.com/"], :root a[href^="http://mojofun.info/"], :root a[href^="http://findersocket.com/"], :root iframe[src^="http://ad.yieldmanager.com/"], :root a[href^="http://at.atwola.com/"], :root a[href^="http://record.sportsbetaffiliates.com.au/"], :root a[href^="http://b.bestcompleteusa.info/"], :root a[href^="http://bc.vc/?r="], :root a[onmousedown^="this.href='https://paid.outbrain.com/network/redir?"][target="_blank"] + .ob_source, :root a[href^="http://betahit.click/"], :root a[href^="http://hyperies.info/"], :root a[href^="http://bluehost.com/track/"], :root div[id^="advads-"], :root a[href^="http://buysellads.com/"], :root a[href^="http://databass.info/"], :root a[href^="http://c.actiondesk.com/"], :root a[href^="http://c.ketads.com/"], :root a[href^="http://www.bet365.com/"][href*="&affiliate="], :root a[href^="http://callville.xyz/"], :root a[href^="http://media.paddypower.com/redirect.aspx?"], :root a[href^="http://campaign.bharatmatrimony.com/cbstrack/"], :root a[href^="http://casino-x.com/?partner"], :root a[href^="http://cdn.adsrvmedia.net/"], :root a[href^="http://web.adblade.com/"], :root a[href^="http://cdn3.adexprts.com/"], :root a[href^="http://go.oclaserver.com/"], :root a[href^="http://chaturbate.com/affiliates/"], :root script[src^="http://free-shoutbox.net/app/webroot/shoutbox/sb.php?shoutbox="] + #freeshoutbox_content, :root div[itemtype="http://schema.org/WPAdBlock"], :root a[href^="http://cinema.friendscout24.de?"], :root a[href^="http://click.guamwnvgashbkashawhgkhahshmashcas.pw/"], :root a[href^="http://www.down1oads.com/"], :root a[href^="http://clickandjoinyourgirl.com/"], :root a[href^="http://clicks.guamwnvgashbkashawhgkhahshmashcas.pw/"], :root a[href^="http://www.pheedo.com/"], :root a[href^="http://clk.directrev.com/"], :root a[href^="http://galleries.pinballpublishernetwork.com/"], :root a[target="_blank"][href^="http://api.taboola.com/"], :root a[href^="http://clkmon.com/adServe/"], :root a[href^="http://hdplugin.flashplayer-updates.com/"], :root a[href^="http://track.incognitovpn.com/"], :root div[id^="acm-ad-tag-"], :root a[href^="http://codec.codecm.com/"], :root a[href^="http://n.admagnet.net/"], :root a[href^="http://prochina.space/"], :root a[href^="http://connectlinking6.com/"], :root a[href^="http://contractallsticker.net/"], :root a[href^="http://wgpartner.com/"], :root a[href^="http://cpaway.afftrack.com/"], :root a[href^="http://cwcams.com/landing/click/"], :root a[href^="http://d2.zedo.com/"], :root a[href^="http://data.committeemenencyclopedicrepertory.info/"], :root a[href^="https://affiliates.bet-at-home.com/processing/"], :root div[class^="Ad__bigBox"], :root a[href^="http://data.linoleictanzaniatitanic.com/"], :root div[itemtype="http://www.schema.org/WPAdBlock"], :root a[href^="http://dftrck.com/"], :root a[href^="https://syndication.exoclick.com/splash.php?"], :root a[href^="http://down1oads.com/"], :root a[href^="http://download-performance.com/"], :root a[href^="http://duckcash.eu/"], :root a[href^="https://bs.serving-sys.com"], :root a[href^="http://www.myfreecams.com/?co_id="][href*="&track="], :root a[href^="http://easydownload4you.com/"], :root a[href^="http://www.moneyducks.com/"], :root a[href^="http://eclkmpsa.com/"], :root a[href^="http://elite-sex-finder.com/?"], :root a[href^="http://elitefuckbook.com/"], :root a[href^="http://extra.bet365.com/"][href*="?affiliate="], :root a[href^="http://farm.plista.com/pets"], :root a[href^="http://freesoftwarelive.com/"], :root a[href^="http://ryushare.com/affiliate.python"], :root a[href^="http://feedads.g.doubleclick.net/"], :root a[href^="http://webgirlz.online/landing/"], :root a[href^="http://fileloadr.com/"], :root a[href^="http://fileupnow.rocks/"], :root a[href^="http://prousa.work/"], :root a[href^="https://secure.eveonline.com/ft/?aid="], :root a[href^="http://fsoft4down.com/"], :root a[href^="http://track.trkvluum.com/"], :root a[href^="http://fusionads.net"], :root a[href^="https://mk-ads.com/"], :root a[href^="http://galleries.securewebsiteaccess.com/"], :root a[href^="https://farm.plista.com/pets"], :root a[href^="http://gca.sh/user/register?ref="], :root a[href^="http://www.on2url.com/app/adtrack.asp"], :root a[href^="http://getlinksinaseconds.com/"], :root a[href^="http://go.seomojo.com/tracking202/"], :root a[href^="http://www.getyourguide.com/?partner_id="], :root a[href^="http://goldmoney.com/?gmrefcode="], :root a[href^="http://greensmoke.com/"], :root a[href^="http://hd-plugins.com/download/"], :root a[href^="http://hpn.houzz.com/"], :root a[href^="http://tracking.crazylead.com/"], :root a[href^="http://hyperlinksecure.com/go/"], :root a[href^="http://imads.integral-marketing.com/"], :root a[href^="http://www.tirerack.com/affiliates/"], :root a[href^="http://install.securewebsiteaccess.com/"], :root a[href^="http://secure.signup-page.com/"], :root a[href^="http://www.brightwheel.info/"], :root a[href^="http://internalredirect.site/"], :root a[href^="http://istri.it/?"], :root a[href^="http://jobitem.org/"], :root a[href^="http://liversely.com/"], :root a[href^="http://join3.bannedsextapes.com/track/"], :root a[href^="http://k2s.cc/code/"], :root a[href^="http://tracking.toroadvertising.com/"], :root a[href^="http://k2s.cc/pr/"], :root a[href^="http://keep2share.cc/pr/"], :root a[href^="http://latestdownloads.net/download.php?"], :root a[href^="https://ad.doubleclick.net/"], :root div[id^="ADV-SLOT-"], :root a[href^="http://liversely.net/"], :root a[href^="http://t.mdn2015x2.com/"], :root a[href^="http://mgid.com/"], :root a[href^="http://www.freefilesdownloader.com/"], :root a[href^="http://www.quick-torrent.com/download.html?aff"], :root a[href^="http://mo8mwxi1.com/"], :root a[href^="http://onclickads.net/"], :root div[class^="gemini-ad"], :root a[href^="http://online.ladbrokes.com/promoRedirect?"], :root a[href^="http://paid.outbrain.com/network/redir?"], :root a[href^="http://track.affiliatenetwork.co.za/"], :root a[href^="http://pokershibes.com/index.php?ref="], :root a[href^="http://www.friendlyadvertisements.com/"], :root a[href^="https://www.dsct1.com/"], :root a[href^="https://www.spyoff.com/"], :root a[href^="http://prochina.link/"], :root a[href^="http://record.betsafe.com/"], :root a[href^="http://record.commissionking.com/"], :root a[href^="http://refer.webhostingbuzz.com/"], :root a[href^="https://dcs.adgear.com/clicks/"], :root a[href^="http://rekoverr.com/"], :root a[href^="http://secure.hostgator.com/~affiliat/"], :root a[href^="http://serve.williamhill.com/promoRedirect?"], :root a[href^="http://servicegetbook.net/"], :root a[href^="http://srvpub.com/"], :root a[href^="http://stateresolver.link/"], :root a[href^="http://www.drowle.com/"], :root a[href^="http://steel.starflavor.bid/"], :root a[href^="https://keep2share.cc/pr/"], :root a[href^="http://syndication.exoclick.com/"], :root a[href^="https://www.adskeeper.co.uk/"], :root a[href^="http://t.mdn2015x1.com/"], :root a[href^="https://www.firstload.com/affiliate/"], :root a[href^="http://t.mdn2015x3.com/"], :root a[href^="http://t.wowtrk.com/"], :root a[href^="http://tour.affbuzzads.com/"], :root div[id^="ad-div-"], :root a[href^="http://uploaded.net/ref/"], :root a[href^="http://us.marketgid.com"], :root a[href^="http://webtrackerplus.com/"], :root a[href^="http://www.123-reg.co.uk/affiliate2.cgi"], :root div[id^="cns_ads_"], :root a[href^="http://www.TwinPlan.com/AF_"], :root a[href^="http://www.twinplan.com/AF_"], :root a[href^="http://www.adbrite.com/mb/commerce/purchase_form.php?"], :root a[href^="http://www.adskeeper.co.uk/"], :root a[href^="http://www.affiliates1128.com/processing/"], :root a[href^="http://www.downloadplayer1.com/"], :root a[href^="https://understandsolar.com/signup/?lead_source="][href*="&tracking_code="], :root a[href^="http://www.wantstraffic.com/"], :root a[href^="http://www.badoink.com/go.php?"], :root a[href^="http://www.bet365.com/"][href*="?affiliate="], :root a[href^="http://www.bitlord.me/share/"], :root bottomadblock, :root a[href^="http://www.cash-duck.com/"], :root a[href^="http://www.coinducks.com/"], :root a[href^="http://www.dl-provider.com/search/"], :root a[href^="http://www.downloadthesefiles.com/"], :root a[href^="http://www.duckcash.eu/"], :root a[href^="http://www.duckssolutions.com/"], :root a[href^="http://www.easydownloadnow.com/"], :root a[href^="http://www.epicgameads.com/"], :root a[href^="http://www.faceporn.net/free?"], :root a[href^="http://www.fducks.com/"], :root a[href^="http://www.firstclass-download.com/"], :root a[href^="https://torguard.net/aff.php"], :root a[href^="http://www.firstload.de/affiliate/"], :root a[href^="http://www.fonts.com/BannerScript/"], :root a[href^="https://trust.zone/go/r.php?RID="], :root a[href^="http://www.flashx.tv/downloadthis"], :root a[href^="http://www.fleshlight.com/"], :root a[href^="http://www.friendlyquacks.com/"], :root a[href^="http://www.greenmangaming.com/?tap_a="], :root a[href^="http://www.hitcpm.com/"], :root a[href^="http://www.idownloadplay.com/"], :root a[href^="https://pubads.g.doubleclick.net/"], :root a[href^="http://www.incredimail.com/?id="], :root a[href^="http://www.installads.net/"], :root a[href^="https://tracking.truthfinder.com/?a="], :root a[href^="https://dediseedbox.com/clients/aff.php?"], :root a[href^="http://www.ireel.com/signup?ref"], :root a[href^="http://www.liutilities.com/"], :root a[href^="http://www.pinkvisualpad.com/?revid="], :root a[href^="http://www.liversely.net/"], :root a[href^="http://www.menaon.com/installs/"], :root a[href^="http://www.mobileandinternetadvertising.com/"], :root a[href^="http://www.my-dirty-hobby.com/?sub="], :root a[href^="http://www.plus500.com/?id="], :root a[href^="http://www.ragazzeinvendita.com/?rcid="], :root a[href^="http://www.richducks.com/"], :root a[href^="http://www.roboform.com/php/land.php"], :root a[href^="http://www.securegfm.com/"], :root a[href^="http://www.seekbang.com/cs/"], :root a[href^="http://www.sex.com/?utm_"], :root a[href^="http://www.sex.com/pics/?utm_"], :root a[href^="http://www.urmediazone.com/signup"], :root div[class^="Ad__adContainer"], :root a[href^="http://www.sexgangsters.com/?pid="], :root a[href^="http://www.sfippa.com/"], :root a[href^="http://www.socialsex.com/"], :root a[href^="http://www.torntv-downloader.com/"], :root a[href^="http://www.torntvdl.com/"], :root a[href^="http://www.uniblue.com/cm/"], :root a[href^="http://www.usearchmedia.com/signup?"], :root a[href^="http://www.xmediaserve.com/"], :root a[href^="http://www.yourfuckbook.com/?"], :root a[href^="http://www.zergnet.com/i/"], :root a[href^="http://www1.clickdownloader.com/"], :root a[href^="http://www5.smartadserver.com/call/pubjumpi/"], :root a[href^="http://wxdownloadmanager.com/dl/"], :root a[href^="http://xads.zedo.com/"], :root a[href^="http://yads.zedo.com/"], :root a[href^="https://windscribe.com/promo/"], :root div[id^="div_ad_stack_"], :root a[href^="http://z1.zedo.com/"], :root a[href^="https://adhealers.com/"], :root a[href^="https://awentw.com/"], :root a[href^="https://betway.com/"][href*="&a="], :root a[href^="https://www.share-online.biz/affiliate/"], :root a[href^="https://chaturbate.com/affiliates/"], :root a[href^="https://click.plista.com/pets"], :root a[href^="https://dltags.com/"], :root a[href^="https://evaporate.pw/"], :root a[href^="https://go.ad2up.com/"], :root a[href^="https://go.onclasrv.com/"], :root a[href^="https://paid.outbrain.com/network/redir?"], :root a[href^="https://t.mobtya.com/"], :root div[id^="ad-server-"], :root a[href^="https://trackjs.com/?utm_source"], :root a[href^="https://trklvs.com/"], :root a[href^="https://www.camyou.com/?cam="][href*="&track="], :root a[href^="https://www.oboom.com/ad/"], :root a[href^="https://www.popads.net/users/"], :root a[onmousedown^="this.href='/wp-content/embed-ad-content/"], :root a[onmousedown^="this.href='http://paid.outbrain.com/network/redir?"][target="_blank"] + .ob_source, :root a[onmousedown^="this.href='https://paid.outbrain.com/network/redir?"][target="_blank"], :root div[id^="div-gpt-ad"], :root a[style="display:block;width:300px;min-height:250px"][href^="http://li.cnet.com/click?"], :root a[target="_blank"][onmousedown="this.href^='http://paid.outbrain.com/network/redir?"], :root aside[id^="div-gpt-ad"], :root div > [class][onclick*=".updateAnalyticsEvents"], :root div[class$="dealnews"] > .dealnews, :root div[class^="BlockAdvert-"], :root div[class^="ResponsiveAd-"], :root div[class^="ad_border_"], :root div[class^="ad_position_"], :root div[class^="block-openx-"], :root div[class^="local-feed-banner-ads"], :root div[class^="proadszone-"], :root div[data-spotim-slot], :root div[id^="YFBMSN"], :root div[id^="ad-cid-"], :root div[id^="adrotate_widgets-"], :root div[id^="ads120_600-widget"], :root div[id^="ads300_250-widget"], :root div[id^="ads300_600-widget"], :root div[id^="dfp-slot-"], :root div[id^="div-adtech-ad-"], :root div[id^="dmRosAdWrapper"], :root div[id^="google_dfp_"], :root div[id^="proadszone-"], :root div[id^="q1-adset-"], :root div[id^="zergnet-widget"], :root iframe[id^="google_ads_frame"], :root iframe[id^="google_ads_iframe"], :root iframe[src^="http://cdn1.adexprt.com/"], :root iframe[src^="http://static.mozo.com.au/strips/"], :root img[alt^="Fuckbook"], :root input[onclick^="window.open('http://www.friendlyduck.com/"], :root input[onclick^="window.open('http://www.FriendlyDuck.com/"], :root p[id^="div-gpt-ad-"], :root td[valign="top"] > .mainmenu[style="padding:10px 0 0 0 !important;"], :root topadblock { display: none !important; }</style><script type="text/javascript" charset="UTF-8" src="./Misc_files/element_main.js.download"></script><script src="./Misc_files/jsapi" type="text/javascript"></script><link type="text/css" href="./Misc_files/default+en.css" rel="stylesheet"><link type="text/css" href="./Misc_files/default.css" rel="stylesheet"><script type="text/javascript" src="./Misc_files/default+en.I.js.download"></script><style type="text/css">.gsc-control-cse{font-family:Arial, sans-serif;border-color:#FFFFFF;background-color:#FFFFFF}.gsc-control-cse .gsc-table-result{font-family:Arial, sans-serif}input.gsc-input,.gsc-input-box,.gsc-input-box-hover,.gsc-input-box-focus{border-color:#D9D9D9}.gsc-search-button-v2,.gsc-search-button-v2:hover,.gsc-search-button-v2:focus{border-color:#2F5BB7;background-color:#357AE8;background-image:none;filter:none}.gsc-search-button-v2 svg{fill:#FFFFFF}.gsc-tabHeader.gsc-tabhInactive{border-color:#CCCCCC;background-color:#FFFFFF}.gsc-tabHeader.gsc-tabhActive{border-color:#CCCCCC;border-bottom-color:#FFFFFF;background-color:#FFFFFF}.gsc-tabsArea{border-color:#CCCCCC}.gsc-webResult.gsc-result,.gsc-results .gsc-imageResult{border-color:#FFFFFF;background-color:#FFFFFF}.gsc-webResult.gsc-result:hover,.gsc-imageResult:hover{border-color:#FFFFFF;background-color:#FFFFFF}.gs-webResult.gs-result a.gs-title:link,.gs-webResult.gs-result a.gs-title:link b,.gs-imageResult a.gs-title:link,.gs-imageResult a.gs-title:link b{color:#1155CC}.gs-webResult.gs-result a.gs-title:visited,.gs-webResult.gs-result a.gs-title:visited b,.gs-imageResult a.gs-title:visited,.gs-imageResult a.gs-title:visited b{color:#1155CC}.gs-webResult.gs-result a.gs-title:hover,.gs-webResult.gs-result a.gs-title:hover b,.gs-imageResult a.gs-title:hover,.gs-imageResult a.gs-title:hover b{color:#1155CC}.gs-webResult.gs-result a.gs-title:active,.gs-webResult.gs-result a.gs-title:active b,.gs-imageResult a.gs-title:active,.gs-imageResult a.gs-title:active b{color:#1155CC}.gsc-cursor-page{color:#1155CC}a.gsc-trailing-more-results:link{color:#1155CC}.gs-webResult .gs-snippet,.gs-imageResult .gs-snippet,.gs-fileFormatType{color:#333333}.gs-webResult div.gs-visibleUrl,.gs-imageResult div.gs-visibleUrl{color:#009933}.gs-webResult div.gs-visibleUrl-short{color:#009933}.gs-webResult div.gs-visibleUrl-short{display:none}.gs-webResult div.gs-visibleUrl-long{display:block}.gs-promotion div.gs-visibleUrl-short{display:none}.gs-promotion div.gs-visibleUrl-long{display:block}.gsc-cursor-box{border-color:#FFFFFF}.gsc-results .gsc-cursor-box .gsc-cursor-page{border-color:#CCCCCC;background-color:#FFFFFF;color:#1155CC}.gsc-results .gsc-cursor-box .gsc-cursor-current-page{border-color:#CCCCCC;background-color:#FFFFFF;color:#1155CC}.gsc-webResult.gsc-result.gsc-promotion{border-color:#F6F6F6;background-color:#F6F6F6}.gsc-completion-title{color:#1155CC}.gsc-completion-snippet{color:#333333}.gs-promotion a.gs-title:link,.gs-promotion a.gs-title:link *,.gs-promotion .gs-snippet a:link{color:#1155CC}.gs-promotion a.gs-title:visited,.gs-promotion a.gs-title:visited *,.gs-promotion .gs-snippet a:visited{color:#1155CC}.gs-promotion a.gs-title:hover,.gs-promotion a.gs-title:hover *,.gs-promotion .gs-snippet a:hover{color:#1155CC}.gs-promotion a.gs-title:active,.gs-promotion a.gs-title:active *,.gs-promotion .gs-snippet a:active{color:#1155CC}.gs-promotion .gs-snippet,.gs-promotion .gs-title .gs-promotion-title-right,.gs-promotion .gs-title .gs-promotion-title-right *{color:#333333}.gs-promotion .gs-visibleUrl,.gs-promotion .gs-visibleUrl-short{color:#009933}</style><style type="text/css">.gscb_a{display:inline-block;font:27px/13px arial,sans-serif}.gsst_a .gscb_a{color:#a1b9ed;cursor:pointer}.gsst_a:hover .gscb_a,.gsst_a:focus .gscb_a{color:#36c}.gsst_a{display:inline-block}.gsst_a{cursor:pointer;padding:0 4px}.gsst_a:hover{text-decoration:none!important}.gsst_b{font-size:16px;padding:0 2px;position:relative;user-select:none;-webkit-user-select:none;white-space:nowrap}.gsst_e{opacity:0.55;}.gsst_a:hover .gsst_e,.gsst_a:focus .gsst_e{opacity:0.72;}.gsst_a:active .gsst_e{opacity:1;}.gsst_f{background:white;text-align:left}.gsst_g{background-color:white;border:1px solid #ccc;border-top-color:#d9d9d9;box-shadow:0 2px 4px rgba(0,0,0,0.2);-webkit-box-shadow:0 2px 4px rgba(0,0,0,0.2);margin:-1px -3px;padding:0 6px}.gsst_h{background-color:white;height:1px;margin-bottom:-1px;position:relative;top:-1px}.gsib_a{width:100%;padding:4px 6px 0}.gsib_a,.gsib_b{vertical-align:top}.gssb_c{border:0;position:absolute;z-index:989}.gssb_e{border:1px solid #ccc;border-top-color:#d9d9d9;box-shadow:0 2px 4px rgba(0,0,0,0.2);-webkit-box-shadow:0 2px 4px rgba(0,0,0,0.2);cursor:default}.gssb_f{visibility:hidden;white-space:nowrap}.gssb_k{border:0;display:block;position:absolute;top:0;z-index:988}.gsdd_a{border:none!important}.gsq_a{padding:0}.gscsep_a{display:none}.gssb_a{padding:0 7px}.gssb_a,.gssb_a td{white-space:nowrap;overflow:hidden;line-height:22px}#gssb_b{font-size:11px;color:#36c;text-decoration:none}#gssb_b:hover{font-size:11px;color:#36c;text-decoration:underline}.gssb_g{text-align:center;padding:8px 0 7px;position:relative}.gssb_h{font-size:15px;height:28px;margin:0.2em;-webkit-appearance:button}.gssb_i{background:#eee}.gss_ifl{visibility:hidden;padding-left:5px}.gssb_i .gss_ifl{visibility:visible}a.gssb_j{font-size:13px;color:#36c;text-decoration:none;line-height:100%}a.gssb_j:hover{text-decoration:underline}.gssb_l{height:1px;background-color:#e5e5e5}.gssb_m{color:#000;background:#fff}.gsfe_a{border:1px solid #b9b9b9;border-top-color:#a0a0a0;box-shadow:inset 0px 1px 2px rgba(0,0,0,0.1);-moz-box-shadow:inset 0px 1px 2px rgba(0,0,0,0.1);-webkit-box-shadow:inset 0px 1px 2px rgba(0,0,0,0.1);}.gsfe_b{border:1px solid #4d90fe;outline:none;box-shadow:inset 0px 1px 2px rgba(0,0,0,0.3);-moz-box-shadow:inset 0px 1px 2px rgba(0,0,0,0.3);-webkit-box-shadow:inset 0px 1px 2px rgba(0,0,0,0.3);}.gssb_a{padding:0 9px}.gsib_a{padding-right:8px;padding-left:8px}.gsst_a{padding-top:5.5px}.gssb_e{border:0}.gssb_l{margin:5px 0}input.gsc-input::-webkit-input-placeholder{font-size:14px}input.gsc-input:-moz-placeholder{font-size:14px}input.gsc-input::-moz-placeholder{font-size:14px}input.gsc-input:-ms-input-placeholder{font-size:14px}input.gsc-input:focus::-webkit-input-placeholder{color:transparent}input.gsc-input:focus:-moz-placeholder{color:transparent}input.gsc-input:focus::-moz-placeholder{color:transparent}input.gsc-input:focus:-ms-input-placeholder{color:transparent}.gssb_c .gsc-completion-container{position:static}.gssb_c{z-index:5000}.gsc-completion-container table{background:transparent;font-size:inherit;font-family:inherit}.gssb_c > tbody > tr,.gssb_c > tbody > tr > td,.gssb_d,.gssb_d > tbody > tr,.gssb_d > tbody > tr > td,.gssb_e,.gssb_e > tbody > tr,.gssb_e > tbody > tr > td{padding:0;margin:0;border:0}.gssb_a table,.gssb_a table tr,.gssb_a table tr td{padding:0;margin:0;border:0}</style></head>
+<body style="position: relative; min-height: 100%; top: 0px;">
+<div class="w3-container top">
+  <a class="w3schools-logo" href="https://www.w3schools.com/">w3schools<span class="dotcom">.com</span></a>
+  <div class="w3-right w3-hide-small w3-wide toptext" style="font-family:&#39;Segoe UI&#39;,Arial,sans-serif">THE WORLD'S LARGEST WEB DEVELOPER SITE</div>
+</div>
+
+<div style="display: none; position: fixed; z-index: 4; right: 52px; height: 44px; background-color: rgb(95, 95, 95); letter-spacing: normal; top: 0px;" id="googleSearch">
+  <div id="___gcse_0"><div class="gsc-control-cse gsc-control-cse-en"><div class="gsc-control-wrapper-cse" dir="ltr"><form class="gsc-search-box gsc-search-box-tools" accept-charset="utf-8"><table cellspacing="0" cellpadding="0" class="gsc-search-box"><tbody><tr><td class="gsc-input"><div class="gsc-input-box" id="gsc-iw-id1"><table cellspacing="0" cellpadding="0" id="gs_id50" class="gstl_50 " style="width: 100%; padding: 0px;"><tbody><tr><td id="gs_tti50" class="gsib_a"><input autocomplete="off" type="text" size="10" class="gsc-input" name="search" title="search" id="gsc-i-id1" dir="ltr" spellcheck="false" placeholder="Custom Search" style="width: 100%; padding: 0px; border: none; margin: 0px; height: auto; outline: none; background: url(&quot;https://www.google.com/cse/static/images/1x/googlelogo_lightgrey_46x16dp.png&quot;) left center no-repeat rgb(255, 255, 255); text-indent: 48px;"></td><td class="gsib_b"><div class="gsst_b" id="gs_st50" dir="ltr"><a class="gsst_a" href="javascript:void(0)" style="display: none;"><span class="gscb_a" id="gs_cb50">×</span></a></div></td></tr></tbody></table></div></td><td class="gsc-search-button"><button class="gsc-search-button gsc-search-button-v2"><svg width="13" height="13" viewBox="0 0 13 13"><title>search</title><path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z"></path></svg></button></td><td class="gsc-clear-button"><div class="gsc-clear-button" title="clear results">&nbsp;</div></td></tr></tbody></table></form><div class="gsc-results-wrapper-overlay"><div class="gsc-results-close-btn" tabindex="0"></div><div class="gsc-tabsAreaInvisible"><div class="gsc-tabHeader gsc-inline-block gsc-tabhActive">Custom Search</div><span class="gs-spacer"> </span></div><div class="gsc-tabsAreaInvisible"></div><div class="gsc-above-wrapper-area-invisible"><table cellspacing="0" cellpadding="0" class="gsc-above-wrapper-area-container"><tbody><tr><td class="gsc-result-info-container"><div class="gsc-result-info-invisible"></div></td></tr></tbody></table></div><div class="gsc-adBlockInvisible"></div><div class="gsc-wrapper"><div class="gsc-adBlockInvisible"></div><div class="gsc-resultsbox-invisible"><div class="gsc-resultsRoot gsc-tabData gsc-tabdActive"><table cellspacing="0" cellpadding="0" class="gsc-resultsHeader"><tbody><tr><td class="gsc-twiddleRegionCell"><div class="gsc-twiddle"><div class="gsc-title">Web</div></div><div class="gsc-stats"></div><div class="gsc-results-selector gsc-all-results-active"><div class="gsc-result-selector gsc-one-result" title="show one result">&nbsp;</div><div class="gsc-result-selector gsc-more-results" title="show more results">&nbsp;</div><div class="gsc-result-selector gsc-all-results" title="show all results">&nbsp;</div></div></td><td class="gsc-configLabelCell"></td></tr></tbody></table><div><div class="gsc-expansionArea"></div></div></div></div></div></div><div class="gsc-modal-background-image" tabindex="0"></div></div></div></div>
+</div>
+<div style="display: none; position: fixed; z-index: 3; right: 111px; height: 44px; background-color: rgb(95, 95, 95); text-align: right; padding-top: 9px; top: 0px;" id="google_translate_element"><div class="skiptranslate goog-te-gadget" dir="ltr" style=""><div id=":0.targetLanguage" class="goog-te-gadget-simple" style="white-space: nowrap;"><img src="./Misc_files/cleardot.gif" class="goog-te-gadget-icon" alt="" style="background-image: url(&quot;https://translate.googleapis.com/translate_static/img/te_ctrl3.gif&quot;); background-position: -65px 0px;"><span style="vertical-align: middle;"><a aria-haspopup="true" class="goog-te-menu-value" href="javascript:void(0)"><span>Select Language</span><img src="./Misc_files/cleardot.gif" alt="" width="1" height="1"><span style="border-left: 1px solid rgb(187, 187, 187);">​</span><img src="./Misc_files/cleardot.gif" alt="" width="1" height="1"><span aria-hidden="true" style="color: rgb(118, 118, 118);">▼</span></a></span></div></div></div>
+
+<div class="w3-card-2 topnav" id="topnav" style="position: fixed; top: 0px;">
+  <div style="overflow:auto;">
+    <div class="w3-bar w3-left" style="width:100%;overflow:hidden;height:44px">
+      <a href="javascript:void(0);" class="topnav-icons fa fa-menu w3-hide-large w3-left w3-bar-item w3-button" onclick="open_menu()" title="Menu"></a>
+      <a href="https://www.w3schools.com/default.asp" class="topnav-icons fa fa-home w3-left w3-bar-item w3-button" title="Home"></a>
+      <a class="w3-bar-item w3-button active" href="https://www.w3schools.com/html/default.asp" title="HTML Tutorial">HTML</a>
+      <a class="w3-bar-item w3-button" href="https://www.w3schools.com/css/default.asp" title="CSS Tutorial">CSS</a>
+      <a class="w3-bar-item w3-button" href="https://www.w3schools.com/js/default.asp" title="JavaScript Tutorial">JAVASCRIPT</a>
+      <a class="w3-bar-item w3-button" href="https://www.w3schools.com/sql/default.asp" title="SQL Tutorial">SQL</a>
+      <a class="w3-bar-item w3-button" href="https://www.w3schools.com/php/default.asp" title="PHP Tutorial">PHP</a>
+      <a class="w3-bar-item w3-button" href="https://www.w3schools.com/bootstrap/default.asp" title="Bootstrap Tutorial">BOOTSTRAP</a>
+      <a class="w3-bar-item w3-button" href="https://www.w3schools.com/howto/default.asp" title="How To">HOW TO</a>
+      <a class="w3-bar-item w3-button" href="https://www.w3schools.com/jquery/default.asp" title="jQuery Tutorial">JQUERY</a>
+      <a class="w3-bar-item w3-button" href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS Tutorial">W3.CSS</a>
+      <a class="w3-bar-item w3-button" href="https://www.w3schools.com/angular/default.asp" title="Angular Tutorial">ANGULAR</a>
+      <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/default.asp" title="XML Tutorial">XML</a>
+      <a class="w3-bar-item w3-button" id="topnavbtn_tutorials" href="javascript:void(0);" onclick="w3_open_nav(&quot;tutorials&quot;)" title="Tutorials">MORE <i class="fa fa-caret-down"></i><i class="fa fa-caret-up" style="display:none"></i></a>
+      <a href="javascript:void(0);" class="topnav-icons fa w3-right w3-bar-item w3-button" onclick="open_search(this)" title="Search W3Schools"></a>
+      <a href="javascript:void(0);" class="topnav-icons fa w3-right w3-bar-item w3-button" onclick="open_translate(this)" title="Translate W3Schools"></a>
+      <a class="w3-bar-item w3-button w3-right" href="https://www.w3schools.com/forum/default.asp">FORUM</a>
+      <a class="w3-bar-item w3-button w3-right" id="topnavbtn_examples" href="javascript:void(0);" onclick="w3_open_nav(&quot;examples&quot;)" title="Examples">EXAMPLES <i class="fa fa-caret-down"></i><i class="fa fa-caret-up" style="display:none"></i></a>
+      <a class="w3-bar-item w3-button w3-right" id="topnavbtn_references" href="javascript:void(0);" onclick="w3_open_nav(&quot;references&quot;)" title="References">REFERENCES <i class="fa fa-caret-down"></i><i class="fa fa-caret-up" style="display:none"></i></a>
+    </div>
+    <div id="nav_tutorials" class="w3-bar-block w3-card-2" style="display:none;">
+      <span onclick="w3_close_nav(&quot;tutorials&quot;)" class="w3-button w3-xlarge w3-right" style="position:absolute;right:0;font-weight:bold;">×</span>
+      <div class="w3-row-padding" style="padding:24px 48px">
+        <div class="w3-col l3 m4">
+          <h3>HTML and CSS</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/html/default.asp">Learn HTML</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/css/default.asp">Learn CSS</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/w3css/default.asp">Learn W3.CSS</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/colors/default.asp">Learn Colors</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/bootstrap/default.asp">Learn Bootstrap 3</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/bootstrap4/default.asp">Learn Bootstrap 4</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/graphics/default.asp">Learn Graphics</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/icons/default.asp">Learn Icons</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/howto/default.asp">Learn How To</a>
+        </div>
+        <div class="w3-col l3 m4">  
+          <h3>JavaScript</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/js/default.asp">Learn JavaScript</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/jquery/default.asp">Learn jQuery</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/angular/default.asp">Learn AngularJS</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/js/js_json_intro.asp">Learn JSON</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/js/js_ajax_intro.asp">Learn AJAX</a>
+          <div class="w3-hide-small"><br><br></div>
+        </div>
+        <div class="w3-col l3 m4">
+          <h3>Server Side</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/sql/default.asp">Learn SQL</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/php/default.asp">Learn PHP</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/python/default.asp">Learn Python</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/asp/default.asp">Learn ASP</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/nodejs/default.asp">Learn Node.js</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/nodejs/nodejs_raspberrypi.asp">Learn Raspberry Pi</a>          
+          <h3>Web Building</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/w3css/w3css_templates.asp">Web Templates</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/browsers/default.asp">Web Statistics</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/cert/default.asp">Web Certificates</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/tryit/default.asp">Web Editor</a>
+        </div>
+        <div class="w3-col l3 m4">
+          <h3>XML</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/default.asp">Learn XML</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/ajax_intro.asp">Learn XML AJAX</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/dom_intro.asp">Learn XML DOM</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/xml_dtd_intro.asp">Learn XML DTD</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/schema_intro.asp">Learn XML Schema</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/xsl_intro.asp">Learn XSLT</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/xpath_intro.asp">Learn XPath</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/xquery_intro.asp">Learn XQuery</a>
+        </div>
+      </div>
+      <br>
+    </div>
+    <div id="nav_references" class="w3-bar-block w3-card-2">
+      <span onclick="w3_close_nav(&quot;references&quot;)" class="w3-button w3-xlarge w3-right" style="position:absolute;right:0;font-weight:bold;">×</span>
+      <div class="w3-row-padding" style="padding:24px 48px">
+        <div class="w3-col m4">
+          <h3>HTML</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/tags/default.asp">HTML Tag Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/tags/ref_eventattributes.asp">HTML Event Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/colors/default.asp">HTML Color Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/tags/ref_attributes.asp">HTML Attribute Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/tags/ref_canvas.asp">HTML Canvas Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/graphics/svg_reference.asp">HTML SVG Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/graphics/google_maps_reference.asp">Google Maps Reference</a>
+          <h3>Charsets</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/charsets/default.asp">HTML Character Sets</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/charsets/ref_html_ascii.asp">HTML ASCII</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/charsets/ref_html_ansi.asp">HTML ANSI</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/charsets/ref_html_ansi.asp">HTML Windows-1252</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/charsets/ref_html_8859.asp">HTML ISO-8859-1</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/charsets/ref_html_symbols.asp">HTML Symbols</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/charsets/ref_html_utf8.asp">HTML UTF-8</a>
+        </div>
+        <div class="w3-col m4">
+          <h3>CSS</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/cssref/default.asp">CSS Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/cssref/css3_browsersupport.asp">CSS Browser Support</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/cssref/css_selectors.asp">CSS Selector Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/w3css/w3css_references.asp">W3.CSS Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/bootstrap/bootstrap_ref_all_classes.asp">Bootstrap Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/icons/icons_reference.asp">Icon Reference</a>
+          <h3>XML</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/dom_nodetype.asp">XML Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/dom_http.asp">XML Http Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/xsl_elementref.asp">XSLT Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/schema_elements_ref.asp">XML Schema Reference</a>
+        </div>
+        <div class="w3-col m4">
+          <h3>JavaScript</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/jsref/default.asp">JavaScript Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/jsref/default.asp">HTML DOM Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/jquery/jquery_ref_selectors.asp">jQuery Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/angular/angular_ref_directives.asp">AngularJS Reference</a>
+          <h3>Server Side</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/php/php_ref_array.asp">PHP Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/sql/sql_quickref.asp">SQL Reference</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/asp/asp_ref_response.asp">ASP Reference</a>
+        </div>
+      </div>
+      <br>
+    </div>
+    <div id="nav_examples" class="w3-bar-block w3-card-2">
+      <span onclick="w3_close_nav(&quot;examples&quot;)" class="w3-button w3-xlarge w3-right" style="position:absolute;right:0;font-weight:bold;">×</span>
+      <div class="w3-row-padding" style="padding:24px 48px">
+        <div class="w3-col l3 m6">
+          <h3>HTML/CSS</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/html/html_examples.asp">HTML Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/css/css_examples.asp">CSS Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/w3css/w3css_examples.asp">W3.CSS Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/w3css/w3css_templates.asp">W3.CSS Templates</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/bootstrap/bootstrap_examples.asp">Bootstrap Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/howto/default.asp">How To Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/graphics/svg_examples.asp">SVG Examples</a>
+        </div>
+        <div class="w3-col l3 m6">
+          <h3>JavaScript</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/js/js_examples.asp" target="_top">JavaScript Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/js/js_dom_examples.asp" target="_top">HTML DOM Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/jquery/jquery_examples.asp" target="_top">jQuery Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/angular/angular_examples.asp" target="_top">AngularJS Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/js/js_ajax_examples.asp" target="_top">AJAX Examples</a>
+        </div>
+        <div class="w3-col l3 m6">
+          <h3>Server Side</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/php/php_examples.asp" target="_top">PHP Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/asp/asp_examples.asp" target="_top">ASP Examples</a>
+          <h3>XML</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/xml_examples.asp" target="_top">XML Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/xsl_examples.asp" target="_top">XSLT Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/xpath_examples.asp" target="_top">XPath Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/xml/schema_example.asp" target="_top">XML Schema Examples</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/graphics/svg_examples.asp" target="_top">SVG Examples</a>
+        </div>
+        <div class="w3-col l3 m6">
+          <h3>Quizzes</h3>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/quiztest/quiztest.asp?Qtest=HTML" target="_top">HTML Quiz</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/quiztest/quiztest.asp?Qtest=CSS" target="_top">CSS Quiz</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/quiztest/quiztest.asp?Qtest=JavaScript" target="_top">JavaScript Quiz</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/quiztest/quiztest.asp?Qtest=Bootstrap" target="_top">Bootstrap Quiz</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/quiztest/quiztest.asp?Qtest=jQuery" target="_top">jQuery Quiz</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/quiztest/quiztest.asp?Qtest=PHP" target="_top">PHP Quiz</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/quiztest/quiztest.asp?Qtest=SQL" target="_top">SQL Quiz</a>
+          <a class="w3-bar-item w3-button" href="https://www.w3schools.com/quiztest/quiztest.asp?Qtest=XML" target="_top">XML Quiz</a>
+        </div>
+      </div>
+      <br>
+    </div>
+  </div>
+</div>
+
+<div class="w3-sidebar w3-collapse" id="sidenav" style="top: 44px;">
+  <div id="leftmenuinner" style="padding-top: 44px;">
+    <div class="w3-light-grey" id="leftmenuinnerinner" style="overflow-y: scroll;">
+      <a href="javascript:void(0)" onclick="close_menu()" class="w3-button w3-hide-large w3-large w3-display-topright" style="right:16px;padding:3px 12px;font-weight:bold;">×</a>
+<h2 class="left"><span class="left_h2">HTML5</span> Tutorial</h2>
+<a target="_top" href="https://www.w3schools.com/html/default.asp">HTML HOME</a>
+<a target="_top" href="https://www.w3schools.com/html/html_intro.asp">HTML Introduction</a>
+<a target="_top" href="https://www.w3schools.com/html/html_editors.asp">HTML Editors</a>
+<a target="_top" href="https://www.w3schools.com/html/html_basic.asp">HTML Basic</a>
+<a target="_top" href="https://www.w3schools.com/html/html_elements.asp">HTML Elements</a>
+<a target="_top" href="https://www.w3schools.com/html/html_attributes.asp">HTML Attributes</a>
+<a target="_top" href="https://www.w3schools.com/html/html_headings.asp">HTML Headings</a>
+<a target="_top" href="https://www.w3schools.com/html/html_paragraphs.asp">HTML Paragraphs</a>
+<a target="_top" href="https://www.w3schools.com/html/html_styles.asp">HTML Styles</a>
+<a target="_top" href="https://www.w3schools.com/html/html_formatting.asp">HTML Formatting</a>
+<a target="_top" href="https://www.w3schools.com/html/html_quotation_elements.asp">HTML Quotations</a>
+<a target="_top" href="https://www.w3schools.com/html/html_comments.asp">HTML Comments</a>
+<a target="_top" href="https://www.w3schools.com/html/html_colors.asp">HTML Colors</a>
+<a target="_top" href="https://www.w3schools.com/html/html_css.asp">HTML CSS</a>
+<a target="_top" href="https://www.w3schools.com/html/html_links.asp">HTML Links</a>
+<a target="_top" href="https://www.w3schools.com/html/html_images.asp">HTML Images</a>
+<a target="_top" href="https://www.w3schools.com/html/html_tables.asp">HTML Tables</a>
+<a target="_top" href="https://www.w3schools.com/html/html_lists.asp">HTML Lists</a>
+<a target="_top" href="https://www.w3schools.com/html/html_blocks.asp">HTML Blocks</a>
+<a target="_top" href="https://www.w3schools.com/html/html_classes.asp">HTML Classes</a>
+<a target="_top" href="https://www.w3schools.com/html/html_id.asp">HTML Id</a>
+<a target="_top" href="https://www.w3schools.com/html/html_iframe.asp">HTML Iframes</a>
+<a target="_top" href="https://www.w3schools.com/html/html_scripts.asp">HTML JavaScript</a>
+<a target="_top" href="https://www.w3schools.com/html/html_filepaths.asp">HTML File Paths</a>
+<a target="_top" href="https://www.w3schools.com/html/html_head.asp">HTML Head</a>
+<a target="_top" href="https://www.w3schools.com/html/html_layout.asp">HTML Layout</a>
+<a target="_top" href="https://www.w3schools.com/html/html_responsive.asp" class="active">HTML Responsive</a>
+<a target="_top" href="https://www.w3schools.com/html/html_computercode_elements.asp">HTML Computercode</a>
+<a target="_top" href="https://www.w3schools.com/html/html_entities.asp">HTML Entities</a>
+<a target="_top" href="https://www.w3schools.com/html/html_symbols.asp">HTML Symbols</a>
+<a target="_top" href="https://www.w3schools.com/html/html_charset.asp">HTML Charset</a>
+<a target="_top" href="https://www.w3schools.com/html/html_urlencode.asp">HTML URL Encode</a>
+<a target="_top" href="https://www.w3schools.com/html/html_xhtml.asp">HTML XHTML</a>
+<br>
+<h2 class="left"><span class="left_h2">HTML</span> Forms</h2>
+<a target="_top" href="https://www.w3schools.com/html/html_forms.asp">HTML Forms</a>
+<a target="_top" href="https://www.w3schools.com/html/html_form_elements.asp">HTML Form Elements</a>
+<a target="_top" href="https://www.w3schools.com/html/html_form_input_types.asp">HTML Input Types</a>
+<a target="_top" href="https://www.w3schools.com/html/html_form_attributes.asp">HTML Input Attributes</a>
+<br>
+<h2 class="left"><span class="left_h2">HTML5</span></h2>
+<a target="_top" href="https://www.w3schools.com/html/html5_intro.asp">HTML5 Intro</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_browsers.asp">HTML5 Support</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_new_elements.asp">HTML5 New Elements</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_semantic_elements.asp">HTML5 Semantics</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_migration.asp">HTML5 Migration</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_syntax.asp">HTML5 Style Guide</a>
+<br>
+<h2 class="left"><span class="left_h2">HTML</span> Graphics</h2>
+<a target="_top" href="https://www.w3schools.com/html/html5_canvas.asp">HTML Canvas</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_svg.asp">HTML SVG</a>
+<a target="_top" href="https://www.w3schools.com/html/html_googlemaps.asp">HTML Google Maps</a>
+<br>
+<h2 class="left"><span class="left_h2">HTML</span> Media</h2>
+<a target="_top" href="https://www.w3schools.com/html/html_media.asp">HTML Media</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_video.asp">HTML Video</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_audio.asp">HTML Audio</a>
+<a target="_top" href="https://www.w3schools.com/html/html_object.asp">HTML Plug-ins</a>
+<a target="_top" href="https://www.w3schools.com/html/html_youtube.asp">HTML YouTube</a>
+<br>
+<h2 class="left"><span class="left_h2">HTML</span> APIs</h2>
+<a target="_top" href="https://www.w3schools.com/html/html5_geolocation.asp">HTML Geolocation</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_draganddrop.asp">HTML Drag/Drop</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_webstorage.asp">HTML Web Storage</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_webworkers.asp">HTML Web Workers</a>
+<a target="_top" href="https://www.w3schools.com/html/html5_serversentevents.asp">HTML SSE</a>
+<br>
+<h2 class="left"><span class="left_h2">HTML</span> Examples</h2>
+<a target="_top" href="https://www.w3schools.com/html/html_examples.asp">HTML Examples</a>
+<a target="_top" href="https://www.w3schools.com/html/html_quiz.asp">HTML Quiz</a>
+<a target="_top" href="https://www.w3schools.com/html/html_exercises.asp">HTML Exercises</a>
+<a target="_top" href="https://www.w3schools.com/html/html_exam.asp">HTML Certificate</a>
+<a target="_top" href="https://www.w3schools.com/html/html_summary.asp">HTML Summary</a>
+<a target="_top" href="https://www.w3schools.com/html/html_accessibility.asp">HTML Accessibility</a>
+<br>
+<h2 class="left"><span class="left_h2">HTML</span> References</h2>
+<a target="_top" href="https://www.w3schools.com/tags/default.asp">HTML Tag List</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_standardattributes.asp">HTML Attributes</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_eventattributes.asp">HTML Events</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_colornames.asp">HTML Colors</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_canvas.asp">HTML Canvas</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_av_dom.asp">HTML Audio/Video</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_html_dtd.asp">HTML Doctypes</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_charactersets.asp">HTML Character Sets</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_urlencode.asp">HTML URL Encode</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_language_codes.asp">HTML Lang Codes</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_httpmessages.asp">HTTP Messages</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_httpmethods.asp">HTTP Methods</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_pxtoemconversion.asp">PX to EM Converter</a>
+<a target="_top" href="https://www.w3schools.com/tags/ref_keyboardshortcuts.asp">Keyboard Shortcuts</a>
+      <br><br>
+    </div>
+  </div>
+</div>
+<div class="w3-main w3-light-grey" id="belowtopnav" style="margin-left: 220px; padding-top: 44px;">
+  <div class="w3-row w3-white">
+    <div class="w3-col l10 m12" id="main">
+      <div id="mainLeaderboard" style="overflow: hidden; display: none !important;">
+        <!-- MainLeaderboard-->
+        <div id="div-gpt-ad-1422003450156-2">
+          <script type="text/javascript">googletag.cmd.push(function() { googletag.display('div-gpt-ad-1422003450156-2'); });</script>
+        </div>
+      </div>
+<h1>HTML <span class="color_h1">Responsive Web Design</span></h1>
+<div class="w3-clear nextprev">
+<a class="w3-left w3-btn" href="https://www.w3schools.com/html/html_layout.asp">❮ Previous</a>
+<a class="w3-right w3-btn" href="https://www.w3schools.com/html/html_computercode_elements.asp">Next ❯</a>
+</div>
+<hr>
+<h2>What is Responsive Web Design?</h2>
+<p>Responsive Web Design makes your web page look good on all devices (desktops, tablets, and phones).</p>
+<p>Responsive Web Design is about using HTML and CSS to resize, hide, shrink, enlarge, or move the content to make it look good on any screen:</p>
+
+<div style="overflow:auto;">
+  <div style="width:450px;height:360px;position:relative;">
+    <img src="./Misc_files/img_rwd_desktop.jpg" style="position:absolute;bottom:5px;left:60px;border:10px solid #444444;border-radius:5px;width:100%;max-width:450px;">
+    <img src="./Misc_files/img_rwd_tablet.jpg" style="position:absolute;bottom:5px;left:20px;border:5px solid #444444;border-radius:5px;width:100%;max-width:178px;">
+    <img src="./Misc_files/img_rwd_phone.jpg" style="position:absolute;bottom:5px;border:4px solid #444444;border-radius:5px;width:100%;max-width:82px;">
+  </div>
+</div>
+<p>
+<a class="w3-btn w3-margin-bottom" href="https://www.w3schools.com/html/tryit.asp?filename=tryhtml_responsive" target="_blank">Try it Yourself »</a>
+</p>
+<div class="w3-panel w3-note">
+  <p><strong>Note:</strong> A web page should look good on <strong>any device</strong>!</p>
+</div>
+<hr>
+<h2>Setting The Viewport</h2>
+<p>When making responsive web pages, add the following <code class="w3-codespan">&lt;meta&gt;</code> element in all your web pages:</p>
+<div class="w3-example">
+<h3>Example</h3>
+<div class="w3-code notranslate htmlHigh">
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>meta<span style="color:red"> name<span style="color:mediumblue">="viewport"</span> content<span style="color:mediumblue">="width=device-width, initial-scale=1.0"</span></span><span style="color:mediumblue">&gt;</span></span>
+ </div>
+<a class="w3-btn w3-margin-bottom" href="https://www.w3schools.com/html/tryit.asp?filename=tryhtml_responsive_viewport" target="_blank">Try it Yourself »</a>
+</div>
+
+<p>This will set the viewport of your page, which will give the browser instructions on how 
+to control the page's dimensions and scaling.</p>
+<p>Here is an example of a web page <em>without</em> the viewport meta tag, and the same web page <em>with</em> the viewport meta tag:</p>
+<div class="w3-row" style="text-align:center;">
+  <div class="w3-half w3-margin-bottom">
+    Without the viewport meta tag:<br>
+    <a target="_blank" href="https://www.w3schools.com/html/example_withoutviewport.htm"><img src="./Misc_files/img_viewport1.png" class="w3-hover-shadow viewport"></a>
+  </div>
+  <div class="w3-half">
+    With the viewport meta tag:<br>
+    <a target="_blank" href="https://www.w3schools.com/html/example_withviewport.htm"><img src="./Misc_files/img_viewport2.png" class="w3-hover-shadow viewport"></a>
+  </div>  
+</div>
+<div class="w3-note w3-panel">
+<p><strong>Tip:</strong> If you are browsing this page with a phone or a tablet, you can click on the two links above to see the difference.</p>
+</div>
+<hr>
+<div style="overflow:auto;text-align:center">
+<!-- MidContent -->
+  <div id="div-gpt-ad-1493883843099-0" style="display: inline-block">
+    <script>
+    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1493883843099-0'); });
+    </script>
+  </div>  
+</div>
+<hr>
+<h2>Responsive Images</h2>
+<p>Responsive images are images that scale nicely to fit any browser size.</p>
+<h3>Using the width Property</h3>
+<p>If the CSS <code class="w3-codespan">width</code> property is set to 100%, the image will be responsive and scale 
+up and down:</p>
+<img src="./Misc_files/img_girl.jpg" style="width:100%;height:auto;">
+
+<div class="w3-example">
+<h3>Example</h3>
+<div class="w3-code notranslate htmlHigh">
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>img<span style="color:red"> 
+  src<span style="color:mediumblue">="img_girl.jpg"</span> <strong>style<span style="color:mediumblue">="width:100%;"</span></strong></span><span style="color:mediumblue">&gt;</span></span>
+ </div>
+<a class="w3-btn w3-margin-bottom" href="https://www.w3schools.com/html/tryit.asp?filename=tryhtml_responsive_image" target="_blank">Try it Yourself »</a>
+</div>
+
+<p>Notice that in the example above, the image can be scaled up to be larger than its original size.
+A better solution, in many cases, will be to use the <code class="w3-codespan">max-width</code> property instead.</p>
+<h3>Using the max-width Property</h3>
+
+<p>If the <code class="w3-codespan">max-width</code> property is set to 100%, the image will scale down if it has to, but never scale up to be larger than its original size:</p>
+
+<img src="./Misc_files/img_girl.jpg" style="max-width:100%;height:auto;">
+
+<div class="w3-example">
+<h3>Example</h3>
+<div class="w3-code notranslate htmlHigh">
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>img<span style="color:red"> 
+  src<span style="color:mediumblue">="img_girl.jpg"</span> style<span style="color:mediumblue">="<strong>max-width:100%;</strong>height:auto;"</span></span><span style="color:mediumblue">&gt;</span></span>
+ </div>
+<a class="w3-btn w3-margin-bottom" href="https://www.w3schools.com/html/tryit.asp?filename=tryhtml_responsive_image_maxwidth" target="_blank">Try it Yourself »</a>
+</div>
+<hr>
+<h3>Show Different Images Depending on Browser Width</h3>
+<p>The HTML <code class="w3-codespan">&lt;picture&gt;</code> element allows you to define different images for 
+different browser window sizes.</p>
+<p>Resize the browser window to see how the image below change depending on the width:</p>
+<picture>
+  <source srcset="img_smallflower.jpg" media="(max-width: 600px)">
+  <source srcset="img_flowers.jpg" media="(max-width: 1500px)">
+  <source srcset="flowers.jpg">
+  <img src="./Misc_files/img_smallflower.jpg" alt="Flowers">
+</picture>
+
+<div class="w3-example">
+<h3>Example</h3>
+<div class="w3-code notranslate htmlHigh">
+  <span style="color:brown"><span style="color:mediumblue">&lt;</span>picture<span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>source<span style="color:red"> srcset<span style="color:mediumblue">="img_smallflower.jpg"</span> media<span style="color:mediumblue">="(max-width: 
+  600px)"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>source<span style="color:red"> srcset<span style="color:mediumblue">="img_flowers.jpg"</span> media<span style="color:mediumblue">="(max-width: 
+  1500px)"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>source<span style="color:red"> srcset<span style="color:mediumblue">="flowers.jpg"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>img<span style="color:red"> src<span style="color:mediumblue">="img_smallflower.jpg"</span> 
+  alt<span style="color:mediumblue">="Flowers"</span></span><span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>/picture<span style="color:mediumblue">&gt;</span></span> </div>
+<a class="w3-btn w3-margin-bottom" href="https://www.w3schools.com/html/tryit.asp?filename=tryhtml_responsive_picture" target="_blank">Try it Yourself »</a>
+</div>
+<hr>
+
+<h2>Responsive Text Size</h2>
+<p>The text size can be set with a "vw" unit, which means the "viewport width".</p>
+<p>That way the text size will follow the size of the browser window:</p>
+
+<div class="w3-light-grey w3-padding w3-round">
+<h1 style="font-size:8vw;">Hello World</h1>
+<p style="font-size:2vw;">Resize the browser window to see how the text size scales.</p>
+</div>
+
+<div class="w3-example">
+<h3>Example</h3>
+<div class="w3-code notranslate htmlHigh">
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>h1<span style="color:red"> style<span style="color:mediumblue">="<strong>font-size:10vw</strong>"</span></span><span style="color:mediumblue">&gt;</span></span>Hello World<span style="color:brown"><span style="color:mediumblue">&lt;</span>/h1<span style="color:mediumblue">&gt;</span></span>
+ </div>
+<a class="w3-btn w3-margin-bottom" href="https://www.w3schools.com/html/tryit.asp?filename=tryhtml_responsive_text" target="_blank">Try it Yourself »</a>
+</div>
+
+<div class="w3-note w3-panel">
+<p>Viewport is the browser window size. 1vw = 1% of viewport width. If the viewport is 50cm wide, 1vw is 0.5cm.</p>
+</div>
+<hr>
+
+<h2>Media Queries</h2>
+<p>In addition to resize text and images, it is also common to use media queries 
+in responsive web pages.</p>
+<p>With media queries you can define completely different styles for different browser 
+sizes.</p>
+
+<p>Example: resize the browser window to see that the three div elements below will display 
+horizontally on large screens and stacked vertically on small screens:</p>
+<style>
+.menu {
+  width:20%;
+  float:left;
+}
+.main {
+  width:60%;
+  float:left;
+}
+.right {
+  width:20%;
+  float:left;
+}
+@media (max-width:800px) {
+.menu {
+  width:100%;
+}
+.main {
+  width:100%;
+}
+.right {
+  width:100%;
+}
+}
+</style>
+  <div class="w3-row">
+    <div class="menu">
+      <div class="w3-blue w3-padding">Left Menu<br><br><br></div>
+    </div>
+    <div class="main">
+      <div class="w3-light-gray w3-padding">Main Content<br><br><br></div>
+    </div>
+    <div class="right">
+      <div class="w3-green w3-padding">Right Content<br><br><br></div>
+    </div>
+  </div>
+<div class="w3-example">
+<h3>Example</h3>
+<div class="w3-code notranslate htmlHigh">
+  <span style="color:brown"><span style="color:mediumblue">&lt;</span>style<span style="color:mediumblue">&gt;</span></span><span style="color:brown"><br>.left, .right <span style="color:black">{</span><span style="color:red"><br>&nbsp; float<span style="color:mediumblue"><span style="color:black">:</span> left<span style="color:black">;</span></span><br>&nbsp; 
+  width<span style="color:mediumblue"><span style="color:black">:</span> 20%<span style="color:black">;</span></span> <span style="color:green">/* The width is 20%, by default */</span><br></span><span style="color:black">}</span><br><br>.main <span style="color:black">{</span><span style="color:red"><br>&nbsp; float<span style="color:mediumblue"><span style="color:black">:</span> left<span style="color:black">;</span></span><br>&nbsp; width<span style="color:mediumblue"><span style="color:black">:</span> 60%<span style="color:black">;</span></span> <span style="color:green">/* The width is 60%, by default */</span><br></span><span style="color:black">}</span><br><br><span style="color:green">/* Use a media query to 
+  add a breakpoint at 800px: */</span><br>@media screen and (max-width: 800px) <span style="color:black">{</span><span style="color:brown"><br>&nbsp; .left, 
+  .main, .right <span style="color:black"><span style="color:black">{</span></span><span style="color:red"><br>&nbsp;&nbsp;&nbsp; 
+  width<span style="color:mediumblue"><span style="color:black">:</span> 100%<span style="color:black">;</span></span> <span style="color:green">/* The width is 100%, when the viewport is 800px or smaller */</span><br>&nbsp; 
+  </span><span style="color:black"><span style="color:black">}</span></span><br></span><span style="color:black">}</span><br></span><span style="color:brown"><span style="color:mediumblue">&lt;</span>/style<span style="color:mediumblue">&gt;</span></span>
+ </div>
+<a class="w3-btn w3-margin-bottom" href="https://www.w3schools.com/html/tryit.asp?filename=tryhtml_responsive_media_query" target="_blank">Try it Yourself »</a>
+</div>
+
+<div class="w3-note w3-panel">
+<p><strong>Tip:</strong> To learn more about Media Queries and Responsive Web Design, read our <a href="https://www.w3schools.com/css/css_rwd_intro.asp">RWD Tutorial</a>.<br></p>
+</div>
+
+<hr>
+<h2>Responsive Web Page - Full Example</h2>
+
+<p>A responsive web page should look good on large desktop screens and small mobile phones.</p>
+
+<div>
+  <div class="w3-col header" style="background-color:#e5e5e5
+;margin-bottom:8px;height:60px;"></div>
+  <div class="w3-row">
+    <div class="w3-col s3" style="background-color:#e5e5e5
+;height:170px;border-right:8px solid white;"></div>
+    <div class="w3-col s6" style="background-color:#e5e5e5
+;height:170px;border-right:8px solid white;"></div>
+    <div class="w3-col s3" style="background-color:#e5e5e5
+;height:170px;"></div>
+  </div>
+  <div class="w3-col footer" style="background-color:#e5e5e5
+;margin-top:8px;height:31px;"></div>
+</div>
+
+
+<p>
+<a class="w3-btn w3-margin-top" href="https://www.w3schools.com/html/tryit.asp?filename=tryhtml_responsive_media_query3" target="_blank">Try it Yourself »</a>
+</p>
+<hr>
+
+<h2>Responsive Web Design - Frameworks</h2>
+
+<p>There are many existing CSS Frameworks that offer Responsive Design.</p>
+<p>They are free, and easy to use.</p>
+
+<h2>Using W3.CSS</h2>
+<p>
+A great way to create a responsive design, is to use a 
+responsive 
+style sheet, like <a href="https://www.w3schools.com/w3css/default.asp">W3.CSS</a></p>
+<p>W3.CSS makes it easy to develop sites that look nice at any size; desktop, 
+laptop, tablet, or phone:</p>
+
+<div class="w3-container w3-green">
+<h1>W3.CSS Demo</h1> 
+<p>Resize the page to see the responsiveness!</p> 
+</div>
+
+<div class="w3-row-padding w3-light-grey">
+<div class="w3-third">
+<h2>London</h2>
+<p>London is the capital city of England.</p>
+<p>It is the most populous city in the United Kingdom,
+with a metropolitan area of over 13 million inhabitants.</p>
+</div>
+<div class="w3-third">
+<h2>Paris</h2>
+<p>Paris is the capital of France.</p> 
+<p>The Paris area is one of the largest population centers in Europe,
+with more than 12 million inhabitants.</p>
+</div>
+<div class="w3-third">
+<h2>Tokyo</h2>
+<p>Tokyo is the capital of Japan.</p>
+<p>It is the center of the Greater Tokyo Area,
+and the most populous metropolitan area in the world.</p>
+</div>
+</div>
+
+<div class="w3-example">
+<h3>Example</h3>
+<div class="w3-code notranslate htmlHigh">
+ <span style="color:brown"><span style="color:mediumblue">&lt;</span>!DOCTYPE<span style="color:red"> html</span><span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>html<span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>meta<span style="color:red"> name<span style="color:mediumblue">="viewport"</span> 
+ content<span style="color:mediumblue">="width=device-width, initial-scale=1"</span></span><span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>link<span style="color:red"> rel<span style="color:mediumblue">="stylesheet"</span> 
+ href<span style="color:mediumblue">="https://www.w3schools.com/w3css/4/w3.css"</span></span><span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>body<span style="color:mediumblue">&gt;</span></span><br><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> 
+ class<span style="color:mediumblue">="w3-container w3-green"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>h1<span style="color:mediumblue">&gt;</span></span>W3Schools Demo<span style="color:brown"><span style="color:mediumblue">&lt;</span>/h1<span style="color:mediumblue">&gt;</span></span> <br>&nbsp; 
+ <span style="color:brown"><span style="color:mediumblue">&lt;</span>p<span style="color:mediumblue">&gt;</span></span>Resize this responsive page!<span style="color:brown"><span style="color:mediumblue">&lt;</span>/p<span style="color:mediumblue">&gt;</span></span> <br><span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> 
+ class<span style="color:mediumblue">="w3-row-padding"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> class<span style="color:mediumblue">="w3-third"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>h2<span style="color:mediumblue">&gt;</span></span>London<span style="color:brown"><span style="color:mediumblue">&lt;</span>/h2<span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>p<span style="color:mediumblue">&gt;</span></span>London is the capital city of England.<span style="color:brown"><span style="color:mediumblue">&lt;</span>/p<span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>p<span style="color:mediumblue">&gt;</span></span>It is the most populous city in the United Kingdom,<br>&nbsp;&nbsp;&nbsp; with a 
+ metropolitan area of over 13 million inhabitants.<span style="color:brown"><span style="color:mediumblue">&lt;</span>/p<span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> 
+ class<span style="color:mediumblue">="w3-third"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>h2<span style="color:mediumblue">&gt;</span></span>Paris<span style="color:brown"><span style="color:mediumblue">&lt;</span>/h2<span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>p<span style="color:mediumblue">&gt;</span></span>Paris is 
+ the capital of France.<span style="color:brown"><span style="color:mediumblue">&lt;</span>/p<span style="color:mediumblue">&gt;</span></span> <br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>p<span style="color:mediumblue">&gt;</span></span>The Paris area is one of the largest 
+ population centers in Europe,<br>&nbsp;&nbsp;&nbsp; with more than 12 million 
+ inhabitants.<span style="color:brown"><span style="color:mediumblue">&lt;</span>/p<span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> class<span style="color:mediumblue">="w3-third"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; 
+ <span style="color:brown"><span style="color:mediumblue">&lt;</span>h2<span style="color:mediumblue">&gt;</span></span>Tokyo<span style="color:brown"><span style="color:mediumblue">&lt;</span>/h2<span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>p<span style="color:mediumblue">&gt;</span></span>Tokyo is the capital of Japan.<span style="color:brown"><span style="color:mediumblue">&lt;</span>/p<span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>p<span style="color:mediumblue">&gt;</span></span>It 
+ is the center of the Greater Tokyo Area,<br>&nbsp;&nbsp;&nbsp; and the most populous 
+ metropolitan area in the world.<span style="color:brown"><span style="color:mediumblue">&lt;</span>/p<span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>/body<span style="color:mediumblue">&gt;</span></span><br>
+ <span style="color:brown"><span style="color:mediumblue">&lt;</span>/html<span style="color:mediumblue">&gt;</span></span> </div>
+<a class="w3-btn w3-margin-bottom" href="https://www.w3schools.com/html/tryit.asp?filename=tryhtml_responsive_w3css" target="_blank">Try it Yourself »</a>
+</div>
+<p>To learn more about W3.CSS, read our <a href="https://www.w3schools.com/w3css/default.asp">W3.CSS Tutorial</a>.</p>
+<hr>
+<h2>Bootstrap</h2>
+
+<p>Another popular framework is Bootstrap, it uses HTML, CSS and jQuery to make responsive web pages.</p>
+
+<div class="w3-example">
+<h3>Example</h3>
+<div class="w3-code notranslate htmlHigh">
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>!DOCTYPE<span style="color:red"> html</span><span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>html<span style="color:red"> lang<span style="color:mediumblue">="en"</span></span><span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>head<span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>title<span style="color:mediumblue">&gt;</span></span>Bootstrap 
+Example<span style="color:brown"><span style="color:mediumblue">&lt;</span>/title<span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>meta<span style="color:red"> charset<span style="color:mediumblue">="utf-8"</span></span><span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>meta<span style="color:red"> name<span style="color:mediumblue">="viewport"</span> 
+content<span style="color:mediumblue">="width=device-width, initial-scale=1"</span></span><span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>link<span style="color:red"> rel<span style="color:mediumblue">="stylesheet"</span> 
+href<span style="color:mediumblue">="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"</span></span><span style="color:mediumblue">&gt;</span></span><br>
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>script<span style="color:red"> 
+src<span style="color:mediumblue">="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"</span></span><span style="color:mediumblue">&gt;</span></span><span style="color:black"></span><span style="color:brown"><span style="color:mediumblue">&lt;</span>/script<span style="color:mediumblue">&gt;</span></span><br>
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>script<span style="color:red"> 
+src<span style="color:mediumblue">="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"</span></span><span style="color:mediumblue">&gt;</span></span><span style="color:black"></span><span style="color:brown"><span style="color:mediumblue">&lt;</span>/script<span style="color:mediumblue">&gt;</span></span><br>
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>/head<span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>body<span style="color:mediumblue">&gt;</span></span><br><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> class<span style="color:mediumblue">="container"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> 
+class<span style="color:mediumblue">="jumbotron"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>h1<span style="color:mediumblue">&gt;</span></span>My First Bootstrap Page<span style="color:brown"><span style="color:mediumblue">&lt;</span>/h1<span style="color:mediumblue">&gt;</span></span><br>&nbsp; 
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br>&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> class<span style="color:mediumblue">="row"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> 
+class<span style="color:mediumblue">="col-sm-4"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>&nbsp;&nbsp;&nbsp; 
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> class<span style="color:mediumblue">="col-sm-4"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+...<br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:red"> 
+class<span style="color:mediumblue">="col-sm-4"</span></span><span style="color:mediumblue">&gt;</span></span><br>&nbsp;&nbsp;&nbsp; ...<br>&nbsp;&nbsp;&nbsp; <span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br>&nbsp; 
+<span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>/div<span style="color:mediumblue">&gt;</span></span><br><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>/body<span style="color:mediumblue">&gt;</span></span><br><span style="color:brown"><span style="color:mediumblue">&lt;</span>/html<span style="color:mediumblue">&gt;</span></span> </div>
+<a target="_blank" href="https://www.w3schools.com/html/tryit.asp?filename=tryhtml_responsive_bootstrap" class="w3-btn w3-margin-bottom">Try it Yourself »</a>
+</div>
+<p>To learn more about Bootstrap, go to our <a href="https://www.w3schools.com/bootstrap/default.asp">Bootstrap Tutorial</a>.</p>
+
+<br>
+<div class="w3-clear nextprev">
+<a class="w3-left w3-btn" href="https://www.w3schools.com/html/html_layout.asp">❮ Previous</a>
+<a class="w3-right w3-btn" href="https://www.w3schools.com/html/html_computercode_elements.asp">Next ❯</a>
+</div>
+</div>
+<div class="w3-col l2 m12" id="right">
+
+<div class="sidesection">
+  <div id="skyscraper">
+    <div id="div-gpt-ad-1422003450156-5">
+      <script>
+      googletag.cmd.push(function() {
+      googletag.display('div-gpt-ad-1422003450156-5');
+      });
+      </script> 
+    </div>
+  </div>
+</div>
+
+<div class="sidesection">
+<h4><a href="https://www.w3schools.com/colors/colors_picker.asp">COLOR PICKER</a></h4>
+<a href="https://www.w3schools.com/colors/colors_picker.asp">
+<img src="./Misc_files/colorpicker.gif" alt="colorpicker"></a>
+</div>
+
+<div class="sidesection" id="moreAboutSubject">
+</div>
+
+<div class="sidesection">
+<h4><a href="https://www.w3schools.com/howto/default.asp">HOW TO</a></h4>
+<p>
+<a href="https://www.w3schools.com/howto/howto_js_tabs.asp">Tabs</a><br>
+<a href="https://www.w3schools.com/howto/howto_css_dropdown.asp">Dropdowns</a><br>
+<a href="https://www.w3schools.com/howto/howto_js_accordion.asp">Accordions</a><br>
+<a href="https://www.w3schools.com/howto/howto_js_weight_converter.asp">Convert Weights</a><br>
+<a href="https://www.w3schools.com/howto/howto_css_animate_buttons.asp">Animated Buttons</a><br>
+<a href="https://www.w3schools.com/howto/howto_js_sidenav.asp">Side Navigation</a><br>
+<a href="https://www.w3schools.com/howto/howto_js_topnav.asp">Top Navigation</a><br>
+<a href="https://www.w3schools.com/howto/howto_css_modals.asp">Modal Boxes</a><br>
+<a href="https://www.w3schools.com/howto/howto_js_progressbar.asp">Progress Bars</a><br>
+<a href="https://www.w3schools.com/howto/howto_css_parallax.asp">Parallax</a><br>
+<a href="https://www.w3schools.com/howto/howto_css_login_form.asp">Login Form</a><br>
+<a href="https://www.w3schools.com/howto/howto_html_include.asp">HTML Includes</a><br>
+<a href="https://www.w3schools.com/howto/howto_google_maps.asp">Google Maps</a><br>
+<a href="https://www.w3schools.com/howto/howto_js_rangeslider.asp">Range Sliders</a><br>
+<a href="https://www.w3schools.com/howto/howto_css_tooltip.asp">Tooltips</a><br>
+<a href="https://www.w3schools.com/howto/howto_js_slideshow.asp">Slideshow</a><br>
+<a href="https://www.w3schools.com/howto/howto_js_filter_lists.asp">Filter List</a><br>
+<a href="https://www.w3schools.com/howto/howto_js_sort_list.asp">Sort List</a><br>
+</p>
+</div>
+
+<div class="sidesection">
+<h4>SHARE</h4>
+<div class="w3-text-grey sharethis">
+<script>
+<!--
+try{
+loc=location.pathname;
+if (loc.toUpperCase().indexOf(".ASP")<0) loc=loc+"default.asp";
+txt='<a href="http://www.facebook.com/sharer.php?u=https://www.w3schools.com'+loc+'" target="_blank" title="Facebook"><span class="fa fa-facebook-square fa-2x"></span></a>';
+txt=txt+'<a href="https://twitter.com/home?status=Currently reading https://www.w3schools.com'+loc+'" target="_blank" title="Twitter"><span class="fa fa-twitter-square fa-2x"></span></a>';
+txt=txt+'<a href="https://plus.google.com/share?url=https://www.w3schools.com'+loc+'" target="_blank" title="Google+"><span class="fa fa-google-plus-square fa-2x"></span></a>';
+document.write(txt);
+} catch(e) {}
+//-->
+</script><a href="http://www.facebook.com/sharer.php?u=https://www.w3schools.com/html/html_responsive.asp" target="_blank" title="Facebook"><span class="fa fa-facebook-square fa-2x"></span></a><a href="https://twitter.com/home?status=Currently%20reading%20https://www.w3schools.com/html/html_responsive.asp" target="_blank" title="Twitter"><span class="fa fa-twitter-square fa-2x"></span></a><a href="https://plus.google.com/share?url=https://www.w3schools.com/html/html_responsive.asp" target="_blank" title="Google+"><span class="fa fa-google-plus-square fa-2x"></span></a>
+<br><br>
+<a href="javascript:void(0);" onclick="clickFBLike()" title="Like W3Schools on Facebook">
+<span class="fa fa-thumbs-o-up fa-2x"></span></a>
+<div id="fblikeframe" class="w3-modal">
+<div class="w3-modal-content w3-padding-64 w3-animate-zoom" id="popupDIV"></div>
+</div>
+</div>
+</div>
+
+<div class="sidesection">
+<h4><a target="_blank" href="https://www.w3schools.com/cert/default.asp">CERTIFICATES</a></h4>
+<p>
+<a href="https://www.w3schools.com/cert/cert_html.asp">HTML</a>,
+<a href="https://www.w3schools.com/cert/cert_css.asp">CSS</a>,
+<a href="https://www.w3schools.com/cert/cert_javascript.asp">JavaScript</a>,
+<a href="https://www.w3schools.com/cert/cert_php.asp">PHP</a>,
+<a href="https://www.w3schools.com/cert/cert_jquery.asp">jQuery</a>,
+<a href="https://www.w3schools.com/cert/cert_bootstrap.asp">Bootstrap</a> and
+<a href="https://www.w3schools.com/cert/cert_xml.asp">XML</a>.</p>
+<a target="_blank" href="https://www.w3schools.com/cert/default.asp" class="w3-button w3-dark-grey" style="text-decoration:none">
+Read More »</a>
+</div>
+
+<div id="stickypos" class="sidesection" style="text-align:center;position:sticky;top:50px;">
+  <div id="stickyadcontainer" style="width: 195.438px; position: fixed; top: 60px;">
+    <div style="position:relative;margin:auto;">
+      <div id="div-gpt-ad-1472547360578-0">
+        <script>
+        if (Number(w3_getStyleValue(document.getElementById("main"), "height").replace("px", "")) > 2200) {
+        googletag.cmd.push(function() { googletag.display('div-gpt-ad-1472547360578-0'); });
+        }
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.addEventListener("scroll", fix_stickyad);
+  window.addEventListener("resize", fix_stickyad);
+</script>
+
+</div>
+</div>
+<div id="footer" class="footer w3-container w3-white">
+
+<hr>
+<div style="overflow:auto">
+  <!-- BottomMediumRectangle -->
+  <div class="bottomad" id="div-gpt-ad-1422003450156-0" style="display: none !important;">
+    <script type="text/javascript">
+    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1422003450156-0'); });
+    </script>
+  </div>
+  <!-- RightBottomMediumRectangle -->
+  <div class="bottomad" id="div-gpt-ad-1422003450156-3" style="display: none !important;">
+    <script type="text/javascript">
+    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1422003450156-3'); });
+    </script>
+  </div>
+</div>
+<hr>
+<div class="w3-row w3-center w3-small">
+<div class="w3-col l3 m3 s12">
+<a href="javascript:void(0);" onclick="displayError();return false" style="white-space:nowrap;">REPORT ERROR</a>
+</div>
+<div class="w3-col l3 m3 s12">
+<a href="javascript:void(0);" target="_blank" onclick="printPage();return false;">PRINT PAGE</a>
+</div>
+<div class="w3-col l3 m3 s12">
+<a href="https://www.w3schools.com/forum/default.asp" target="_blank">FORUM</a>
+</div>
+<div class="w3-col l3 m3 s12">
+<a href="https://www.w3schools.com/about/default.asp" target="_top">ABOUT</a>
+</div>
+</div>
+<hr>
+<div class="w3-light-grey w3-padding w3-center" id="err_form" style="display:none;position:relative">
+<span onclick="this.parentElement.style.display=&#39;none&#39;" class="w3-button w3-display-topright">×</span>     
+<h2>Your Suggestion:</h2>
+<form>
+<div class="w3-section">      
+<label for="err_email">Your E-mail:</label>
+<input class="w3-input" type="text" style="width:100%" id="err_email" name="err_email">
+</div>
+<div class="w3-section">      
+<label for="err_email">Page address:</label>
+<input class="w3-input" type="text" style="width:100%" id="err_url" name="err_url" disabled="disabled">
+</div>
+<div class="w3-section">
+<label for="err_email">Description:</label>
+<textarea rows="10" class="w3-input" id="err_desc" name="err_desc" style="width:100%;"></textarea>
+</div>
+<div class="form-group">        
+<button type="button" onclick="sendErr()">Submit</button>
+</div>
+<br>
+</form>
+</div>
+<div class="w3-container w3-light-grey w3-padding" id="err_sent" style="display:none;position:relative">
+<span onclick="this.parentElement.style.display=&#39;none&#39;" class="w3-button w3-display-topright">×</span>     
+<h2>Thank You For Helping Us!</h2>
+<p>Your message has been sent to W3Schools.</p>
+</div>
+
+<div class="w3-row w3-center w3-small">
+<div class="w3-col l3 m6 s12">
+<div class="top10">
+<h4>Top 10 Tutorials</h4>
+<a href="https://www.w3schools.com/html/default.asp">HTML Tutorial</a><br>
+<a href="https://www.w3schools.com/css/default.asp">CSS Tutorial</a><br>
+<a href="https://www.w3schools.com/js/default.asp">JavaScript Tutorial</a><br>
+<a href="https://www.w3schools.com/w3css/default.asp">W3.CSS Tutorial</a><br>
+<a href="https://www.w3schools.com/bootstrap/default.asp">Bootstrap Tutorial</a><br>
+<a href="https://www.w3schools.com/sql/default.asp">SQL Tutorial</a><br>
+<a href="https://www.w3schools.com/php/default.asp">PHP Tutorial</a><br>
+<a href="https://www.w3schools.com/jquery/default.asp">jQuery Tutorial</a><br>
+<a href="https://www.w3schools.com/angular/default.asp">Angular Tutorial</a><br>
+<a href="https://www.w3schools.com/howto/default.asp">How To Tutorial</a><br>
+</div>
+</div>
+<div class="w3-col l3 m6 s12">
+<div class="top10">
+<h4>Top 10 References</h4>
+<a href="https://www.w3schools.com/tags/default.asp">HTML Reference</a><br>
+<a href="https://www.w3schools.com/cssref/default.asp">CSS Reference</a><br>
+<a href="https://www.w3schools.com/jsref/default.asp">JavaScript Reference</a><br>
+<a href="https://www.w3schools.com/w3css/w3css_references.asp">W3.CSS Reference</a><br>
+<a href="https://www.w3schools.com/bootstrap/bootstrap_ref_all_classes.asp">Bootstrap Reference</a><br>
+<a href="https://www.w3schools.com/sql/sql_ref_mysql.asp">SQL Reference</a><br>
+<a href="https://www.w3schools.com/php/php_ref_array.asp">PHP Reference</a><br>
+<a href="https://www.w3schools.com/colors/colors_names.asp">HTML Colors</a><br>
+<a href="https://www.w3schools.com/jquery/jquery_ref_selectors.asp">jQuery Reference</a><br>
+<a href="https://www.w3schools.com/angular/angular_ref_directives.asp">AngularJS Reference</a><br>
+</div>
+</div>
+<div class="w3-col l3 m6 s12">
+<div class="top10">
+<h4>Top 10 Examples</h4>
+<a href="https://www.w3schools.com/html/html_examples.asp">HTML Examples</a><br>
+<a href="https://www.w3schools.com/css/css_examples.asp">CSS Examples</a><br>
+<a href="https://www.w3schools.com/js/js_examples.asp">JavaScript Examples</a><br>
+<a href="https://www.w3schools.com/w3css/w3css_examples.asp">W3.CSS Examples</a><br>
+<a href="https://www.w3schools.com/bootstrap/bootstrap_examples.asp">Bootstrap Examples</a><br>
+<a href="https://www.w3schools.com/js/js_dom_examples.asp">HTML DOM Examples</a><br>
+<a href="https://www.w3schools.com/php/php_examples.asp">PHP Examples</a><br>
+<a href="https://www.w3schools.com/jquery/jquery_examples.asp">jQuery Examples</a><br>
+<a href="https://www.w3schools.com/angular/angular_examples.asp">Angular Examples</a><br>
+<a href="https://www.w3schools.com/xml/xml_examples.asp">XML Examples</a><br>
+</div>
+</div>
+<div class="w3-col l3 m6 s12">
+<div class="top10">
+<h4>Web Certificates</h4>
+<a href="https://www.w3schools.com/cert/default.asp">HTML Certificate</a><br>
+<a href="https://www.w3schools.com/cert/default.asp">CSS Certificate</a><br>
+<a href="https://www.w3schools.com/cert/default.asp">JavaScript Certificate</a><br>
+<a href="https://www.w3schools.com/cert/default.asp">jQuery Certificate</a><br>
+<a href="https://www.w3schools.com/cert/default.asp">PHP Certificate</a><br>
+<a href="https://www.w3schools.com/cert/default.asp">Bootstrap Certificate</a><br>
+<a href="https://www.w3schools.com/cert/default.asp">XML Certificate</a><br>
+</div>
+</div>        
+</div>        
+
+<hr>
+<div class="w3-center w3-small w3-opacity">
+W3Schools is optimized for learning, testing, and training. Examples might be simplified to improve reading and basic understanding.
+Tutorials, references, and examples are constantly reviewed to avoid errors, but we cannot warrant full correctness of all content.
+While using this site, you agree to have read and accepted our <a href="https://www.w3schools.com/about/about_copyright.asp">terms of use</a>,
+<a href="https://www.w3schools.com/about/about_privacy.asp">cookie and privacy policy</a>.
+<a href="https://www.w3schools.com/about/about_copyright.asp">Copyright 1999-2018</a> by Refsnes Data. All Rights Reserved.<br>
+ <a href="https://www.w3schools.com/w3css/">Powered by W3.CSS</a>.<br><br>
+<a href="https://www.w3schools.com/">
+<img style="width:150px;height:28px;border:0" src="./Misc_files/w3schoolscom_gray.gif" alt="W3Schools.com"></a>
+</div>
+<br><br>
+</div>
+
+</div>
+
+<script src="./Misc_files/w3schools_footer.js.download"></script>
+<script src="./Misc_files/element.js.download"></script>
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>  
+<![endif]--><div id="goog-gt-tt" class="skiptranslate" dir="ltr"><div style="padding: 8px;"><div><div class="logo"><img src="./Misc_files/translate_24dp.png" width="20" height="20" alt="Google Translate"></div></div></div><div class="top" style="padding: 8px; float: left; width: 100%;"><h1 class="title gray">Original text</h1></div><div class="middle" style="padding: 8px;"><div class="original-text"></div></div><div class="bottom" style="padding: 8px;"><div class="activity-links"><span class="activity-link">Contribute a better translation</span><span class="activity-link"></span></div><div class="started-activity-container"><hr style="color: #CCC; background-color: #CCC; height: 1px; border: none;"><div class="activity-root"></div></div></div><div class="status-message" style="display: none;"></div></div>
+
+
+<div class="goog-te-spinner-pos"><div class="goog-te-spinner-animation"><svg xmlns="http://www.w3.org/2000/svg" class="goog-te-spinner" width="96px" height="96px" viewBox="0 0 66 66"><circle class="goog-te-spinner-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg></div></div><iframe frameborder="0" class="goog-te-menu-frame skiptranslate" title="Language Translate Widget" style="visibility: visible; box-sizing: content-box; width: 1027px; height: 267px; display: none;" src="./Misc_files/saved_resource.html"></iframe><table cellspacing="0" cellpadding="0" class="gstl_50 gssb_c" style="width: 2px; display: none; top: 3px; left: -1px; position: absolute;"><tbody><tr><td class="gssb_f"></td><td class="gssb_e" style="width: 100%;"></td></tr></tbody></table></body></html>

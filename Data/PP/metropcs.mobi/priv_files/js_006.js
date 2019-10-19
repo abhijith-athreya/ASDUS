@@ -1,0 +1,3 @@
+function getSessionAttributesforPopup(attrName,asyncTask){var attrValue="";var isAsync=false;if(asyncTask!==undefined&&(asyncTask===true||asyncTask===false)){isAsync=asyncTask;}
+$.ajax({url:"/apps/mpcs/servlet/authentication",async:isAsync,data:{action:'getSessionAttributes',sessionParam:attrName},cache:false,type:"POST",success:function(response){if(response!==""){attrValue=response;}
+else{attrValue="false";}},error:function(response){}});return attrValue;}

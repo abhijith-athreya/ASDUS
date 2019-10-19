@@ -1,0 +1,458 @@
+/**
+ * @file
+ * Theming adjustments.
+ */
+
+(function ($) {
+
+  // Actual window height.
+  $(document).ready(function () {
+    if ($('#block-tocify-tocify').length > 0) {
+      var $altoRight = $('#content-wrapper').height();
+      if ($('.region-sidebar-left').length > 0) {
+        $('.region-sidebar-left').css('min-height', $altoRight);
+      }
+    }
+    $('.ws-ico').removeAttr('onClick');
+    $('.video_transcript').hide();
+    $('.ws-popup-layout').mouseleave(function () {
+      $(this).parents('.ws-popup').removeClass('ws-popup-show');
+    });
+
+    $('.show_transcript').click(function (event) {
+      event.preventDefault();
+      if ($(this).parents('.ff_media').children('.video_transcript').is(":hidden")) {
+        $(this).parents('.ff_media').children('.video_transcript').show("slow");
+      }
+      else {
+        $(this).parents('.ff_media').children('.video_transcript').slideUp();
+      }
+    });
+    $('.ws-ico').click(function (event) {
+      event.preventDefault();
+      if ($(this).parents('.ws-popup').hasClass('ws-popup-show')) {
+        $(this).parents('.ws-popup').removeClass('ws-popup-show');
+      }
+      else {
+        $(this).parents('.ws-popup').addClass('ws-popup-show');
+      }
+    })
+  });
+
+  // Left menu autoscroll.
+  Drupal.behaviors.europaeu_themeLeftMenu = {
+    attach: function (context, settings) {
+
+      if ($('#block-tocify-tocify').length > 0) {
+
+        $('#block-tocify-tocify:not(.scrolleable)').each(function () {
+
+          var $this = $(this);
+          var $altoForm = $('#block-tocify-tocify').outerHeight();
+
+          $this.addClass('scrolleable');
+
+        });
+      }
+    }
+  };
+
+  // Left menu autoscroll : call function.
+  Drupal.behaviors.europaeu_themeLeftMenuDiv = {
+    attach: function (context, settings) {
+
+      if ($("#sidebar-left").length === 0) {
+        return;
+      }
+      var targetHeader = $("#sidebar-left").offset().top;
+      var blockTocify = $('#sidebar-left #block-tocify-tocify');
+      var blockTocifyHeight = blockTocify.height();
+
+      var $w = $(window).scroll(function (e) {
+        var wTop = $w.scrollTop();
+        var targetFooter = $("#layout-footer").offset().top;
+        var footerHeight = $("#layout-footer").height();
+
+        if (wTop > targetHeader) {
+          if (wTop > targetFooter - blockTocifyHeight) {
+            blockTocify.css('top', '');
+            blockTocify.css('bottom', 0);
+            blockTocify.css('position', 'absolute');
+            blockTocify.removeClass('fixed');
+          }
+          else {
+            blockTocify.css('top', 0);
+            blockTocify.css('bottom', '');
+            blockTocify.addClass('fixed');
+            blockTocify.css('position', 'fixed');
+          }
+
+        }
+        else {
+          blockTocify.removeClass('fixed');
+          blockTocify.css('position', 'absolute');
+        }
+      });
+    }
+  };
+
+  // Hide tabs when contains graphic.
+  Drupal.behaviors.europaeu_themeGraphicTabs = {
+    attach: function (context, settings) {
+
+      $(window).resize(function () {
+        if (this.resizeTO) {
+          clearTimeout(this.resizeTO);
+        }
+        this.resizeTO = setTimeout(function () {
+          $(this).trigger('resizeEnd');
+        }, 0);
+      });
+
+      $(window).bind('resizeEnd', function () {
+        var screenAvailWidth = window.screen.width;
+
+        if (screenAvailWidth < 640) {
+
+          if ($('.fusioncharts-container').length > 0) {
+
+            $('.fusioncharts-container').each(function () {
+
+              var $this = $(this);
+              var $chartVisibility = $this.css('display');
+
+              if ($chartVisibility == 'none') {
+                $this.parents("dd").css("visibility", "hidden");
+                $this.parents("dd").css("padding", "0");
+              }
+
+            });
+          }
+        }
+        else {
+          $('.fusioncharts-container').each(function () {
+
+            var $this = $(this);
+            var $chartVisibility = $this.css('display');
+
+            if ($chartVisibility == 'block' || $chartVisibility == 'inline-block') {
+              $this.parents("dd").css("visibility", "visible");
+              $this.parents("dd").css("padding", "1em");
+            }
+
+          });
+
+        }
+      });
+    }
+  };
+
+  // Left menu autoscroll : call function.
+  Drupal.behaviors.europaeu_splashScreen = {
+    attach: function (context, settings) {
+      if ($('.no-csscolumns-width').length > 0) {
+        $('body.page-splash #splash-block #block-system-main .item-list ul').columnize({
+          width: 223
+        });
+      }
+    }
+  };
+
+  // Hide download link for youtube videos.
+  Drupal.behaviors.europaeu_hideDownloadLink = {
+    attach: function (context, settings) {
+      if ($('.view-europaeu-video-gallery').length > 0) {
+        if ($('.file-video-youtube').length > 0) {
+
+          $('.file-video-youtube').each(function () {
+
+            var $this = $(this);
+            $this.parents(".views-field-field-video-items").siblings(".views-field-download").css("display", "none");
+
+          });
+
+        }
+      }
+    }
+  };
+
+  // Contact telefone page fixes.
+  Drupal.behaviors.europaeu_contact_js = {
+    attach: function (context, settings) {
+      // @TODO: is this used, can't see the efects ?
+      $('.local_number_selector').after('<div id="local_number_value"><a href="tel:"></a></span>');
+      $('#local_number').on('change', function () {
+        var tel = this.value;
+        $('div#local_number_value').children('a').attr('href', 'tel:' + tel);
+        $('div#local_number_value').children('a').text(tel);
+      });
+    }
+  };
+
+  // Contact telefone page fixes.
+  Drupal.behaviors.europaeu_label_colon = {
+    attach: function (context, settings) {
+        $('#block-boxes-social-networks-accounts-box .panel-heading').text($('#block-boxes-social-networks-accounts-box .panel-heading').text().replace(/&amp;#039;/g, '\''));
+        var $schengen_label = $(".field-name-field-country-schengen .field-label");
+      if ($schengen_label.length > 0 && !$schengen_label.text().trim().endsWith('?')) {
+        $schengen_label.text($schengen_label.text() + ':');
+      }
+        var labels = $(".field-name-field-country-more .field-label, .field-name-field-see-also-items .field-label, .field-name-field-downloads-items .field-label");
+        $.each(labels, function () {
+          this.innerHTML = this.innerHTML.replace(":", "");
+        });
+    }
+  };
+
+  // Contact telefone page fixes.
+  Drupal.behaviors.europaeu_topic_social_media = {
+    attach: function (context, settings) {
+        var protocol = window.location.protocol;
+        var lang = $('html').attr('lang');
+        var href = window.location.pathname;
+
+        var topic = href.substr(href.lastIndexOf('/') + 1);
+        topic = topic.substring(0, topic.length - 3);
+
+        var title = $('#page-title').text();
+        var link_title = {
+          "bg": "Останете на линия",
+          "cs": "Zůstaňte ve spojení",
+          "da": "Hold forbindelsen",
+          "de": "In Verbindung bleiben",
+          "et": "Püsige liinil",
+          "el": "Κρατήστε επαφή",
+          "en": "Stay connected",
+          "es": "Síganos",
+          "fr": "Suivez-nous",
+          "ga": "Fan ceangailte",
+          "hr": "Ostanite povezani",
+          "it": "Resta collegato",
+          "lt": "Prisijunkite",
+          "lv": "Esiet informēti",
+          "hu": "Maradj kapcsolatban",
+          "mt": "Ibqa’ mgħaqqad",
+          "nl": "Blijf in contact",
+          "pl": "Bądźmy w kontakcie",
+          "pt": "Esteja ligado",
+          "ro": "Rămâi conectat",
+          "sk": "Zostaňte s nami",
+          "sl": "Ostanite povezani",
+          "fi": "Pidä yhteyttä",
+          "sv": "Håll dig uppdaterad"
+        };
+        var topic_numbers = {
+          "agriculture": '1',
+          "audiovisual-media": '2',
+          "budget": '3',
+          "climate-action": '4',
+          "competition": '5',
+          "consumers": '6',
+          "culture": '7',
+          "customs": '8',
+          "development-cooperation": '9',
+          "economic-monetary-affairs": '10',
+          "education-training-youth": '11',
+          "employment-social-affairs": '12',
+          "energy": '13',
+          "enlargement": '14',
+          "environment": '15',
+          "eu-citizenship": '16',
+          "financial-services": '17',
+          "food-safety": '18',
+          "foreign-security-policy": '19',
+          "fraud-prevention": '20',
+          "health": '21',
+          "home-affairs": '22,30',
+          "human-rights": '23',
+          "humanitarian-aid-civil-protection": '24',
+          "enterprise": '25',
+          "digital-economy-society": '26',
+          "institutional-affairs": '27',
+          "maritime-affairs-fisheries": '31',
+          "multilingualism": '32',
+          "regional-policy": '33',
+          "research-innovation": '34',
+          "single-market": '35',
+          "space": '36',
+          "sport": '37',
+          "taxation": '39',
+          "trade": '40',
+          "transport": '41',
+        };
+        $('.field-name-field-topic-see-also .field-item').append('<h2>' + link_title[lang] + '</h2><ul><li><a href="' + protocol + '//europa.eu/european-union/contact/social-networks_' + lang + '#n:|i:|e:|t:' + topic_numbers[topic] + '|s:">' + title + '</a></li></ul>');
+    }
+  };
+
+  // Exit survey.
+  Drupal.behaviors.exitsurvey = {
+    attach: function (context, settings) {
+      // Avoid errors due to any future inclusion diffs.
+      if (typeof $.widget !== "function") {
+        return;
+      }
+
+      $.widget('custom.exitsurvey', {
+
+        options: {
+          subsite_array: window.location.protocol + '//europa.eu/assets/comm/european-union/europa_survey/survey_path_2015.txt'
+        },
+
+        utils: {
+          current_lang: 'en',
+          subsite_array: []
+        },
+
+        // Private method.
+        _create: function () {
+          es_obj = this;
+          if (es_obj._get_cookie('eu_exit_survey') == null) {
+            randomnumber = Math.floor(Math.random() * 100);
+            if (randomnumber < 10 || window.location.href.indexOf("test-page") > -1) {
+              $.ajax({
+                type: 'GET',
+                url: es_obj.options.subsite_array,
+                cache: false,
+                async: true,
+                success: function (ajax_response) {
+
+                  es_obj.utils.current_lang = $('html').attr('lang');
+                  es_obj.utils.subsite_array = ajax_response.split("\n");
+
+                  invitation_as_callback = function () {
+
+                    $('#buttons').find('#bouton_ok').bind('click', function () {
+                      es_obj._create_cookie('eu_exit_survey', '1');
+                      es_obj._events();
+                      $.fancybox.close(true);
+                      return false;
+                    })
+
+                    $('#buttons').find('#bouton_close').bind('click', function () {
+                      es_obj._create_cookie('eu_exit_survey', '0');
+                      $.fancybox.close(true);
+                      return false;
+                    })
+                  };
+                  es_obj._open_fancybox(window.location.protocol + '//europa.eu/assets/comm/european-union/europa_survey/invitation_2015_' + es_obj.utils.current_lang + '.htm', 'invitation_as_callback()', '');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                  throw new Error(errorThrown);
+                }
+              })
+            }
+          }
+          else {
+            if (es_obj._get_cookie('eu_exit_survey') != null && es_obj._get_cookie('eu_exit_survey') == '1') {
+              es_obj._events();
+            }
+          }
+
+          if (window.location.hash == '#esthx') {
+            thanks_after_open = function () {
+              $('.box-bkg-img').after('<a id="bouton_close_thanks" href="#">Close</a>');
+              $('#bouton_close_thanks').click(thanks_after_close);
+            }
+            thanks_after_close = function () {
+              if (es_obj._get_cookie('eu_exit_survey_redirect') != null) {
+                window.location.href = es_obj._get_cookie('eu_exit_survey_redirect');
+              }
+            }
+
+            es_obj.utils.current_lang = $('html').attr('lang');
+            es_obj._open_fancybox(window.location.protocol + '//europa.eu/assets/comm/european-union/europa_survey/index_2015_' + es_obj.utils.current_lang + '.htm', 'thanks_after_open()', 'thanks_after_close()');
+
+          }
+        },
+
+        _create_cookie: function (name, value) {
+          $.cookie(name, value, {expires: 20, path: '/'});
+        },
+
+        _get_cookie: function (name) {
+          return $.cookie(name);
+        },
+
+        _open_fancybox: function (url, after_show_callbacks, after_close_callbacks) {
+          $.fancybox({
+            'width': '70%',
+            'height': '80%',
+            'autoScale': true,
+            'transitionIn': 'fade',
+            'transitionOut': 'fade',
+            'type': 'ajax',
+            'href': url,
+            'fitToView': true,
+            beforeSend: function () {
+              $.fancybox.showLoading();
+            },
+            afterShow: function () {
+              eval(after_show_callbacks);
+            },
+            afterClose: function () {
+              eval(after_close_callbacks);
+            }
+          });
+        },
+
+        _events: function () {
+          $('body').find('a').bind('click', function () {
+            current_location = window.location.href;
+            current_href = $(this).attr('href');
+            es_obj._create_cookie('eu_exit_survey_redirect', current_href);
+            es_obj._create_cookie('eu_exit_survey_location', current_location);
+
+            if (es_obj._is_external(current_href, es_obj.utils.subsite_array) && es_obj._get_cookie('eu_exit_survey') != null && es_obj._get_cookie('eu_exit_survey') == '1') {
+              form_ac_callback = function () {
+                $('#form_tools_redirect_url').val(window.location.href + '#esthx');
+                es_obj._create_cookie('eu_exit_survey', '0');
+              };
+              if (window.innerWidth <= 480) {
+                window.location.href = window.location.protocol + '//europa.eu/assets/comm/european-union/europa_survey/europa_2015_survey_' + es_obj.utils.current_lang + '.htm';
+              }
+              else {
+                es_obj._open_fancybox(window.location.protocol + '//europa.eu/assets/comm/european-union/europa_survey/europa_2015_survey_' + es_obj.utils.current_lang + '.htm', 'form_ac_callback()');
+              }
+              return false;
+            }
+          })
+        },
+        _is_external: function (url, subsite_array) {
+          is_in_array = false;
+          is_external = false;
+          start = 0;
+          if (url.indexOf('http://') != -1) {
+            start = 7;
+            is_external = true;
+          }
+          if (url.indexOf('https://') != -1) {
+            start = 8;
+            is_external = true;
+          }
+
+          if (url.indexOf('//europa.eu/european-union') != -1) {
+            is_external = false;
+          }
+
+          url = url.substring(start, url.lastIndexOf('/'));
+          for (var i = 0; i < subsite_array.length; i++) {
+            if (subsite_array[i].indexOf(url) != -1) {
+              is_in_array = true;
+            }
+          }
+          if (is_external == true && is_in_array == false) {
+            return is_external;
+          }
+        },
+        get_cookie: function (name) {
+          return es_obj._get_cookie(name);
+        },
+        create_cookie: function (name, value) {
+          return es_obj._create_cookie(name, value)
+        }
+      });
+      $('body').exitsurvey();
+    }
+  };
+
+})(jQuery);

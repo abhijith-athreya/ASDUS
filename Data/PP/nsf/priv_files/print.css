@@ -1,0 +1,245 @@
+/* =====================================================================
+ * $Id: print.css 25267 2017-10-30 17:59:10Z tpalanis $
+ * SVN Path: /www/branches/responsive/src/main/webapp/css/print.css
+ * ===================================================================== */
+
+.container, #content, footer {
+    width:100% !important;
+    min-width:auto !important;
+    min-height:auto !important;
+}
+body, p, div, li{
+    color: #000;
+    background: #FFFFFF;
+    /*font-size:12pt !important;*/
+}
+#navbarid {display:none !important;}
+
+
+.clear-user-agent-styles table,
+.clear-user-agent-styles thead,
+.clear-user-agent-styles tbody,
+.clear-user-agent-styles tfoot,
+.clear-user-agent-styles tr,
+.clear-user-agent-styles th,
+.clear-user-agent-styles td {
+    display: block;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-collapse: inherit;
+    border-spacing: 0;
+    border-color: inherit;
+    vertical-align: inherit;
+    text-align: left;
+    font-weight: inherit;
+    -webkit-border-horizontal-spacing: 0;
+    -webkit-border-vertical-spacing: 0;
+}
+
+*,
+*:before,
+*:after {
+    /*color: #000 !important;*/
+    text-shadow: none !important;
+    /*background: transparent !important;*/
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    border-left: none !important;
+}
+
+.header .logo:before {
+    display: block;
+    position: absolute;
+    x: ;
+    content: url("../images/nsf_logo.png");
+}
+
+.navbar-toggle,
+.btn-group.btn-group-sm,
+#searchbuttonmobile,
+#searchbar,
+#utility-links {
+    display: none;
+}
+
+a,
+a:visited {
+    text-decoration: underline;
+}
+
+a[href^="http"]:after {
+      content:" <" attr(href) "> ";
+}
+
+abbr[title]:after {
+    content: " (" attr(title) ")";
+}
+
+a[href^="#"]:after,
+a[href^="javascript:"]:after {
+    content: "";
+}
+
+pre,
+blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+}
+
+thead {
+    display: table-header-group;
+}
+
+tr,
+img {
+    page-break-inside: avoid;
+}
+
+img {
+    width: auto!important;
+    max-width: 100%!important;
+}
+
+p,
+h2,
+h3 {
+    orphans: 3;
+    widows: 3;
+}
+
+h2,
+h3 {
+    page-break-after: avoid;
+}
+
+select {
+    background: #fff !important;
+}
+
+.navbar {
+    display: none !important;
+}
+
+.btn > .caret,
+.dropup > .btn > .caret {
+    border-top-color: #000 !important;
+}
+
+.label {
+    border: 1px solid #000;
+}
+
+.table {
+    border-collapse: collapse !important;
+}
+
+.table td,
+.table th {
+    background-color: #fff !important;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #ddd !important;
+}
+
+.table-responsive {
+    width: 110% !important: ;
+    overflow: hidden !important;
+}
+
+#leftnavdivid {
+    display: none;
+}
+
+footer .hidden-xs,
+footer .buttons,
+footer .socialicons,
+footer .nav,
+footer .seeall-grp {
+    display: none !important;
+}
+
+table.dataTable {
+    overflow: visible !important;
+    width: 76% !important;
+    border: none !important;
+}
+
+table.dataTable th.sorting {
+    width: 20% !important;
+    padding: 0 !important;
+}
+
+.col-sm-12 {
+    padding: 0;
+    /*width: 97% !important;*/
+}
+
+.col-md-9 {
+    width: 90% !important;
+}
+
+.visible-print {
+    display: block !important;
+}
+
+table.visible-print {
+    display: table;
+}
+input,
+select,
+#searchpanel,
+.input-panel,
+.pagination{
+    display: none !important;
+}
+tr.visible-print {
+    display: table-row !important;
+}
+
+th.visible-print,
+td.visible-print {
+    display: table-cell !important;
+}
+.visible-print-block {
+    display: none !important;
+}
+
+.visible-print-block {
+    display: block !important;
+}
+
+.visible-print-inline {
+    display: none !important;
+}
+
+.visible-print-inline {
+    display: inline !important;
+}
+
+.visible-print-inline-block {
+    display: none !important;
+}
+
+.visible-print-inline-block {
+    display: inline-block !important;
+}
+
+.hidden-print {
+    display: none !important;
+}
+footer .container{
+        width:95% !important;
+}
+@-moz-document url-prefix() {
+    #searchbarmobilecontainer + div.row {
+        display: none !important;
+    }
+    .panel.panel-orange{
+        width:95% !important;
+    }
+}

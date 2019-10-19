@@ -1,0 +1,1771 @@
+//tealium universal tag - utag.loader ut4.39.201805041451, Copyright 2018 Tealium.com Inc. All Rights Reserved. 
+
+var utag_condload=false;try{(function(){function ul(src,a,b){a=document;b=a.createElement('script');b.language='javascript';b.type='text/javascript';b.src=src;a.getElementsByTagName('head')[0].appendChild(b)};if((""+document.cookie).match("utag_env_cox_main=(\/\/tags\.tiqcdn\.com\/utag\/cox\/[^\S;]*)")){if(RegExp.$1.indexOf("/prod/") === -1) {var s = RegExp.$1;while(s.indexOf("%") != -1) {s = decodeURIComponent(s);}s = s.replace(/\.\./g,"");ul(s);utag_condload=true;__tealium_default_path='//tags.tiqcdn.com/utag/cox/main/prod/';}}})();}catch(e){};try{
+window.utag_cfg_ovrd = {
+  lowerqp : true,
+  waittimer: 1
+};
+}catch(e){};
+if(!utag_condload){try{
+// preloader code
+// put the utag_events into the window scope as utag_events
+// then delete utag so that the utag.js will build up as needed
+(function(w){
+    if(typeof w.utag !== 'undefined' && typeof w.utag.e === 'object'){
+        w.utag_events = w.utag.e;
+        delete w.utag;
+    }
+}(window))
+}catch(e){}};
+if (typeof utag == "undefined" && !utag_condload) {
+  var utag = {
+    id:"cox.main",
+    o:{},
+    sender: {},
+    send: {},
+    rpt: {
+      ts: {
+        a: new Date()
+      }
+    },
+    dbi: [],
+    loader: {
+      q: [],
+      lc: 0,
+      f: {},
+      p: 0,
+      ol: 0,
+      wq: [],
+      lq: [],
+      bq: {},
+      bk: {},
+      rf: 0,
+      ri: 0,
+      rp: 0,
+      rq: [],
+      ready_q : [], 
+      sendq :{"pending":0},
+      run_ready_q : function(){
+        for(var i=0;i<utag.loader.ready_q.length;i++){
+          utag.DB("READY_Q:"+i);
+          try{utag.loader.ready_q[i]()}catch(e){utag.DB(e)};
+        }
+      },
+      lh: function(a, b, c) {
+        a = "" + location.hostname;
+        b = a.split(".");
+        c = (/\.co\.|\.com\.|\.org\.|\.edu\.|\.net\.|\.asn\./.test(a)) ? 3 : 2;
+        return b.splice(b.length - c, c).join(".");
+      },
+      WQ: function(a, b, c, d, g) {
+        utag.DB('WQ:' + utag.loader.wq.length);
+        try {
+          // this picks up a utag_data items added after utag.js was loaded
+          // Gotcha: Data layer set after utag.js will not overwrite something already set via an extension.  Only "new" values are copied from utag_data
+          // for case where utag_data is set after utag.js is loaded
+          if(utag.udoname && utag.udoname.indexOf(".")<0){
+            utag.ut.merge(utag.data,window[utag.udoname],0);
+          }
+
+          // TBD: utag.handler.RE('view',utag.data,"bwq");
+          // process load rules again if this flag is set
+          if(utag.cfg.load_rules_at_wait){
+            utag.handler.LR(utag.data);
+          }
+        } catch (e) {utag.DB(e)};
+    
+    d=0;
+        g=[]; 
+        for (a = 0; a < utag.loader.wq.length; a++) {
+          b = utag.loader.wq[a];
+      b.load = utag.loader.cfg[b.id].load;
+          if (b.load == 4){
+            //LOAD the bundled tag set to wait here
+            this.f[b.id]=0;
+            utag.loader.LOAD(b.id)
+          }else if (b.load > 0) {
+            g.push(b);
+            //utag.loader.AS(b); // moved: defer loading until flags cleared
+        d++;
+          }else{
+            // clear flag for those set to wait that were not actually loaded
+            this.f[b.id]=1;
+          }
+        }
+        for (a = 0; a < g.length; a++) {
+          utag.loader.AS(g[a]);
+        }
+
+    if(d==0){
+      utag.loader.END();
+    }
+      },
+      AS: function(a, b, c, d) {
+        utag.send[a.id] = a;
+        if (typeof a.src == 'undefined') {
+          a.src = utag.cfg.path + ((typeof a.name != 'undefined') ? a.name : 'ut' + 'ag.' + a.id + '.js')
+        }
+        a.src += (a.src.indexOf('?') > 0 ? '&' : '?') + 'utv=' + (a.v?utag.cfg.template+a.v:utag.cfg.v);
+        utag.rpt['l_' + a.id] = a.src;
+        b = document;
+        this.f[a.id]=0;
+        if (a.load == 2) {
+          utag.DB("Attach sync: "+a.src);
+          a.uid=a.id;
+          b.write('<script id="utag_' + a.id + '" src="' + a.src + '"></scr' + 'ipt>')
+          if(typeof a.cb!='undefined')a.cb();
+        } else if(a.load==1 || a.load==3) {
+          if (b.createElement) {
+            c = 'utag_cox.main_'+a.id;
+            if (!b.getElementById(c)) {
+          d = {
+            src:a.src,
+        id:c,
+                uid:a.id,
+        loc:a.loc
+              }
+              if(a.load == 3){d.type="iframe"};
+          if(typeof a.cb!='undefined')d.cb=a.cb;
+              utag.ut.loader(d);
+            }
+          }
+        }
+      },
+      GV: function(a, b, c) {
+        b = {};
+        for (c in a) {
+          if (a.hasOwnProperty(c) && typeof a[c] != "function") b[c] = a[c];
+        }
+        return b
+      },
+      OU: function(a, b, c, d, f){
+        try {
+          if (typeof utag.data['cp.OPTOUTMULTI'] != 'undefined') {
+            c = utag.loader.cfg;
+            a = utag.ut.decode(utag.data['cp.OPTOUTMULTI']).split('|');
+            for (d = 0; d < a.length; d++) {
+              b = a[d].split(':');
+              if (b[1] * 1 !== 0) {
+                if (b[0].indexOf('c') == 0) {
+                  for (f in utag.loader.GV(c)) {
+                    if (c[f].tcat == b[0].substring(1)) c[f].load = 0
+                  }
+                } else if (b[0] * 1 == 0) {
+                  utag.cfg.nocookie = true
+                } else {
+                  for (f in utag.loader.GV(c)) {
+                    if (c[f].tid == b[0]) c[f].load = 0
+                  }
+                }
+              }
+            }
+          }
+        } catch (e) {utag.DB(e)}
+      },
+      RDdom: function(o){
+        var d = document || {}, l = location || {};
+        o["dom.referrer"] = eval("document." + "referrer");
+        o["dom.title"] = "" + d.title;
+        o["dom.domain"] = "" + l.hostname;
+        o["dom.query_string"] = ("" + l.search).substring(1);
+        o["dom.hash"] = ("" + l.hash).substring(1);
+        o["dom.url"] = "" + d.URL;
+        o["dom.pathname"] = "" + l.pathname;
+        o["dom.viewport_height"] = window.innerHeight || (d.documentElement?d.documentElement.clientHeight:960);
+        o["dom.viewport_width"] = window.innerWidth || (d.documentElement?d.documentElement.clientWidth:960);
+      },
+      RDcp: function(o, b, c, d){
+        b = b || utag.loader.RC();
+        for (d in b) {
+          if (d.match(/utag_(.*)/)) {
+            for (c in utag.loader.GV(b[d])) {
+              o["cp.utag_" + RegExp.$1 + "_" + c] = b[d][c];
+            }
+          }
+        }
+        for (c in utag.loader.GV((utag.cl && !utag.cl['_all_']) ? utag.cl : b)) {
+          if (c.indexOf("utag_") < 0 && typeof b[c] != "undefined") o["cp." + c] = b[c];
+        }
+        // temporary alias variables
+        o["_t_visitor_id"]=o["cp.utag_main_v_id"];
+        o["_t_session_id"]=o["cp.utag_main_ses_id"];
+      },
+      RDqp: function(o, a, b, c){
+        a = location.search + (location.hash+'').replace("#","&");
+        if(utag.cfg.lowerqp){a=a.toLowerCase()};
+        if (a.length > 1) {
+          b = a.substring(1).split('&');
+          for (a = 0; a < b.length; a++) {
+            c = b[a].split("=");
+            if(c.length>1){
+              o["qp." + c[0]] = utag.ut.decode(c[1])
+            }
+          }
+        }
+      },
+      RDmeta: function(o, a, b, h){
+        a = document.getElementsByTagName("meta");
+        for (b = 0; b < a.length; b++) {
+          try{
+            h = a[b].name || a[b].getAttribute("property") || ""; 
+          }catch(e){h="";utag.DB(e)};
+          if (utag.cfg.lowermeta){h=h.toLowerCase()};
+          if (h != ""){o["meta." + h] = a[b].content}
+        }
+      },
+      RDva: function(o){
+        // Read visitor attributes in local storage
+        var readAttr = function(o, l ){
+          var a = "", b;
+          a = localStorage.getItem(l);
+          if(!a || a=="{}")return;
+          b = utag.ut.flatten({va : JSON.parse(a)});
+          utag.ut.merge(o,b,1);
+        }
+        try{
+          readAttr(o, "tealium_va" );
+          readAttr(o, "tealium_va_" + o["ut.account"] + "_" + o["ut.profile"] );
+        }catch(e){ utag.DB(e) }
+      },
+      RDut: function(o, a){
+        // Add built-in data types to the data layer for use in mappings, extensions and RDva function.
+        o["ut.domain"] = utag.cfg.domain;
+        o["ut.version"] = utag.cfg.v;
+        // i.e. "view" or "link"
+        o["ut.event"] = a || "view";
+        try{
+          o["ut.account"] = utag.cfg.utid.split("/")[0];
+          o["ut.profile"] = utag.cfg.utid.split("/")[1];
+          o["ut.env"] = utag.cfg.path.split("/")[6];
+        }catch(e){ utag.DB(e) }
+      },
+      RD: function(o, a, b, c, d) {
+        utag.DB("utag.loader.RD");
+        utag.DB(o);
+
+        // only update cookie once per page
+        if(!utag.loader.rd_flag){
+          a = (new Date()).getTime();
+          b = utag.loader.RC();
+          c = a + parseInt(utag.cfg.session_timeout);
+          d = a;
+    
+      if(!b.utag_main){
+        b.utag_main={};
+      }else if(b.utag_main.ses_id&&typeof b.utag_main._st!="undefined"&&parseInt(b.utag_main._st)<a){
+        delete b.utag_main.ses_id;
+      }
+    
+          if(!b.utag_main.v_id){
+            b.utag_main.v_id=utag.ut.vi(a);
+          }
+
+          if(!b.utag_main.ses_id){
+            b.utag_main.ses_id=d+'';
+            b.utag_main._ss=b.utag_main._pn=1;
+            b.utag_main._sn=1+parseInt(b.utag_main._sn || 0);
+          }else{
+            d=b.utag_main.ses_id;
+            b.utag_main._ss=0;
+            b.utag_main._pn=1+parseInt(b.utag_main._pn);
+            b.utag_main._sn=parseInt(b.utag_main._sn);
+          }
+
+          if(isNaN(b.utag_main._sn) || b.utag_main._sn<1){b.utag_main._sn=b.utag_main._pn=1}
+
+          b.utag_main._st = c+'';
+
+          utag.loader.SC("utag_main", {"v_id": b.utag_main.v_id, "_sn" : b.utag_main._sn, "_ss" : b.utag_main._ss, "_pn" : b.utag_main._pn + ";exp-session", "_st": c, "ses_id": d + ";exp-session"});
+        }
+
+        utag.loader.rd_flag=1;
+
+        this.RDqp(o);
+        this.RDmeta(o);
+        this.RDcp(o,b);
+        this.RDdom(o);
+        this.RDut(o);
+        this.RDva(o);
+      },
+      RC: function(a, x, b, c, d, e, f, g, h, i, j, k, l, m, n, o, v, ck, cv, r, s, t) {
+        o = {};
+        b = ("" + document.cookie != "") ? (document.cookie).split("; ") : [];
+        r = /^(.*?)=(.*)$/;
+        s = /^(.*);exp-(.*)$/;
+        t = (new Date()).getTime();
+        for (c = 0; c < b.length; c++) {
+          if (b[c].match(r)) {
+            ck = RegExp.$1;
+            cv = RegExp.$2;
+          }
+          e = utag.ut.decode(cv);
+          if (typeof ck!="undefined"){
+            if (ck.indexOf("ulog") == 0 || ck.indexOf("utag_") == 0) {
+              e = cv.split("$");
+              g = [];
+              j = {};
+              for (f = 0; f < e.length; f++) {
+                try{
+                  g = e[f].split(":");
+                  if (g.length > 2) {
+                    g[1] = g.slice(1).join(":");
+                  }
+                  v = "";
+                  if (("" + g[1]).indexOf("~") == 0) {
+                    h = g[1].substring(1).split("|");
+                    for (i = 0; i < h.length; i++) h[i] = utag.ut.decode(h[i]);
+                    v = h
+                  } else v = utag.ut.decode(g[1]);
+                  j[g[0]] = v;
+                }catch(er){utag.DB(er)};
+              }
+              o[ck] = {};
+              for (f in utag.loader.GV(j)) {
+                if (j[f] instanceof Array) {
+                  n = [];
+                  for (m = 0; m < j[f].length; m++) {
+                    if (j[f][m].match(s)){
+                      k = (RegExp.$2 == "session") ? (typeof j._st != "undefined" ? j._st : t - 1) : parseInt(RegExp.$2);
+                      if (k > t) n[m] = (x == 0) ? j[f][m] : RegExp.$1;
+                    }
+                  }
+                  j[f] = n.join("|");
+                } else {
+                  j[f] = "" + j[f];
+                  if (j[f].match(s)) {
+                    k = (RegExp.$2 == "session") ? (typeof j._st != "undefined" ? j._st : t - 1) : parseInt(RegExp.$2);
+                    j[f] = (k < t) ? null : (x == 0 ? j[f] : RegExp.$1);
+                  }
+                }
+                if (j[f]) o[ck][f] = j[f];
+              }
+            } else if (utag.cl[ck] || utag.cl['_all_']) {
+              o[ck] = e
+            }
+          }
+        }
+        return (a) ? (o[a] ? o[a] : {}) : o;
+      },
+      SC: function(a, b, c, d, e, f, g, h, i, j, k, x, v) {
+        if (!a) return 0;
+        if (a=="utag_main" && utag.cfg.nocookie) return 0;
+        v = "";
+        var date = new Date();
+        var exp = new Date();
+        exp.setTime(date.getTime()+(365*24*60*60*1000));
+        x = exp.toGMTString();
+        if (c && c == "da") {
+          x = "Thu, 31 Dec 2009 00:00:00 GMT";
+        } else if (a.indexOf("utag_") != 0 && a.indexOf("ulog") != 0) {
+          if (typeof b != "object") {
+            v = b
+          }
+        } else {
+          d = utag.loader.RC(a, 0);
+          for (e in utag.loader.GV(b)) {
+            f = "" + b[e];
+            if (f.match(/^(.*);exp-(\d+)(\w)$/)) {
+              g = date.getTime() + parseInt(RegExp.$2) * ((RegExp.$3 == "h") ? 3600000 : 86400000);
+              if (RegExp.$3 == "u") g = parseInt(RegExp.$2);
+              f = RegExp.$1 + ";exp-" + g;
+            }
+            if (c == "i") {
+              if (d[e] == null) d[e] = f;
+            } else if (c == "d") delete d[e];
+            else if (c == "a") d[e] = (d[e] != null) ? (f - 0) + (d[e] - 0) : f;
+            else if (c == "ap" || c == "au") {
+              if (d[e] == null) d[e] = f;
+              else {
+                if (d[e].indexOf("|") > 0) {
+                  d[e] = d[e].split("|")
+                }
+                g = (d[e] instanceof Array) ? d[e] : [d[e]];
+                g.push(f);
+                if (c == "au") {
+                  h = {};
+                  k = {};
+                  for (i = 0; i < g.length; i++) {
+                    if (g[i].match(/^(.*);exp-(.*)$/)) {
+                      j = RegExp.$1;
+                    }
+                    if (typeof k[j] == "undefined") {
+                      k[j] = 1;
+                      h[g[i]] = 1;
+                    }
+                  }
+                  g = [];
+                  for (i in utag.loader.GV(h)) {
+                    g.push(i);
+                  }
+                }
+                d[e] = g
+              }
+            } else d[e] = f;
+          }
+          h = new Array();
+          for (g in utag.loader.GV(d)) {
+            if (d[g] instanceof Array) {
+              for (c = 0; c < d[g].length; c++) {
+                d[g][c] = encodeURIComponent(d[g][c])
+              }
+              h.push(g + ":~" + d[g].join("|"))
+            } else h.push((g + ":").replace(/[\,\$\;\?]/g,"") + encodeURIComponent(d[g]))
+          }
+          if (h.length == 0) {
+            h.push("");
+            x = ""
+          }
+          v = (h.join("$"));
+        }
+        document.cookie = a + "=" + v + ";path=/;domain=" + utag.cfg.domain + ";expires=" + x;
+        return 1
+      },
+      LOAD: function(a, b, c, d) {
+        //utag.DB('utag.loader.LOAD:' + a);
+        if(!utag.loader.cfg){
+           return
+        }
+    if(this.ol==0){
+          if(utag.loader.cfg[a].block && utag.loader.cfg[a].cbf){
+            this.f[a] = 1;
+        delete utag.loader.bq[a];
+          }
+      for(b in utag.loader.GV(utag.loader.bq)){
+            if(utag.loader.cfg[a].load==4 && utag.loader.cfg[a].wait==0){
+              utag.loader.bk[a]=1;
+              utag.DB("blocked: "+ a);
+            }
+        utag.DB("blocking: " + b);
+        return;
+      }
+      utag.loader.INIT();
+      return;
+    }
+        utag.DB('utag.loader.LOAD:' + a);
+
+        if (this.f[a] == 0) {
+          this.f[a] = 1;
+        
+      if(utag.cfg.noview!=true){
+        if(utag.loader.cfg[a].send){
+              utag.DB("SENDING: "+a);
+              try{
+                if (utag.loader.sendq.pending > 0 && utag.loader.sendq[a]) {
+                  utag.DB("utag.loader.LOAD:sendq: "+a);
+                  while( d = utag.loader.sendq[a].shift() ) {
+                    utag.DB(d);
+                    utag.sender[a].send(d.event, utag.handler.C(d.data));
+                    utag.loader.sendq.pending--;
+                  }
+                } else {
+                  utag.sender[a].send('view',utag.handler.C(utag.data));
+                }
+        utag.rpt['s_' + a] = 0;
+          } catch (e) {
+                utag.DB(e);
+            utag.rpt['s_' + a] = 1;
+          }
+        }
+      }
+      if(utag.loader.rf==0)return;
+          for (b in utag.loader.GV(this.f)) {
+            if (this.f[b] == 0 || this.f[b] == 2) return
+          }
+      utag.loader.END();
+        }
+      },
+      EV: function(a, b, c, d) {
+        if (b == "ready") {
+          if(!utag.data){
+            try {
+              utag.cl = {'_all_': 1};
+              utag.loader.initdata();    
+              utag.loader.RD(utag.data);
+            }catch(e){ utag.DB(e) };
+          }
+          if ( (document.attachEvent || utag.cfg.dom_complete) ? document.readyState === "complete" : document.readyState !== "loading" ) setTimeout(c, 1);
+          else {
+            utag.loader.ready_q.push(c);
+            var RH;
+
+            if(utag.loader.ready_q.length<=1){
+              if (document.addEventListener) {
+                RH = function() {
+                  document.removeEventListener("DOMContentLoaded", RH, false);
+                  utag.loader.run_ready_q()
+                };
+                if(!utag.cfg.dom_complete)document.addEventListener("DOMContentLoaded", RH, false);
+                window.addEventListener("load", utag.loader.run_ready_q, false);
+              } else if (document.attachEvent) {
+                RH = function() {
+                  if (document.readyState === "complete") {
+                    document.detachEvent("onreadystatechange", RH);
+                    utag.loader.run_ready_q()
+                  }
+                };
+                document.attachEvent("onreadystatechange", RH);
+                window.attachEvent("onload", utag.loader.run_ready_q);
+              }
+            }
+          }
+        } else {
+          if (a.addEventListener) {
+            a.addEventListener(b, c, false)
+          } else if (a.attachEvent) {
+            a.attachEvent(((d == 1) ? "" : "on") + b, c)
+          }
+        }
+      },
+      END: function(b, c, d, e, v, w){
+        if(this.ended){return};
+        this.ended=1;
+    utag.DB("loader.END");
+        b = utag.data;
+        // add the default values for future utag.link/view calls
+    if(utag.handler.base && utag.handler.base!='*'){
+          e = utag.handler.base.split(",");
+          for (d = 0; d < e.length; d++) {
+            if (typeof b[e[d]] != "undefined") utag.handler.df[e[d]] = b[e[d]]
+          }
+        }else if (utag.handler.base=='*'){
+           utag.ut.merge(utag.handler.df,b,1);
+        }
+
+        utag.rpt['r_0']="t";
+    for(var r in utag.loader.GV(utag.cond)){
+          utag.rpt['r_'+r]=(utag.cond[r])?"t":"f";
+        }
+
+        utag.rpt.ts['s'] = new Date();
+    
+
+        v = ".tiqcdn.com";
+        w = utag.cfg.path.indexOf(v);
+        if(w>0 && b["cp.utag_main__ss"]==1 && !utag.cfg.no_session_count)utag.ut.loader({src:utag.cfg.path.substring(0,w)+v+"/ut"+"ag/tiqapp/ut"+"ag.v.js?a="+utag.cfg.utid+(utag.cfg.nocookie?"&nocookie=1":"&cb="+(new Date).getTime()),id:"tiqapp"})
+        
+        if(utag.cfg.noview!=true)utag.handler.RE('view',b,"end");
+    utag.handler.INIT();
+      }
+    },
+    DB: function(a, b) {
+      // return right away if we've already checked the cookie
+      if(utag.cfg.utagdb===false){
+        return;
+      }else if(typeof utag.cfg.utagdb=="undefined"){
+        utag.db_log=[];
+        b = document.cookie+'';
+        utag.cfg.utagdb=((b.indexOf('utagdb=true') >= 0)?true:false);
+      }
+      if(utag.cfg.utagdb===true){
+        var t;
+        if(utag.ut.typeOf(a) == "object"){
+          t=utag.handler.C(a)
+        }else{
+          t=a
+        }
+        utag.db_log.push(t);
+        try{console.log(t)}catch(e){}
+      }
+    },
+    RP: function(a, b, c) {
+      if (typeof a != 'undefined' && typeof a.src != 'undefined' && a.src != '') {
+        b = [];
+        for (c in utag.loader.GV(a)) {
+          if (c != 'src') b.push(c + '=' + escape(a[c]))
+        }
+        this.dbi.push((new Image()).src = a.src + '?utv=' + utag.cfg.v + '&utid=' + utag.cfg.utid + '&' + (b.join('&')))
+      }
+    },
+    view: function(a,c,d) {
+      return this.track({event:'view', data:a, cfg:{cb:c,uids:d}})
+    },
+    link: function(a,c,d) {
+      return this.track({event:'link', data:a, cfg:{cb:c,uids:d}})
+    },
+    track: function(a,b,c,d) {
+      if (typeof a == "string") a = { event: a, data: b, cfg: {cb: c} };
+
+      for(d in utag.loader.GV(utag.o)){
+        try{
+          utag.o[d].handler.trigger(a.event || "view", a.data || a, a.cfg)
+        }catch(e){utag.DB(e)};
+      }
+      if(a.cfg && a.cfg.cb)try{a.cfg.cb()}catch(e){utag.DB(e)};
+      return true
+    },
+    handler: {
+      base: "",
+      df: {},
+      o: {},
+      send: {},
+      iflag: 0,
+      INIT: function(a, b, c) {
+        utag.DB('utag.handler.INIT');
+        if(utag.initcatch){
+          utag.initcatch=0;
+          return
+        }
+        this.iflag = 1;
+        a = utag.loader.q.length;
+        if (a > 0) {
+          utag.DB("Loader queue");
+          for (b = 0; b < a; b++) {
+            c = utag.loader.q[b];
+            utag.handler.trigger(c.a, c.b, c.c)
+          }
+        }
+        //##UTABSOLUTELAST##
+      },
+      test: function() {
+        return 1
+      },
+      // reset and run load rules
+      LR: function(b){
+        utag.DB("Load Rules");
+        for(var d in utag.loader.GV(utag.cond)){
+          utag.cond[d]=false;
+        }
+        utag.DB(utag.data);
+        utag.loader.loadrules();
+        utag.DB(utag.cond);
+        utag.loader.initcfg();
+        // use the OPTOUTMULTI cookie value to override load rules
+        utag.loader.OU();
+    for(var r in utag.loader.GV(utag.cond)){
+          utag.rpt['r_'+r]=(utag.cond[r])?"t":"f";
+        }
+      },
+      // The third param "c" is a string that defines the location i.e. "blr" == before load rules
+      RE:function(a,b,c,d,e,f,g){
+        if(c!="alr" && !this.cfg_extend){
+          return 0; 
+        }
+        utag.DB("RE: "+c);
+        if(c=="alr")utag.DB("All Tags EXTENSIONS");
+        utag.DB(b);
+        if(typeof this.extend != "undefined"){
+          g=0;
+          for (d = 0; d < this.extend.length; d++) {
+            try {
+              /* Extension Attributes */
+              e=0;
+              if(typeof this.cfg_extend!="undefined"){
+                f=this.cfg_extend[d];
+                if(typeof f.count == "undefined")f.count=0;
+                if(f[a]==0 || (f.once==1 && f.count>0) || f[c]==0){
+                  e=1
+                }else{
+                  if(f[c]==1){g=1};
+                  f.count++
+                }
+              }
+              if(e!=1){
+                this.extend[d](a, b);
+                utag.rpt['ex_' + d] = 0
+              }
+            } catch (er) {
+              utag.DB(er);
+              utag.rpt['ex_' + d] = 1;
+          utag.ut.error({e:er.message,s:utag.cfg.path+'utag.js',l:d,t:'ge'});
+            }
+          }
+          utag.DB(b);
+          return g;
+        }
+      },
+      trigger: function(a, b, c, d, e, f) {
+        utag.DB('trigger:'+a+(c && c.uids?":"+c.uids.join(","):""));
+        b = b || {};
+        utag.DB(b);
+
+        if (!this.iflag) {
+          utag.DB("trigger:called before tags loaded");
+          for (d in utag.loader.f) {
+            if (!(utag.loader.f[d] === 1)) utag.DB('Tag '+d+' did not LOAD')
+          }
+          utag.loader.q.push({
+            a: a,
+            b: utag.handler.C(b),
+            c: c
+          });
+          return;
+        }
+        utag.cfg.noview = false;
+
+        utag.ut.merge(b,this.df,0);
+        // update values for AJAX pages
+        utag.loader.RDqp(b);
+        utag.loader.RDcp(b);
+        utag.loader.RDdom(b);
+        utag.loader.RDmeta(b);
+        utag.loader.RDut(b,a);
+        utag.loader.RDva(b);
+
+        function sendTag(a, b, d){
+          try {
+            if(typeof utag.sender[d]!="undefined"){
+              utag.DB("SENDING: "+d);
+              utag.sender[d].send(a, utag.handler.C(b));
+          utag.rpt['s_' + d] = 0;
+            }else if (utag.loader.cfg[d].load!=2 && utag.loader.cfg[d].s2s!=1){
+              // utag.link calls can load in new tags
+              utag.loader.sendq[d] = utag.loader.sendq[d] || [];
+              utag.loader.sendq[d].push({"event":a, "data":utag.handler.C(b)});
+              utag.loader.sendq.pending++;
+              utag.loader.AS({id : d, load : 1}); 
+            }
+          }catch (e) {utag.DB(e)}
+        }
+        
+        // utag.track( {event : "view", data: {myvar : "myval" }, cfg: {uids : [1,2,10] } } );
+        if(c && c.uids){
+          this.RE(a,b,"alr");
+          for(f=0;f<c.uids.length;f++){
+            d=c.uids[f];
+            // bypass load rules
+            sendTag(a, b, d);
+          }
+        }else if(utag.cfg.load_rules_ajax){
+          // right now, load rules use utag.data (replace items in utag.data with items in b)
+          this.RE(a,b,"blr");
+          utag.ut.merge(utag.data,b,1);
+          // clear and re-run load rules
+          this.LR(b);
+          this.RE(a,b,"alr");
+          // TBD: Run through the "bwq" Extensions again here? (For now, require "bwq" is also set to "run once"?) 
+          for(f = 0; f < utag.loader.cfgsort.length; f++){
+            d = utag.loader.cfgsort[f];
+            if(utag.loader.cfg[d].load && utag.loader.cfg[d].send){
+              sendTag(a, b, d);
+            }
+          }
+        }else{
+          // legacy behavior
+          this.RE(a,b,"alr");
+          for (d in utag.loader.GV(utag.sender)) {
+            sendTag(a, b, d);
+          }
+        }
+        this.RE(a,b,"end");
+        // update end of session timestamp in cookie
+        utag.loader.SC("utag_main", { "_st": ((new Date()).getTime() + parseInt(utag.cfg.session_timeout)) });
+
+      },
+      // "sort-of" copy
+      C: function(a, b, c) {
+        b = {};
+        for (c in utag.loader.GV(a)) {
+          if(a[c] instanceof Array){
+            b[c] = a[c].slice(0)
+          }else{
+            // objects are still references to the original (not copies)
+            b[c] = a[c]
+          }
+        }
+        return b
+      }
+    },
+    ut:{
+      pad: function(a,b,c,d){
+        a=""+((a-0).toString(16));d='';if(b>a.length){for(c=0;c<(b-a.length);c++){d+='0'}}return ""+d+a
+      },
+      vi: function(t,a,b){
+        if(!utag.v_id){
+          a=this.pad(t,12);b=""+Math.random();a+=this.pad(b.substring(2,b.length),16);try{a+=this.pad((navigator.plugins.length?navigator.plugins.length:0),2);a+=this.pad(navigator.userAgent.length,3);a+=this.pad(document.URL.length,4);a+=this.pad(navigator.appVersion.length,3);a+=this.pad(screen.width+screen.height+parseInt((screen.colorDepth)?screen.colorDepth:screen.pixelDepth),5)}catch(e){utag.DB(e);a+="12345"};utag.v_id=a;
+        }
+        return utag.v_id
+      },
+      hasOwn: function(o, a) {
+        return o != null && Object.prototype.hasOwnProperty.call(o, a)
+      },
+      isEmptyObject: function(o, a) {
+    for (a in o) {
+          if (utag.ut.hasOwn(o,a))return false
+        }
+        return true
+      },
+      isEmpty: function(o) {
+        var t = utag.ut.typeOf(o);
+        if ( t == "number" ){
+          return isNaN(o)
+        }else if ( t == "boolean" ){
+          return false
+        }else if ( t == "string" ){
+          return o.length === 0
+        }else return utag.ut.isEmptyObject(o)
+      },
+      typeOf: function(e) {
+        return ({}).toString.call(e).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+      },
+      flatten: function(o){
+        // stop when arriving at a string, array, boolean, number (float or integer)
+        var a = {}; 
+        function r(c, p) {
+          if (Object(c) !== c || c instanceof Array) {
+            a[p] = c;
+          } else {
+            if(utag.ut.isEmptyObject(c)){
+              //a[p] = {};
+            }else{
+              for (var d in c) {
+                r(c[d], p ? p+"."+d : d);
+              }
+            }
+          }
+        }
+        r(o, "");
+
+        return a;
+      },
+      merge: function(a, b, c, d) {
+        if(c){
+          for(d in utag.loader.GV(b)){
+            a[d] = b[d]
+          }
+        }else{
+          for(d in utag.loader.GV(b)){
+            if(typeof a[d]=="undefined")a[d] = b[d]
+          }
+        }
+      },
+      decode: function(a, b) {
+        b = "";
+        try{b = decodeURIComponent(a)}catch(e){utag.DB(e)};
+        if (b == ""){b = unescape(a)};
+        return b
+      },
+      error: function(a, b, c){
+        if(typeof utag_err!="undefined"){
+          utag_err.push(a)
+        }
+      },
+      loader: function(o, a, b, c, l) {
+        a=document;
+        if (o.type=="iframe") {
+          b = a.createElement("iframe");
+          o.attrs = o.attrs || { "height" : "1", "width" : "1", "style" : "display:none" };
+          for( l in utag.loader.GV(o.attrs) ){
+            b.setAttribute( l, o.attrs[l] )
+          }
+          b.setAttribute("src", o.src);
+        }else if (o.type=="img"){
+          utag.DB("Attach img: "+o.src);
+          b=new Image();b.src=o.src;
+          return;
+        }else{
+          b = a.createElement("script");b.language="javascript";b.type="text/javascript";b.async=1;b.charset="utf-8";
+          for( l in utag.loader.GV(o.attrs) ){
+            b[l] = o.attrs[l]
+          }
+          b.src = o.src;
+        }
+        if(o.id){b.id=o.id};
+        if (typeof o.cb=="function") {
+          if(b.addEventListener) {
+            b.addEventListener("load",function(){o.cb()},false);
+          }else {
+            // old IE support
+            b.onreadystatechange=function(){if(this.readyState=='complete'||this.readyState=='loaded'){this.onreadystatechange=null;o.cb()}};
+          }
+        }
+        l = o.loc || "head";
+        c = a.getElementsByTagName(l)[0];
+        if (c) {
+          utag.DB("Attach to "+l+": "+o.src);
+          if (l == "script") {
+            c.parentNode.insertBefore(b, c);
+          } else {
+            c.appendChild(b)
+          }
+        }
+      }
+    }
+  };
+  utag.o['cox.main']=utag;
+  utag.cfg = {
+    template : "ut4.39.",
+    // Enable load rules ajax feature by default
+    load_rules_ajax: true,
+    load_rules_at_wait: false,
+    lowerqp: false,
+    //noview: ##UTNOVIEW##,
+    session_timeout: 1800000,
+    readywait: 0,
+    noload: 0,
+    domain: utag.loader.lh(),
+    path: "//tags.tiqcdn.com/utag/cox/main/prod/",
+    utid: "cox/main/201805041451"
+  };
+  utag.cfg.v = utag.cfg.template + "201805041451";
+  utag.cond={162:0,163:0,16:0,179:0,183:0,184:0,191:0,192:0,207:0,212:0,220:0,227:0,232:0,233:0,234:0,237:0,239:0,240:0,242:0,243:0,245:0,246:0,247:0,248:0,249:0,250:0,251:0,252:0,253:0,254:0,255:0,256:0,257:0,258:0,259:0,25:0,260:0,261:0,262:0,263:0,264:0,265:0,266:0,270:0,271:0,272:0,273:0,274:0,275:0,276:0,277:0,278:0,27:0,28:0,29:0,31:0,33:0,34:0,38:0,46:0,47:0,4:0,53:0,54:0,55:0,58:0,59:0,5:0,62:0,64:0,66:0,67:0,7:0,85:0,88:0,89:0,97:0};
+utag.pagevars=function(ud){ud = ud || utag.data;try{ud['js_page.pagename']=pagename}catch(e){utag.DB(e)};try{ud['js_page.Link_name']=Link_name}catch(e){utag.DB(e)};try{ud['js_page.ax_vme']=ax_vme}catch(e){utag.DB(e)};};
+utag.loader.initdata = function() {   try {       utag.data = (typeof utag_data != 'undefined') ? utag_data : {};       utag.udoname='utag_data';    } catch (e) {       utag.data = {};       utag.DB('idf:'+e);   }};utag.loader.loadrules = function(_pd,_pc) {var d = _pd || utag.data; var c = _pc || utag.cond;for (var l in utag.loader.GV(c)) {switch(l){
+case '16':try{c[16]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:transfer-services-confirmation')}catch(e){utag.DB(e)}; break;
+case '162':try{c[162]|=(d['dom.domain'].toString().indexOf('store.')>-1&&typeof d['pageName']!='undefined'&&d['dom.domain'].toString().indexOf('mobile.')<0&&d['pageName'].toString().indexOf(':res:')>-1)||(d['dom.domain'].toString().indexOf('.dev.cox.com')>-1)||(d['dom.domain']=='www.cox.com')||(d['dom.domain']=='myconnection.cox.com')||(d['businessUnit']=='aboutus'&&/^cox:aboutus:/.test(d['pageName']))||(d['businessUnit']=='res:myaccount'&&/^cox:res:myaccount/.test(d['pageName']))||(d['dom.domain']=='espanol.cox.com')||(d['dom.domain']=='phonetools.cox.com'&&/^cox:res:phonetools/.test(d['pageName']))||(d['dom.domain'].toString().indexOf('one.qa.cox.com')>-1)||(d['dom.domain'].toString().indexOf('two.qa.cox.com')>-1)||(d['dom.pathname'].toString().indexOf('/business-shop/')>-1&&d['dom.domain'].toString().indexOf('store')>-1)||(d['dom.domain']=='myaccount.coxbusiness.com')||(d['dom.domain']=='myaccount.qa3.coxbusiness.com')||(d['dom.domain']=='myaccount.dev1.coxbusiness.com')||(typeof d['pageName']!='undefined'&&d['pageName'].toString().indexOf('pega-test')>-1)||(d['dom.domain']=='webteam.cci.cox.com')||(d['dom.domain']=='m.cox.com'&&d['businessUnit']=='res:support')||(d['dom.domain']=='ww3.preprod.cox.com')||(d['dom.domain']=='ww3.cox.com')||(d['dom.domain']=='converge.cox.com')}catch(e){utag.DB(e)}; break;
+case '163':try{c[163]|=(d['pageName']!='cox:res:testing-for-performance:tealium-analytics-avalanche'&&d['pageName']!='cox:res:testing-for-performance:tags-sandbox'&&d['pageName']!='cox:res:testing-for-performance:tags-test'&&d['pageName']!='cox:res:test-tag')}catch(e){utag.DB(e)}; break;
+case '179':try{c[179]|=(typeof d['purchaseStep']!='undefined'&&d['purchaseStep']=='checkout'&&typeof d['cidm']!='undefined')}catch(e){utag.DB(e)}; break;
+case '183':try{c[183]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:view-and-upgrade'&&typeof d['cidm']!='undefined')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:shop'&&typeof d['cidm']!='undefined')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:myaccount:home'&&typeof d['cidm']!='undefined')}catch(e){utag.DB(e)}; break;
+case '184':try{c[184]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:order-confirmation'&&typeof d['cidm']!='undefined')||(d['dom.pathname'].toString().indexOf('tealium-analytics-avalanche')>-1)}catch(e){utag.DB(e)}; break;
+case '191':try{c[191]|=(typeof d['orderSavedCartStatus']!='undefined'&&d['orderSavedCartStatus']=='saved'&&typeof d['cidm']!='undefined'&&typeof d['orderSavedCartStatusOriginator']!='undefined'&&d['orderSavedCartStatusOriginator']=='user')}catch(e){utag.DB(e)}; break;
+case '192':try{c[192]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:chl-lead-form-confirmation')}catch(e){utag.DB(e)}; break;
+case '207':try{c[207]|=(typeof d['pageName']!='undefined'&&/^cox:res:support/.test(d['pageName']))||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:special-offers:contour-flex')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:homelife')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:myaccount:home')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:myaccount:my-wifi:mywifi')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:transfer-services')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:move')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:internet:internet-features')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:contactus')||(typeof d['pageName']!='undefined'&&/^cox:res:education-center/.test(d['pageName']))||(typeof d['pageName']!='undefined'&&/^cox:bus:resources/.test(d['pageName']))||(typeof d['pageName']!='undefined'&&/^cox:bus:internet:business-internet/.test(d['pageName']))||(typeof d['pageName']!='undefined'&&/^cox:bus:phone:business-phone/.test(d['pageName']))||(typeof d['pageName']!='undefined'&&/^cox:bus:tv:business/.test(d['pageName']))||(typeof d['pageName']!='undefined'&&/^cox:bus:offers:small-business-bundles/.test(d['pageName']))||(typeof d['pageName']!='undefined'&&/^cox:bus:home/.test(d['pageName']))||(typeof d['pageName']!='undefined'&&/^cox:res:homelife:explore-homelife/.test(d['pageName']))||(typeof d['pageName']!='undefined'&&d['pageName'].toString().indexOf('myconnection:learn:data usage:data usage calculator')>-1)||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:internet:panoramic-wifi')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:cox-vs-competition')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:home'&&typeof d['visitorType']!='undefined'&&d['visitorType']=='noncustomer')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:completecare')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:tv:sports-and-tv-packages')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:tv:contour')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:internet:gigablast')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:internet')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:tv')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:special-offers:homelife-care')}catch(e){utag.DB(e)}; break;
+case '212':try{c[212]|=(d['_killMediaTags']!='yes')}catch(e){utag.DB(e)}; break;
+case '220':try{c[220]|=(d['dom.pathname'].toString().indexOf('selfinstall')<0)}catch(e){utag.DB(e)}; break;
+case '227':try{c[227]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:tv-cc')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:internet')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:special-offers:bundles')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:homelife')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:tv:contour')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:phone')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:special-offers:bundles-cc')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:special-offers:contour-flex')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:internet:panoramic-wifi')}catch(e){utag.DB(e)}; break;
+case '232':try{c[232]|=(d['dom.domain'].toString().toLowerCase().indexOf('www.cox.com'.toLowerCase())>-1&&/^\/business\//i.test(d['dom.pathname'])&&d['dom.pathname'].toString().toLowerCase().indexOf('support'.toLowerCase())<0&&d['dom.pathname'].toString().toLowerCase().indexOf('account'.toLowerCase())<0&&d['dom.pathname'].toString().toLowerCase().indexOf('resources'.toLowerCase())<0&&d['dom.pathname'].toString().toLowerCase().indexOf('channel-lineups'.toLowerCase())<0&&d['dom.pathname'].toString().toLowerCase().indexOf('contact'.toLowerCase())<0)||(d['dom.domain'].toString().toLowerCase().indexOf('store.cox.com'.toLowerCase())>-1&&/^\/business-shop\//i.test(d['dom.pathname']))||(d['dom.domain'].toString().toLowerCase().indexOf('www.cox.com'.toLowerCase())>-1&&/^\/business-shop\//i.test(d['dom.pathname']))}catch(e){utag.DB(e)}; break;
+case '233':try{c[233]|=(d['dom.domain'].toString().toLowerCase().indexOf('cox.com'.toLowerCase())>-1&&/^cox:bus:/i.test(d['pageName'])&&d['pageName'].toString().toLowerCase().indexOf('contact-technical-support'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf(':current:'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('security'.toLowerCase())<0&&typeof d['leadID']!='undefined'&&d['leadID']!=''&&typeof d['cbLeadType']!='undefined'&&d['cbLeadType']!=''&&d['pageName'].toString().toLowerCase().indexOf('contact-billing-and-account-services'.toLowerCase())<0&&d['pageName'].toString().indexOf('myaccount')<0)}catch(e){utag.DB(e)}; break;
+case '234':try{c[234]|=(/^cox:bus:shop:order-confirmation/i.test(d['pageName'])&&typeof d['purchaseID']!='undefined'&&d['purchaseID']!=''&&parseFloat(d['productTotalOfferMRC'])>parseFloat(0))}catch(e){utag.DB(e)}; break;
+case '237':try{c[237]|=(d['pageType']!='affiliate'&&d['cp.utag_main_coxAffiliate']!='1'&&d['ut.event']!='link')}catch(e){utag.DB(e)}; break;
+case '239':try{c[239]|=(typeof d['businessUnit']!='undefined'&&d['businessUnit']=='res')||(typeof d['businessUnit']!='undefined'&&d['businessUnit']=='res:shop')||(typeof d['businessUnit']!='undefined'&&d['businessUnit']=='aboutus')||(d['dom.pathname'].toString().indexOf('/residential')>-1)||(d['dom.pathname'].toString().indexOf('/resaccount')>-1)||(d['dom.pathname'].toString().indexOf('/ibill')>-1)||(d['dom.pathname'].toString().indexOf('/myprofile')>-1)||(d['dom.pathname'].toString().indexOf('/selfinstall')>-1)||(d['dom.pathname'].toString().indexOf('/internet')>-1)}catch(e){utag.DB(e)}; break;
+case '240':try{c[240]|=(typeof d['businessUnit']!='undefined'&&d['businessUnit'].toString().indexOf('res')>-1)||(d['dom.domain'].toString().indexOf('coxvalue')>-1)||(d['dom.domain'].toString().indexOf('mobile.store.cox.com')>-1&&d['dom.pathname'].toString().indexOf('/confirmation.html')<0)||(typeof d['businessUnit']!='undefined'&&d['businessUnit']=='aboutus')}catch(e){utag.DB(e)}; break;
+case '242':try{c[242]|=(typeof d['selfHelpName']!='undefined'&&d['selfHelpName'].toString().indexOf('idm:registration:complete')>-1)}catch(e){utag.DB(e)}; break;
+case '243':try{c[243]|=(d['visitorLoginStatus'].toString().toLowerCase()=='loggedin'.toLowerCase()&&d['dom.pathname'].toString().indexOf('resaccount')>-1)||(d['visitorLoginStatus'].toString().toLowerCase()=='loggedin'.toLowerCase()&&d['dom.pathname'].toString().indexOf('ibill')>-1)||(d['visitorLoginStatus'].toString().toLowerCase()=='loggedin'.toLowerCase()&&d['dom.pathname'].toString().indexOf('myprofile')>-1)||(d['visitorLoginStatus'].toString().toLowerCase()=='loggedin'.toLowerCase()&&d['dom.pathname'].toString().indexOf('selfinstall')>-1)||(d['visitorLoginStatus'].toString().toLowerCase()=='loggedin'.toLowerCase()&&d['dom.pathname'].toString().indexOf('internet')>-1)||(d['visitorLoginStatus'].toString().toLowerCase()=='loggedin'.toLowerCase()&&d['dom.domain'].toString().indexOf('watchtv')>-1)||(d['visitorLoginStatus'].toString().toLowerCase()=='loggedin'.toLowerCase()&&d['dom.domain'].toString().indexOf('phonetools')>-1)||(d['visitorLoginStatus'].toString().toLowerCase()=='loggedin'.toLowerCase()&&d['dom.domain'].toString().indexOf('myemail')>-1)||(d['visitorLoginStatus'].toString().toLowerCase()=='loggedin'.toLowerCase()&&d['dom.domain'].toString().indexOf('portal.coxhomelife')>-1)}catch(e){utag.DB(e)}; break;
+case '245':try{c[245]|=(typeof d['pageName']!='undefined'&&d['pageName'].toString().toLowerCase()=='cox:res:search'.toLowerCase())}catch(e){utag.DB(e)}; break;
+case '246':try{c[246]|=(typeof d['cp.utag_main_visitorLoginStatus']!='undefined'&&d['cp.utag_main_visitorLoginStatus'].toString().toLowerCase().indexOf('loggedin'.toLowerCase())<0)||(typeof d['cp.utag_main_visitorLoginStatus']=='undefined')}catch(e){utag.DB(e)}; break;
+case '247':try{c[247]|=(d['pageName']=='cox:aboutus:home')}catch(e){utag.DB(e)}; break;
+case '248':try{c[248]|=(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('internet:business-internet'.toLowerCase())>-1&&/^cox:bus:/i.test(d['pageName']))||(d['dom.domain'].toString().toLowerCase().indexOf('www.cox.com'.toLowerCase())>-1&&d['pageName'].toString().toLowerCase().indexOf('offers:business-internet'.toLowerCase())>-1&&/^cox:bus:/i.test(d['pageName']))}catch(e){utag.DB(e)}; break;
+case '249':try{c[249]|=(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('business-bundles'.toLowerCase())>-1&&/^cox:bus:/i.test(d['pageName']))||(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('small-business'.toLowerCase())>-1&&/^cox:bus:/i.test(d['pageName'])&&d['pageName'].toString().toLowerCase().indexOf('ipc'.toLowerCase())<0)}catch(e){utag.DB(e)}; break;
+case '25':try{c[25]|=(d['dom.domain'].toString().indexOf('coxvalue')>-1)}catch(e){utag.DB(e)}; break;
+case '250':try{c[250]|=(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('business-phone'.toLowerCase())>-1)||(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:phone:long-distance-and-voice-mail'.toLowerCase())>-1)}catch(e){utag.DB(e)}; break;
+case '251':try{c[251]|=(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('hosted-voice'.toLowerCase())>-1&&d['pageName'].toString().toLowerCase().indexOf('cox:bus'.toLowerCase())>-1)}catch(e){utag.DB(e)}; break;
+case '252':try{c[252]|=(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:shop'.toLowerCase())>-1&&d['pageName'].toString().toLowerCase()!='cox:bus:shop:order-cox-services'.toLowerCase())}catch(e){utag.DB(e)}; break;
+case '253':try{c[253]|=(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:learn:startup'.toLowerCase())>-1)}catch(e){utag.DB(e)}; break;
+case '254':try{c[254]|=(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['dom.pathname'].toString().toLowerCase().indexOf('cbvm'.toLowerCase())>-1&&/^cox:bus:myaccount/i.test(d['pageName']))||(d['pageName'].toString().toLowerCase().indexOf('cox:bus:myaccount'.toLowerCase())>-1&&d['dom.domain'].toString().toLowerCase()=='myaccount.coxbusiness.com'.toLowerCase())}catch(e){utag.DB(e)}; break;
+case '255':try{c[255]|=(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:support'.toLowerCase())>-1)||(d['pageName'].toString().toLowerCase().indexOf('cox:bus:resources'.toLowerCase())>-1&&d['dom.domain'].toString().toLowerCase().indexOf('www.cox.com'.toLowerCase())>-1)||(d['pageName'].toString().toLowerCase().indexOf('cox:bus:tv:channel-lineups'.toLowerCase())>-1&&d['dom.domain'].toString().toLowerCase().indexOf('www.cox.com'.toLowerCase())>-1)}catch(e){utag.DB(e)}; break;
+case '256':try{c[256]|=(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:contact-us'.toLowerCase())>-1&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:contact-us:contact-us-sales-connect'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:contact-us:contact-sales'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:contact-us:refer-security-solutions'.toLowerCase())<0)}catch(e){utag.DB(e)}; break;
+case '257':try{c[257]|=(d['dom.domain'].toString().toLowerCase()=='www.cox.com'.toLowerCase()&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:'.toLowerCase())>-1&&d['pageName'].toString().toLowerCase().indexOf('offers:business-internet'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('internet:business-internet'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('business-bundles'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('small-business'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('business-phone'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('bus:phone:long-distance-and-voice-mail'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('hosted-voice'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('learn:startup'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:myaccount'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:support'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:resources'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('bus:tv:channel-lineups'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:shop'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('cox:bus:contact-us'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('security'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('industry'.toLowerCase())<0)||(d['dom.domain'].toString().toLowerCase().indexOf('www.cox.com'.toLowerCase())>-1&&d['pageName'].toString().toLowerCase().indexOf('bus:shop:order-cox-services'.toLowerCase())>-1)||(d['dom.domain'].toString().indexOf('www.cox.com')>-1&&d['pageName'].toString().indexOf('cox:bus:contact-us:contact-us-sales-connect')>-1)||(d['dom.domain'].toString().indexOf('www.cox.com')>-1&&d['pageName'].toString().indexOf('cox:bus:contact-us:contact-sales')>-1)||(d['dom.domain'].toString().indexOf('www.cox.com')>-1&&d['pageName'].toString().indexOf('cox:bus:contact-us:refer-security-solutions')>-1)||(d['dom.domain'].toString().indexOf('www.cox.com')>-1&&d['pageName'].toString().indexOf('ipc')>-1&&d['pageName'].toString().indexOf('small-business')>-1)||(d['dom.domain'].toString().indexOf('www.cox.com')>-1&&d['pageName'].toString().indexOf('refer-a-biz')>-1)||(d['dom.domain'].toString().indexOf('www.cox.com')>-1&&d['pageName'].toString().indexOf('refer-a-business')>-1)}catch(e){utag.DB(e)}; break;
+case '258':try{c[258]|=(d['dom.domain'].toString().toLowerCase().indexOf('www.cox.com'.toLowerCase())>-1&&d['pageName'].toString().indexOf('cox:bus:')>-1&&d['pageName'].toString().toLowerCase().indexOf('support'.toLowerCase())<0&&d['pageName'].toString().indexOf('security-solutions')>-1&&d['pageName'].toString().toLowerCase().indexOf('industry'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('myaccount'.toLowerCase())<0)}catch(e){utag.DB(e)}; break;
+case '259':try{c[259]|=(d['dom.domain'].toString().indexOf('www.cox.com')>-1&&d['pageName'].toString().indexOf('cox:bus:industry')>-1)}catch(e){utag.DB(e)}; break;
+case '260':try{c[260]|=(d['dom.domain'].toString().toLowerCase().indexOf('cox.com'.toLowerCase())>-1&&/^cox:bus:/i.test(d['pageName'])&&d['pageName'].toString().toLowerCase().indexOf('contact-technical-support'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('security'.toLowerCase())>-1&&typeof d['leadID']!='undefined'&&d['leadID']!=''&&typeof d['cbLeadType']!='undefined'&&d['cbLeadType']!=''&&d['pageName'].toString().toLowerCase().indexOf('contact-billing-and-account-services'.toLowerCase())<0&&d['pageName'].toString().indexOf('myaccount')<0)}catch(e){utag.DB(e)}; break;
+case '261':try{c[261]|=(d['dom.domain'].toString().toLowerCase().indexOf('cox.com'.toLowerCase())>-1&&/^cox:bus:/i.test(d['pageName'])&&d['pageName'].toString().toLowerCase().indexOf('contact-technical-support'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('Industry'.toLowerCase())>-1&&typeof d['leadID']!='undefined'&&d['leadID']!=''&&typeof d['cbLeadType']!='undefined'&&d['cbLeadType']!=''&&d['pageName'].toString().toLowerCase().indexOf('contact-billing-and-account-services'.toLowerCase())<0&&d['pageName'].toString().indexOf('myaccount')<0)}catch(e){utag.DB(e)}; break;
+case '262':try{c[262]|=(d['dom.domain'].toString().toLowerCase().indexOf('cox.com'.toLowerCase())>-1&&/^cox:bus:/i.test(d['pageName'])&&d['pageName'].toString().toLowerCase().indexOf('contact-technical-support'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('industry'.toLowerCase())<0&&d['pageName'].toString().toLowerCase().indexOf('security'.toLowerCase())<0&&typeof d['leadID']!='undefined'&&d['leadID']!=''&&typeof d['cbLeadType']!='undefined'&&d['cbLeadType']!=''&&d['pageName'].toString().toLowerCase().indexOf('contact-billing-and-account-services'.toLowerCase())<0&&d['pageName'].toString().indexOf('myaccount')<0)}catch(e){utag.DB(e)}; break;
+case '263':try{c[263]|=(d['dom.domain'].toString().toLowerCase().indexOf('cox.com'.toLowerCase())>-1&&/^\/business/i.test(d['dom.pathname']))||(d['businessUnit']=='bus:shop'&&/^\/business/i.test(d['dom.pathname']))||(d['dom.domain'].toString().toLowerCase().indexOf('coxbusiness.com'.toLowerCase())>-1)}catch(e){utag.DB(e)}; break;
+case '264':try{c[264]|=(d['campaignSession']=='ph_aff_z_z')}catch(e){utag.DB(e)}; break;
+case '265':try{c[265]|=(d['dom.domain'].toString().indexOf('mobile.store.cox.com')>-1&&d['dom.pathname'].toString().indexOf('confirmation.html')>-1&&typeof d['productTotalOfferMRC']!='undefined'&&parseFloat(d['productTotalOfferMRC'])>parseFloat(0))||(d['businessUnit']=='res:shop'&&d['dom.pathname'].toString().indexOf('/residential-shop/order-confirmation.cox')>-1&&typeof d['productTotalOfferMRC']!='undefined'&&parseFloat(d['productTotalOfferMRC'])>parseFloat(0))||(typeof d['qp.tagtest']!='undefined'&&d['qp.tagtest']=='1')}catch(e){utag.DB(e)}; break;
+case '266':try{c[266]|=(d['dom.domain'].toString().toLowerCase().indexOf('coxblue.com'.toLowerCase())<0)}catch(e){utag.DB(e)}; break;
+case '27':try{c[27]|=(d['dom.domain'].toString().indexOf('mobile')<0&&d['dom.domain'].toString().indexOf('coxvalue')<0&&d['dom.pathname'].toString().indexOf('/business')<0&&d['dom.domain'].toString().indexOf('opinionlab')<0)}catch(e){utag.DB(e)}; break;
+case '270':try{c[270]|=(typeof d['pageName']!='undefined'&&d['pageName'].toString().indexOf('converge:res')>-1)}catch(e){utag.DB(e)}; break;
+case '271':try{c[271]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:transfer-order-confirmation')}catch(e){utag.DB(e)}; break;
+case '272':try{c[272]|=(d['dom.domain']=='myconnection.cox.com')||(d['dom.domain']=='ccidev.cox.com')}catch(e){utag.DB(e)}; break;
+case '273':try{c[273]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:special-offers:homelife-care')||(typeof d['qp.tagtest']!='undefined'&&d['qp.tagtest']=='1')}catch(e){utag.DB(e)}; break;
+case '274':try{c[274]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:chl-lead-form-confirmation'&&typeof d['purchaseStep']!='undefined'&&d['purchaseStep'].toString().indexOf('chl lead order')>-1&&typeof d['dom.referrer']!='undefined'&&d['dom.referrer'].toString().indexOf('homelife-care.html')>-1)||(typeof d['qp.tagtest']!='undefined'&&d['qp.tagtest']=='1')}catch(e){utag.DB(e)}; break;
+case '275':try{c[275]|=(d['businessUnit']=='res:shop'&&d['dom.pathname'].toString().indexOf('/residential-shop/order-confirmation.cox')>-1&&typeof d['productCarted']!='undefined'&&d['productCarted'].toString().indexOf('CHL_CARE_TIER')>-1)||(typeof d['qp.tagtest']!='undefined'&&d['qp.tagtest']=='1')}catch(e){utag.DB(e)}; break;
+case '276':try{c[276]|=(/^cox:bus:shop:choose-your-features/.test(d['pageName']))}catch(e){utag.DB(e)}; break;
+case '277':try{c[277]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:special-offers:homelife-care'&&typeof d['responsiveDisplayType']!='undefined'&&d['responsiveDisplayType'].toString().indexOf('desktop')>-1)||(typeof d['qp.tagtest']!='undefined'&&d['qp.tagtest']=='1')}catch(e){utag.DB(e)}; break;
+case '278':try{c[278]|=(d['businessUnit']=='res:shop'&&d['dom.pathname'].toString().indexOf('/residential-shop/order-confirmation.cox')>-1&&typeof d['productCarted']!='undefined'&&d['productCarted'].toString().indexOf('CHL_CARE_TIER')<0&&typeof d['productCarted']!='undefined'&&d['productCarted'].toString().indexOf('CHL_BASE')>-1)||(typeof d['qp.tagtest']!='undefined'&&d['qp.tagtest']=='1')}catch(e){utag.DB(e)}; break;
+case '28':try{c[28]|=(d['dom.pathname'].toString().indexOf('/resaccount/')>-1)||(d['dom.pathname'].toString().indexOf('/ibill/')>-1)}catch(e){utag.DB(e)}; break;
+case '29':try{c[29]|=(d['dom.domain'].toString().indexOf('mobile.store.cox.com')>-1&&d['dom.pathname'].toString().indexOf('confirmation.html')>-1)}catch(e){utag.DB(e)}; break;
+case '31':try{c[31]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:home')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:home-cc')}catch(e){utag.DB(e)}; break;
+case '33':try{c[33]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:internet')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:internet-cc')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:special-offers:bundles')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:special-offers:bundles-cc')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:special-offers:hispanic-packages')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:move')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:tv')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:tv-cc')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:phone')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:phone-cc')||(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:internet:gigablast')}catch(e){utag.DB(e)}; break;
+case '34':try{c[34]|=(d['dom.domain'].toString().indexOf('myconnection.cox.com')>-1)}catch(e){utag.DB(e)}; break;
+case '38':try{c[38]|=(d['dom.url'].toString().indexOf('https:')>-1&&d['dom.pathname'].toString().indexOf('/residential/')>-1&&typeof d['pageName']!='undefined'&&d['pageName']!='cox:res:home'&&d['pageName'].toString().indexOf('cox:res:shop')<0&&d['pageName']!='cox:res:internet'&&d['pageName']!='cox:res:tv'&&d['pageName']!='cox:res:move'&&d['pageName']!='cox:res:phone'&&d['pageName'].toString().indexOf('cox:res:special-offers:')<0)}catch(e){utag.DB(e)}; break;
+case '4':try{c[4]|=(d['dom.pathname'].toString().indexOf('residential-shop')>-1&&d['dom.pathname'].toString().indexOf('/order-confirmation.cox')<0&&d['dom.pathname'].toString().indexOf('/address-out-of-area.cox')<0&&d['dom.pathname'].toString().indexOf('/transfer-request-submitted.cox')<0&&d['dom.pathname'].toString().indexOf('/transfer-services.cox')<0&&d['dom.pathname'].toString().indexOf('/shop-gig-confirmation.cox')<0)}catch(e){utag.DB(e)}; break;
+case '46':try{c[46]|=(d['dom.pathname'].toString().indexOf('/residential-shop/transfer-services-confirmation.cox')>-1)}catch(e){utag.DB(e)}; break;
+case '47':try{c[47]|=(d['dom.pathname'].toString().indexOf('/residential-shop/transfer-services.cox')>-1)}catch(e){utag.DB(e)}; break;
+case '5':try{c[5]|=(d['businessUnit']=='res:shop'&&d['dom.pathname'].toString().indexOf('/residential-shop/order-confirmation.cox')>-1)||(d['businessUnit']=='res:shop'&&d['dom.pathname'].toString().indexOf('/residential-shop/shop-gig-confirmation.cox')>-1)||(typeof d['qp.tagtest']!='undefined'&&d['qp.tagtest']=='1')}catch(e){utag.DB(e)}; break;
+case '53':try{c[53]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:get-gig-life')}catch(e){utag.DB(e)}; break;
+case '54':try{c[54]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:get-gig-life-confirmation')}catch(e){utag.DB(e)}; break;
+case '55':try{c[55]|=(d['businessUnit']=='res:shop'&&d['dom.pathname'].toString().indexOf('/checkout/orderconfirmation.cox')>-1)||(d['businessUnit']=='res:shop'&&d['dom.pathname'].toString().indexOf('/residential-shop/order-confirmation.cox')>-1)}catch(e){utag.DB(e)}; break;
+case '58':try{c[58]|=(d['dom.domain'].toString().indexOf('mobile.store.cox.com')>-1&&d['dom.pathname'].toString().indexOf('confirmation.html')>-1)||(d['businessUnit']=='res:shop'&&d['dom.pathname'].toString().indexOf('/residential-shop/order-confirmation.cox')>-1)}catch(e){utag.DB(e)}; break;
+case '59':try{c[59]|=(d['dom.domain'].toString().indexOf('coxvalue.com')>-1&&d['dom.pathname'].toString().indexOf('confirmation.html')>-1)}catch(e){utag.DB(e)}; break;
+case '62':try{c[62]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:chl-lead-form-confirmation')}catch(e){utag.DB(e)}; break;
+case '64':try{c[64]|=(d['dom.domain'].toString().indexOf('espanol.cox.com')>-1&&d['dom.pathname'].toString().indexOf('special-offers/tv-spanish-bundle.cox')>-1)||(d['dom.domain'].toString().indexOf('espanol.cox.com')>-1&&d['dom.pathname'].toString().indexOf('special-offers/tv-spanish-bundle.html')>-1)||(d['dom.pathname'].toString().indexOf('special-offers/hispanic-packages.html')>-1)}catch(e){utag.DB(e)}; break;
+case '66':try{c[66]|=(d['dom.domain'].toString().toLowerCase().indexOf('mobile.store.cox.com'.toLowerCase())>-1&&d['dom.pathname'].toString().toLowerCase().indexOf('confirmation.html'.toLowerCase())<0)||(d['businessUnit']=='res:shop'&&d['dom.pathname'].toString().toLowerCase().indexOf('/residential-shop/order-confirmation.cox'.toLowerCase())<0)}catch(e){utag.DB(e)}; break;
+case '67':try{c[67]|=(typeof d['pageName']!='undefined'&&d['pageName']=='cox:res:shop:chl-lead-form')}catch(e){utag.DB(e)}; break;
+case '7':try{c[7]|=(/^\/business/.test(d['dom.pathname']))||(typeof d['businessUnit']!='undefined'&&d['businessUnit']=='bus')}catch(e){utag.DB(e)}; break;
+case '85':try{c[85]|=(typeof d['_event_cartAdd']!='undefined'&&d['_event_cartAdd']=='1')}catch(e){utag.DB(e)}; break;
+case '88':try{c[88]|=(typeof d['_event_chl_submitted']!='undefined'&&d['_event_chl_submitted']=='1')}catch(e){utag.DB(e)}; break;
+case '89':try{c[89]|=(d['dom.domain'].toString().indexOf('coxvalue')<0)}catch(e){utag.DB(e)}; break;
+case '97':try{c[97]|=(d['pageType']!='affiliate'&&d['cp.utag_main_coxAffiliate']!='1'&&d['interface']!='mobile-app'&&d['ut.event']!='link')}catch(e){utag.DB(e)}; break;}}};utag.pre=function() {    utag.loader.initdata();utag.pagevars();    try{utag.loader.RD(utag.data)}catch(e){utag.DB(e)};    utag.loader.loadrules();    };utag.loader.GET=function(){utag.cl={'_all_':1};utag.pre();
+  utag.handler.extend=[function(a,b){
+try{
+    /*Set the debug flag if that is in the query string*/
+    if(utag.data['qp.utagdb']){
+        if(utag.data['qp.utagdb'].match(/1|true/i)){
+            document.cookie='utagdb=true';
+            utag.data['cp.utagdb']='true';
+            utag.cfg.utagdb=true;
+        }else{
+            document.cookie='utagdb=false';
+            utag.data['cp.utagdb']='false';
+            utag.cfg.utagdb=false;
+        }
+    }
+    /*If environment isn't prod, enable the debug flag unless it was already set to false*/
+    if(utag.cfg.path.indexOf('/prod/')===-1&&(typeof utag.data['cp.utagdb']==='undefined'||utag.data['cp.utagdb']==='true')){
+        document.cookie='utagdb=true';
+        utag.cfg.utagdb=true;
+    }
+}catch(e){
+    utag.DB('Tealium Debugging Tools Failed: '+e);
+}
+},
+function(a,b){ try{ if(b['pageName'].toString().indexOf(':aboutus:')>-1){b['purchaseStep']='aboutus';b['pageType']='aboutus'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['pageName'].toString().indexOf('cox:res:support')>-1){b['purchaseStep']='support';b['pageType']='support'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['dom.domain']=='espanol.cox.com'||b['dom.domain']=='es.store.cox.com'){b['language']='es'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['dom.pathname'].toString().indexOf(';')>-1){try{b['dom.pathname']=b['dom.pathname'].split(';').slice(0,1)[0]}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((typeof b['eventNames']!='undefined'&&b['eventNames'].toString().indexOf('cartAdd')>-1)){b['_event_cartAdd']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['purchaseStep']=='checkout'){b['_event_checkout']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['purchaseStep']=='order'){b['_event_order']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['dom.pathname']=='/residential/home.html'){b['_event_homepage']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['pageName']=='cox:res:shop:chl-lead-form'){b['_event_chl_viewed']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['pageName']=='cox:res:shop:chl-lead-form-confirmation'){b['_event_chl_submitted']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(1){try{b['_utag_event']=a}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){
+if(!utag.ut.qp) {
+  utag.ut.qp = function(a,b,c,r) {
+    r={};
+    if (a && a.indexOf('?')>=0) {
+      a = a.split('?')[1];
+      b = a.split('&');
+      for (a=0; a<b.length; a++) {
+        c = b[a].split("=");
+        r[c[0]] = utag.ut.decode(c[1])
+      }
+    }
+    return r;
+  }
+}
+},
+function(a,b){
+if(b.productTotalDueNow && b.productPSU) {
+  var psu_total = 0, amount = parseFloat(b.productTotalDueNow);
+  for(var c=0; c < b.productPSU.length; c++) {
+    if(b.productPSU[c] == '1' && b.productMRC[c]) {
+      psu_total += parseFloat(b.productMRC[c]);
+    }
+  } 
+  if(psu_total > 0) {
+    b._productTotalDueNowPortion = [];
+    for(var c=0; c < b.productPSU.length; c++) {
+      if(b.productPSU[c] == '1' && b.productMRC[c]) {
+	var portion = (parseFloat(b.productMRC[c]) / psu_total) * amount;
+	b._productTotalDueNowPortion.push(portion.toFixed(2));
+      }
+      else {
+	b._productTotalDueNowPortion.push("");
+      }
+    }
+  }
+} 
+
+},
+function(a,b){
+if((typeof b.productTotalPSUs == "undefined" || b.productTotalPSUs == "0") && b.productPSU) {
+  b.productTotalPSUs=0;
+  for(var i=0; i < b.productPSU.length; i++) {
+    if(b.productPSU[i] == "1" ) {
+      b.productTotalPSUs++;
+    }
+  }
+}
+},
+function(a,b){ try{ if(1){b['_productTotalNewPSUs']='0';b['_productTotalUptierPSUs']='0'} } catch(e){ utag.DB(e) }  },
+function(a,b){
+if(b.productID && b.productPSU) {
+  b._productPSUID = [];
+  for(var c=0; c < b.productPSU.length; c++) {
+    if(b.productPSU[c] == '1') {
+      b._productPSUID.push(b.productID[c]);
+    }
+  } 
+} 
+
+},
+function(a,b){
+if(b.dateStamp) {
+  // create a new javascript Date object based on the timestamp
+  var date;
+  if(b.dateStamp.length == 10) {
+    // eg. dateStamp : "1435705321"
+    date = new Date(parseInt(b.dateStamp)*1000);
+  }
+  else {
+    // eg. dateStamp : "1435705435478"
+    date = new Date(parseInt(b.dateStamp));
+  }
+  var day = date.getUTCDate();
+  if(day<10) day = "0"+day.toString();
+  var month = date.getUTCMonth() + 1;
+  if(month<10) month="0"+month.toString();
+  var year = date.getUTCFullYear();
+  b._formattedDate = [month, day, year].join('/');
+}
+
+},
+function(a,b){ try{ if(1){try{b['_orig_pageName']=utag.data.pageName || ''}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((typeof b['eventName']!='undefined'&&b['eventName']!=''&&typeof b['eventNames']=='undefined')){b['eventNames']=b['eventName']} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['purchaseStep']=='checkout'||b['purchaseStep']=='order'||b['purchaseStep']=='gig shop order'){try{b['eventNames']=(b.eventNames || "").replace("cartAdd", "")}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(typeof b['categoryPurchased']!='undefined'&&b['categoryPurchased']!=''){b['_productCategory']=b['categoryPurchased']} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(typeof b['categoryCarted']!='undefined'&&b['categoryCarted']!=''){b['_productCategory']=b['categoryCarted']} } catch(e){ utag.DB(e) }  },
+function(a,b){
+// if the data layer has a productSubscribed then set in local storage
+if (typeof b.productSubscribed != "undefined" && b.productSubscribed instanceof Array) {
+  // OLD: we used to store the variable in local storage but now switching to session storage (persists for the visit)
+  // localStorage.setItem('productSubscribed', JSON.stringify(b.productSubscribed));
+  sessionStorage.setItem('productSubscribed', JSON.stringify(b.productSubscribed)); 
+}
+
+// try to get localstorage.  if there is not one then productSubscribed will be undefined (void)
+// OLD: we used to store the variable in local storage but now switching to session storage (persists for the visit)
+// b.productSubscribed = b.productSubscribed || JSON.parse(localStorage.getItem('productSubscribed')) || void(0);
+b.productSubscribed = b.productSubscribed || JSON.parse(sessionStorage.getItem('productSubscribed')) || void(0);
+
+
+// same logic as always where we try to use the productSubscribed data.
+if (b.purchaseStep == "features" || b.purchaseStep == 'checkout' || b.purchaseStep == 'order' || b.purchaseStep == 'gig shop order') {
+  if (typeof b.productSubscribed != "undefined" && b.productSubscribed instanceof Array) {
+    // create a hash to make it easier to check which products are subscribed
+    var tmpSubscribed = {};
+    for (var i = 0; i < b.productSubscribed.length; i++) {
+      tmpSubscribed[b.productSubscribed[i]] = 1;
+    }
+    b._productNewPSU = b.productPSU.slice(0);
+    b._productUptierPSU = b.productPSU.slice(0);
+    b._productTotalNewPSUs = 0;
+    b._productTotalUptierPSUs = 0;
+
+    // also check for uptiers, which means looking at the PSUs
+    // that have the same prefix (ie. are the same product) but
+    // are not identical eg. CHSI_TIER_ESSENTIAL vs CHSI_TIER_PREFERRED
+    for (var i = 0; i < b.productID.length; i++) {
+      var p = b.productID[i], p_prefix;
+      // prefix is first two segments:
+      // "CHSI_EQUIPMENT_LEASE_USG" becomes "CHSI_EQUIPMENT"
+      try { p_prefix = p.split('_').slice(0,2).join('_') } catch(e) {};
+      var is_uptier = false;
+      // Check for uptiers first
+      for (var j = 0; j < b.productSubscribed.length; j++) {
+        var sub = b.productSubscribed[j], sub_prefix;
+        try{ sub_prefix = sub.split('_').slice(0,2).join('_') } catch(e) {};
+        // check for legacy sub prefix cases. If it is legacy – change sub prefix variable to match p_prefix pattern
+        if (sub_prefix == "COX_INTERNET") {sub_prefix = "CHSI_TIER"}
+        if (sub_prefix == "COX_TELEVISION") {sub_prefix = "CABLE_PACKAGE"}
+        if (sub_prefix == "COX_TELEPHONE") {sub_prefix = "TELEPHONE_PACKAGE"} 
+        if (sub_prefix && p_prefix && sub_prefix == p_prefix && p != sub) {
+          is_uptier = true;
+        }
+      }
+
+      if (is_uptier && b.productPSU[i] == '1') {
+        b._productUptierPSU[i] = '1';
+        b._productNewPSU[i] = '0';
+        b._productTotalUptierPSUs++;
+      }
+      else if (!tmpSubscribed[p] && b.productPSU[i] == '1') {
+        b._productUptierPSU[i] = '0';
+        b._productNewPSU[i] = '1';
+        b._productTotalNewPSUs++;
+      }
+      else {
+        b._productUptierPSU[i] = '0';
+        b._productNewPSU[i] = '0';
+      }
+    }
+  }
+  else {
+    // if productSubscribed is not set, then all PSUs are new
+    b._productNewPSU = b.productPSU.slice(0);
+    b._productTotalNewPSUs = 0;
+    for (var i = 0; i < b._productNewPSU.length; i++) {
+      if (b._productNewPSU[i] == '1') {
+        b._productTotalNewPSUs++;
+      }
+    }
+  }
+}
+
+},
+function(a,b){ try{ if(typeof b['windowViewType']=='undefined'){b['windowViewType']='regular'} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){ try{ if(typeof b['visitorType']!='undefined'&&b['visitorType']!=''||typeof b['visitorLoginStatus']!='undefined'&&b['visitorLoginStatus']!=''||typeof b['visitorAuthenticatedUserRole']!='undefined'&&b['visitorAuthenticatedUserRole']!=''||typeof b['visitorServiceability']!='undefined'&&b['visitorServiceability']!=''){c=[b['visitorType'],b['visitorServiceability'],b['visitorLoginStatus'],b['visitorAuthenticatedUserRole']];for(d=0;d<c.length;d++){if(typeof c[d]=='undefined'||c[d]=='')c[d]='unknown'};b['_visitorType_tmp']=c.join(':')} } catch(e){ utag.DB(e) }  },
+function(a,b){
+if(b['_visitorType_tmp'] && 
+   ((b['cp.utag_main_coxVisitorType'] && b['cp.utag_main_coxVisitorType'] != b['_visitorType_tmp'])
+      || !b['cp.utag_main_coxVisitorType'])) {
+  b['_isNewVisitorType'] = true;
+}
+},
+function(a,b){ try{ if(typeof b['_isNewVisitorType']!='undefined'&&b['_isNewVisitorType']!=''){b['_visitorType']=b['_visitorType_tmp']} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((typeof b['_isNewVisitorType']!='undefined'&&b['_isNewVisitorType']!=''&&typeof b['cp.utag_main_coxVisitorType']!='undefined'&&b['cp.utag_main_coxVisitorType']!='')){b['_previousVisitorType']=b['cp.utag_main_coxVisitorType']} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(typeof b['_visitorType']!='undefined'&&b['_visitorType']!=''||typeof b['_isNewVisitorType']!='undefined'&&b['_isNewVisitorType']!=''){utag.loader.SC('utag_main',{'coxVisitorType':b['_visitorType']});b['cp.utag_main_coxVisitorType']=b['_visitorType'];}} catch(e){ utag.DB(e) } },
+function(a,b){ try{ if(typeof b['cp.utag_main_offer_origin']=='undefined'){utag.loader.SC('utag_main',{'offer_origin':'coxcom'+';exp-session'});b['cp.utag_main_offer_origin']='coxcom';}} catch(e){ utag.DB(e) } },
+function(a,b){ try{ if(b['purchaseStep']=='shop'||b['purchaseStep']=='byob'||b['purchaseStep']=='campaign'||b['purchaseStep']=='offer'||b['purchaseStep']=='grid'||b['purchaseStep']=='myaccount'||b['purchaseStep']=='ibill'||b['purchaseStep']=='support'||b['purchaseStep']=='upgrade'||b['purchaseStep']=='phonetools'||b['purchaseStep']=='mktg'){utag.loader.SC('utag_main',{'offer_origin':b['purchaseStep']+';exp-session'});b['cp.utag_main_offer_origin']=b['purchaseStep'];}} catch(e){ utag.DB(e) } },
+function(a,b){
+var v = ['linkParent', 'linkSection', 'linkName'];
+for(var x=0; x < v.length; x++) {
+  if(typeof b[v[x]] != "undefined" && b[v[x]]) {
+    b[v[x]] = b[v[x]].toLowerCase().replace(/[^a-z ]/ig, '').replace(/\s+/ig, ' ').replace(/ /g, '-');
+  }
+}
+},
+function(a,b){
+if(b['cp.utag_main_offer_origin'] && b.productOfferID && b.productOfferName) {
+  var _offers = [];
+  for(var c=0; c < b.productOfferID.length; c++) {
+    var tmp = [];
+    if(c==0) tmp.push(b['cp.utag_main_offer_origin']);
+    tmp.push(b.productOfferID[c]);
+    tmp.push(b.productOfferName[c]);
+    _offers.push(tmp.join(';'));
+  } 
+  b.offer = _offers.join(',');
+} 
+
+},
+function(a,b){ try{ if(b['cp.hasCart']=='1'){b['_hasCart']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((typeof b['eventNames']!='undefined'&&b['eventNames'].toString().indexOf('cartAdd')>-1)){document.cookie="hasCart="+'1'+";path=/;domain="+utag.cfg.domain+";expires=";b['cp.hasCart']='1';}} catch(e){ utag.DB(e) } },
+function(a,b){ try{ if((typeof b['pageName']!='undefined'&&b['pageName']!=''&&b['pageName'].toString().indexOf(':')>-1)){try{b['_site']=b.pageName.split(':').slice(0,1)}catch(e){};try{b['_siteType']=b.pageName.split(':').slice(0,2).join(':')}catch(e){};try{b['_siteSection1']=b.pageName.split(':').slice(0,3).join(':')}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){b['previous_page_name']=b['cp.utag_main__prevpage'];utag.loader.SC('utag_main',{'_prevpage':b['pageName']+';exp-1h'})},
+function(a,b){
+if(!b.productTotalOfferMRC) b.productTotalOfferMRC = "0";
+if(!b.productTotalOfferOneTimeCharge) {
+	 var temp_productTotalOneTimeCharge=0;
+	 var temp_productTotalOneTimeChargeSavings=0;
+	 b.productTotalOfferOneTimeCharge = 0;
+	  
+	if(b.productOneTimeCharge) {
+	  for(var i=0; i < b.productOneTimeCharge.length; i++) {
+		  temp_productTotalOneTimeCharge += parseFloat(b.productOneTimeCharge[i]);
+	  }
+	}
+
+	if(b.productOneTimeChargeSavings) {
+	  for(var i=0; i < b.productOneTimeChargeSavings.length; i++) {
+		  temp_productTotalOneTimeChargeSavings += parseFloat(b.productOneTimeChargeSavings[i]);
+	  }
+	}
+
+        b.productTotalOfferOneTimeCharge = temp_productTotalOneTimeCharge - temp_productTotalOneTimeChargeSavings;
+}
+
+b.totalOrderValue = parseFloat(b.productTotalOfferMRC)+parseFloat(b.productTotalOfferOneTimeCharge);
+b.totalOrderValue = Math.ceil(b.totalOrderValue * 100)/100;
+},
+function(a,b){ try{ if((typeof b['productID']=='undefined'&&typeof b['productId']!='undefined')){b['productID']=b['productId']} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){
+  b._ccity='';
+  b._ccountry='';
+  b._ccurrency='';
+  b._ccustid='';
+  b._corder=(typeof b['purchaseID']!='undefined')?b['purchaseID']:'';
+  b._cpromo=(typeof b['promoCode']!='undefined')?b['promoCode']:'';
+  b._cship='';
+  b._cstate=(typeof b['state']!='undefined')?b['state']:'';
+  b._cstore='';
+  b._csubtotal=(typeof b['totalOrderValue']!='undefined')?b['totalOrderValue']:'';
+  b._ctax='';
+  b._ctotal=(typeof b['totalOrderValue']!='undefined')?b['totalOrderValue']:'';
+  b._ctype=(typeof b['visitorType']!='undefined')?b['visitorType']:'';
+  b._czip=(typeof b['zip']!='undefined')?b['zip']:'';
+  b._cprod=(typeof b['productID']!='undefined'&&b['productID'].length>0)?b['productID']:[];
+  b._cprodname=[];
+  b._cbrand=[];
+  b._ccat=(typeof b['_productCategory']!='undefined'&&b['_productCategory'].length>0)?b['_productCategory']:[];
+  b._ccat2=[];
+  b._cquan=(typeof b['productQuantity']!='undefined'&&b['productQuantity'].length>0)?b['productQuantity']:[];
+  b._cprice=(typeof b['productMRC']!='undefined'&&b['productMRC'].length>0)?b['productMRC']:[];
+  b._csku=(typeof b['productID']!='undefined'&&b['productID'].length>0)?b['productID']:[];
+  b._cpdisc=[];
+  if(b._cprod.length==0){b._cprod=b._csku.slice()};
+  if(b._cprodname.length==0){b._cprodname=b._csku.slice()};
+  function tf(a){if(a=='' || isNaN(parseFloat(a))){return a}else{return (parseFloat(a)).toFixed(2)}};
+  b._ctotal=tf(b._ctotal);b._csubtotal=tf(b._csubtotal);b._ctax=tf(b._ctax);b._cship=tf(b._cship);for(c=0;c<b._cprice.length;c++){b._cprice[c]=tf(b._cprice[c])};for(c=0;c<b._cpdisc.length;c++){b._cpdisc[c]=tf(b._cpdisc[c])};
+},
+function(a,b){
+if(b.productTotalDueNow && b.productPSU) {
+  var psu_total = 0, amount = parseFloat(b.productTotalDueNow);
+  for(var c=0; c < b.productPSU.length; c++) {
+    if(b.productPSU[c] == '1' && b.productMRC[c]) {
+      psu_total += parseFloat(b.productMRC[c]);
+    }
+  } 
+  if(psu_total > 0) {
+    b._productTotalDueNowPortion = [];
+    for(var c=0; c < b.productPSU.length; c++) {
+      if(b.productPSU[c] == '1' && b.productMRC[c]) {
+	var portion = (parseFloat(b.productMRC[c]) / psu_total) * amount;
+	b._productTotalDueNowPortion.push(portion.toFixed(2));
+      }
+      else {
+	b._productTotalDueNowPortion.push("");
+      }
+    }
+  }
+} 
+
+},
+function(a,b){
+if(b.productDepositAmount && b.productPSU) {
+  var psu_total = 0, amount = parseFloat(b.productDepositAmount);
+  for(var c=0; c < b.productPSU.length; c++) {
+    if(b.productPSU[c] == '1' && b.productMRC[c]) {
+      psu_total += parseFloat(b.productMRC[c]);
+    }
+  } 
+  if(psu_total > 0) {
+    b._productDepositAmountPortion = [];
+    for(var c=0; c < b.productPSU.length; c++) {
+      if(b.productPSU[c] == '1' && b.productMRC[c]) {
+	var portion = (parseFloat(b.productMRC[c]) / psu_total) * amount;
+	b._productDepositAmountPortion.push(portion.toFixed(2));
+      }
+      else {
+	b._productDepositAmountPortion.push("");
+      }
+    }
+  }
+} 
+
+},
+function(a,b){
+if(b.productBundleDiscount && b.productPSU) {
+  var psu_total = 0, psu_discount = parseFloat(b.productBundleDiscount);
+  for(var c=0; c < b.productPSU.length; c++) {
+    if(b.productPSU[c] == '1' && b.productMRC[c]) {
+      psu_total += parseFloat(b.productMRC[c]);
+    }
+  } 
+  if(psu_total > 0) {
+    b._productBundleDiscountPortion = [];
+    for(var c=0; c < b.productPSU.length; c++) {
+      if(b.productPSU[c] == '1' && b.productMRC[c]) {
+	var discount_portion = (parseFloat(b.productMRC[c]) / psu_total) * psu_discount;
+	b._productBundleDiscountPortion.push(discount_portion.toFixed(2));
+      }
+      else {
+	b._productBundleDiscountPortion.push("");
+      }
+    }
+  }
+} 
+
+},
+function(a,b){
+if(b.productPSUReplacingMRC && b.productPSUReplacedMRC) {
+  var replacing_sum = replaced_sum = 0;
+  for(var x=0; x < b.productPSUReplacingMRC.length; x++) {
+    replacing_sum += parseFloat(b.productPSUReplacingMRC[x]);
+  }
+  for(var x=0; x < b.productPSUReplacedMRC.length; x++) {
+    replaced_sum += parseFloat(b.productPSUReplacedMRC[x]);
+  }
+  if(replacing_sum > replaced_sum) {
+    // "+35.00"
+    b['_productPSUReplacedPriceDiff'] = ('+' + (replacing_sum - replaced_sum).toFixed(2));
+  }
+  else {
+    // "-35.00"
+    b['_productPSUReplacedPriceDiff'] = (replacing_sum - replaced_sum).toFixed(2);
+  }
+  var _replacing = [];
+  for(var c=0; c < b.productPSUReplacing.length; c++) {
+    var tmp = [];
+    tmp.push(b.productPSUReplacing[c]);
+    tmp.push(b.productPSUReplacingMRC[c]);
+    _replacing.push(tmp.join(':'));
+  } 
+  b._productPSUReplacing = _replacing.join(';');
+  
+  // REPLACED PSU
+  var _replaced = [];
+  for(var c=0; c < b.productPSUReplaced.length; c++) {
+    var tmp = [];
+    tmp.push(b.productPSUReplaced[c]);
+    tmp.push(b.productPSUReplacedMRC[c]);
+    _replaced.push(tmp.join(':'));
+  } 
+  b._productPSUReplaced = _replaced.join(';');
+}
+},
+function(a,b,c,d){ try{ if((typeof b['_productPSUReplaced']!='undefined'&&b['_productPSUReplaced']!=''&&typeof b['_productPSUReplacing']!='undefined'&&b['_productPSUReplacing']!=''&&typeof b['_productPSUReplacedPriceDiff']!='undefined'&&b['_productPSUReplacedPriceDiff']!='')){c=[b['_productPSUReplacing'],b['_productPSUReplaced'],b['_productPSUReplacedPriceDiff']];b['_psuReplaced']=c.join('|')} } catch(e){ utag.DB(e) }  },
+function(a,b){
+if(b.productReplacingOfferMRC && b.productReplacedOfferMRC) {
+  var replacing_sum = replaced_sum = 0;
+  for(var x=0; x < b.productReplacingOfferMRC.length; x++) {
+    replacing_sum += parseFloat(b.productReplacingOfferMRC[x]);
+  }
+  for(var x=0; x < b.productReplacedOfferMRC.length; x++) {
+    replaced_sum += parseFloat(b.productReplacedOfferMRC[x]);
+  }
+  if(replacing_sum > replaced_sum) {
+    // "+35.00"
+    b['_productOfferReplacedPriceDiff'] = ('+' + (replacing_sum - replaced_sum).toFixed(2));
+  }
+  else {
+    // "-35.00"
+    b['_productOfferReplacedPriceDiff'] = (replacing_sum - replaced_sum).toFixed(2);
+  }
+  var _replacing = [];
+  for(var c=0; c < b.productReplacingOfferID.length; c++) {
+    var tmp = [];
+    tmp.push(b.productReplacingOfferID[c]);
+    tmp.push(b.productReplacingOfferName[c]);
+    tmp.push(b.productReplacingOfferMRC[c]);
+    tmp.push(b.productReplacingOfferMonths[c]);
+    tmp.push(b.productReplacingOfferSavings[c]);
+    _replacing.push(tmp.join(':'));
+  } 
+  b._productReplacingOffers = _replacing.join(';');
+  
+  // RePLACED offer
+  var _replaced = [];
+  for(var c=0; c < b.productReplacedOfferID.length; c++) {
+    var tmp = [];
+    tmp.push(b.productReplacedOfferID[c]);
+    tmp.push(b.productReplacedOfferName[c]);
+    tmp.push(b.productReplacedOfferMRC[c]);
+    tmp.push(b.productReplacedOfferMonths[c]);
+    tmp.push(b.productReplacedOfferSavings[c]);
+    _replaced.push(tmp.join(':'));
+  } 
+  b._productReplacedOffers = _replaced.join(';');
+}
+},
+function(a,b,c,d){ try{ if((typeof b['_productOfferReplacedPriceDiff']!='undefined'&&b['_productOfferReplacedPriceDiff']!=''&&typeof b['_productReplacedOffers']!='undefined'&&b['_productReplacedOffers']!=''&&typeof b['_productReplacingOffers']!='undefined'&&b['_productReplacingOffers']!='')){c=[b['_productReplacingOffers'],b['_productReplacedOffers'],b['_productOfferReplacedPriceDiff']];b['_offerReplaced']=c.join('|')} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((typeof b['eventNames']!='undefined'&&b['eventNames'].toString().indexOf('offerExpanded')>-1)){try{b['_cyfOfferExpandedEvent_tmp']=[]}catch(e){};try{b['_cyfOfferCompletedEvent_tmp']=[]}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(typeof b['thisAccordionSection']!='undefined'&&b['thisAccordionSection']!=''){try{b['thisAccordionSection']=b.thisAccordionSection.replace('-continue', '')}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d,e,f,g){d=b['nextAccordionSection'];if(typeof d=='undefined')return;c=[{'Channels':'channel-paks'},{'Internet Options':'internet-option'},{'Protection Plan':'price-lock-and-plan'},{'Installation':'installation-options'},{'Telephone Features':'telephone-options'},{'TV Equipment':'tv-equipment'}];var m=false;for(e=0;e<c.length;e++){for(f in c[e]){if(d.toString().indexOf(f)>-1){b['nextAccordionSection']=c[e][f];m=true};};if(m)break};},
+function(a,b,c,d){ try{ if((typeof b['visitorServiceability']!='undefined'&&b['visitorServiceability']!=''&&typeof b['visitorServiceabilityMoveTo']!='undefined'&&b['visitorServiceabilityMoveTo']!='')){c=[b['visitorServiceability'],b['visitorServiceabilityMoveTo']];b['_moveResServiceType']=c.join(':')} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['eventNames']=='autotrack'){try{b['_isCampCodeLink']=b['_linkObject'].attr('href').indexOf('campcode=') > 0 ? 1: 0}catch(e){};try{b['_isMegaNavLink']=b['_linkObject'].closest('div#pf-mega-menu,div.pf-sub-header').length > 0 ? 1: 0}catch(e){};b['_isCustomLink']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((b['eventNames']=='autotrack'&&typeof b['linkName']!='undefined'&&b['linkName']=='')){try{b['linkName']=jQuery.trim(b['_linkObject'].attr('title')) || ''}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((b['eventNames']=='autotrack'&&typeof b['linkName']!='undefined'&&b['linkName']=='')){try{b['linkName']=jQuery.trim(b['_linkObject'].text()) || ''}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((b['eventNames']=='autotrack'&&typeof b['linkName']!='undefined'&&b['linkName']=='')){try{b['linkName']=jQuery.trim(b['_linkObject'].children('img').first().attr('alt')) || ''}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((b['eventNames']=='autotrack'&&typeof b['linkName']!='undefined'&&b['linkName']=='')){b['linkName']='unknown'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((b['eventNames']=='autotrack'&&typeof b['linkName']!='undefined'&&b['linkName']!='')){try{b['linkName']=b.linkName.replace(':', '')}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['_isMegaNavLink']=='1'){try{b['linkNavParent']=b['_linkObject'].closest('ul').find('li a.pf-nav-items-secondary-header,li.pf-primary a').attr("title")}catch(e){};b['linkType']='gn';b['customLinkType']='navigate'} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){ try{ if((b['_isMegaNavLink']=='1'&&typeof b['linkName']!='undefined'&&b['linkName']!=''&&typeof b['linkType']!='undefined'&&b['linkType']!='')){c=[b['_siteType'],b['linkType'],b['linkNavSection'],b['linkNavParent'],b['linkName']];b['navigationLinkName']=c.join(':')} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['_isCampCodeLink']=='1'){b['customLinkType']='campcode';try{b['campaignCodeInternal']=utag.ut.qp(b['_linkObject'].attr("href")).campcode}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['_isCustomLink']=='1'){try{b['_customLinkPageSection']=(b['_linkObject'].closest('#pf-header,.pf-top-header').length > 0) ? 'header' : b['_customLinkPageSection']}catch(e){};try{b['_customLinkPageSection']=(b['_linkObject'].closest('#pf-mega-menu,.pf-sub-nav').length > 0) ? 'nav' : b['_customLinkPageSection']}catch(e){};try{b['_customLinkPageSection']=(b['_linkObject'].closest('#container').length > 0) ? 'body' : b['_customLinkPageSection']}catch(e){};try{b['_customLinkPageSection']=(b['_linkObject'].closest('#pf-footer').length > 0) ? 'footer' : b['_customLinkPageSection']}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((b['_isCustomLink']=='1'&&b['eventType']=='form-input-submit')){try{b['_customLinkPageSection']=b._linkObject.closest('form').attr('id') ? b._linkObject.closest('form').attr('id') : b['_customLinkPageSection']}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((b['_isCustomLink']=='1'&&typeof b['_customLinkPageSection']=='undefined')){b['_customLinkPageSection']='unknown'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((b['_isCustomLink']=='1'&&!/^http/.test(b['linkUrl']))){b['_linkUrl']=b['linkUrl']} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((b['_isCustomLink']=='1'&&/^http/.test(b['linkUrl']))){try{b['_linkUrl']='/'+b.linkUrl.split('/').slice(3).join('/')}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){ try{ if(b['_isCustomLink']=='1'){c=[b['_customLinkPageSection'],b['linkName'],b['_linkUrl']];b['_customLinkName']=c.join('|')} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){c=['_customLinkName'];for(d=0;d<c.length;d++){try{b[c[d]] = (b[c[d]] instanceof Array || b[c[d]] instanceof Object) ? b[c[d]] : b[c[d]].toString().toLowerCase()}catch(e){}}},
+function(a,b){ try{ if(b['_utag_event']=='view'){try{b['campaignCodeInternalList']=(function(a,b){a=jQuery('a[href*=\'campcode\']').map(function(){return utag.ut.qp(jQuery(this).attr("href")).campcode;}).get().slice();b=[];for(var i=0;i<a.length;i++){if(b.indexOf(a[i])===-1){b.push(a[i])}}return b.slice();}())}catch(e){}} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(1){
+b.exclude_codes = [];
+// do not edit below this line
+if (b.eventNames !== 'campaign_click' && b.customLinkType !== 'campcode') {
+  b.campaignCodeInternalList = (function(exclude_codes, campcodes, output, allowed) {
+    utag.ut.campcodes_already_sent = utag.ut.campcodes_already_sent || [];
+    campcodes = campcodes || [];
+    campcodes = [].concat(campcodes, jQuery('a[href*=\'campcode\']').map(function() {
+      return utag.ut.qp(jQuery(this).attr('href')).campcode;
+    }).get().slice());
+    output = [];
+    for (var i = 0; i < campcodes.length; i++) {
+      if (output.indexOf(campcodes[i]) === -1) { /*does the output not contain the exact code already?*/
+        allowed = 1;
+        if (exclude_codes.indexOf(campcodes[i]) > -1) { /*does this campcode contain a word found in excludes?*/
+          allowed = 0;
+        }
+        if (utag.ut.campcodes_already_sent.indexOf(campcodes[i]) > -1) { /*does this campcode contain a code found in campcode alreay sent?*/
+          allowed = 0;
+        }
+        if (allowed === 1) {
+          utag.ut.campcodes_already_sent.push(campcodes[i]);
+          output.push(campcodes[i]);
+        }
+      }
+    }
+    utag.DB('campcode output: ' + JSON.stringify(output));
+    return output.slice();
+  }(b.exclude_codes, b.campaignCodeInternalList));
+}
+
+b.exclude_codes = void(0);
+} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['purchaseStep']=='affiliate'||b['qp.fakeaffiliate']=='1'){utag.loader.SC('utag_main',{'coxAffiliate':'1'});b['cp.utag_main_coxAffiliate']='1';}} catch(e){ utag.DB(e) } },
+function(a,b){ try{ if(1){b['_killMediaTags']='no'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(1){
+if(utag.data['ut.env'] !== 'prod'){
+  utag.ut.site_cat = utag.ut.site_cat || [];
+}
+
+} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(1){
+b.url_contains_email = 'no';
+if(/\b[a-z0-9-_.]+@[a-z0-9-_.]+(\.[a-z0-9]+)+/i.test(b['dom.url'])){
+  b.url_contains_email = 'yes';
+}
+} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(1){
+var hn_pad = "0000000"; 
+var rn_pad = "00";
+
+
+if (typeof utag.data.houseNumber != 'undefined' && typeof utag.data.residentNumber != 'undefined') {
+  utag.data.houseNumber7 = hn_pad.substring(0, hn_pad.length - utag.data.houseNumber.length) + utag.data.houseNumber
+  utag.data.residentNumber2 = rn_pad.substring(0, rn_pad.length - utag.data.residentNumber.length) + utag.data.residentNumber
+}
+
+
+} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){ try{ if((typeof b['houseNumber7']!='undefined'&&typeof b['residentNumber2']!='undefined')){c=[b['houseNumber7'],b['residentNumber2']];b['accountNumber9']=c.join('')} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(1){
+if (typeof utag.runonce === "undefined") {utag.runonce = {};}
+var id = '2450';
+if (typeof(utag.runonce[id]) === "undefined") {
+    utag.runonce[id] = 1;
+    var checkStorage = function() {
+        var supported = false;
+        try {
+            localStorage.setItem("test", true);
+            localStorage.removeItem("test");
+            supported = true
+        } catch (e) {
+            return false
+        }
+        return supported
+    };
+    try {
+        data = {};
+        if (checkStorage() && localStorage.getItem('utag_467')) {
+            data = JSON.parse(localStorage.getItem('utag_467'));
+            if (data && data.dnb_Data) {
+                utag.DB(data.dnb_Data);
+                for (var key in data.dnb_Data) {
+                    if (data.dnb_Data.hasOwnProperty(key)) {
+                        b['dnb_' + key] = data.dnb_Data[key];
+                    }
+                }
+            }
+        }
+    } catch (e) {
+        // statements
+        utag.DB(e);
+    }
+}
+} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){ try{ if(typeof b['dnb_duns']!='undefined'&&b['dnb_duns']!=''){c=[b['dnb_duns'],b['dnb_jobFunction'],b['dnb_jobSeniority'],b['dnb_companyZip5'],b['dnb_employeesAtLocationNum'],b['dnb_employeesInAllLocationsNum'],b['dnb_networthNum'],b['dnb_salesAnnualNum'],b['dnb_walletSize']];b['cbDnbPersona']=c.join(':')} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){ try{ if(typeof b['dnb_duns']!='undefined'&&b['dnb_duns']!=''){c=[b['dnb_companyName'],b['dnb_industryNaics']];b['cbDnbCompanyAttributes']=c.join(':')} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){ try{ if(typeof b['dnb_duns']!='undefined'&&b['dnb_duns']!=''){c=[b['dnb_familyTreeSizeNum'],b['dnb_howTheyPay'],b['dnb_naicsCodes']];b['cbDnbCompanyGrowth']=c.join(':')} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){ try{ if(typeof b['dnb_duns']!='undefined'&&b['dnb_duns']!=''){c=[b['dnb_walletSize'],b['dnb_telecomSpend'],b['dnb_itExpense'],b['dnb_marketability'],b['dnb_techOfficeDemand']];b['cbDnbCompanySpend']=c.join(':')} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(1){
+if (typeof b.productSubscribed != "undefined" && b.productSubscribed instanceof Array) {
+
+  var sub_psu = [];
+
+  for (var j = 0; j < b.productSubscribed.length; j++) {
+    var sub = b.productSubscribed[j], sub_prefix;
+    try{ sub_prefix = sub.split('_').slice(0,2).join('_') } catch(e) {};
+    // check for legacy sub prefix cases. If it is legacy – change sub prefix variable to match p_prefix pattern
+    if (sub_prefix == "COX_INTERNET") {sub_prefix = "CHSI_TIER"}
+    if (sub_prefix == "COX_TELEVISION") {sub_prefix = "CABLE_PACKAGE"}
+    if (sub_prefix == "COX_TELEPHONE") {sub_prefix = "TELEPHONE_PACKAGE"}	
+    
+    // check if the prefix is one of the PSUs 
+    if (sub_prefix == "CHSI_TIER" || sub_prefix == "CABLE_PACKAGE" || sub_prefix == "TELEPHONE_PACKAGE" || sub_prefix == "CHL_TIER") {
+      // product subscribe value is a PSU - push it to sub_psu
+      sub_psu.push(b.productSubscribed[j]);
+    } 
+  }
+
+  // if the sub_psu array contains anything, join in a variable
+  if (sub_psu.length > 0) {b._productSubscribedPSUs = sub_psu.join(',');}
+
+}
+} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((typeof b['selfHelpName']!='undefined'&&b['selfHelpName'].toString().indexOf('idm:registration:complete')>-1)){b['_event_registrationComplete']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((typeof b['visitorLoginStatus']!='undefined'&&b['visitorLoginStatus'].toString().indexOf('loggedin')>-1&&b['cp.utag_main_visitorLoginStatus'].toString().indexOf('loggedin')<0)){b['_event_MyAcctLoggedIn']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['pageName'].toString().toLowerCase().indexOf('cox:res'.toLowerCase())>-1){b['_event_respage']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if((typeof b['visitorLoginStatus']!='undefined'&&b['visitorLoginStatus']!=''&&b['visitorLoginStatus'].toString().toLowerCase().indexOf('loggedin'.toLowerCase())>-1)||typeof b['_isNewVisitorType']!='undefined'&&b['_isNewVisitorType']!=''){utag.loader.SC('utag_main',{'visitorLoginStatus':b['visitorLoginStatus']});b['cp.utag_main_visitorLoginStatus']=b['visitorLoginStatus'];}} catch(e){ utag.DB(e) } },
+function(a,b){ try{ if(b['pageName']=='cox:res:shop:transfer-services'){b['_event_TransferLeadStarted']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['pageName']=='cox:res:shop:transfer-services-confirmation'){b['_event_TransferLeadSubmitted']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['pageName']=='cox:res:shop:transfer-order'){b['_event_TransferOrderStarted']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['pageName']=='cox:res:shop:transfer-order-confirmation'){b['_event_TransferOrderCompleted']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['pageName'].toString().indexOf('cox:res:tv')>-1){b['_event_TVContentViewed']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['pageName'].toString().indexOf('cox:res:internet')>-1){b['_event_InternetContentViewed']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['pageName'].toString().indexOf('cox:res:homelife')>-1){b['_event_HomelifeContentViewed']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(1){
+// if the data layer has campaignSession then set in local storage
+if (typeof b.campaignSession != "undefined" && b.campaignSession !== '') {
+  sessionStorage.setItem('campaignSession', JSON.stringify(b.campaignSession)); 
+}
+
+// try to get localstorage.  if there is not one then campaignSession will be undefined (void)
+b.campaignSession = b.campaignSession || JSON.parse(sessionStorage.getItem('campaignSession')) || void(0);
+
+
+} } catch(e){ utag.DB(e) }  }];
+  utag.handler.cfg_extend=[{"alr":1,"bwq":0,"id":"35","blr":0,"end":0},{"alr":0,"bwq":0,"id":"331","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2324","blr":1,"end":0},{"alr":1,"bwq":0,"id":"345","blr":0,"end":0},{"alr":1,"bwq":0,"id":"288","blr":0,"end":0},{"alr":0,"bwq":0,"id":"347","blr":1,"end":0},{"alr":0,"bwq":0,"id":"348","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2385","blr":1,"end":0},{"alr":0,"bwq":0,"id":"349","blr":1,"end":0},{"alr":0,"bwq":0,"id":"351","blr":1,"end":0},{"alr":0,"bwq":0,"id":"352","blr":1,"end":0},{"alr":1,"bwq":0,"id":"1112","blr":0,"end":0},{"alr":0,"bwq":0,"id":"1113","blr":1,"end":0},{"alr":1,"bwq":0,"id":"1114","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1115","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1116","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1117","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1118","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1119","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1120","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1121","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1122","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1123","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1125","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1126","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1127","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1128","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1129","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2351","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1130","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1131","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1132","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1133","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1134","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1135","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1136","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1137","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1138","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1140","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1142","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1143","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1144","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1145","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1146","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1147","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1148","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1149","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1150","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1151","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1152","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1153","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1156","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1224","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1225","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1226","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1227","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1228","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1229","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1230","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1231","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1232","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1233","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2383","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1234","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1235","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1236","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1237","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1238","blr":0,"end":0},{"alr":1,"bwq":0,"id":"1159","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2381","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2323","blr":0,"end":0},{"alr":0,"bwq":0,"id":"2331","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2390","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2394","blr":1,"end":0},{"alr":1,"bwq":0,"id":"2441","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2442","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2450","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2456","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2457","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2472","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2458","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2460","blr":0,"end":0},{"alr":1,"bwq":0,"id":"2471","blr":0,"end":0},{"alr":0,"bwq":0,"id":"2469","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2557","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2558","blr":0,"end":1},{"alr":0,"bwq":0,"id":"2576","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2577","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2578","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2579","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2580","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2581","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2582","blr":1,"end":0},{"alr":0,"bwq":0,"id":"2585","blr":1,"end":0}];
+  utag.loader.initcfg = function(){
+    utag.loader.cfg={"422":{load:(utag.cond[162] && utag.cond[163]),send:1,v:201804231715,wait:1,tid:19063},"561":{load:(utag.cond[5] && utag.cond[264]),send:1,v:201803282059,wait:1,tid:16017},"356":{load:(utag.cond[5] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20067},"391":{load:(utag.cond[62] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20067},"86":{load:(utag.cond[58] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"87":{load:(utag.cond[66] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"554":{load:(utag.cond[239] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:6026},"497":{load:utag.cond[247],send:1,v:201803282059,wait:1,tid:6026},"58":{load:(utag.cond[27] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:7115},"125":{load:(utag.cond[58] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:7117},"126":{load:utag.cond[59],send:1,v:201803282059,wait:1,tid:7117},"59":{load:utag.cond[25],send:1,v:201707131323,wait:1,tid:19004},"114":{load:(utag.cond[55] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:18001},"163":{load:(utag.cond[207] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:3015},"238":{load:(utag.cond[7] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:3133},"254":{load:(utag.cond[88] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20078},"21":{load:(utag.cond[27] && utag.cond[220] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:19068},"321":{load:(utag.cond[183] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:2011},"320":{load:(utag.cond[179] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:2011},"322":{load:(utag.cond[184] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:2011},"328":{load:(utag.cond[191] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:2011},"412":{load:(utag.cond[227] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:2011},"338":{load:(utag.cond[7] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:5001},"340":{load:(utag.cond[33] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:1069},"341":{load:(utag.cond[4] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:1069},"342":{load:(utag.cond[31] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:1069},"343":{load:(utag.cond[34] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:1069},"344":{load:(utag.cond[53] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:1069},"345":{load:(utag.cond[67] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:1069},"346":{load:(utag.cond[5] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:1069},"357":{load:(utag.cond[220] && utag.cond[237]),send:1,v:201805041451,wait:1,tid:12034},"374":{load:(utag.cond[220] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20010},"363":{load:(utag.cond[192] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:18016},"367":{load:(utag.cond[192] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20011},"372":{load:(utag.cond[54] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"373":{load:(utag.cond[53] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"376":{load:(utag.cond[27] && utag.cond[4] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"377":{load:(utag.cond[33] && utag.cond[27] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"378":{load:(utag.cond[38] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"379":{load:(utag.cond[67] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"380":{load:(utag.cond[31] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"381":{load:(utag.cond[27] && utag.cond[5] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"555":{load:(utag.cond[27] && utag.cond[271] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"382":{load:(utag.cond[28] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"383":{load:(utag.cond[27] && utag.cond[46] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"384":{load:(utag.cond[62] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"568":{load:(utag.cond[27] && utag.cond[278] && utag.cond[97] && utag.cond[212]),send:1,v:201804131751,wait:1,tid:4001},"385":{load:(utag.cond[27] && utag.cond[47] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"386":{load:(utag.cond[85] && utag.cond[27] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"387":{load:(utag.cond[59] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"388":{load:(utag.cond[29] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"476":{load:(utag.cond[246] && utag.cond[243] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"477":{load:(utag.cond[242] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"562":{load:(utag.cond[97] && utag.cond[212] && utag.cond[273]),send:1,v:201803282059,wait:1,tid:4001},"567":{load:(utag.cond[277] && utag.cond[97] && utag.cond[212]),send:1,v:201804131751,wait:1,tid:4001},"564":{load:(utag.cond[27] && utag.cond[275] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"563":{load:(utag.cond[274] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"424":{load:(utag.cond[58] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20011},"425":{load:(utag.cond[58] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20011},"426":{load:(utag.cond[31] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20011},"427":{load:(utag.cond[58] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:6031},"432":{load:(utag.cond[58] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20011},"433":{load:(utag.cond[64] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20011},"437":{load:(utag.cond[266] && utag.cond[89] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:6021},"443":{load:(utag.cond[58] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20052},"453":{load:(utag.cond[233] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"454":{load:(utag.cond[234] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:4001},"455":{load:utag.cond[263],send:1,v:201803282059,wait:1,tid:7129},"456":{load:utag.cond[263],send:1,v:201803282059,wait:1,tid:2045},"467":{load:utag.cond[232],send:1,v:201709111435,wait:0,tid:4046},"461":{load:(utag.cond[240] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20067},"462":{load:(utag.cond[58] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20067},"550":{load:(utag.cond[265] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20067},"463":{load:(utag.cond[62] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20067},"464":{load:(utag.cond[16] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20067},"465":{load:(utag.cond[54] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20067},"485":{load:(utag.cond[58] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20011},"487":{load:(utag.cond[245] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20067},"499":{load:(utag.cond[248] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"500":{load:(utag.cond[249] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"501":{load:(utag.cond[250] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"502":{load:(utag.cond[251] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"503":{load:(utag.cond[252] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"504":{load:(utag.cond[253] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"505":{load:(utag.cond[254] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"506":{load:(utag.cond[255] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"507":{load:(utag.cond[256] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"508":{load:(utag.cond[257] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"509":{load:(utag.cond[259] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"510":{load:(utag.cond[262] && utag.cond[212]),send:1,v:201805041451,wait:1,tid:6031},"511":{load:(utag.cond[234] && utag.cond[212]),send:1,v:201805041451,wait:1,tid:6031},"512":{load:(utag.cond[260] && utag.cond[212]),send:1,v:201805041451,wait:1,tid:6031},"513":{load:(utag.cond[261] && utag.cond[212]),send:1,v:201805041451,wait:1,tid:6031},"517":{load:(utag.cond[258] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:6031},"518":{load:utag.cond[263],send:1,v:201801181448,wait:1,tid:7129},"522":{load:(utag.cond[262] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"523":{load:(utag.cond[234] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"524":{load:(utag.cond[260] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"525":{load:(utag.cond[261] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"526":{load:(utag.cond[248] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"527":{load:(utag.cond[249] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"528":{load:(utag.cond[250] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"529":{load:(utag.cond[251] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"530":{load:(utag.cond[252] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"531":{load:(utag.cond[253] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"532":{load:(utag.cond[257] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"533":{load:(utag.cond[254] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"534":{load:(utag.cond[255] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"535":{load:(utag.cond[256] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"536":{load:(utag.cond[259] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"541":{load:(utag.cond[260] && utag.cond[212]),send:1,v:201801221842,wait:1,tid:7132},"542":{load:(utag.cond[232] && utag.cond[212]),send:1,v:201801182316,wait:1,tid:6026},"543":{load:(utag.cond[232] && utag.cond[212]),send:1,v:201801182316,wait:1,tid:12047},"544":{load:(utag.cond[258] && utag.cond[212]),send:1,v:201804061838,wait:1,tid:20052},"556":{load:utag.cond[272],send:1,v:201803282059,wait:1,tid:20010},"560":{load:(utag.cond[270] && utag.cond[97] && utag.cond[212]),send:1,v:201803282059,wait:1,tid:20067},"353":{load:utag.cond[162],send:1,v:201804231715,wait:1,tid:20064},"566":{load:(utag.cond[276] && utag.cond[212]),send:1,v:201805011313,wait:1,tid:6031},"569":{load:(utag.cond[276] && utag.cond[212]),send:1,v:201804241732,wait:1,tid:20052}};
+utag.loader.cfgsort=["422","561","356","391","86","87","554","497","58","125","126","59","114","163","238","254","21","321","320","322","328","412","338","340","341","342","343","344","345","346","357","374","363","367","372","373","376","377","378","379","380","381","555","382","383","384","568","385","386","387","388","476","477","562","567","564","563","424","425","426","427","432","433","437","443","453","454","455","456","467","461","462","550","463","464","465","485","487","499","500","501","502","503","504","505","506","507","508","509","510","511","512","513","517","518","522","523","524","525","526","527","528","529","530","531","532","533","534","535","536","541","542","543","544","556","560","353","566","569"];
+  }
+utag.loader.initcfg();
+}
+
+  if(typeof utag_cfg_ovrd!='undefined'){for(var i in utag.loader.GV(utag_cfg_ovrd))utag.cfg[i]=utag_cfg_ovrd[i]};
+  utag.loader.PINIT = function(a,b,c){
+    utag.DB("Pre-INIT");
+    if (utag.cfg.noload) {
+      return;
+    }
+
+    try {
+      // Initialize utag.data
+      this.GET();
+      // Even if noview flag is set, we still want to load in tags and have them ready to fire
+      // FUTURE: blr = "before load rules"
+      if(utag.handler.RE('view',utag.data,"blr")){
+        utag.handler.LR(utag.data);
+      }
+      
+    }catch(e){utag.DB(e)};
+    // process 'blocking' tags (tags that need to run first)
+    a=this.cfg;
+    c=0;
+    for (b in this.GV(a)) {
+      // external .js files (currency converter tag) are blocking
+      if(a[b].block == 1 || (a[b].load>0 && (typeof a[b].src!='undefined'&&a[b].src!=''))){
+        a[b].block = 1;
+        c=1;
+        this.bq[b]=1;
+      }
+    }
+    if(c==1) {
+      for (b in this.GV(a)) {
+        if(a[b].block){
+          // handle case of bundled and blocking (change 4 to 1)
+          // (bundled tags that do not have a .src should really never be set to block... they just run first)
+          a[b].id=b; 
+          if(a[b].load==4)a[b].load=1; 
+      a[b].cb=function(){
+            var d=this.uid;
+            utag.loader.cfg[d].cbf=1;
+            utag.loader.LOAD(d)
+          };
+          this.AS(a[b]);
+        }
+      }
+    }
+    if(c==0)this.INIT();
+  };
+  utag.loader.INIT = function(a, b, c, d, e) {
+    utag.DB('utag.loader.INIT');
+    if (this.ol == 1) return -1;
+    else this.ol = 1;
+    // The All Tags scope extensions run after blocking tags complete
+    // The noview flag means to skip these Extensions (will run later for manual utag.view call)
+    if(utag.cfg.noview!=true)utag.handler.RE('view',utag.data,"alr"); 
+
+    utag.rpt.ts['i'] = new Date();
+     
+    d = this.cfgsort;
+    // TODO: Publish engine should sort the bundled tags first..
+    for (a=0;a<d.length;a++){
+      e = d[a];
+      b = this.cfg[e];
+      b.id = e;
+      // s2s (ServerStream) tags do not load client-side
+      if(b.block != 1 && b.s2s != 1){
+        // do not wait if the utag.cfg.noview flag is set and the tag is bundled
+        if (utag.loader.bk[b.id] || ((utag.cfg.readywait||utag.cfg.noview) && b.load==4)){
+          this.f[b.id]=0;
+          utag.loader.LOAD(b.id)
+        }else if (b.wait == 1 && utag.loader.rf == 0) {
+      utag.DB('utag.loader.INIT: waiting ' + b.id);
+          this.wq.push(b)
+          this.f[b.id]=2;
+        }else if (b.load>0){
+      utag.DB('utag.loader.INIT: loading ' + b.id);
+      this.lq.push(b);
+          this.AS(b);
+        }
+      }
+    }
+          
+    if (this.wq.length > 0) utag.loader.EV('', 'ready', function(a) {
+      if(utag.loader.rf==0){
+        utag.DB('READY:utag.loader.wq');
+        utag.loader.rf=1;
+        utag.loader.WQ();
+      }
+    });
+    else if(this.lq.length>0)utag.loader.rf=1;
+    else if(this.lq.length==0)utag.loader.END();
+
+    return 1
+  };
+  utag.loader.EV('', 'ready', function(a) {if(utag.loader.efr!=1){utag.loader.efr=1;try{ if(typeof utag.runonce=='undefined')utag.runonce={};utag.jdh=function(h,i,j,k){h=utag.jdhc.length;if(h==0)window.clearInterval(utag.jdhi);else{for(i=0;i<h;i++){j=utag.jdhc[i];k=jQuery(j.i).is(":visible")?1:0;if(k!=j.s){if(j.e==(j.s=k))jQuery(j.i).trigger(j.e?"afterShow":"afterHide")}}}};utag.jdhi=window.setInterval(utag.jdh, 250);utag.jdhc=[]; if(1){
+if(typeof utag.runonce[1213]=='undefined'){utag.runonce[1213]=1;jQuery('div.feature-customize').on('click','a.button.accordion-next', function(e){utag.link({ "eventNames":'offerExpanded',"thisAccordionSection":$(this).data('reporting-id') ? $(this).data('reporting-id') : '',"nextAccordionSection":$(this).data('automation-id') })})}}  }catch(e){utag.DB(e)};
+try{  if(utag.data['dom.domain'].toString().indexOf('store.cox.com')>-1){
+if(typeof utag.runonce[1214]=='undefined'){utag.runonce[1214]=1;jQuery('div.dialog-component-buttons').on('click','input', function(e){utag.link({ "eventNames":'cartRemove',"productID":utag.data['productID'] })})}}  }catch(e){utag.DB(e)};
+try{  if(1){
+if(typeof utag.runonce[2382]=='undefined'){utag.runonce[2382]=1;jQuery(document.body).on('mousedown','form input[type=submit]', function(e){utag.link({ "eventNames":'autotrack',"_linkObject":jQuery(this),"linkName":jQuery(this).attr('value'),"linkNavSection":jQuery('li.pf-nav-item-selected a,ul.pf-main-nav-primary-links li.selected a').attr("title"),"linkUrl":jQuery(this).closest('form').attr('action'),"linkSection":'',"pageName":utag.data['pageName'],"eventType":'form-input-submit' })});}}  }catch(e){utag.DB(e)};
+try{  if(1){
+if(typeof utag.runonce[1223]=='undefined'){utag.runonce[1223]=1;jQuery(document.body).on('mousedown','a', function(e){utag.link({ "eventNames":'autotrack',"_linkObject":jQuery(this),"linkName":'',"linkNavSection":jQuery('li.pf-nav-item-selected a,ul.pf-main-nav-primary-links li.selected a').attr("title"),"linkUrl":jQuery(this).attr('href'),"linkSection":'',"pageName":utag.data['pageName'] })});}}  }catch(e){utag.DB(e)};
+try{
+if(utag.data.purchaseStep == "features") {
+  window.utag_track_offer_expanded = function() {
+    var b = {};
+    // nextAccordion corresponds to the "offerExpanded" event
+    b['nextAccordionSection'] = jQuery.trim($('div.open-single-accordion > a.accordion-trigger-open h4 span').text());
+    b['eventNames'] = "offerExpanded";
+    // thisAccordion corresponds to the "offerCompleted" event, which is blank on initial load
+    b['thisAccordionSection'] = '';
+    utag.link(b);
+  };
+  setTimeout(utag_track_offer_expanded, 1000);
+}
+}catch(e){utag.DB(e)};
+try{
+if(typeof utag.data.productRemovedID!="undefined" && utag.data.productRemovedID!=""){ 
+  setTimeout(function() { utag.link({eventNames:"cartRemove",productID:utag.data.productRemovedID}) }, 1000);
+}
+}catch(e){utag.DB(e)};
+try{
+// DOM Ready
+// loop through the window level array utag_events and call utag.track as necessary
+// utag.track will use the view or link or any event as well as the callback or list of tag ids
+(function(w){
+    if((typeof w.utag_events === 'object' && w.utag_events.length > 0)){
+        while(w.utag_events.length){
+        d=w.utag_events.shift();
+        (function(d){
+            setTimeout(function(){
+                utag.track({
+                    event: d.d,
+                    data: d.a,
+                    cfg: {
+                        cb: d.b,
+                        uids: d.c
+                    }
+                });
+            }, 150);
+        })(d);
+        }
+    }
+}(window))
+}catch(e){utag.DB(e)};
+try{
+if(utag.data['dom.url'].indexOf('cox.com') > -1){
+  jQuery('body').on('udoFormErrorEvent', function(event) {
+    utag.link({
+      "event_name": "form_error",
+      "error_data": window.udoFormErrors
+    });
+  });
+}
+
+}catch(e){utag.DB(e)};
+try{  if((typeof utag.data['dom.url']!='undefined'&&utag.data['dom.url'].toString().indexOf('articleId=')>-1)){
+if(typeof utag.runonce[2384]=='undefined'){utag.runonce[2384]=1;jQuery(document.body).on('mousedown','#set-rating li.rate', function(e){utag.link({ "eventName":'rateArticle',"articleRating":(jQuery(this).text() || '').trim(),"articleID":jQuery(this).closest('form').find('input[name=articleId]').attr('value') })});}}  }catch(e){utag.DB(e)};}})
+
+  if(utag.cfg.readywait || utag.cfg.waittimer){
+    utag.loader.EV('', 'ready', function(a) {
+      if(utag.loader.rf==0){
+        utag.loader.rf=1;
+        utag.cfg.readywait=1;
+        utag.DB('READY:utag.cfg.readywait');
+        setTimeout(function(){utag.loader.PINIT()}, utag.cfg.waittimer || 1);
+      }
+    })
+  }else{
+    utag.loader.PINIT()
+  }
+}
+
+

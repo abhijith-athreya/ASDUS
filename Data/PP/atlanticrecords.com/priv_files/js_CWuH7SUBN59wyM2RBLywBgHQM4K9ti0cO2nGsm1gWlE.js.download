@@ -1,0 +1,2590 @@
+/*! jQuery Validation Plugin - v1.10.0 - 9/7/2012
+ * https://github.com/jzaefferer/jquery-validation
+ * Copyright (c) 2012 JÃƒÂ¶rn Zaefferer; Licensed MIT, GPL */
+
+( function($) {
+
+		$.extend($.fn, {
+			// http://docs.jquery.com/Plugins/Validation/validate
+			validate : function(options) {
+
+				// if nothing is selected, return nothing; can't chain anyway
+				if (!this.length) {
+					if (options && options.debug && window.console) {
+						console.warn("nothing selected, can't validate, returning nothing");
+					}
+					return;
+				}
+
+				// check if a validator for this form was already created
+				var validator = $.data(this[0], 'validator');
+				if (validator) {
+					return validator;
+				}
+
+				// Add novalidate tag if HTML5.
+				this.attr('novalidate', 'novalidate');
+
+				validator = new $.validator(options, this[0]);
+				$.data(this[0], 'validator', validator);
+
+				if (validator.settings.onsubmit) {
+
+					this.validateDelegate(":submit", "click", function(ev) {
+						if (validator.settings.submitHandler) {
+							validator.submitButton = ev.target;
+						}
+						// allow suppressing validation by adding a cancel class to the submit button
+						if ($(ev.target).hasClass('cancel')) {
+							validator.cancelSubmit = true;
+						}
+					});
+
+					// validate the form on submit
+					this.submit(function(event) {
+						if (validator.settings.debug) {
+							// prevent form submit to be able to see console output
+							event.preventDefault();
+						}
+						function handle() {
+							var hidden;
+							if (validator.settings.submitHandler) {
+								if (validator.submitButton) {
+									// insert a hidden input as a replacement for the missing submit button
+									hidden = $("<input type='hidden'/>").attr("name", validator.submitButton.name).val(validator.submitButton.value).appendTo(validator.currentForm);
+								}
+								validator.settings.submitHandler.call(validator, validator.currentForm, event);
+								if (validator.submitButton) {
+									// and clean up afterwards; thanks to no-block-scope, hidden can be referenced
+									hidden.remove();
+								}
+								return false;
+							}
+							return true;
+						}
+
+						// prevent submit for invalid forms or custom submit handlers
+						if (validator.cancelSubmit) {
+							validator.cancelSubmit = false;
+							return handle();
+						}
+						if (validator.form()) {
+							if (validator.pendingRequest) {
+								validator.formSubmitted = true;
+								return false;
+							}
+							return handle();
+						} else {
+							validator.focusInvalid();
+							return false;
+						}
+					});
+				}
+
+				return validator;
+			},
+			// http://docs.jquery.com/Plugins/Validation/valid
+			valid : function() {
+				if ($(this[0]).is('form')) {
+					return this.validate().form();
+				} else {
+					var valid = true;
+					var validator = $(this[0].form).validate();
+					this.each(function() {
+						valid &= validator.element(this);
+					});
+					return valid;
+				}
+			},
+			// attributes: space seperated list of attributes to retrieve and remove
+			removeAttrs : function(attributes) {
+				var result = {}, $element = this;
+				$.each(attributes.split(/\s/), function(index, value) {
+					result[value] = $element.attr(value);
+					$element.removeAttr(value);
+				});
+				return result;
+			},
+			// http://docs.jquery.com/Plugins/Validation/rules
+			rules : function(command, argument) {
+				var element = this[0];
+
+				if (command) {
+					var settings = $.data(element.form, 'validator').settings;
+					var staticRules = settings.rules;
+					var existingRules = $.validator.staticRules(element);
+					switch(command) {
+						case "add":
+							$.extend(existingRules, $.validator.normalizeRule(argument));
+							staticRules[element.name] = existingRules;
+							if (argument.messages) {
+								settings.messages[element.name] = $.extend(settings.messages[element.name], argument.messages);
+							}
+							break;
+						case "remove":
+							if (!argument) {
+								delete staticRules[element.name];
+								return existingRules;
+							}
+							var filtered = {};
+							$.each(argument.split(/\s/), function(index, method) {
+								filtered[method] = existingRules[method];
+								delete existingRules[method];
+							});
+							return filtered;
+					}
+				}
+
+				var data = $.validator.normalizeRules($.extend({}, $.validator.metadataRules(element), $.validator.classRules(element), $.validator.attributeRules(element), $.validator.staticRules(element)), element);
+
+				// make sure required is at front
+				if (data.required) {
+					var param = data.required;
+					delete data.required;
+					data = $.extend({
+						required : param
+					}, data);
+				}
+
+				return data;
+			}
+		});
+
+		// Custom selectors
+		$.extend($.expr[":"], {
+			// http://docs.jquery.com/Plugins/Validation/blank
+			blank : function(a) {
+				return !$.trim("" + a.value);
+			},
+			// http://docs.jquery.com/Plugins/Validation/filled
+			filled : function(a) {
+				return !!$.trim("" + a.value);
+			},
+			// http://docs.jquery.com/Plugins/Validation/unchecked
+			unchecked : function(a) {
+				return !a.checked;
+			}
+		});
+
+		// constructor for validator
+		$.validator = function(options, form) {
+			this.settings = $.extend(true, {}, $.validator.defaults, options);
+			this.currentForm = form;
+			this.init();
+		};
+
+		$.validator.format = function(source, params) {
+			if (arguments.length === 1) {
+				return function() {
+					var args = $.makeArray(arguments);
+					args.unshift(source);
+					return $.validator.format.apply(this, args);
+				};
+			}
+			if (arguments.length > 2 && params.constructor !== Array) {
+				params = $.makeArray(arguments).slice(1);
+			}
+			if (params.constructor !== Array) {
+				params = [params];
+			}
+			$.each(params, function(i, n) {
+				source = source.replace(new RegExp("\\{" + i + "\\}", "g"), n);
+			});
+			return source;
+		};
+
+		$.extend($.validator, {
+
+			defaults : {
+				messages : {},
+				groups : {},
+				rules : {},
+				errorClass : "error",
+				validClass : "valid",
+				errorElement : "label",
+				focusInvalid : true,
+				errorContainer : $([]),
+				errorLabelContainer : $([]),
+				onsubmit : true,
+				ignore : ":hidden",
+				ignoreTitle : false,
+				onfocusin : function(element, event) {
+					this.lastActive = element;
+
+					// hide error label and remove error class on focus if enabled
+					if (this.settings.focusCleanup && !this.blockFocusCleanup) {
+						if (this.settings.unhighlight) {
+							this.settings.unhighlight.call(this, element, this.settings.errorClass, this.settings.validClass);
+						}
+						this.addWrapper(this.errorsFor(element)).hide();
+					}
+				},
+				onfocusout : function(element, event) {
+					if (!this.checkable(element) && (element.name in this.submitted || !this.optional(element))) {
+						this.element(element);
+					}
+				},
+				onkeyup : function(element, event) {
+					if (event.which === 9 && this.elementValue(element) === '') {
+						return;
+					} else if (element.name in this.submitted || element === this.lastActive) {
+						this.element(element);
+					}
+				},
+				onclick : function(element, event) {
+					// click on selects, radiobuttons and checkboxes
+					if (element.name in this.submitted) {
+						this.element(element);
+					}
+					// or option elements, check parent select in that case
+					else if (element.parentNode.name in this.submitted) {
+						this.element(element.parentNode);
+					}
+				},
+				highlight : function(element, errorClass, validClass) {
+					if (element.type === 'radio') {
+						this.findByName(element.name).addClass(errorClass).removeClass(validClass);
+					} else {
+						$(element).addClass(errorClass).removeClass(validClass);
+					}
+				},
+				unhighlight : function(element, errorClass, validClass) {
+					if (element.type === 'radio') {
+						this.findByName(element.name).removeClass(errorClass).addClass(validClass);
+					} else {
+						$(element).removeClass(errorClass).addClass(validClass);
+					}
+				}
+			},
+
+			// http://docs.jquery.com/Plugins/Validation/Validator/setDefaults
+			setDefaults : function(settings) {
+				$.extend($.validator.defaults, settings);
+			},
+
+			messages : {
+				required : "This field is required.",
+				remote : "Please fix this field.",
+				email : "Please enter a valid email address.",
+				url : "Please enter a valid URL.",
+				date : "Please enter a valid date.",
+				dateISO : "Please enter a valid date (ISO).",
+				number : "Please enter a valid number.",
+				digits : "Please enter only digits.",
+				creditcard : "Please enter a valid credit card number.",
+				equalTo : "Please enter the same value again.",
+				maxlength : $.validator.format("Please enter no more than {0} characters."),
+				minlength : $.validator.format("Please enter at least {0} characters."),
+				rangelength : $.validator.format("Please enter a value between {0} and {1} characters long."),
+				range : $.validator.format("Please enter a value between {0} and {1}."),
+				max : $.validator.format("Please enter a value less than or equal to {0}."),
+				min : $.validator.format("Please enter a value greater than or equal to {0}.")
+			},
+
+			autoCreateRanges : false,
+
+			prototype : {
+
+				init : function() {
+					this.labelContainer = $(this.settings.errorLabelContainer);
+					this.errorContext = this.labelContainer.length && this.labelContainer || $(this.currentForm);
+					this.containers = $(this.settings.errorContainer).add(this.settings.errorLabelContainer);
+					this.submitted = {};
+					this.valueCache = {};
+					this.pendingRequest = 0;
+					this.pending = {};
+					this.invalid = {};
+					this.reset();
+
+					var groups = (this.groups = {});
+					$.each(this.settings.groups, function(key, value) {
+						$.each(value.split(/\s/), function(index, name) {
+							groups[name] = key;
+						});
+					});
+					var rules = this.settings.rules;
+					$.each(rules, function(key, value) {
+						rules[key] = $.validator.normalizeRule(value);
+					});
+
+					function delegate(event) {
+						var validator = $.data(this[0].form, "validator"), eventType = "on" + event.type.replace(/^validate/, "");
+						if (validator.settings[eventType]) {
+							validator.settings[eventType].call(validator, this[0], event);
+						}
+					}
+
+
+					$(this.currentForm).validateDelegate(":text, [type='password'], [type='file'], select, textarea, " + "[type='number'], [type='search'] ,[type='tel'], [type='url'], " + "[type='email'], [type='datetime'], [type='date'], [type='month'], " + "[type='week'], [type='time'], [type='datetime-local'], " + "[type='range'], [type='color'] ", "focusin focusout keyup", delegate).validateDelegate("[type='radio'], [type='checkbox'], select, option", "click", delegate);
+
+					if (this.settings.invalidHandler) {
+						$(this.currentForm).bind("invalid-form.validate", this.settings.invalidHandler);
+					}
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Validator/form
+				form : function() {
+					this.checkForm();
+					$.extend(this.submitted, this.errorMap);
+					this.invalid = $.extend({}, this.errorMap);
+					if (!this.valid()) {
+						$(this.currentForm).triggerHandler("invalid-form", [this]);
+					}
+					this.showErrors();
+					return this.valid();
+				},
+
+				checkForm : function() {
+					this.prepareForm();
+					for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
+						this.check(elements[i]);
+					}
+					return this.valid();
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Validator/element
+				element : function(element) {
+					element = this.validationTargetFor(this.clean(element));
+					this.lastElement = element;
+					this.prepareElement(element);
+					this.currentElements = $(element);
+					var result = this.check(element) !== false;
+					if (result) {
+						delete this.invalid[element.name];
+					} else {
+						this.invalid[element.name] = true;
+					}
+					if (!this.numberOfInvalids()) {
+						// Hide error containers on last error
+						this.toHide = this.toHide.add(this.containers);
+					}
+					this.showErrors();
+					return result;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Validator/showErrors
+				showErrors : function(errors) {
+					if (errors) {
+						// add items to error list and map
+						$.extend(this.errorMap, errors);
+						this.errorList = [];
+						for (var name in errors ) {
+							this.errorList.push({
+								message : errors[name],
+								element : this.findByName(name)[0]
+							});
+						}
+						// remove items from success list
+						this.successList = $.grep(this.successList, function(element) {
+							return !(element.name in errors);
+						});
+					}
+					if (this.settings.showErrors) {
+						this.settings.showErrors.call(this, this.errorMap, this.errorList);
+					} else {
+						this.defaultShowErrors();
+					}
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Validator/resetForm
+				resetForm : function() {
+					if ($.fn.resetForm) {
+						$(this.currentForm).resetForm();
+					}
+					this.submitted = {};
+					this.lastElement = null;
+					this.prepareForm();
+					this.hideErrors();
+					this.elements().removeClass(this.settings.errorClass).removeData("previousValue");
+				},
+
+				numberOfInvalids : function() {
+					return this.objectLength(this.invalid);
+				},
+
+				objectLength : function(obj) {
+					var count = 0;
+					for (var i in obj ) {
+						count++;
+					}
+					return count;
+				},
+
+				hideErrors : function() {
+					this.addWrapper(this.toHide).hide();
+				},
+
+				valid : function() {
+					return this.size() === 0;
+				},
+
+				size : function() {
+					return this.errorList.length;
+				},
+
+				focusInvalid : function() {
+					if (this.settings.focusInvalid) {
+						try {
+							$(this.findLastActive() || this.errorList.length && this.errorList[0].element || []).filter(":visible").focus()
+							// manually trigger focusin event; without it, focusin handler isn't called, findLastActive won't have anything to find
+							.trigger("focusin");
+						} catch(e) {
+							// ignore IE throwing errors when focusing hidden elements
+						}
+					}
+				},
+
+				findLastActive : function() {
+					var lastActive = this.lastActive;
+					return lastActive && $.grep(this.errorList, function(n) {
+						return n.element.name === lastActive.name;
+					}).length === 1 && lastActive;
+				},
+
+				elements : function() {
+					var validator = this, rulesCache = {};
+
+					// select all valid inputs inside the form (no submit or reset buttons)
+					return $(this.currentForm).find("input, select, textarea").not(":submit, :reset, :image, [disabled]").not(this.settings.ignore).filter(function() {
+						if (!this.name && validator.settings.debug && window.console) {
+							console.error("%o has no name assigned", this);
+						}
+
+						// select only the first element for each name, and only those with rules specified
+						if (this.name in rulesCache || !validator.objectLength($(this).rules())) {
+							return false;
+						}
+
+						rulesCache[this.name] = true;
+						return true;
+					});
+				},
+
+				clean : function(selector) {
+					return $( selector )[0];
+				},
+
+				errors : function() {
+					var errorClass = this.settings.errorClass.replace(' ', '.');
+					return $(this.settings.errorElement + "." + errorClass, this.errorContext);
+				},
+
+				reset : function() {
+					this.successList = [];
+					this.errorList = [];
+					this.errorMap = {};
+					this.toShow = $([]);
+					this.toHide = $([]);
+					this.currentElements = $([]);
+				},
+
+				prepareForm : function() {
+					this.reset();
+					this.toHide = this.errors().add(this.containers);
+				},
+
+				prepareElement : function(element) {
+					this.reset();
+					this.toHide = this.errorsFor(element);
+				},
+
+				elementValue : function(element) {
+					var type = $(element).attr('type'), val = $(element).val();
+
+					if (type === 'radio' || type === 'checkbox') {
+						return $('input[name="' + $(element).attr('name') + '"]:checked').val();
+					}
+
+					if ( typeof val === 'string') {
+						return val.replace(/\r/g, "");
+					}
+					return val;
+				},
+
+				check : function(element) {
+					element = this.validationTargetFor(this.clean(element));
+
+					var rules = $(element).rules();
+					var dependencyMismatch = false;
+					var val = this.elementValue(element);
+					var result;
+
+					for (var method in rules ) {
+						var rule = {
+							method : method,
+							parameters : rules[method]
+						};
+						try {
+
+							result = $.validator.methods[method].call(this, val, element, rule.parameters);
+
+							// if a method indicates that the field is optional and therefore valid,
+							// don't mark it as valid when there are no other rules
+							if (result === "dependency-mismatch") {
+								dependencyMismatch = true;
+								continue;
+							}
+							dependencyMismatch = false;
+
+							if (result === "pending") {
+								this.toHide = this.toHide.not(this.errorsFor(element));
+								return;
+							}
+
+							if (!result) {
+								this.formatAndAdd(element, rule);
+								return false;
+							}
+						} catch(e) {
+							if (this.settings.debug && window.console) {
+								console.log("exception occured when checking element " + element.id + ", check the '" + rule.method + "' method", e);
+							}
+							throw e;
+						}
+					}
+					if (dependencyMismatch) {
+						return;
+					}
+					if (this.objectLength(rules)) {
+						this.successList.push(element);
+					}
+					return true;
+				},
+
+				// return the custom message for the given element and validation method
+				// specified in the element's "messages" metadata
+				customMetaMessage : function(element, method) {
+					if (!$.metadata) {
+						return;
+					}
+					var meta = this.settings.meta ? $(element).metadata()[this.settings.meta] : $(element).metadata();
+					return meta && meta.messages && meta.messages[method];
+				},
+
+				// return the custom message for the given element and validation method
+				// specified in the element's HTML5 data attribute
+				customDataMessage : function(element, method) {
+					return $(element).data('msg-' + method.toLowerCase()) || (element.attributes && $(element).attr('data-msg-' + method.toLowerCase()));
+				},
+
+				// return the custom message for the given element name and validation method
+				customMessage : function(name, method) {
+					var m = this.settings.messages[name];
+					return m && (m.constructor === String ? m : m[method]);
+				},
+
+				// return the first defined argument, allowing empty strings
+				findDefined : function() {
+					for (var i = 0; i < arguments.length; i++) {
+						if (arguments[i] !== undefined) {
+							return arguments[i];
+						}
+					}
+					return undefined;
+				},
+
+				defaultMessage : function(element, method) {
+					return this.findDefined(this.customMessage(element.name, method), this.customDataMessage(element, method), this.customMetaMessage(element, method),
+					// title is never undefined, so handle empty string as undefined
+					!this.settings.ignoreTitle && element.title || undefined, $.validator.messages[method], "<strong>Warning: No message defined for " + element.name + "</strong>");
+				},
+
+				formatAndAdd : function(element, rule) {
+					var message = this.defaultMessage(element, rule.method), theregex = /\$?\{(\d+)\}/g;
+					if ( typeof message === "function") {
+						message = message.call(this, rule.parameters, element);
+					} else if (theregex.test(message)) {
+						message = $.validator.format(message.replace(theregex, '{$1}'), rule.parameters);
+					}
+					this.errorList.push({
+						message : message,
+						element : element
+					});
+
+					this.errorMap[element.name] = message;
+					this.submitted[element.name] = message;
+				},
+
+				addWrapper : function(toToggle) {
+					if (this.settings.wrapper) {
+						toToggle = toToggle.add(toToggle.parent(this.settings.wrapper));
+					}
+					return toToggle;
+				},
+
+				defaultShowErrors : function() {
+					var i, elements;
+					for ( i = 0; this.errorList[i]; i++) {
+						var error = this.errorList[i];
+						if (this.settings.highlight) {
+							this.settings.highlight.call(this, error.element, this.settings.errorClass, this.settings.validClass);
+						}
+						this.showLabel(error.element, error.message);
+					}
+					if (this.errorList.length) {
+						this.toShow = this.toShow.add(this.containers);
+					}
+					if (this.settings.success) {
+						for ( i = 0; this.successList[i]; i++) {
+							this.showLabel(this.successList[i]);
+						}
+					}
+					if (this.settings.unhighlight) {
+						for ( i = 0, elements = this.validElements(); elements[i]; i++) {
+							this.settings.unhighlight.call(this, elements[i], this.settings.errorClass, this.settings.validClass);
+						}
+					}
+					this.toHide = this.toHide.not(this.toShow);
+					this.hideErrors();
+					this.addWrapper(this.toShow).show();
+				},
+
+				validElements : function() {
+					return this.currentElements.not(this.invalidElements());
+				},
+
+				invalidElements : function() {
+					return $(this.errorList).map(function() {
+						return this.element;
+					});
+				},
+
+				showLabel : function(element, message) {
+					var label = this.errorsFor(element);
+					if (label.length) {
+						// refresh error/success class
+						label.removeClass(this.settings.validClass).addClass(this.settings.errorClass);
+
+						// check if we have a generated label, replace the message then
+						if (label.attr("generated")) {
+							label.html(message);
+						}
+					} else {
+						// create label
+						label = $("<" + this.settings.errorElement + "/>").attr({
+							"for" : this.idOrName(element),
+							generated : true
+						}).addClass(this.settings.errorClass).html(message || "");
+						if (this.settings.wrapper) {
+							// make sure the element is visible, even in IE
+							// actually showing the wrapped element is handled elsewhere
+							label = label.hide().show().wrap("<" + this.settings.wrapper + "/>").parent();
+						}
+						if (!this.labelContainer.append(label).length) {
+							if (this.settings.errorPlacement) {
+								this.settings.errorPlacement(label, $(element));
+							} else {
+								label.insertAfter(element);
+							}
+						}
+					}
+					if (!message && this.settings.success) {
+						label.text("");
+						if ( typeof this.settings.success === "string") {
+							label.addClass(this.settings.success);
+						} else {
+							this.settings.success(label, element);
+						}
+					}
+					this.toShow = this.toShow.add(label);
+				},
+
+				errorsFor : function(element) {
+					var name = this.idOrName(element);
+					return this.errors().filter(function() {
+						return $(this).attr('for') === name;
+					});
+				},
+
+				idOrName : function(element) {
+					return this.groups[element.name] || (this.checkable(element) ? element.name : element.id || element.name);
+				},
+
+				validationTargetFor : function(element) {
+					// if radio/checkbox, validate first element in group instead
+					if (this.checkable(element)) {
+						element = this.findByName( element.name ).not(this.settings.ignore)[0];
+					}
+					return element;
+				},
+
+				checkable : function(element) {
+					return (/radio|checkbox/i).test(element.type);
+				},
+
+				findByName : function(name) {
+					return $(this.currentForm).find('[name="' + name + '"]');
+				},
+
+				getLength : function(value, element) {
+					switch( element.nodeName.toLowerCase() ) {
+						case 'select':
+							return $("option:selected", element).length;
+						case 'input':
+							if (this.checkable(element)) {
+								return this.findByName(element.name).filter(':checked').length;
+							}
+					}
+					return value.length;
+				},
+
+				depend : function(param, element) {
+					return this.dependTypes[ typeof param] ? this.dependTypes[typeof param](param, element) : true;
+				},
+
+				dependTypes : {
+					"boolean" : function(param, element) {
+						return param;
+					},
+					"string" : function(param, element) {
+						return !!$(param, element.form).length;
+					},
+					"function" : function(param, element) {
+						return param(element);
+					}
+				},
+
+				optional : function(element) {
+					var val = this.elementValue(element);
+					return !$.validator.methods.required.call(this, val, element) && "dependency-mismatch";
+				},
+
+				startRequest : function(element) {
+					if (!this.pending[element.name]) {
+						this.pendingRequest++;
+						this.pending[element.name] = true;
+					}
+				},
+
+				stopRequest : function(element, valid) {
+					this.pendingRequest--;
+					// sometimes synchronization fails, make sure pendingRequest is never < 0
+					if (this.pendingRequest < 0) {
+						this.pendingRequest = 0;
+					}
+					delete this.pending[element.name];
+					if (valid && this.pendingRequest === 0 && this.formSubmitted && this.form()) {
+						$(this.currentForm).submit();
+						this.formSubmitted = false;
+					} else if (!valid && this.pendingRequest === 0 && this.formSubmitted) {
+						$(this.currentForm).triggerHandler("invalid-form", [this]);
+						this.formSubmitted = false;
+					}
+				},
+
+				previousValue : function(element) {
+					return $.data(element, "previousValue") || $.data(element, "previousValue", {
+						old : null,
+						valid : true,
+						message : this.defaultMessage(element, "remote")
+					});
+				}
+			},
+
+			classRuleSettings : {
+				required : {
+					required : true
+				},
+				email : {
+					email : true
+				},
+				url : {
+					url : true
+				},
+				date : {
+					date : true
+				},
+				dateISO : {
+					dateISO : true
+				},
+				number : {
+					number : true
+				},
+				digits : {
+					digits : true
+				},
+				creditcard : {
+					creditcard : true
+				}
+			},
+
+			addClassRules : function(className, rules) {
+				if (className.constructor === String) {
+					this.classRuleSettings[className] = rules;
+				} else {
+					$.extend(this.classRuleSettings, className);
+				}
+			},
+
+			classRules : function(element) {
+				var rules = {};
+				var classes = $(element).attr('class');
+				if (classes) {
+					$.each(classes.split(' '), function() {
+						if (this in $.validator.classRuleSettings) {
+							$.extend(rules, $.validator.classRuleSettings[this]);
+						}
+					});
+				}
+				return rules;
+			},
+
+			attributeRules : function(element) {
+				var rules = {};
+				var $element = $(element);
+
+				for (var method in $.validator.methods) {
+					var value;
+
+					// support for <input required> in both html5 and older browsers
+					if (method === 'required') {
+						value = $element.get(0).getAttribute(method);
+						// Some browsers return an empty string for the required attribute
+						// and non-HTML5 browsers might have required="" markup
+						if (value === "") {
+							value = true;
+						}
+						// force non-HTML5 browsers to return bool
+						value = !!value;
+					} else {
+						value = $element.attr(method);
+					}
+
+					if (value) {
+						rules[method] = value;
+					} else if ($element[0].getAttribute("type") === method) {
+						rules[method] = true;
+					}
+				}
+
+				// maxlength may be returned as -1, 2147483647 (IE) and 524288 (safari) for text inputs
+				if (rules.maxlength && /-1|2147483647|524288/.test(rules.maxlength)) {
+					delete rules.maxlength;
+				}
+
+				return rules;
+			},
+
+			metadataRules : function(element) {
+				if (!$.metadata) {
+					return {};
+				}
+
+				var meta = $.data(element.form, 'validator').settings.meta;
+				return meta ? $(element).metadata()[meta] : $(element).metadata();
+			},
+
+			staticRules : function(element) {
+				var rules = {};
+				var validator = $.data(element.form, 'validator');
+				if (validator.settings.rules) {
+					rules = $.validator.normalizeRule(validator.settings.rules[element.name]) || {};
+				}
+				return rules;
+			},
+
+			normalizeRules : function(rules, element) {
+				// handle dependency check
+				$.each(rules, function(prop, val) {
+					// ignore rule when param is explicitly false, eg. required:false
+					if (val === false) {
+						delete rules[prop];
+						return;
+					}
+					if (val.param || val.depends) {
+						var keepRule = true;
+						switch (typeof val.depends) {
+							case "string":
+								keepRule = !!$(val.depends, element.form).length;
+								break;
+							case "function":
+								keepRule = val.depends.call(element, element);
+								break;
+						}
+						if (keepRule) {
+							rules[prop] = val.param !== undefined ? val.param : true;
+						} else {
+							delete rules[prop];
+						}
+					}
+				});
+
+				// evaluate parameters
+				$.each(rules, function(rule, parameter) {
+					rules[rule] = $.isFunction(parameter) ? parameter(element) : parameter;
+				});
+
+				// clean number parameters
+				$.each(['minlength', 'maxlength', 'min', 'max'], function() {
+					if (rules[this]) {
+						rules[this] = Number(rules[this]);
+					}
+				});
+				$.each(['rangelength', 'range'], function() {
+					if (rules[this]) {
+						rules[this] = [Number(rules[this][0]), Number(rules[this][1])];
+					}
+				});
+
+				if ($.validator.autoCreateRanges) {
+					// auto-create ranges
+					if (rules.min && rules.max) {
+						rules.range = [rules.min, rules.max];
+						delete rules.min;
+						delete rules.max;
+					}
+					if (rules.minlength && rules.maxlength) {
+						rules.rangelength = [rules.minlength, rules.maxlength];
+						delete rules.minlength;
+						delete rules.maxlength;
+					}
+				}
+
+				// To support custom messages in metadata ignore rule methods titled "messages"
+				if (rules.messages) {
+					delete rules.messages;
+				}
+
+				return rules;
+			},
+
+			// Converts a simple string to a {string: true} rule, e.g., "required" to {required:true}
+			normalizeRule : function(data) {
+				if ( typeof data === "string") {
+					var transformed = {};
+					$.each(data.split(/\s/), function() {
+						transformed[this] = true;
+					});
+					data = transformed;
+				}
+				return data;
+			},
+
+			// http://docs.jquery.com/Plugins/Validation/Validator/addMethod
+			addMethod : function(name, method, message) {
+				$.validator.methods[name] = method;
+				$.validator.messages[name] = message !== undefined ? message : $.validator.messages[name];
+				if (method.length < 3) {
+					$.validator.addClassRules(name, $.validator.normalizeRule(name));
+				}
+			},
+
+			methods : {
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/required
+				required : function(value, element, param) {
+					// check if dependency is met
+					if (!this.depend(param, element)) {
+						return "dependency-mismatch";
+					}
+					if (element.nodeName.toLowerCase() === "select") {
+						// could be an array for select-multiple or a string, both are fine this way
+						var val = $(element).val();
+						return val && val.length > 0;
+					}
+					if (this.checkable(element)) {
+						return this.getLength(value, element) > 0;
+					}
+					return $.trim(value).length > 0;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/remote
+				remote : function(value, element, param) {
+					if (this.optional(element)) {
+						return "dependency-mismatch";
+					}
+
+					var previous = this.previousValue(element);
+					if (!this.settings.messages[element.name]) {
+						this.settings.messages[element.name] = {};
+					}
+					previous.originalMessage = this.settings.messages[element.name].remote;
+					this.settings.messages[element.name].remote = previous.message;
+
+					param = typeof param === "string" && {
+						url : param
+					} || param;
+
+					if (this.pending[element.name]) {
+						return "pending";
+					}
+					if (previous.old === value) {
+						return previous.valid;
+					}
+
+					previous.old = value;
+					var validator = this;
+					this.startRequest(element);
+					var data = {};
+					data[element.name] = value;
+					$.ajax($.extend(true, {
+						url : param,
+						mode : "abort",
+						port : "validate" + element.name,
+						dataType : "json",
+						data : data,
+						success : function(response) {
+							validator.settings.messages[element.name].remote = previous.originalMessage;
+							var valid = response === true || response === "true";
+							if (valid) {
+								var submitted = validator.formSubmitted;
+								validator.prepareElement(element);
+								validator.formSubmitted = submitted;
+								validator.successList.push(element);
+								delete validator.invalid[element.name];
+								validator.showErrors();
+							} else {
+								var errors = {};
+								var message = response || validator.defaultMessage(element, "remote");
+								errors[element.name] = previous.message = $.isFunction(message) ? message(value) : message;
+								validator.invalid[element.name] = true;
+								validator.showErrors(errors);
+							}
+							previous.valid = valid;
+							validator.stopRequest(element, valid);
+						}
+					}, param));
+					return "pending";
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/minlength
+				minlength : function(value, element, param) {
+					var length = $.isArray(value) ? value.length : this.getLength($.trim(value), element);
+					return this.optional(element) || length >= param;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/maxlength
+				maxlength : function(value, element, param) {
+					var length = $.isArray(value) ? value.length : this.getLength($.trim(value), element);
+					return this.optional(element) || length <= param;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/rangelength
+				rangelength : function(value, element, param) {
+					var length = $.isArray(value) ? value.length : this.getLength($.trim(value), element);
+					return this.optional(element) || (length >= param[0] && length <= param[1] );
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/min
+				min : function(value, element, param) {
+					return this.optional(element) || value >= param;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/max
+				max : function(value, element, param) {
+					return this.optional(element) || value <= param;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/range
+				range : function(value, element, param) {
+					return this.optional(element) || (value >= param[0] && value <= param[1] );
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/email
+				email : function(value, element) {
+					// contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
+					return this.optional(element) || /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i.test(value);
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/url
+				url : function(value, element) {
+					// contributed by Scott Gonzalez: http://projects.scottsplayground.com/iri/
+					return this.optional(element) || /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/date
+				date : function(value, element) {
+					return this.optional(element) || !/Invalid|NaN/.test(new Date(value));
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/dateISO
+				dateISO : function(value, element) {
+					return this.optional(element) || /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/.test(value);
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/number
+				number : function(value, element) {
+					return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(value);
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/digits
+				digits : function(value, element) {
+					return this.optional(element) || /^\d+$/.test(value);
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/creditcard
+				// based on http://en.wikipedia.org/wiki/Luhn
+				creditcard : function(value, element) {
+					if (this.optional(element)) {
+						return "dependency-mismatch";
+					}
+					// accept only spaces, digits and dashes
+					if (/[^0-9 \-]+/.test(value)) {
+						return false;
+					}
+					var nCheck = 0, nDigit = 0, bEven = false;
+
+					value = value.replace(/\D/g, "");
+
+					for (var n = value.length - 1; n >= 0; n--) {
+						var cDigit = value.charAt(n);
+						nDigit = parseInt(cDigit, 10);
+						if (bEven) {
+							if ((nDigit *= 2) > 9) {
+								nDigit -= 9;
+							}
+						}
+						nCheck += nDigit;
+						bEven = !bEven;
+					}
+
+					return (nCheck % 10) === 0;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/equalTo
+				equalTo : function(value, element, param) {
+					// bind to the blur event of the target in order to revalidate whenever the target field is updated
+					// TODO find a way to bind the event just once, avoiding the unbind-rebind overhead
+					var target = $(param);
+					if (this.settings.onfocusout) {
+						target.unbind(".validate-equalTo").bind("blur.validate-equalTo", function() {
+							$(element).valid();
+						});
+					}
+					return value === target.val();
+				}
+			}
+
+		});
+
+		// deprecated, use $.validator.format instead
+		$.format = $.validator.format;
+
+	}($jq18));
+
+// ajax mode: abort
+// usage: $.ajax({ mode: "abort"[, port: "uniqueport"]});
+// if mode:"abort" is used, the previous request on that port (port can be undefined) is aborted via XMLHttpRequest.abort()
+( function($) {
+		var pendingRequests = {};
+		// Use a prefilter if available (1.5+)
+		if ($.ajaxPrefilter) {
+			$.ajaxPrefilter(function(settings, _, xhr) {
+				var port = settings.port;
+				if (settings.mode === "abort") {
+					if (pendingRequests[port]) {
+						pendingRequests[port].abort();
+					}
+					pendingRequests[port] = xhr;
+				}
+			});
+		} else {
+			// Proxy ajax
+			var ajax = $.ajax;
+			$.ajax = function(settings) {
+				var mode = ("mode" in settings ? settings : $.ajaxSettings ).mode, port = ("port" in settings ? settings : $.ajaxSettings ).port;
+				if (mode === "abort") {
+					if (pendingRequests[port]) {
+						pendingRequests[port].abort();
+					}
+					return (pendingRequests[port] = ajax.apply(this, arguments));
+				}
+				return ajax.apply(this, arguments);
+			};
+		}
+	}($jq18));
+
+// provides cross-browser focusin and focusout events
+// IE has native support, in other browsers, use event caputuring (neither bubbles)
+
+// provides delegate(type: String, delegate: Selector, handler: Callback) plugin for easier event delegation
+// handler is only called when $(event.target).is(delegate), in the scope of the jquery-object for event.target
+( function($) {
+		// only implement if not provided by jQuery core (since 1.4)
+		// TODO verify if jQuery 1.4's implementation is compatible with older jQuery special-event APIs
+		if (!jQuery.event.special.focusin && !jQuery.event.special.focusout && document.addEventListener) {
+			$.each({
+				focus : 'focusin',
+				blur : 'focusout'
+			}, function(original, fix) {
+				$.event.special[fix] = {
+					setup : function() {
+						this.addEventListener(original, handler, true);
+					},
+					teardown : function() {
+						this.removeEventListener(original, handler, true);
+					},
+					handler : function(e) {
+						var args = arguments;
+						args[0] = $.event.fix(e);
+						args[0].type = fix;
+						return $.event.handle.apply(this, args);
+					}
+				};
+				function handler(e) {
+					e = $.event.fix(e);
+					e.type = fix;
+					return $.event.handle.call(this, e);
+				}
+
+			});
+		}
+		$.extend($.fn, {
+			validateDelegate : function(delegate, type, handler) {
+				return this.bind(type, function(event) {
+					var target = $(event.target);
+					if (target.is(delegate)) {
+						return handler.apply(target, arguments);
+					}
+				});
+			}
+		});
+	}($jq18)); ;
+/*
+ *
+ * Global, Helper and Utility functions
+ * version 1
+ */
+/* Miscellaneous Javascript functions */
+jQuery(document).ready(function() {
+
+		if (Modernizr.mq("only screen and (max-width : 767px)")) {
+
+			if (jQuery('#block-views-artist-detail-caurosel-block .views-field.views-field-field-artist-image-for-mobile').length > 0) {
+
+				jQuery("#block-views-artist-detail-caurosel-block .view-content .views-field.views-field-field-is-legacy .item-list ul li").each(function(indexVal) {
+					indexVal = indexVal + 1;
+					jQuery(this).find("img").attr("src", jQuery("#block-views-artist-detail-caurosel-block .views-field-field-artist-image-for-mobile ul li:nth-child(" + indexVal + ")").find("img").attr("src"));
+				});
+			}
+
+		}
+
+// used for carousel
+var boxSelector = '.inset-4 .box';
+		jQuery(boxSelector).removeClass('box');
+		jQuery(boxSelector).find('.col').attr('style', '');
+
+	// set active menu links
+	set_active_parent_link();
+	// set section title
+	set_section_title();
+
+	// Comments counter
+	var comments_count = jQuery('.node-comment-counter').text() || 0;
+	var comment_header = jQuery('body .comment-wrapper > h2');
+
+	if ( comment_header.length ) {
+		var $commentWrap = jQuery("<span/>").addClass('comment-icon').append('<span class="point"></span><em>' + comments_count + '</em>');
+		comment_header.html("<span>Comments</span>").prepend($commentWrap);
+		comment_header.addClass("commentcountwrap");
+	} else {
+		var $commentWrap = jQuery("<span/>").addClass('comment-icon').append('<span class="point"></span><em>' + comments_count + '</em> comments');
+		jQuery('body .comment-wrapper').prepend($commentWrap).addClass("commentcountwrap");
+	}
+
+	if ( jQuery('#block-views-albums-block-1').length ) {
+		jQuery('.comment-wrapper').before(jQuery('#block-views-albums-block-1'));
+	}
+
+	if ( jQuery('#block-views-node-block-block-1').length ) {
+		jQuery('.node div.float-overflow').after(jQuery('#block-views-node-block-block-1'));
+	}
+
+	if ( jQuery('#block-views-node-block-block').length ) {
+		jQuery('.node div.float-overflow').after(jQuery('#block-views-node-block-block'));
+	}
+
+	jQuery('.views-field-field-merch-photo, .views-field-nothing-1').hover(function(e) {
+		jQuery(this).parent().find('.views-field-nothing-1 .product-popup').fadeIn();
+	}, function(e) {
+		if ( jQuery(this).parent().find('.views-field-nothing-1 .product-popup').css('opacity') == 1 ) {
+			jQuery(this).parent().find('.views-field-nothing-1 .product-popup').fadeOut();
+		}
+	});
+
+	if ( jQuery('.comment-form input#edit-name').length ) {
+		jQuery('.comment-form input#edit-name').addClass('grey-text');
+		var authorName = jQuery('.comment-form input#edit-name').val();
+		jQuery('.comment-form input#edit-name').bind('focus', function() {
+			if ( jQuery(this).val() == authorName ) {
+				jQuery(this).removeClass('grey-text');
+				jQuery(this).val('');
+			}
+		});
+
+		jQuery('.comment-form input#edit-name').bind('blur', function() {
+			if ( jQuery(this).val() == '' ) {
+				jQuery(this).addClass('grey-text');
+				jQuery(this).val(authorName);
+			}
+		});
+	}
+	/*validate comment submit, blur text , comment count*/
+	commentValidate();
+
+	// DEPRECATED - ?????
+	jQuery('div.fb_like').each(function() {
+		jQuery(this).html('<iframe src="http://www.facebook.com/plugins/like.php?href=' + 'http://' + WMG.basePath + '/' + jQuery(this).attr('id') + '&amp;send=false&amp;layout=button_count&amp;width=70&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=verdana&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe>');
+	});
+
+	jQuery('#block-webform-client-block-1116').css('display', 'none');
+	jQuery('a.link-mail-list, div.button-close').bind('click', function() {
+		jQuery('#block-webform-client-block-1116').slideToggle();
+		return false;
+	});
+
+	jQuery('dt.hoverme').mouseenter(function() {
+		jQuery(this).addClass('hover');
+	}).mouseleave(function() {
+		jQuery(this).removeClass('hover');
+	});
+
+	//add omniture tag to join link on login page
+	if ( jQuery('.not-logged-in.page-user #main .tabs ul.primary li:first-child a') ) {
+		var joinlink_href = jQuery('.not-logged-in.page-user #main .tabs ul.primary li:first-child a').attr('href');
+		jQuery('.not-logged-in.page-user #main .tabs ul.primary li:first-child a').attr('href', joinlink_href + '?intcmp=join_signin');
+	}
+	if ( jQuery('.not-logged-in.page-user #main #user-login #edit-actions a') ) {
+		var joinlink_href = jQuery('.not-logged-in.page-user #main #user-login #edit-actions a').attr('href');
+		jQuery('.not-logged-in.page-user #main #user-login #edit-actions a').attr('href', joinlink_href + '?intcmp=join_signin');
+	}
+	//open external links: privacy policy, terms of service into a new tab
+	jQuery('#block-menu-menu-footer-links li:nth-child(3) a').attr('target', '_blank');
+	jQuery('#block-menu-menu-footer-links li:nth-child(4) a').attr('target', '_blank');
+
+	// Set active class
+	jQuery("a[href='/" + url_q + "']").addClass('active');
+
+	// Set also for vide/pro on video page
+	if ( url_q == 'video' || url_q == 'photo' ) {
+		jQuery("a[href='/" + url_q + "/pro']").addClass('active');
+	}
+
+	// launch player
+	jQuery("a.launchPlayerLink").click(function() {
+		window.open("/music-player", "Window2", "width=322,height=265,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=no");
+		return false;
+	});
+
+	jQuery("#merchContainer").css('display', 'block');
+
+	if ( Drupal.settings.server_variables.user_id > 0 ) {
+		jQuery("#content a[href='/user'], #content a[href*='/user/register']").each(function() {
+			jQuery(this).remove();
+		});
+	}
+
+	jQuery('.not-logged-in.page-node .fivestar-widget-static .star').bind('click', function() {
+		jQuery('a[href*="/user/login/nojs"]:first').click();
+	});
+
+	googleCSEWatermark('cse-search-box');
+	jQuery('#cse-search-box .cse_txtinput').val(jQuery.urlParam('query'))
+
+	jQuery('#edit-picture-upload').attr('size', 40);
+
+	jQuery('#copyright li:nth-child(3) a').attr('target', '_blank');
+	jQuery('#copyright li:nth-child(4) a').attr('target', '_blank');
+
+	jQuery('.ui-dialog.user-login-dialog .form-navigation-wrapper a').attr('href', '/user/register/nojs?intcmp=join_signin');
+	jQuery('.page-user.not-logged-in .tabs li:first-child a').attr('href', '/user/register/nojs?intcmp=join_signin');
+	jQuery('.page-user.not-logged-in .tabs li:nth-child(2) a').attr('href', '/user/login/nojs');
+	jQuery('.page-user.not-logged-in .tabs li:nth-child(3) a').attr('href', '/user/password/nojs');
+
+	jQuery('.page-user.not-logged-in .tabs li a').unbind('click');
+
+	
+	if(jQuery("body").hasClass("page-node-17741")){
+		jQuery('#block-menu-menu-home-one-page-linked, #block-block-531, #block-block-566').wrapAll('<div class="wrapper_nav">');
+	}
+	else{
+		jQuery('#block-menu-menu-home-one-page-linked').wrapAll('<div class="wrapper_nav">');
+	}
+   	if (jQuery(".page-node-18476 #block-views-artist-detail-view-block-2 .views-row .recent-album-wrapper .download_stram #download-link a").text()=="Downloads"){
+		jQuery(".page-node-18476 #block-views-artist-detail-view-block-2 .views-row .recent-album-wrapper .download_stram #download-link a").text("Pre-Order");
+	}
+});
+
+// replace /node/add/photo|video with /upload for authenticated users, otherwise attach a login overlay
+if ( !Drupal.settings.server_variables.user_id ) {
+	jQuery("#content a[href*='/node/add/photo'], #content a[href*='/node/add/video']").each(function() {
+		jQuery(this).attr('href', '/user/login/nojs?destination=upload');
+		jQuery(this).addClass('use-ajax use-dialog');
+	});
+	jQuery("#content a[href*='/node/add/forum']").each(function() {
+		jQuery(this).attr('href', '/user/login/nojs?destination=node/add/forum');
+		jQuery(this).addClass('use-ajax use-dialog');
+	});
+} else {
+	jQuery("#content a[href*='/node/add/photo'], #content a[href*='/node/add/video']").each(function() {
+		jQuery(this).attr('href', '/upload');
+	});
+}
+
+//add omniture tag to join link on login overlay
+Drupal.behaviors.wmgGlobal = {
+	attach : function() {
+		var is_admin = Drupal.settings.server_variables.user_roles && ( ( typeof Drupal.settings.server_variables.user_roles == 'object' && ( Drupal.settings.server_variables.user_roles[11] || Drupal.settings.server_variables.user_roles[21] ) ) || ( ( typeof Drupal.settings.server_variables.user_roles == 'array' || Drupal.settings.server_variables.user_roles[0] ) && ( jQuery.inArray('administrator', Drupal.settings.server_variables.user_roles) != -1 || jQuery.inArray('professional member', Drupal.settings.server_variables.user_roles) != -1 ) ) );
+
+		if ( is_admin ) {
+			jQuery("#content a[href='/node/add/blog']").each(function() {
+				jQuery(this).removeClass('element-invisible');
+			});
+		}
+	}
+};
+
+//add omniture tag to join link on login overlay
+Drupal.behaviors.omnitureTagFunction = {
+	attach : function() {
+		if ( jQuery('.ui-dialog.user-login-dialog .submit-button-wrapper a') ) {
+			jQuery('.ui-dialog.user-login-dialog .submit-button-wrapper a').attr('href', '/user/register/nojs?intcmp=join_signin');
+		};
+	}
+};
+
+Drupal.behaviors.commentProfile = {
+	attach : function() {
+		if ( jQuery('body.page-user .view-user-profile').length > 0 ) {
+			commentValidate();
+		}
+	}
+};
+
+function commentValidate() {
+
+	/* Temporary Fix for profile page - to display comment count*/
+	var comments_count = jQuery('.node-comment-counter').text() || 0;
+	if ( jQuery('body.page-user .comment-wrapper > h2').length > 0 ) {
+		jQuery('body.page-user .comment-wrapper > h2').text('Comments (' + comments_count + ')');
+		jQuery('body.page-user .comment-wrapper > h2').addClass("commentcountwrap");
+	} else {
+		jQuery('body.page-user .comment-wrapper').prepend('<h2 class="commentcountwrap">Comments (' + comments_count + ')</h2>');
+	}
+
+	/*  to rearrange comment textarea */
+	if ( jQuery('.comment-wrapper').length > 0 ) {
+		if ( !(     jQuery('.comment-wrapper').first().hasClass("comment-new-form") ) ) {
+			jQuery('.comment-wrapper').prepend(jQuery('#comment-new'));
+		}
+	}
+
+	if ( !( jQuery('.comment-wrapper #charNum').length > 0 ) ) {
+		jQuery('<div id="charNum">Characters remaining: <span>' + comment_char_limit + '</span></div>').insertAfter(jQuery('.comment-wrapper .form-textarea-wrapper'));
+	}
+	if ( !( jQuery('.view-user-profile .comment-wrapper #charNum').length > 0 ) ) {
+		jQuery('<div id="charNum">Characters remaining: <span>' + comment_char_limit + '</span></div>').insertAfter(jQuery('.view-user-profile .comment-wrapper .form-textarea-wrapper'));
+	}
+
+	/* Global fix for char count */
+	jQuery('.comment-wrapper .form-textarea-wrapper textarea, #edit-comment-body .form-textarea-wrapper textarea').bind('keyup', function() {
+		countChar(this);
+	});
+	jQuery('.comment-wrapper .form-textarea-wrapper textarea').bind('mouseleave', function() {
+		countChar(this);
+	});
+
+	//Dont let user post empty comments
+	/* Temporary Fix for profile page -  changed from '.comment-form input#edit-submit]' to make it work in profile page -29/6*/
+	jQuery('.comment-form input[id^=edit-submit]').attr('disabled', 'disabled')
+	jQuery('.comment-form input[id^=edit-submit]').css('visibility', 'visible');
+	jQuery('.comment-form input[id^=edit-submit]').css('opacity', '0.5');
+	jQuery('.comment-form input[id^=edit-submit]').attr('title', comment_submit_hint_text);
+	jQuery('.comment-form').bind('submit', function() {
+		return can_post_comment;
+	});
+
+	if ( jQuery('body.page-comment-edit').length === 0 ) {
+		if ( jQuery('.comment-form textarea').length ) {
+			if ( jQuery('.comment-form textarea').val().length === 0 ) {
+				jQuery('.comment-form textarea').addClass('grey-text');
+				jQuery('.comment-form textarea').val(comment_blur_text);
+			}
+			jQuery('.comment-form textarea').bind('focus', function() {
+				if ( jQuery(this).val() == comment_blur_text ) {
+					jQuery(this).removeClass('grey-text');
+					jQuery(this).val('');
+				}
+			});
+
+			jQuery('.comment-form textarea').bind('blur', function() {
+				if ( jQuery(this).val() == '' ) {
+					jQuery(this).addClass('grey-text');
+					jQuery(this).val(comment_blur_text);
+				}
+			});
+
+			/* changed from 'form#comment-form' to make it work in profile page -29/6*/
+			jQuery('form[id^=comment-form]').bind('submit', function() {
+				if ( jQuery(this).find('textarea').val() == comment_blur_text ) {
+					jQuery(this).find('textarea').val('');
+				}
+				return true;
+			});
+		}
+	}
+};
+(function($){$.browserTest=function(a,z){var u='unknown',x='X',m=function(r,h){for(var i=0;i<h.length;i=i+1){r=r.replace(h[i][0],h[i][1]);}return r;},c=function(i,a,b,c){var r={name:m((a.exec(i)||[u,u])[1],b)};r[r.name]=true;r.version=(c.exec(i)||[x,x,x,x])[3];if(r.name.match(/safari/)&&r.version>400){r.version='2.0';}if(r.name==='presto'){r.version=($.browser.version>9.27)?'futhark':'linear_b';}r.versionNumber=parseFloat(r.version,10)||0;r.versionX=(r.version!==x)?(r.version+'').substr(0,1):x;r.className=r.name+r.versionX;return r;};a=(a.match(/Opera|Navigator|Minefield|KHTML|Chrome/)?m(a,[[/(Firefox|MSIE|KHTML,\slike\sGecko|Konqueror)/,''],['Chrome Safari','Chrome'],['KHTML','Konqueror'],['Minefield','Firefox'],['Navigator','Netscape']]):a).toLowerCase();$.browser=$.extend((!z)?$.browser:{},c(a,/(camino|chrome|firefox|netscape|konqueror|lynx|msie|opera|safari)/,[],/(camino|chrome|firefox|netscape|netscape6|opera|version|konqueror|lynx|msie|safari)(\/|\s)([a-z0-9\.\+]*?)(\;|dev|rel|\s|$)/));$.layout=c(a,/(gecko|konqueror|msie|opera|webkit)/,[['konqueror','khtml'],['msie','trident'],['opera','presto']],/(applewebkit|rv|konqueror|msie)(\:|\/|\s)([a-z0-9\.]*?)(\;|\)|\s)/);$.os={name:(/(win|mac|linux|sunos|solaris|iphone)/.exec(navigator.platform.toLowerCase())||[u])[0].replace('sunos','solaris')};if(!z){$('html').addClass([$.os.name,$.browser.name,$.browser.className,$.layout.name,$.layout.className].join(' '));}};$.browserTest(navigator.userAgent);})(jQuery);;
+;
+/*
+*   JavaScript interface for the SoundCloud Player widget
+*   Author: Matas Petrikas, matas@soundcloud.com
+*   Copyright (c) 2009  SoundCloud Ltd.
+*   Licensed under the MIT license:
+*   http://www.opensource.org/licenses/mit-license.php
+*/
+(function(){
+  var isIE = (/msie/i).test(navigator.userAgent) && !(/opera/i).test(navigator.userAgent);
+  
+  var soundcloud = window.soundcloud = {
+    version: "0.1",
+    debug: false,
+    _listeners: [],
+    // re-dispatches widget events in the DOM, using JS library support, the events also should bubble up the DOM
+    _redispatch: function(eventType, flashId, data) {
+      var playerNode,
+          lsnrs  = this._listeners[eventType] || [],
+          // construct the custom eventType  e.g. 'soundcloud:onPlayerReady'
+          customEventType = 'soundcloud:' + eventType;
+
+      try{
+        // find the flash player, might throw an exception
+        playerNode = this.getPlayer(flashId);
+      }catch(e){
+        if(this.debug && window.console){
+          console.error('unable to dispatch widget event ' + eventType + ' for the widget id ' + flashId, data, e);
+        }
+        return;
+      }
+      // re-dispatch SoundCloud events up in the DOM
+      if(window.jQuery){
+        // if jQuery is available, trigger the custom event
+        jQuery(playerNode).trigger(customEventType, [data]);
+      }else if(window.Prototype){
+        // if Prototype.js is available, fire the custom event
+        $(playerNode).fire(customEventType, data);
+      }else{
+        // TODO add more JS libraries that support custom DOM events
+      }
+      // if there are any listeners registered to this event, trigger them all
+      for(var i = 0, l = lsnrs.length; i < l; i += 1) {
+        lsnrs[i].apply(playerNode, [playerNode, data]);
+      }
+      // log the events in debug mode
+      if(this.debug && window.console){
+        console.log(customEventType, eventType, flashId, data);
+      }
+
+    },
+    // you can add multiple listeners to a certain event
+    // e.g. soundcloud.addEventListener('onPlayerReady', myFunctionOne);
+    //      soundcloud.addEventListener('onPlayerReady', myFunctionTwo);
+    addEventListener: function(eventType, callback) {
+      if(!this._listeners[eventType]){
+        this._listeners[eventType] = [];
+      }
+      this._listeners[eventType].push(callback);
+    },
+    // you can also remove the function listener if e.g you want to trigger it only once
+    // soundcloud.removeEventListener('onMediaPlay', myFunctionOne);
+    removeEventListener: function(eventType, callback) {
+      var lsnrs = this._listeners[eventType] || [];
+      for(var i = 0, l = lsnrs.length; i < l; i += 1) {
+        if(lsnrs[i] === callback){
+          lsnrs.splice(i, 1);
+        }
+      }
+    },
+    // get widget node based on its id (if object tag) or name (if embed tag)
+    // if you're using SWFObject or other dynamic Flash generators, please make sure that you set the id parameter
+    //  only if the DOM has an id/name it's possible to call player's methods.
+    // Important!: because of the bug in Opera browser, the Flash can't get its own id
+    // so the generator should set it additionally through flashvars parameter 'object_id'
+    getPlayer: function(id){
+      var flash;
+      try{
+        if(!id){
+          throw "The SoundCloud Widget DOM object needs an id atribute, please refer to SoundCloud Widget API documentation.";
+        }
+        flash = isIE ? window[id] : document[id];
+        if(flash){
+          if(flash.api_getFlashId){
+            return flash;
+          }else{
+            throw "The SoundCloud Widget External Interface is not accessible. Check that allowscriptaccess is set to 'always' in embed code";
+          }
+        }else{
+          throw "The SoundCloud Widget with an id " + id + " couldn't be found";
+        }
+      }catch(e){
+        if (console && console.error) {
+         console.error(e);
+        }
+        throw e;
+      }
+    },
+    // fired when widget has loaded its data and is ready to accept calls from outside
+    // the widget will call these functions only if in it's flashvars there's a parameter enable_api=true
+    // @flashId: the widget id, basically the Flash node should be accessible to JS with soundcloud.getPlayer(flashId)
+    // @data: an object containing .mediaUri (eg. 'http://api.soundcloud.com/tracks/49931') .mediaId (e.g. '4532')
+    // in buffering events data contains also .percent = (e.g. '99')
+    onPlayerReady: function(flashId, data) {
+      this._redispatch('onPlayerReady', flashId, data);
+    },
+    // fired when widget starts playing current track (fired only once per track)
+    onMediaStart : function(flashId, data) {
+      this._redispatch('onMediaStart', flashId, data);
+    },
+    // fired when the track/playlist has finished playing
+    onMediaEnd : function(flashId, data) {
+      this._redispatch('onMediaEnd', flashId, data);
+    },
+    // fired when widget starts playing current track (fired on every play, seek)
+    onMediaPlay : function(flashId, data) {
+      this._redispatch('onMediaPlay', flashId, data);
+    },
+    // fired when track was paused
+    onMediaPause : function(flashId, data) {
+      this._redispatch('onMediaPause', flashId, data);
+    },
+    // fired when the widget is still buffering, means you can't seek in the track fully yet
+    onMediaBuffering : function(flashId, data) {
+      this._redispatch('onMediaBuffering', flashId, data);
+    },
+    // fired when the user seeks in the track
+    onMediaSeek : function(flashId, data) {
+      this._redispatch('onMediaSeek', flashId, data);
+    },
+    // fired when the widget is done buffering and the whole track length is seekable
+    onMediaDoneBuffering : function(flashId, data) {
+      this._redispatch('onMediaDoneBuffering', flashId, data);
+    },
+    // fired when the widget can't get the requested data from the server (the resource is removed, hidden, etc.)
+    onPlayerError : function(flashId, data) {
+      this._redispatch('onPlayerError', flashId, data);
+    }
+  };
+  
+})();
+;
+/*
+*   SoundCloud Custom Player jQuery Plugin
+*   Author: Matas Petrikas, matas@soundcloud.com
+*	Edited by: Michelle Lamoureaux
+*   Copyright (c) 2009  SoundCloud Ltd.
+*   Licensed under the MIT license:
+*   http://www.opensource.org/licenses/mit-license.php
+*
+*   Usage:
+*   <a href="http://soundcloud.com/matas/hobnotropic" class="sc-player">My new dub track</a>
+*   The link will be automatically replaced by the HTML based player
+*/
+(function($) {
+  // Convert milliseconds into Hours (h), Minutes (m), and Seconds (s)
+  var timecode = function(ms) {
+  	
+  	if(isNaN(ms)){
+  		return "0.00";
+  	}
+  	
+    var hms = function(ms) {
+          return {
+            h: Math.floor(ms/(60*60*1000)),
+            m: Math.floor((ms/60000) % 60),
+            s: Math.floor((ms/1000) % 60)
+          };
+        }(ms),
+        
+        
+        tc = []; // Timecode array to be joined with '.'
+ 
+    if (hms.h > 0) {
+      tc.push(hms.h);
+    }
+ 
+    tc.push((hms.m < 10 && hms.h > 0 ? "0" + hms.m : hms.m));
+    tc.push((hms.s < 10  ? "0" + hms.s : hms.s));
+ 
+    return tc.join('.');
+  };
+  // shuffle the array
+  var shuffle = function(arr) {
+    arr.sort(function() { return 1 - Math.floor(Math.random() * 3); } );
+    return arr;
+  };
+ 
+  var debug = true,
+      useSandBox = false,
+      $doc = $(document),
+      log = function(args) {
+        try {
+          if(debug && window.console && window.console.log){
+            window.console.log.apply(window.console, arguments);
+          }
+        } catch (e) {
+          // no console available
+        }
+      },
+      domain = useSandBox ? 'sandbox-soundcloud.com' : 'soundcloud.com',
+      secureDocument = (document.location.protocol === 'https:'),
+      // convert a SoundCloud resource URL to an API URL
+      scApiUrl = function(url, apiKey) {
+        var resolver = ( secureDocument || (/^https/i).test(url) ? 'https' : 'http') + '://api.' + domain + '/resolve?url=',
+            params = 'format=json&consumer_key=' + apiKey + '&callback=?';
+ 
+        // force the secure url in the secure environment
+        if( secureDocument ) {
+          url = url.replace(/^http:/, 'https:');
+        }
+ 
+        // check if it's already a resolved api url
+        if ( (/api\./).test(url) ) {
+          return url + '?' + params;
+        } else {
+          return resolver + url + '&' + params;
+        }
+      };
+ 
+  // TODO Expose the audio engine, so it can be unit-tested
+  var audioEngine = function() {
+    var html5AudioAvailable = function() {
+        var state = false;
+        try{
+          var a = new Audio();
+          state = a.canPlayType && (/maybe|probably/).test(a.canPlayType('audio/mpeg'));
+          // let's enable the html5 audio on selected mobile devices first, unlikely to support Flash
+          // the desktop browsers are still better with Flash, e.g. see the Safari 10.6 bug
+          // comment the following line out, if you want to force the html5 mode
+         // state = state && (/iPad|iphone|mobile|pre\//i).test(navigator.userAgent);
+        }catch(e){
+          // there's no audio support here sadly
+        }
+ 
+        return state;
+    }(),
+    callbacks = {
+      onReady: function() {
+        $doc.trigger('scPlayer:onAudioReady');
+      },
+      onPlay: function() {
+        $doc.trigger('scPlayer:onMediaPlay');
+      },
+      onPause: function() {
+        $doc.trigger('scPlayer:onMediaPause');
+      },
+      onEnd: function() {
+        $doc.trigger('scPlayer:onMediaEnd');
+      },
+      onBuffer: function(percent) {
+        $doc.trigger({type: 'scPlayer:onMediaBuffering', percent: percent});
+      }
+    };
+ 
+    var html5Driver = function() {
+      var player = new Audio(),
+          onTimeUpdate = function(event){
+            var obj = event.target,
+                buffer = ((obj.buffered.length && obj.buffered.end(0)) / obj.duration) * 100;
+            // ipad has no progress events implemented yet
+            callbacks.onBuffer(buffer);
+            // anounce if it's finished for the clients without 'ended' events implementation
+            if (obj.currentTime === obj.duration) { callbacks.onEnd(); }
+          },
+          onProgress = function(event) {
+            var obj = event.target,
+                buffer = ((obj.buffered.length && obj.buffered.end(0)) / obj.duration) * 100;
+            callbacks.onBuffer(buffer);
+          };
+ 
+      $('<div class="sc-player-engine-container"></div>').appendTo(document.body).append(player);
+ 
+      // prepare the listeners
+      player.addEventListener('play', callbacks.onPlay, false);
+      player.addEventListener('pause', callbacks.onPause, false);
+      //player.addEventListener('ended', callbacks.onEnd, false);
+      player.addEventListener('timeupdate', onTimeUpdate, false);
+      player.addEventListener('progress', onProgress, false);
+ 
+ 
+      return {
+        load: function(track, apiKey) {
+          player.pause();
+          player.src = track.stream_url + (/\?/.test(track.stream_url) ? '&' : '?') + 'consumer_key=' + apiKey;
+          player.load();
+          player.play();
+        },
+        play: function() {
+          player.play();
+        },
+        pause: function() {
+          player.pause();
+        },
+        stop: function(){
+          if (player.currentTime) {
+                        player.currentTime = 0;
+                        player.pause();
+                  }
+        },
+        seek: function(relative){
+          player.currentTime = player.duration * relative;
+          player.play();
+        },
+        getDuration: function() {
+          return player.duration * 1000;
+        },     
+
+         getPosition: function() {
+          return player.currentTime * 1000;
+        },   
+        
+         setVolume: function(val) {
+          player.volume = val / 100;
+        }
+      };
+ 
+    };
+ 
+ 
+ 
+    var flashDriver = function() {
+      var engineId = 'scPlayerEngine',
+          player,
+          flashHtml = function(url) {
+            var swf = (secureDocument ? 'https' : 'http') + '://player.' + domain +'/player.swf?url=' + url +'&amp;enable_api=true&amp;player_type=engine&amp;object_id=' + engineId;
+            if ($.browser.msie) {
+              return '<object height="100%" width="100%" id="' + engineId + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" data="' + swf + '">'+
+                '<param name="movie" value="' + swf + '" />'+
+                '<param name="allowscriptaccess" value="always" />'+
+                '</object>';
+            } else {
+              return '<object height="100%" width="100%" id="' + engineId + '">'+
+                '<embed allowscriptaccess="always" height="100%" width="100%" src="' + swf + '" type="application/x-shockwave-flash" name="' + engineId + '" />'+
+                '</object>';
+            }
+          };
+ 
+ 
+      // listen to audio engine events
+      // when the loaded track is ready to play
+      soundcloud.addEventListener('onPlayerReady', function(flashId, data) {
+        player = soundcloud.getPlayer(engineId);
+        callbacks.onReady();
+      });
+ 
+      // when the loaded track finished playing
+      soundcloud.addEventListener('onMediaEnd', callbacks.onEnd);
+ 
+      // when the loaded track is still buffering
+      soundcloud.addEventListener('onMediaBuffering', function(flashId, data) {
+        callbacks.onBuffer(data.percent);
+      });
+ 
+      // when the loaded track started to play
+      soundcloud.addEventListener('onMediaPlay', callbacks.onPlay);
+ 
+      // when the loaded track is was paused
+      soundcloud.addEventListener('onMediaPause', callbacks.onPause);
+ 
+      return {
+        load: function(track) {
+          var url = track.uri;
+          if(player){
+            player.api_load(url);
+			$('.sc-player-engine-container').html(flashHtml(url));
+          }else{
+            // create a container for the flash engine (IE needs this to operate properly)
+            $('<div class="sc-player-engine-container"></div>').appendTo(document.body).html(flashHtml(url));
+          }
+        },
+        play: function() {
+        	var l_sTitle = $('.sc-trackslist .active a').html();
+	
+ var l_nHyphenPos = l_sTitle.indexOf(" - ");
+var l_nLength=l_sTitle.length;
+			if (l_nHyphenPos >= 0) {
+				l_sTitle = l_sTitle.substr(l_nHyphenPos+2,l_nLength);
+			}			
+			player && player.api_play();
+        },
+        pause: function() {
+          player && player.api_pause();
+        },
+        stop: function(){
+          player && player.api_stop();
+        },
+        seek: function(relative){
+          player && player.api_seekTo((player.api_getTrackDuration() * relative));
+        },
+        getDuration: function() {
+          return player && player.api_getTrackDuration && player.api_getTrackDuration() * 1000;
+        },
+        getPosition: function() {
+          return player && player.api_getTrackPosition && player.api_getTrackPosition() * 1000;
+        },
+        setVolume: function(val) {
+          if(player && player.api_setVolume){
+            player.api_setVolume(val);
+          }
+        }
+ 
+      };
+    };
+ 
+    return html5AudioAvailable? html5Driver() : flashDriver();
+ 
+  }();
+ 
+ 
+ 
+  var apiKey,
+      didAutoPlay = false,
+      players = [],
+      updates = {},
+      currentUrl,
+      loadTracksData = function($player, links, key) {
+        var index = 0,
+            playerObj = {node: $player, tracks: []},
+            loadUrl = function(link) {
+              var apiUrl = scApiUrl(link.url, apiKey);
+              $.getJSON(apiUrl, function(data) {
+                // log('data loaded', link.url, data);
+                index += 1;
+                if(data.tracks){
+                  // log('data.tracks', data.tracks);
+                  playerObj.tracks = playerObj.tracks.concat(data.tracks);
+                }else if(data.duration){
+                  // a secret link fix, till the SC API returns permalink with secret on secret response
+                  data.permalink_url = link.url;
+                  // if track, add to player
+                  playerObj.tracks.push(data);
+                }else if(data.creator){
+                  // it's a group!
+                  links.push({url:data.uri + '/tracks'});
+                }else if(data.username){
+                  // if user, get his tracks or favorites
+                  if(/favorites/.test(link.url)){
+                    links.push({url:data.uri + '/favorites'});
+                  }else{
+                    links.push({url:data.uri + '/tracks'});
+                  }
+                }else if($.isArray(data)){
+                  playerObj.tracks = playerObj.tracks.concat(data);
+                }
+                if(links[index]){
+                  // if there are more track to load, get them from the api
+                  loadUrl(links[index]);
+                }else{
+                  // if loading finishes, anounce it to the GUI
+                  playerObj.node.trigger({type:'onTrackDataLoaded', playerObj: playerObj, url: apiUrl});
+                }
+             });
+           };
+        // update current API key
+        apiKey = key;
+        // update the players queue
+        players.push(playerObj);
+        // load first tracks
+        loadUrl(links[index]);
+      },
+      artworkImage = function(track, usePlaceholder) {
+        if(usePlaceholder){
+          return '<div class="sc-loading-artwork">Loading Artwork</div>';
+        }else if (track.artwork_url) {
+          return '<img src="' + track.artwork_url.replace('-large', '-t300x300') + '"/>';
+        }else{
+          return '<div class="sc-no-artwork">No Artwork</div>';
+        }
+      },
+      updateTrackInfo = function($player, track) {
+        // update the current track info in the player
+        // log('updateTrackInfo', track);
+        $('.sc-info', $player).each(function(index) {
+          $('h3', this).html('<a href="' + track.permalink_url +'">' + track.title + '</a>');
+          $('h4', this).html('by <a href="' + track.user.permalink_url +'">' + track.user.username + '</a>');
+          $('p', this).html(track.description || 'no Description');
+        });
+		$('.sc-buy').attr('href',track.purchase_url);
+        // update the artwork
+        $('.sc-artwork-list li', $player).each(function(index) {
+          var $item = $(this),
+              itemTrack = $item.data('sc-track');
+ 
+          if (itemTrack === track) {
+	
+	
+            // show track artwork
+            $item
+              .addClass('active')
+              .find('.sc-loading-artwork')
+                .each(function(index) {
+                  // if the image isn't loaded yet, do it now
+
+                  $(this).removeClass('sc-loading-artwork').html(artworkImage(track, false));
+                });
+          }else{
+            // reset other artworks
+            $item.removeClass('active');
+          }
+        });
+        // update the track duration in the progress bar
+        $('.sc-duration', $player).html(timecode(track.duration));
+        // put the waveform into the progress bar
+        $('.sc-waveform-container', $player).html('<img src="' + track.waveform_url +'" />');
+ 		$('.sc-waveform-container img').delay(500).fadeIn(300);		
+		var l_sTitle = $('.sc-trackslist .active a',$player).html();
+		var l_nHyphenPos = l_sTitle.indexOf(" - ");
+var l_nLength=l_sTitle.length;
+		if (l_nHyphenPos >= 0) {
+			l_sTitle = l_sTitle.substr(l_nHyphenPos+2,l_nLength);
+		}
+		$('.sc-song-title',$player).html(l_sTitle);	
+		
+        $player.trigger('onPlayerTrackSwitch.scPlayer', [track]);
+      },
+      play = function(track) {
+        var url = track.permalink_url;
+        if(currentUrl === url){
+          // log('will play');
+          audioEngine.play();
+        }else{
+          currentUrl = url;
+          // log('will load', url);
+          audioEngine.load(track, apiKey);
+        }
+      },
+      getPlayerData = function(node) {
+        return players[$(node).data('sc-player').id];
+      },
+      updatePlayStatus = function(player, status) {
+        if(status){
+          // reset all other players playing status
+          $('div.sc-player.playing').removeClass('playing');
+        }
+        $(player)
+          .toggleClass('playing', status)
+          .trigger((status ? 'onPlayerPlay' : 'onPlayerPause'));
+      },
+      onPlay = function(player, id) {
+        var track = getPlayerData(player).tracks[id || 0];
+        updateTrackInfo(player, track);
+        // cache the references to most updated DOM nodes in the progress bar
+        updates = {
+          $buffer: $('.sc-buffer', player),
+          $played: $('.sc-played', player),
+          position:  $('.sc-position', player)[0]
+        };
+        updatePlayStatus(player, true);
+        play(track);
+      },
+      onPause = function(player) {
+        updatePlayStatus(player, false);
+        audioEngine.pause();
+      },
+      onFinish = function() {
+        var $player = updates.$played.closest('.sc-player'),
+            $nextItem;
+        // update the scrubber width
+        updates.$played.css('width', '0%');
+        // show the position in the track position counter
+        updates.position.innerHTML = timecode(0);
+        // reset the player state
+        updatePlayStatus($player, false);
+        // stop the audio
+        audioEngine.stop();
+        $player.trigger('onPlayerTrackFinish');
+      },
+      onSeek = function(player, relative) {
+        audioEngine.seek(relative);
+		$(player).trigger('onPlayerSeek');
+      },
+      onSkip = function(player) {
+        var $player = $(player);
+        // continue playing through all players
+        log('track finished get the next one');
+        $nextItem = $('.sc-trackslist li.active', $player).next('li');
+        // try to find the next track in other player
+        if(!$nextItem.length){
+          $nextItem = $player.nextAll('div.sc-player:first').find('.sc-trackslist li.active');
+        }
+        $nextItem.click();
+      },
+      soundVolume = function() {
+        var vol = 80,
+            cooks = document.cookie.split(';'),
+            volRx = new RegExp('scPlayer_volume=(\\d+)');
+        for(var i in cooks){
+          if(volRx.test(cooks[i])){
+            vol = parseInt(cooks[i].match(volRx)[1], 10);
+            break;
+          }
+        }
+        return vol;
+      }(),
+      onVolume = function(volume) {
+        var vol = Math.floor(volume);
+        // save the volume in the cookie
+        var date = new Date();
+        date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
+        soundVolume = vol;
+        document.cookie = ['scPlayer_volume=', vol, '; expires=', date.toUTCString(), '; path="/"'].join('');
+        // update the volume in the engine
+        audioEngine.setVolume(soundVolume);
+      },
+      positionPoll;
+ 
+    // listen to audio engine events
+    $doc
+      .bind('scPlayer:onAudioReady', function(event) {
+        log('onPlayerReady: audio engine is ready');
+        audioEngine.play();
+        // set initial volume
+        onVolume(soundVolume);
+      })
+      // when the loaded track started to play
+      .bind('scPlayer:onMediaPlay', function(event) {
+        clearInterval(positionPoll);
+        positionPoll = setInterval(function() {
+          var duration = audioEngine.getDuration(),
+              position = audioEngine.getPosition(),
+              relative = (position / duration);
+ 	      //console.log(relative);
+          // update the scrubber width
+          updates.$played.css('width', (100 * relative) + '%');
+          // show the position in the track position counter
+          updates.position.innerHTML = timecode(position);
+          // announce the track position to the DOM
+          $doc.trigger({
+            type: 'onMediaTimeUpdate.scPlayer',
+            duration: duration,
+            position: position,
+            relative: relative
+          });
+        }, 500);
+      })
+      // when the loaded track is was paused
+      .bind('scPlayer:onMediaPause', function(event) {
+        clearInterval(positionPoll);
+        positionPoll = null;
+      })
+      // change the volume
+      .bind('scPlayer:onVolumeChange', function(event) {
+        onVolume(event.volume);
+      })
+      .bind('scPlayer:onMediaEnd', function(event) {
+        onFinish();
+      })
+      .bind('scPlayer:onMediaBuffering', function(event) {
+        updates.$buffer.css('width', event.percent + '%');
+      });
+ 
+ 
+  // Generate custom skinnable HTML/CSS/JavaScript based SoundCloud players from links to SoundCloud resources
+  $.scPlayer = function(options, node) {
+   
+
+
+
+
+ 	var opts = $.extend({}, $.scPlayer.defaults, options),
+        playerId = players.length,
+        $source = node && $(node),
+        sourceClasses = $source[0].className.replace('sc-player', ''),
+        links = opts.links || $.map($('a', $source).add($source.filter('a')), function(val) { return {url: val.href, title: val.innerHTML}; }),
+        $player = $('<div class="sc-player loading"></div>').data('sc-player', {id: playerId}),
+        $artworks = $('<ol class="sc-artwork-list"></ol>').appendTo($player),
+        //$info = $('<div class="sc-info"><h3></h3><h4></h4><p></p><a href="#" class="sc-info-close">X</a></div>').appendTo($player),
+        $controls = $('<div class="sc-overall-controls"><div class="sc-controls"></div><div class="sc-scrubber"></div></div><div class="player-album-name"><div class="player-album"></div><div class="sc-time-float"></div></div><div class="sc-song-title"></div>').appendTo($player),
+        $list = $('<ol class="sc-trackslist"></ol>').appendTo($player);
+ 
+
+
+        // add the classes of the source node to the player itself
+        // the players can be indvidually styled this way
+        if(sourceClasses || opts.customClass){
+          $player.addClass(sourceClasses).addClass(opts.customClass);
+        }
+ 
+        // adding controls to the player
+        $player
+          .find('.sc-controls')
+            
+		.append('<div class="mine-controls"><a href="#play" class="sc-play">Play</a> <a href="#pause" class="sc-pause hidden">Pause</a></div>')
+          .end()
+          //.append('<a href="#info" class="sc-info-toggle">Info</a>')          
+            .find('.sc-scrubber')
+              .append('<div class="sc-time-span"><div class="sc-waveform-container"></div><div class="sc-buffer"></div><div class="sc-played"></div></div>')
+			  
+            .end()
+
+			
+	            .find('.sc-time-float')
+					.append('<div class="sc-time-indicators"><span class="sc-position"></span><span class="sc-time-br"></span><span class="sc-duration"></span></div>')
+ 			.end()
+
+			.append('<div class="sc-mute"></div>')
+	            .find('.sc-mute')
+					.append('<a href="#"></a><div>')
+ 			.end()
+
+			.append('<div class="sc-vol-float"></div>')
+	            .find('.sc-vol-float')
+			  .append('<div class="sc-volume-slider"><span class="sc-volume-status" style="width:' + soundVolume +'%"></span></div>')
+			.end()
+
+			.append('<a class="sc-buy" target="_blank" href="#"></a>')
+ 
+        // load and parse the track data from SoundCloud API
+        loadTracksData($player, links, opts.apiKey);
+        // init the player GUI, when the tracks data was laoded
+        $player.bind('onTrackDataLoaded.scPlayer', function(event) {
+          // log('onTrackDataLoaded.scPlayer', event.playerObj, playerId, event.target);
+          var tracks = event.playerObj.tracks;
+          if (opts.randomize) {
+            tracks = shuffle(tracks);
+          }
+          // create the playlist
+          $.each(tracks, function(index, track) {
+            var active = index === 0;
+            // create an item in the playlist
+            $('<li><a href="' + track.permalink_url +'">' + track.title + '</a><span class="sc-track-duration">' + timecode(track.duration) + '</span></li>').data('sc-track', {id:index}).toggleClass('active', active).appendTo($list);
+            // create an item in the artwork list
+            $('<li></li>')
+              //.append(artworkImage(track, index >= opts.loadArtworks))
+              .appendTo($artworks)
+              .toggleClass('active', active)
+              .data('sc-track', track);
+          });
+          // update the element before rendering it in the DOM
+          $player.each(function() {
+            if($.isFunction(opts.beforeRender)){
+              opts.beforeRender.call(this, tracks);
+            }
+          });
+          // set the first track's duration
+          $('.sc-duration', $player)[0].innerHTML = timecode(tracks[0].duration);
+          $('.sc-position', $player)[0].innerHTML = timecode(0);
+          // set up the first track info
+          updateTrackInfo($player, tracks[0]);
+ 
+          // if continous play enabled always skip to the next track after one finishes
+          if (opts.continuePlayback) {
+            $player.bind('onPlayerTrackFinish', function(event) {
+              onSkip($player);
+            });
+          }
+ 
+          // announce the succesful initialization
+          $player
+            .removeClass('loading')
+            .trigger('onPlayerInit');
+ 
+          // if auto play is enabled and it's the first player, start playing
+          if(opts.autoPlay && !didAutoPlay){
+            onPlay($player);
+            didAutoPlay = true;
+          }
+        });
+ 
+ 
+    // replace the DOM source (if there's one)
+    $source.each(function(index) {
+      $(this).replaceWith($player);
+    });
+ 
+    return $player;
+  };
+ 
+  // stop all players, might be useful, before replacing the player dynamically
+  $.scPlayer.stopAll = function() {
+    $('.sc-player.playing a.sc-pause').click();
+  };
+ 
+  // destroy all the players and audio engine, usefull when reloading part of the page and audio has to stop
+  $.scPlayer.destroy = function() {
+    $('.sc-player, .sc-player-engine-container').remove();
+  };
+ 
+  // plugin wrapper
+  $.fn.scPlayer = function(options) {
+    // reset the auto play
+    didAutoPlay = false;
+    // create the players
+    this.each(function() {
+      $.scPlayer(options, this);
+    });
+    return this;
+  };
+ 
+  // default plugin options
+  $.scPlayer.defaults = $.fn.scPlayer.defaults = {
+    customClass: null,
+    // do something with the dom object before you render it, add nodes, get more data from the services etc.
+    beforeRender  :   function(tracksData) {
+      var $player = $(this);
+    },
+    // initialization, when dom is ready
+    onDomReady  : function() {
+      $('a.sc-player, div.sc-player').scPlayer();
+    },
+    autoPlay: false,
+    continuePlayback: true,
+    randomize: false,
+    loadArtworks: 5,
+    // the default Api key should be replaced by your own one
+    // get it here http://soundcloud.com/you/apps/new
+    apiKey: 'd828d7acc8e1f2974ce952708d509db4'
+  };
+ 
+ 
+  // the GUI event bindings
+  //--------------------------------------------------------
+ 
+
+
+  // toggling play/pause
+  $('a.sc-play, a.sc-pause').live('click', function(event) {
+    var $list = $(this).closest('.sc-player').find('ol.sc-trackslist');
+    // simulate the click in the tracklist
+    $list.find('li.active').click();
+    return false;
+  });
+
+$('.sc-mute a').live('click', function(event) {
+    event.preventDefault();
+	$(this).parent().addClass('muted');	
+	onVolume(0);
+  });
+
+  $('.sc-mute.muted a').live('click', function(event) {
+    event.preventDefault();	
+	$(this).parent().removeClass('muted');
+
+		var l_sVolPercent = $('.sc-volume-status').css('width');
+		var l_nVolPercent = parseInt(l_sVolPercent.substr(0,l_sVolPercent.length-1));
+		onVolume(l_nVolPercent);
+});
+
+
+	$('.sc-next').live('click', function(event) {
+	    event.preventDefault();
+		l_nCount = $('.sc-trackslist li').length;
+
+		var l_nIndex = 0;
+		$('.sc-trackslist li').each(function() {
+			if ($(this).hasClass('active') && l_nIndex== l_nCount-1) {
+				$('.sc-trackslist').find('li').eq(0).find('a').click();
+				return false;
+			} else if ($(this).hasClass('active')) {
+				$('.sc-trackslist').find('li').eq(l_nIndex+1).find('a').click();
+				return false;
+			}
+			l_nIndex++;
+		});
+	});
+
+	$('.sc-prev').live('click', function(event) {
+	    event.preventDefault();
+		l_nCount = $('.sc-trackslist li').length;
+
+		var l_nIndex = 0;
+		$('.sc-trackslist li').each(function() {
+			if ($(this).hasClass('active') && l_nIndex== 0) {
+				$('.sc-trackslist').find('li').eq(l_nCount-1).find('a').click();
+				return false;
+			} else if ($(this).hasClass('active')) {
+				$('.sc-trackslist').find('li').eq(l_nIndex-1).find('a').click();
+				return false;
+			}
+			l_nIndex++;
+		});
+	});
+ 
+  // displaying the info panel in the player
+  $('a.sc-info-toggle, a.sc-info-close').live('click', function(event) {
+    var $link = $(this);
+    $link.closest('.sc-player')
+      .find('.sc-info').toggleClass('active').end()
+      .find('a.sc-info-toggle').toggleClass('active');
+    return false;
+  });
+ 
+  // selecting tracks in the playlist
+  $('.sc-trackslist li').live('click', function(event) {
+    var $track = $(this),
+        $player = $track.closest('.sc-player'),
+        trackId = $track.data('sc-track').id,
+        play = $player.is(':not(.playing)') || $track.is(':not(.active)');
+    if (play) {
+      onPlay($player, trackId);
+	  if(('.page-node-22941 .album-title-omniture').length > 0){
+		var albumTitle = jQuery('.sc-player.playing').closest('.sc-item').find('.album-title-omniture').text().trim();
+		function CallOmniture(text) {
+			var s = s_gi('wmg,wmgatl');
+			s.linkTrackVars = 'prop1,eVar4';
+			s.prop1 = 'Paper Towns';
+			s.eVar4 = 'Paper Towns';
+			s.tl(this, 'o', "Paper Towns" + ":" + text);
+		}
+		CallOmniture('Paper Towns YouTube Contest:Splash:' +albumTitle+ ' Click');
+	  }
+	  
+
+    }else{
+      onPause($player);
+    }
+    $track.addClass('active').siblings('li').removeClass('active');
+    $('.artworks li', $player).each(function(index) {
+      $(this).toggleClass('active', index === trackId);
+    });
+    return false;
+  });
+ 
+  var scrub = function(node, xPos) {
+    var $scrubber = $(node).closest('.sc-time-span'),
+        $buffer = $player.find('.sc-buffer'),
+        $available = $scrubber.find('.sc-waveform-container img'),
+        $player = $scrubber.closest('.sc-player'),
+        relative = Math.min($buffer.width(), (xPos  - $available.offset().left)) / $available.width();
+    onSeek($player, relative);
+  };
+ 
+  var onTouchMove = function(ev) {
+    if (ev.targetTouches.length === 1) {
+      scrub(ev.target, ev.targetTouches && ev.targetTouches.length && ev.targetTouches[0].clientX);
+      ev.preventDefault();
+    }
+  };
+ 
+ 
+  // seeking in the loaded track buffer
+  $('.sc-time-span')
+    .live('click', function(event) {
+      scrub(this, event.pageX);
+      return false;
+    })
+    .live('touchstart', function(event) {
+      this.addEventListener('touchmove', onTouchMove, false);
+      event.originalEvent.preventDefault();
+    })
+    .live('touchend', function(event) {
+      this.removeEventListener('touchmove', onTouchMove, false);
+      event.originalEvent.preventDefault();
+    });
+
+	
+ 
+  // changing volume in the player
+  var startVolumeTracking = function(node, startEvent) {
+    var $node = $(node),
+        originX = $node.offset().left,
+        originWidth = $node.width(),
+        getVolume = function(x) {
+          return Math.floor(((x - originX)/originWidth)*100);
+        },
+        update = function(event) {
+          $doc.trigger({type: 'scPlayer:onVolumeChange', volume: getVolume(event.pageX)});
+        };
+    $node.bind('mousemove.sc-player', update);
+    update(startEvent);
+  };
+ 
+  var stopVolumeTracking = function(node, event) {
+    $(node).unbind('mousemove.sc-player');
+  };
+ 
+  $('.sc-volume-slider')
+    .live('mousedown', function(event) {
+      startVolumeTracking(this, event);
+    })
+    .live('mouseup', function(event) {
+      stopVolumeTracking(this, event);
+    });
+
+ 
+  $doc.bind('scPlayer:onVolumeChange', function(event) {
+    $('span.sc-volume-status').css({width: event.volume + '%'});
+  });
+  // -------------------------------------------------------------------
+ 
+  // the default Auto-Initialization
+  $(function() {
+    if($.isFunction($.scPlayer.defaults.onDomReady)){
+      $.scPlayer.defaults.onDomReady();
+    }
+  });
+ 
+})(jQuery);
+jQuery( document ).ready(function() {
+jQuery('.view-artists-music-player li.views-row').each(function(){
+       var current = jQuery(this).find('.title').text();  
+       jQuery(this).find(".player-album").text(current);
+     });
+});;
+jQuery(document).ready(function() {
+
+if (location.href.indexOf('?pass-reset-token') != -1) {
+            jQuery('.form-type-password-confirm').addClass('pwdHighlight');
+            jQuery('#edit-pass-pass1').focus();
+            location.href = '#messages-region';
+            jQuery('#edit-picture').hide();
+            jQuery('#edit-comment-notify-settings').hide();
+            jQuery('#edit-timezone').hide();
+        }
+ });;
+/*
+* Cell Stream Widget
+* version 1
+*
+*/
+var viewscellstream = {
+	items_qty: (typeof(WMG.CellStream.states.init.left) != 'string' ? WMG.CellStream.states.init.left : WMG.CellStream.states.init.top).length,
+	states: WMG.CellStream.states,
+  getPropertyValue: function(obj, state, property) {
+    if (jQuery.isArray(this.states[state][property])) {
+      for (var i = 0; i < this.items_qty; i++) {
+        if (jQuery(obj).hasClass('views-row-' + (i+1))) {
+          return this.states[state][property][i];
+        } 
+      }
+    }
+    else {
+      return this.states[state][property];
+    }
+    
+    return null;
+  },
+  getPropertyObj: function(obj, state) {
+    return {
+      width: this.getPropertyValue(obj, state, 'width'),
+      height: this.getPropertyValue(obj, state, 'height'),
+      left: this.getPropertyValue(obj, state, 'left'),
+      top: this.getPropertyValue(obj, state, 'top'),
+      opacity: this.getPropertyValue(obj, state, 'opacity')
+    };
+  },
+  start: function(selector) {
+    jQuery(selector).each(
+      function () {
+        jQuery(this).css(viewscellstream.getPropertyObj(this, 'init'));
+      }
+    );
+    jQuery(selector).hover(
+      function(){
+
+        jQuery(this).addClass('hover');
+        jQuery(this).animate(viewscellstream.getPropertyObj(this, 'hover'), 200, 'swing');
+      },
+      function(){
+        jQuery(this).removeClass('hover'); 
+        jQuery(this).stop().css(viewscellstream.getPropertyObj(this, 'init'));
+      }
+    );
+  }
+}
+
+Drupal.behaviors.viewscellstream = {
+  attach: function() {
+    viewscellstream.start('#block-views-photos-block .view-content ul li');
+  }
+};

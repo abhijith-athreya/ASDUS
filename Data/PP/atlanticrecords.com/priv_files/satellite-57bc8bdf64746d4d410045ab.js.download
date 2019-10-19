@@ -1,0 +1,28 @@
+var dcJS = document.createElement('SCRIPT');
+var done = false;
+
+dcJS.setAttribute('src', '//www.googleadservices.com/pagead/conversion_async.js');
+dcJS.setAttribute('type','text/javascript');
+
+document.body.appendChild(dcJS);
+dcJS.onload = dcJS.onreadystatechange = function () {
+     if(!done && (!this.readyState || this.readyState === "loaded" || this.readyState === "complete")) {
+          done = true;
+          callback();
+ 
+           // Handle memory leak in IE
+           dcJS.onload = dcJS.onreadystatechange = null;
+           document.body.removeChild(dcJS);
+     }
+ };
+ function callback(){
+      if(done){  
+        /* <![CDATA[ */
+        window.google_trackConversion({
+          google_conversion_id : 996482958,
+          google_custom_params : window.google_tag_params,
+          google_remarketing_only : true
+        });
+        //]]> 
+      }
+ }

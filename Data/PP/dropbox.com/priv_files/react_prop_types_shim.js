@@ -1,0 +1,2 @@
+define(["external/react"],function(r){return(function(r){function e(n){if(t[n])return t[n].exports;var o=t[n]={exports:{},id:n,loaded:!1};return r[n].call(o.exports,o,o.exports,e),o.loaded=!0,o.exports}var t={};return e.m=r,e.c=t,e.p="",e(0)})([function(r,e,t){"use strict";var n=t(4);r.exports=n.PropTypes},,,,function(e,t){e.exports=r}])});
+//# sourceMappingURL=react_prop_types_shim.min.js-vflsNwqmp.map

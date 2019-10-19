@@ -1,0 +1,1 @@
+(function() { if (typeof _troq.callSeg !== 'undefined') {_troq.callSeg();} if (typeof _troq.callSync !== 'undefined') {_troq.callSync();}  })();

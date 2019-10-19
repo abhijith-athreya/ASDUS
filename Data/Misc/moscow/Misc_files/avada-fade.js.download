@@ -1,0 +1,1 @@
+jQuery(window).load(function(){void 0===cssua.ua.mobile&&"1"==avadaFadeVars.page_title_fading&&("Left"===avadaFadeVars.header_position||"Right"===avadaFadeVars.header_position?jQuery(".fusion-page-title-wrapper").fusionScroller({type:"opacity",offset:0}):jQuery(".fusion-page-title-wrapper").fusionScroller({type:"opacity",offset:100}))});

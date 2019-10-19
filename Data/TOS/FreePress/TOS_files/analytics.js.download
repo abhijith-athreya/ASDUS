@@ -1,0 +1,17 @@
+function cobrandPageLoad(utag_data) {
+	if (window.utag) {
+		window.utag.view(utag_data);
+	} else {
+		utag_data.partner_type= 'basic';
+		window.utag_data= utag_data;
+		var profile= utag_data.profile || 'unspecifiedprofile';
+		var instance= utag_data.instance || 'unspecifiedinstance';
+		var basetealiumurl = utag_data.basetealiumurl || '//tags.tiqcdn.com/utag/gci';
+		var uscript = document.createElement('script');
+			uscript.async = true;
+			uscript.type = 'text/javascript';
+			uscript.src = basetealiumurl+'/'+profile+'/'+instance+'/utag.js';
+		var node = document.getElementsByTagName('script')[0];
+			node.parentNode.insertBefore(uscript, node);
+	}
+}

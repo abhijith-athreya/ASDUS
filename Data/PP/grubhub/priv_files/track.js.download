@@ -1,0 +1,15 @@
+(function () {
+    var queue = window['friendbuy'];
+    if (queue.track_callback) {
+        queue.track_callback({
+            store_host: "site-2500bb38-host",
+            embed_load_code: "201804291629086ca61b9879"
+        });
+    }
+
+    var uuid = '0e53500f00530b5d1a01050c011f065c00071f01060b01150e05000d520703000506065d';
+    if (queue.set_fbuy_cookie && uuid) {
+        queue.set_fbuy_cookie(uuid);
+    }
+
+})();

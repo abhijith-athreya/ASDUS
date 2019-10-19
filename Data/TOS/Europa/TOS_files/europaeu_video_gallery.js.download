@@ -1,0 +1,87 @@
+/**
+ * @file
+ * europaeu_video_gallery.js
+ */
+
+(function ($) {
+  Drupal.behaviors.europaeu_video_gallery = {
+    attach: function (context) {
+      $(document).ready(function () {
+
+        $('.video-thumbnail').each(function () {
+          var image_src = $(this).find('img').attr('src');
+          var video = $(this).siblings('.views-field-field-video-items').find('video');
+          if (video.length > 0 && image_src != '') {
+            video.attr('poster', image_src);
+          }
+        });
+
+        var owl = $(".view-europaeu-video-gallery .owl-carousel");
+        var last_slide = $('.view-id-europaeu_video_gallery .owl-item').length > 0
+          ? $('.view-id-europaeu_video_gallery .owl-item').length - 1
+          : 0;
+        if (owl.length > 0) {
+          owl.data('owlCarousel').reinit({
+            beforeMove: function () {
+              // We need to stop playing videos, but for iframes, reloading is the only way.
+              $('.owl-item.active iframe').each(function () {
+                this.src = this.src;
+              });
+              $('.owl-item.active video').each(function () {
+                this.pause();
+              });
+            },
+            afterAction: function (element) {
+              $('.navPlayerInfo').html(this.currentItem + 1 + '<i>/</i>' + this.itemsAmount);
+              // Add active class to target iframe reload.
+              this.$owlItems.removeClass('active');
+              this.$owlItems.eq(this.currentItem).addClass('active');
+            }
+          });
+        }
+        $('.navPlayer a.next').once('europaeu_video_gallery', function () {
+          $(this).on("click", function (event) {
+            event.preventDefault();
+            owl.trigger('owl.next');
+          });
+        });
+        $('.navPlayer a.prev').once('europaeu_video_gallery', function () {
+          $(this).on("click", function (event) {
+            event.preventDefault();
+            owl.trigger('owl.prev');
+          });
+        });
+        $('.navPlayer a.first').once('europaeu_video_gallery', function () {
+          $(this).on("click", function (event) {
+            event.preventDefault();
+            owl.trigger('owl.goTo', 0);
+          });
+        });
+        $('.navPlayer a.end').once('europaeu_video_gallery', function () {
+          $(this).on("click", function (event) {
+            event.preventDefault();
+            owl.trigger('owl.goTo', last_slide);
+          });
+        });
+      });
+    }
+  }
+  $(document).ready(function () {
+    var owl = $('#block-views-europaeu-video-gallery-block .owl-carousel-block');
+    if (owl.length > 0) {
+      var settings = Drupal.settings.owlcarousel['owl-carousel-block'].settings;
+      settings.items = 1;
+      settings.navigation = false;
+
+      // Cannot use modernizer as we have two functionalities clashing
+      // Rather than a functionality not existing.
+      var isIE = /*@cc_on!@*/false || !!document.documentMode;
+      if (isIE == true) {
+        settings.touchDrag = false;
+        settings.mouseDrag = false;
+      }
+      owl.owlCarousel(settings);
+    }
+  });
+
+})(jQuery);

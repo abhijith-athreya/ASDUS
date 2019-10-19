@@ -1,0 +1,963 @@
+/**
+ * SWFObject v1.5.1: Flash Player detection and embed - http://blog.deconcept.com/swfobject/
+ *
+ * SWFObject is (c) 2007 Geoff Stearns and is released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+ */
+if (typeof deconcept == "undefined") var deconcept = {};
+
+if (typeof deconcept.util == "undefined") deconcept.util = {};
+
+if (typeof deconcept.SWFObjectUtil == "undefined") deconcept.SWFObjectUtil = {};
+
+deconcept.SWFObject = function(swf, id, w, h, ver, c, quality, xiRedirectUrl, redirectUrl, detectKey) {
+    if (!document.getElementById) {
+        return;
+    }
+    this.DETECT_KEY = detectKey ? detectKey : "detectflash";
+    this.skipDetect = deconcept.util.getRequestParameter(this.DETECT_KEY);
+    this.params = {};
+    this.variables = {};
+    this.attributes = [];
+    if (swf) {
+        this.setAttribute("swf", swf);
+    }
+    if (id) {
+        this.setAttribute("id", id);
+    }
+    if (w) {
+        this.setAttribute("width", w);
+    }
+    if (h) {
+        this.setAttribute("height", h);
+    }
+    if (ver) {
+        this.setAttribute("version", new deconcept.PlayerVersion(ver.toString().split(".")));
+    }
+    this.installedVer = deconcept.SWFObjectUtil.getPlayerVersion();
+    if (!window.opera && document.all && this.installedVer.major > 7) {
+        // only add the onunload cleanup if the Flash Player version supports External Interface and we are in IE
+        // fixes bug in some fp9 versions see http://blog.deconcept.com/2006/07/28/swfobject-143-released/
+        if (!deconcept.unloadSet) {
+            deconcept.SWFObjectUtil.prepUnload = function() {
+                __flash_unloadHandler = function() {};
+                __flash_savedUnloadHandler = function() {};
+                window.attachEvent("onunload", deconcept.SWFObjectUtil.cleanupSWFs);
+            };
+            window.attachEvent("onbeforeunload", deconcept.SWFObjectUtil.prepUnload);
+            deconcept.unloadSet = true;
+        }
+    }
+    if (c) {
+        this.addParam("bgcolor", c);
+    }
+    var q = quality ? quality : "high";
+    this.addParam("quality", q);
+    this.setAttribute("useExpressInstall", false);
+    this.setAttribute("doExpressInstall", false);
+    var xir = xiRedirectUrl ? xiRedirectUrl : window.location;
+    this.setAttribute("xiRedirectUrl", xir);
+    this.setAttribute("redirectUrl", "");
+    if (redirectUrl) {
+        this.setAttribute("redirectUrl", redirectUrl);
+    }
+};
+
+deconcept.SWFObject.prototype = {
+    useExpressInstall: function(path) {
+        this.xiSWFPath = !path ? "expressinstall.swf" : path;
+        this.setAttribute("useExpressInstall", true);
+    },
+    setAttribute: function(name, value) {
+        this.attributes[name] = value;
+    },
+    getAttribute: function(name) {
+        return this.attributes[name] || "";
+    },
+    addParam: function(name, value) {
+        this.params[name] = value;
+    },
+    getParams: function() {
+        return this.params;
+    },
+    addVariable: function(name, value) {
+        this.variables[name] = value;
+    },
+    getVariable: function(name) {
+        return this.variables[name] || "";
+    },
+    getVariables: function() {
+        return this.variables;
+    },
+    getVariablePairs: function() {
+        var variablePairs = [];
+        var key;
+        var variables = this.getVariables();
+        for (key in variables) {
+            variablePairs[variablePairs.length] = key + "=" + variables[key];
+        }
+        return variablePairs;
+    },
+    getSWFHTML: function() {
+        var swfNode = "";
+        if (navigator.plugins && navigator.mimeTypes && navigator.mimeTypes.length) {
+            // netscape plugin architecture
+            if (this.getAttribute("doExpressInstall")) {
+                this.addVariable("MMplayerType", "PlugIn");
+                this.setAttribute("swf", this.xiSWFPath);
+            }
+            swfNode = '<embed type="application/x-shockwave-flash" src="' + this.getAttribute("swf") + '" width="' + this.getAttribute("width") + '" height="' + this.getAttribute("height") + '" style="' + (this.getAttribute("style") || "") + '"';
+            swfNode += ' id="' + this.getAttribute("id") + '" name="' + this.getAttribute("id") + '" ';
+            var params = this.getParams();
+            for (var key in params) {
+                swfNode += [ key ] + '="' + params[key] + '" ';
+            }
+            var pairs = this.getVariablePairs().join("&");
+            if (pairs.length > 0) {
+                swfNode += 'flashvars="' + pairs + '"';
+            }
+            swfNode += "/>";
+        } else {
+            // PC IE
+            if (this.getAttribute("doExpressInstall")) {
+                this.addVariable("MMplayerType", "ActiveX");
+                this.setAttribute("swf", this.xiSWFPath);
+            }
+            swfNode = '<object id="' + this.getAttribute("id") + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="' + this.getAttribute("width") + '" height="' + this.getAttribute("height") + '" style="' + (this.getAttribute("style") || "") + '">';
+            swfNode += '<param name="movie" value="' + this.getAttribute("swf") + '" />';
+            var params = this.getParams();
+            for (var key in params) {
+                swfNode += '<param name="' + key + '" value="' + params[key] + '" />';
+            }
+            var pairs = this.getVariablePairs().join("&");
+            if (pairs.length > 0) {
+                swfNode += '<param name="flashvars" value="' + pairs + '" />';
+            }
+            swfNode += "</object>";
+        }
+        return swfNode;
+    },
+    write: function(elementId) {
+        if (this.getAttribute("useExpressInstall")) {
+            // check to see if we need to do an express install
+            var expressInstallReqVer = new deconcept.PlayerVersion([ 6, 0, 65 ]);
+            if (this.installedVer.versionIsValid(expressInstallReqVer) && !this.installedVer.versionIsValid(this.getAttribute("version"))) {
+                this.setAttribute("doExpressInstall", true);
+                this.addVariable("MMredirectURL", escape(this.getAttribute("xiRedirectUrl")));
+                document.title = document.title.slice(0, 47) + " - Flash Player Installation";
+                this.addVariable("MMdoctitle", document.title);
+            }
+        }
+        if (this.skipDetect || this.getAttribute("doExpressInstall") || this.installedVer.versionIsValid(this.getAttribute("version"))) {
+            var n = typeof elementId == "string" ? document.getElementById(elementId) : elementId;
+            n.innerHTML = this.getSWFHTML();
+            return true;
+        } else {
+            if (this.getAttribute("redirectUrl") != "") {
+                document.location.replace(this.getAttribute("redirectUrl"));
+            }
+        }
+        return false;
+    }
+};
+
+/* ---- detection functions ---- */
+deconcept.SWFObjectUtil.getPlayerVersion = function() {
+    var PlayerVersion = new deconcept.PlayerVersion([ 0, 0, 0 ]);
+    if (navigator.plugins && navigator.mimeTypes.length) {
+        var x = navigator.plugins["Shockwave Flash"];
+        if (x && x.description) {
+            PlayerVersion = new deconcept.PlayerVersion(x.description.replace(/([a-zA-Z]|\s)+/, "").replace(/(\s+r|\s+b[0-9]+)/, ".").split("."));
+        }
+    } else if (navigator.userAgent && navigator.userAgent.indexOf("Windows CE") >= 0) {
+        // if Windows CE
+        var axo = 1;
+        var counter = 3;
+        while (axo) {
+            try {
+                counter++;
+                axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash." + counter);
+                //				document.write("player v: "+ counter);
+                PlayerVersion = new deconcept.PlayerVersion([ counter, 0, 0 ]);
+            } catch (e) {
+                axo = null;
+            }
+        }
+    } else {
+        // Win IE (non mobile)
+        // do minor version lookup in IE, but avoid fp6 crashing issues
+        // see http://blog.deconcept.com/2006/01/11/getvariable-setvariable-crash-internet-explorer-flash-6/
+        try {
+            var axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7");
+        } catch (e) {
+            try {
+                var axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");
+                PlayerVersion = new deconcept.PlayerVersion([ 6, 0, 21 ]);
+                axo.AllowScriptAccess = "always";
+            } catch (e) {
+                if (PlayerVersion.major == 6) {
+                    return PlayerVersion;
+                }
+            }
+            try {
+                axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
+            } catch (e) {}
+        }
+        if (axo != null) {
+            PlayerVersion = new deconcept.PlayerVersion(axo.GetVariable("$version").split(" ")[1].split(","));
+        }
+    }
+    return PlayerVersion;
+};
+
+deconcept.PlayerVersion = function(arrVersion) {
+    this.major = arrVersion[0] != null ? parseInt(arrVersion[0]) : 0;
+    this.minor = arrVersion[1] != null ? parseInt(arrVersion[1]) : 0;
+    this.rev = arrVersion[2] != null ? parseInt(arrVersion[2]) : 0;
+};
+
+deconcept.PlayerVersion.prototype.versionIsValid = function(fv) {
+    if (this.major < fv.major) return false;
+    if (this.major > fv.major) return true;
+    if (this.minor < fv.minor) return false;
+    if (this.minor > fv.minor) return true;
+    if (this.rev < fv.rev) return false;
+    return true;
+};
+
+/* ---- get value of query string param ---- */
+deconcept.util = {
+    getRequestParameter: function(param) {
+        var q = document.location.search || document.location.hash;
+        if (param == null) {
+            return q;
+        }
+        if (q) {
+            var pairs = q.substring(1).split("&");
+            for (var i = 0; i < pairs.length; i++) {
+                if (pairs[i].substring(0, pairs[i].indexOf("=")) == param) {
+                    return pairs[i].substring(pairs[i].indexOf("=") + 1);
+                }
+            }
+        }
+        return "";
+    }
+};
+
+/* fix for video streaming bug */
+deconcept.SWFObjectUtil.cleanupSWFs = function() {
+    var objects = document.getElementsByTagName("OBJECT");
+    for (var i = objects.length - 1; i >= 0; i--) {
+        objects[i].style.display = "none";
+        for (var x in objects[i]) {
+            if (typeof objects[i][x] == "function") {
+                objects[i][x] = function() {};
+            }
+        }
+    }
+};
+
+/* add document.getElementById if needed (mobile IE < 5) */
+if (!document.getElementById && document.all) {
+    document.getElementById = function(id) {
+        return document.all[id];
+    };
+}
+
+/* add some aliases for ease of use/backwards compatibility */
+var getQueryParamValue = deconcept.util.getRequestParameter;
+
+var FlashObject = deconcept.SWFObject;
+
+// for legacy support
+var SWFObject = deconcept.SWFObject;
+
+var shareUtil = new Object();
+
+shareUtil.settings = [ "storyTextSm", "storyTextMd", "storyTextLg" ];
+
+shareUtil.current = "";
+
+shareUtil.setFontSize = function(size, div) {
+    $("#" + div).removeClass();
+    $("#" + div).addClass(size);
+};
+
+shareUtil.changeFontSize = function(action, div) {
+    //var index = shareUtil.settings.indexOf(shareUtil.current);
+    var index = 0;
+    for (i = 0; i < shareUtil.settings.length; i++) {
+        if (shareUtil.settings[i] == shareUtil.current) {
+            index = i;
+            break;
+        }
+    }
+    var flag = 1;
+    if (action == "decrease") {
+        flag = -1;
+    }
+    if (index == -1) {
+        size = "storyTextMd";
+    } else if (index + flag < shareUtil.settings.length && index + flag >= 0) {
+        size = shareUtil.settings[index + flag];
+    }
+    if (shareUtil.current != size) {
+        shareUtil.current = size;
+        createCookie("fontSize", size, 4641);
+        shareUtil.setFontSize(size, div);
+        if (leftRailVideoOpen) {
+            setTimeout(positionPlayer(leftRailContainerObj), 500);
+        }
+        if (typeof listStoryFlag != "undefined") {
+            if (listStoryFlag) {
+                listContainerDiv = $("#listItems");
+                listItemDiv = $("#listItems > .listItem").eq(listStoryCurrTab);
+                listDivOffSet = 60;
+                if ($.browser.msie) {
+                    if (parseInt($.browser.version, 10) < 8) {
+                        listDivOffSet = 80;
+                    }
+                }
+                if (action == "decrease") {
+                    listContainerDiv.height(listContainerDiv.height() - listDivOffSet);
+                    listItemDiv.height(listItemDiv.height() - listDivOffSet);
+                } else if (action == "increase") {
+                    listContainerDiv.height(listContainerDiv.height() + listDivOffSet);
+                    listItemDiv.height(listItemDiv.height() + listDivOffSet);
+                }
+            }
+        }
+    }
+};
+
+function shareNewsObj() {
+    this.toolbox = function(config) {
+        //console.log($("#"+this.target+" > div > div > a").length);
+        $("#" + this.options.renderDiv + " > div > div > div > a").each(function(index) {
+            if ($(this).hasClass("abcnews_print")) {
+                printLabel = $(this).hasClass("label-false") ? "" : " Print";
+                $(this).html('<span class="at300bs"></span>' + printLabel);
+                $(this).click(function() {
+                    window.open(config.print, "_blank");
+                    return false;
+                });
+            } else if ($(this).hasClass("abcnews_single_page")) {
+                singleLabel = typeof config.singleLabel != "undefined" ? config.singleLabel : "Single Page";
+                $(this).html('<span class="at300bs"></span> ' + singleLabel);
+                $(this).click(function() {
+                    window.location.href = config.single;
+                });
+            } else if ($(this).hasClass("abcnews_comments")) {
+                if (config.numOfComments.indexOf("disqus") > 0) {
+                    //handle new commenting system
+                    $(this).html('<span class="at300bs"></span>' + config.numOfComments);
+                } else {
+                    commentsLabel = typeof config.commentsLabel != "undefined" ? config.commentsLabel : "Comment";
+                    //'Post a Comment'
+                    if (config.numOfComments >= 3) {
+                        $(this).html('<span class="at300bs"></span>' + config.numOfComments + " " + $(this).html());
+                    } else {
+                        $(this).html('<span class="at300bs"></span> ' + commentsLabel);
+                    }
+                    $(this).click(function() {
+                        window.location.href = config.comments;
+                    });
+                }
+            } else if ($(this).hasClass("abcnews_comments_icon")) {
+                $(this).html('<span class="at300bs"></span>');
+                $(this).parent().click(function() {
+                    scrollToDiv("disqus");
+                });
+            }
+        });
+        $("#" + this.options.renderDiv + " > div > div > div > div").each(function(index) {
+            if ($(this).hasClass("abcnews_font_sizes")) {
+                //$(this).html('<a href="javascript:void(0);" onclick="shareUtil.changeFontSize(\'storyTextSm\',\''+config.fontDiv+'\');return false;">small</a> <a href="javascript:void(0);" onclick="shareUtil.changeFontSize(\'storyTextMd\',\''+config.fontDiv+'\');return false;">medium</a> <a href="javascript:void(0);" onclick="shareUtil.changeFontSize(\'storyTextLg\',\''+config.fontDiv+'\');return false;">large</a>');
+                increaseText = typeof config.fontIncSymbol != "undefined" ? config.fontIncSymbol : "+";
+                decreaseText = typeof config.fontDecSymbol != "undefined" ? config.fontDecSymbol : "-";
+                showFontLabelFirst = true;
+                if (typeof config.fontLabelFirst != "undefined") {
+                    $(this).html('<span class="at300bs"></span><div class="btn"><a href="javascript:void(0);" id="decrease" onclick="shareUtil.changeFontSize(\'decrease\',\'' + config.fontDiv + '\');return false;" title="decrease">' + decreaseText + '</a> <span class="divide">/</span> <a href="javascript:void(0);" id="increase" onclick="shareUtil.changeFontSize(\'increase\',\'' + config.fontDiv + '\');return false;" title="increase">' + increaseText + '</a></div><div class="label">Text Size</div>');
+                } else {
+                    $(this).html('<span class="at300bs"></span> <div class="label">Text Size</div> <div class="btn"><a href="javascript:void(0);" id="decrease" onclick="shareUtil.changeFontSize(\'decrease\',\'' + config.fontDiv + '\');return false;" title="decrease">' + decreaseText + '</a> <span class="divide">/</span> <a href="javascript:void(0);" id="increase" onclick="shareUtil.changeFontSize(\'increase\',\'' + config.fontDiv + '\');return false;" title="increase">' + increaseText + "</a></div>");
+                }
+            }
+        });
+    };
+    this.render = function() {
+        var config = this.options;
+        var tbx = document.getElementById(config.renderDiv);
+        var options = config.share;
+        var group = "";
+        var button = "";
+        var scount = 0;
+        var mcount = 0;
+        var lastGroup = "";
+        var title = "";
+        var button = "";
+        var lastItem = "";
+        var fblike = "";
+        var label = "";
+        var size = "";
+        var removeHref = false;
+        var overrideURL, setURL = "";
+        var tooltip = "";
+        var plusOneOpts = "";
+        var tweetOpts = "";
+        //used to override layout etc
+        var twitterOpts = "";
+        var linkedInOpts = "";
+        var fbOpts = "";
+        //if empty, button defaults to recommend
+        var fbLayoutOpts = "";
+        var isPreview = document.domain == "preview.abcnews.go.com" || "newspreview.corp.dig.com" ? true : false;
+        for (s = 0; s < options.length; s++) {
+            //group
+            lastGroup = s == options.length - 1 ? " share-group-last" : "";
+            title = options[s]["title"] != "" ? '<span class="share-title">' + options[s]["title"] + "</span>" : "";
+            //console.log("group " + options[s]['items'].length);
+            button = "";
+            for (m = 0; m < options[s]["items"].length; m++) {
+                //items
+                lastItem = m == options[s]["items"].length - 1 ? " share-btn-last" : "";
+                //recommend is default. if fbLikeOpts is present, remove recommend
+                if (options[s]["items"][m]["code"] == "addthis_button_facebook_like") {
+                    fblike = typeof config.fbOpts != "undefined" && config.fbOpts != "" ? "" : ' fb:like:action="recommend" fb:like:width="125"';
+                    fbLayoutOpts = typeof config.fbConfig != "undefined" && config.fbConfig != "" ? config.fbConfig : "";
+                } else {
+                    fblike = "";
+                    fbLayoutOpts = "";
+                }
+                //twitter option 
+                //twitterOpts = (options[s]['items'][m]['code'] == 'addthis_button_twitter') ? ' tw:related="abc"' : '';
+                //twitterOpts = (options[s]['items'][m]['code'] == 'addthis_button_twitter') ? '' : '';
+                //remove href
+                removeHref = options[s]["items"][m]["code"] == "abcnews_font_sizes" ? true : false;
+                //label = (options[s]['items'][m]['label']) ? '<span class="share-label">'+options[s]['items'][m]['name']+'</span>' : '';
+                tooltip = options[s]["items"][m]["name"];
+                label = options[s]["items"][m]["label"] ? options[s]["items"][m]["name"] : "";
+                button += '<div class="share-btn share-btn-' + m + " " + lastItem + '">';
+                if (options[s]["items"][m]["code"] == "addthis_button_google_plusone") {
+                    plusOneOpts = typeof config.plusOneConfig != "undefined" && config.plusOneConfig != "" ? config.plusOneConfig : "";
+                } else {
+                    plusOneOpts = "";
+                }
+                if (options[s]["items"][m]["code"] == "addthis_button_tweet") {
+                    tweetOpts = typeof config.tweetOpts != "undefined" && config.tweetOpts != "" ? config.tweetOpts + ' tw:related="abc"' : ' tw:related="abc"';
+                } else {
+                    tweetOpts = "";
+                }
+                if (options[s]["items"][m]["code"] == "addthis_button_linkedin_counter") {
+                    linkedInOpts = typeof config.linkedInOpts != "undefined" && config.linkedInOpts != "" ? config.linkedInOpts : "";
+                } else {
+                    linkedInOpts = "";
+                }
+                //linkedInOpts = (options[s]['items'][m]['code'] == 'addthis_button_linkedin_counter') ? '' : '';
+                overrideURL = options[s]["items"][m]["url"];
+                setURL = typeof overrideURL != "undefined" && overrideURL != "" ? 'addthis:url="' + overrideURL + '"' : "";
+                if (!removeHref) {
+                    button += '<a class="' + options[s]["items"][m]["code"] + " label-" + options[s]["items"][m]["label"] + '"' + fblike + " " + setURL + ' title="' + tooltip + '"' + plusOneOpts + "" + fbLayoutOpts + "" + tweetOpts + "" + twitterOpts + "" + linkedInOpts + ">" + label + "</a>";
+                } else {
+                    button += '<div class="' + options[s]["items"][m]["code"] + " label-" + options[s]["items"][m]["label"] + '"' + fblike + ">" + label + "</div>";
+                }
+                button += "</div>";
+                if (options[s]["items"][m]["code"] == "addthis_button_facebook_like" && isPreview) {
+                    button = "";
+                }
+            }
+            group += '<div class="share-group share-group-' + s + lastGroup + '">' + title + button + '<div class="clearboth"><!-- empty //--></div></div>';
+        }
+        //tbx.innerHTML = '<div class="share-container">' + group + '</div><div class="clearboth"><!-- empty //--></div>';
+        document.write('<div class="share-container">' + group + '<div class="clearboth"><!-- empty //--></div></div>');
+        addthis.toolbox("#" + this.target);
+        this.toolbox(config);
+        if (config.fontDiv != undefined) {
+            shareUtil.current = readCookie("fontSize");
+            if (shareUtil.current) {
+                shareUtil.setFontSize(shareUtil.current, config.fontDiv);
+            } else {
+                shareUtil.current = "storyTextMd";
+            }
+        }
+    };
+}
+
+function shareIt() {
+    var sTop = window.screen.height / 2 - 218;
+    var sLeft = window.screen.width / 2 - 313;
+    var shareThisURL = window.location.href.replace(/localhost:8080|preview.abcnews.go.com|qa.n7.abcnews.go.com/, "abcnews.go.com");
+    shareThisURL = shareThisURL.indexOf("?") > -1 ? shareThisURL + "&cid=fb_share" : shareThisURL + "?cid=fb_share";
+    var title = escape(document.title);
+    var shareUrl = "http://www.facebook.com/sharer.php?u=" + shareThisURL + "&t=" + title;
+    window.open(shareUrl, "sharer", "toolbar=0,status=0,width=626,height=256,top=" + sTop + ",left=" + sLeft);
+}
+
+function getShareCount() {
+    var sharedURL = window.location.href.replace(location.hash, "");
+    sharedURL = sharedURL.replace(/localhost:8080|preview.abcnews.go.com|qa.n7.abcnews.go.com/, "abcnews.go.com");
+    FB.api("/fql", "GET", {
+        q: 'select share_count from link_stat where url="' + sharedURL + '"'
+    }, function(response) {
+        if (response && response.data) $(".sharebtn-fbshare .bubbleCount .num").html(response.data[0].share_count);
+        $(".sharebtn-fbshare .bubbleWrapper").show();
+    });
+}
+
+function renderShareCount(selector) {
+    var cSelector = selector != "undefined" ? selector : ".sharebtn-fbshare .shareCount";
+    var sTop = window.screen.height / 2 - 218;
+    var sLeft = window.screen.width / 2 - 313;
+    var sharedURL = window.location.href.replace(location.hash, "");
+    sharedURL = sharedURL.replace(/localhost:8080|preview.abcnews.go.com|qa.n7.abcnews.go.com/, "abcnews.go.com");
+    FB.api("/fql", "GET", {
+        q: 'select share_count from link_stat where url="' + sharedURL + '"'
+    }, function(response) {
+        if (response && response.data) $(cSelector).html(response.data[0].share_count);
+        $(cSelector).show();
+    });
+}
+
+function scrollToDiv(id) {
+    $("html,body").animate({
+        scrollTop: $("#" + id).offset().top
+    }, "slow");
+}
+
+function renderFacebookShare(layout) {
+    if (!layout) {
+        document.write('<a class="shareBtn" name="lpos=widget[sharetools]&lid=[fb_share]" target="_new" onclick="shareIt();return false;" href="javascript:void(0);">            <div class="fb_icon">Share</div>            <div class="shareCountWrapper">                <div class="arrow arrowBorder"></div>                <div class="arrow arrowFill"></div>                <div class="shareCount"><div class="num">0</div></div>            </div>        </a>');
+    } else if (layout == "vertical") {
+        document.write('<a class="shareBtn" name="lpos=widget[sharetools]&lid=[fb_share]" target="_new" onclick="shareIt();return false;" href="javascript:void(0);">                <div class="shareCount"><div class="num">0</div></div>                <div class="fb_icon">Share</div>           </a>');
+    }
+}
+
+//bind events to share buttons
+$(document).ready(function() {
+    $(".shareflyout .trigger").click(function(e) {
+        e.preventDefault();
+        $(this).hide();
+        $(this).next(".shareflyout-buttons").fadeIn();
+    });
+    $(".shareflyout-buttons a.twitter").click(function(e) {
+        e.preventDefault();
+        var loc = $(this).attr("href");
+        var delim = loc.indexOf("?") > -1 ? "&" : "?";
+        loc = loc + delim + "cid=twitter_share";
+        loc = encodeURIComponent(loc);
+        var title = escape($(this).attr("title"));
+        window.open("http://twitter.com/share?text=" + title + "&url=" + loc + "&", "twitterwindow", "height=450, width=550, top=" + ($(window).height() / 2 - 225) + ", left=" + $(window).width() / 2 + ", toolbar=0, location=0, menubar=0, directories=0, scrollbars=0");
+    });
+    $(".shareflyout-buttons a.facebook").click(function(e) {
+        e.preventDefault();
+        var sTop = window.screen.height / 2 - 218;
+        var sLeft = window.screen.width / 2 - 313;
+        var loc = $(this).attr("href");
+        var delim = loc.indexOf("?") > -1 ? "&" : "?";
+        loc = loc + delim + "cid=fb_share";
+        var title = escape($(this).attr("title"));
+        var shareUrl = "http://www.facebook.com/sharer.php?u=" + loc + "&t=" + title;
+        window.open(shareUrl, "sharer", "toolbar=0,status=0,width=626,height=256,top=" + sTop + ",left=" + sLeft);
+    });
+});
+
+//function to bind buttons coming from sponsored module
+function bindSponsorShare() {
+    $("#sponsoredmodule .shareflyout .trigger").click(function(e) {
+        e.preventDefault();
+        $(this).hide();
+        $(".ffl_wrapper #sponsoredmodule #sponsor-115x30").css("margin-right", "50px");
+        $(this).next(".shareflyout-buttons").fadeIn();
+    });
+    $("#sponsoredmodule .shareflyout-buttons a.twitter").click(function(e) {
+        e.preventDefault();
+        var loc = encodeURIComponent($(this).attr("href"));
+        var title = escape($(this).attr("title"));
+        window.open("http://twitter.com/share?text=" + title + "&url=" + loc + "&", "twitterwindow", "height=450, width=550, top=" + ($(window).height() / 2 - 225) + ", left=" + $(window).width() / 2 + ", toolbar=0, location=0, menubar=0, directories=0, scrollbars=0");
+    });
+    $("#sponsoredmodule .shareflyout-buttons a.facebook").click(function(e) {
+        e.preventDefault();
+        var sTop = window.screen.height / 2 - 218;
+        var sLeft = window.screen.width / 2 - 313;
+        var loc = $(this).attr("href");
+        var title = escape($(this).attr("title"));
+        var shareUrl = "http://www.facebook.com/sharer.php?u=" + loc + "&t=" + title;
+        window.open(shareUrl, "sharer", "toolbar=0,status=0,width=626,height=256,top=" + sTop + ",left=" + sLeft);
+    });
+}
+
+/*** LEAVE IN NEWSPREVIEW - HIDE SHARE BUTTON ***/
+if (document.domain == "preview.abcnews.go.com" || document.domain == "newspreview.corp.dig.com") {
+    document.write("<style>.share_left .sharebtn-fbshare, .fblike, .fbshare{visibility:hidden;}</style>");
+}
+
+/*
+ * zClip :: jQuery ZeroClipboard v1.1.1
+ * http://steamdev.com/zclip
+ *
+ * Copyright 2011, SteamDev
+ * Released under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+ * Date: Wed Jun 01, 2011
+ */
+(function(a) {
+    a.fn.zclip = function(c) {
+        if (typeof c == "object" && !c.length) {
+            var b = a.extend({
+                path: "ZeroClipboard.swf",
+                copy: null,
+                beforeCopy: null,
+                afterCopy: null,
+                clickAfter: true,
+                setHandCursor: true,
+                setCSSEffects: true
+            }, c);
+            return this.each(function() {
+                var e = a(this);
+                if (e.is(":visible") && (typeof b.copy == "string" || a.isFunction(b.copy))) {
+                    ZeroClipboard.setMoviePath(b.path);
+                    var d = new ZeroClipboard.Client();
+                    if (a.isFunction(b.copy)) {
+                        e.bind("zClip_copy", b.copy);
+                    }
+                    if (a.isFunction(b.beforeCopy)) {
+                        e.bind("zClip_beforeCopy", b.beforeCopy);
+                    }
+                    if (a.isFunction(b.afterCopy)) {
+                        e.bind("zClip_afterCopy", b.afterCopy);
+                    }
+                    d.setHandCursor(b.setHandCursor);
+                    d.setCSSEffects(b.setCSSEffects);
+                    d.addEventListener("mouseOver", function(f) {
+                        e.trigger("mouseenter");
+                    });
+                    d.addEventListener("mouseOut", function(f) {
+                        e.trigger("mouseleave");
+                    });
+                    d.addEventListener("mouseDown", function(f) {
+                        e.trigger("mousedown");
+                        if (!a.isFunction(b.copy)) {
+                            d.setText(b.copy);
+                        } else {
+                            d.setText(e.triggerHandler("zClip_copy"));
+                        }
+                        if (a.isFunction(b.beforeCopy)) {
+                            e.trigger("zClip_beforeCopy");
+                        }
+                    });
+                    d.addEventListener("complete", function(f, g) {
+                        if (a.isFunction(b.afterCopy)) {
+                            e.trigger("zClip_afterCopy");
+                        } else {
+                            if (g.length > 500) {
+                                g = g.substr(0, 500) + "...\n\n(" + (g.length - 500) + " characters not shown)";
+                            }
+                            e.removeClass("hover");
+                            alert("Copied text to clipboard:\n\n " + g);
+                        }
+                        if (b.clickAfter) {
+                            e.trigger("click");
+                        }
+                    });
+                    d.glue(e[0], e.parent()[0]);
+                    a(window).bind("load resize", function() {
+                        d.reposition();
+                    });
+                }
+            });
+        } else {
+            if (typeof c == "string") {
+                return this.each(function() {
+                    var f = a(this);
+                    c = c.toLowerCase();
+                    var e = f.data("zclipId");
+                    var d = a("#" + e + ".zclip");
+                    if (c == "remove") {
+                        d.remove();
+                        f.removeClass("active hover");
+                    } else {
+                        if (c == "hide") {
+                            d.hide();
+                            f.removeClass("active hover");
+                        } else {
+                            if (c == "show") {
+                                d.show();
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    };
+})(jQuery);
+
+var ZeroClipboard = {
+    version: "1.0.7",
+    clients: {},
+    moviePath: "ZeroClipboard.swf",
+    nextId: 1,
+    $: function(a) {
+        if (typeof a == "string") {
+            a = document.getElementById(a);
+        }
+        if (!a.addClass) {
+            a.hide = function() {
+                this.style.display = "none";
+            };
+            a.show = function() {
+                this.style.display = "";
+            };
+            a.addClass = function(b) {
+                this.removeClass(b);
+                this.className += " " + b;
+            };
+            a.removeClass = function(d) {
+                var e = this.className.split(/\s+/);
+                var b = -1;
+                for (var c = 0; c < e.length; c++) {
+                    if (e[c] == d) {
+                        b = c;
+                        c = e.length;
+                    }
+                }
+                if (b > -1) {
+                    e.splice(b, 1);
+                    this.className = e.join(" ");
+                }
+                return this;
+            };
+            a.hasClass = function(b) {
+                return !!this.className.match(new RegExp("\\s*" + b + "\\s*"));
+            };
+        }
+        return a;
+    },
+    setMoviePath: function(a) {
+        this.moviePath = a;
+    },
+    dispatch: function(d, b, c) {
+        var a = this.clients[d];
+        if (a) {
+            a.receiveEvent(b, c);
+        }
+    },
+    register: function(b, a) {
+        this.clients[b] = a;
+    },
+    getDOMObjectPosition: function(c, a) {
+        var b = {
+            left: 0,
+            top: 0,
+            width: c.width ? c.width : c.offsetWidth,
+            height: c.height ? c.height : c.offsetHeight
+        };
+        if (c && c != a) {
+            b.left += c.offsetLeft;
+            b.top += c.offsetTop;
+        }
+        return b;
+    },
+    Client: function(a) {
+        this.handlers = {};
+        this.id = ZeroClipboard.nextId++;
+        this.movieId = "ZeroClipboardMovie_" + this.id;
+        ZeroClipboard.register(this.id, this);
+        if (a) {
+            this.glue(a);
+        }
+    }
+};
+
+ZeroClipboard.Client.prototype = {
+    id: 0,
+    ready: false,
+    movie: null,
+    clipText: "",
+    handCursorEnabled: true,
+    cssEffects: true,
+    handlers: null,
+    glue: function(d, b, e) {
+        this.domElement = ZeroClipboard.$(d);
+        var f = 99;
+        if (this.domElement.style.zIndex) {
+            f = parseInt(this.domElement.style.zIndex, 10) + 1;
+        }
+        if (typeof b == "string") {
+            b = ZeroClipboard.$(b);
+        } else {
+            if (typeof b == "undefined") {
+                b = document.getElementsByTagName("body")[0];
+            }
+        }
+        var c = ZeroClipboard.getDOMObjectPosition(this.domElement, b);
+        this.div = document.createElement("div");
+        this.div.className = "zclip";
+        this.div.id = "zclip-" + this.movieId;
+        $(this.domElement).data("zclipId", "zclip-" + this.movieId);
+        var a = this.div.style;
+        a.position = "absolute";
+        a.left = "" + c.left + "px";
+        a.top = "" + c.top + "px";
+        a.width = "" + c.width + "px";
+        a.height = "" + c.height + "px";
+        a.zIndex = f;
+        if (typeof e == "object") {
+            for (addedStyle in e) {
+                a[addedStyle] = e[addedStyle];
+            }
+        }
+        b.appendChild(this.div);
+        this.div.innerHTML = this.getHTML(c.width, c.height);
+    },
+    getHTML: function(d, a) {
+        var c = "";
+        var b = "id=" + this.id + "&width=" + d + "&height=" + a;
+        if (navigator.userAgent.match(/MSIE/)) {
+            var e = location.href.match(/^https/i) ? "https://" : "http://";
+            c += '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="' + e + 'download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="' + d + '" height="' + a + '" id="' + this.movieId + '" align="middle"><param name="allowScriptAccess" value="always" /><param name="allowFullScreen" value="false" /><param name="movie" value="' + ZeroClipboard.moviePath + '" /><param name="loop" value="false" /><param name="menu" value="false" /><param name="quality" value="best" /><param name="bgcolor" value="#ffffff" /><param name="flashvars" value="' + b + '"/><param name="wmode" value="transparent"/></object>';
+        } else {
+            c += '<embed id="' + this.movieId + '" src="' + ZeroClipboard.moviePath + '" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="' + d + '" height="' + a + '" name="' + this.movieId + '" align="middle" allowScriptAccess="always" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="' + b + '" wmode="transparent" />';
+        }
+        return c;
+    },
+    hide: function() {
+        if (this.div) {
+            this.div.style.left = "-2000px";
+        }
+    },
+    show: function() {
+        this.reposition();
+    },
+    destroy: function() {
+        if (this.domElement && this.div) {
+            this.hide();
+            this.div.innerHTML = "";
+            var a = document.getElementsByTagName("body")[0];
+            try {
+                a.removeChild(this.div);
+            } catch (b) {}
+            this.domElement = null;
+            this.div = null;
+        }
+    },
+    reposition: function(c) {
+        if (c) {
+            this.domElement = ZeroClipboard.$(c);
+            if (!this.domElement) {
+                this.hide();
+            }
+        }
+        if (this.domElement && this.div) {
+            var b = ZeroClipboard.getDOMObjectPosition(this.domElement);
+            var a = this.div.style;
+            a.left = "" + b.left + "px";
+            a.top = "" + b.top + "px";
+        }
+    },
+    setText: function(a) {
+        this.clipText = a;
+        if (this.ready) {
+            this.movie.setText(a);
+        }
+    },
+    addEventListener: function(a, b) {
+        a = a.toString().toLowerCase().replace(/^on/, "");
+        if (!this.handlers[a]) {
+            this.handlers[a] = [];
+        }
+        this.handlers[a].push(b);
+    },
+    setHandCursor: function(a) {
+        this.handCursorEnabled = a;
+        if (this.ready) {
+            this.movie.setHandCursor(a);
+        }
+    },
+    setCSSEffects: function(a) {
+        this.cssEffects = !!a;
+    },
+    receiveEvent: function(d, f) {
+        d = d.toString().toLowerCase().replace(/^on/, "");
+        switch (d) {
+          case "load":
+            this.movie = document.getElementById(this.movieId);
+            if (!this.movie) {
+                var c = this;
+                setTimeout(function() {
+                    c.receiveEvent("load", null);
+                }, 1);
+                return;
+            }
+            if (!this.ready && navigator.userAgent.match(/Firefox/) && navigator.userAgent.match(/Windows/)) {
+                var c = this;
+                setTimeout(function() {
+                    c.receiveEvent("load", null);
+                }, 100);
+                this.ready = true;
+                return;
+            }
+            this.ready = true;
+            try {
+                this.movie.setText(this.clipText);
+            } catch (h) {}
+            try {
+                this.movie.setHandCursor(this.handCursorEnabled);
+            } catch (h) {}
+            break;
+
+          case "mouseover":
+            if (this.domElement && this.cssEffects) {
+                this.domElement.addClass("hover");
+                if (this.recoverActive) {
+                    this.domElement.addClass("active");
+                }
+            }
+            break;
+
+          case "mouseout":
+            if (this.domElement && this.cssEffects) {
+                this.recoverActive = false;
+                if (this.domElement.hasClass("active")) {
+                    this.domElement.removeClass("active");
+                    this.recoverActive = true;
+                }
+                this.domElement.removeClass("hover");
+            }
+            break;
+
+          case "mousedown":
+            if (this.domElement && this.cssEffects) {
+                this.domElement.addClass("active");
+            }
+            break;
+
+          case "mouseup":
+            if (this.domElement && this.cssEffects) {
+                this.domElement.removeClass("active");
+                this.recoverActive = false;
+            }
+            break;
+        }
+        if (this.handlers[d]) {
+            for (var b = 0, a = this.handlers[d].length; b < a; b++) {
+                var g = this.handlers[d][b];
+                if (typeof g == "function") {
+                    g(this, f);
+                } else {
+                    if (typeof g == "object" && g.length == 2) {
+                        g[0][g[1]](this, f);
+                    } else {
+                        if (typeof g == "string") {
+                            window[g](this, f);
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
+/*! redesign-static 2015-10-19 */
+function shareNewsObj(){this.toolbox=function(config){$("#"+this.options.renderDiv+" > div > div > div > a").each(function(index){$(this).hasClass("abcnews_print")?(printLabel=$(this).hasClass("label-false")?"":" Print",$(this).html('<span class="at300bs"></span>'+printLabel),$(this).click(function(){return window.open(config.print,"_blank"),!1})):$(this).hasClass("abcnews_single_page")?(singleLabel="undefined"!=typeof config.singleLabel?config.singleLabel:"Single Page",$(this).html('<span class="at300bs"></span> '+singleLabel),$(this).click(function(){window.location.href=config.single})):$(this).hasClass("abcnews_comments")?config.numOfComments.indexOf("disqus")>0?$(this).html('<span class="at300bs"></span>'+config.numOfComments):(commentsLabel="undefined"!=typeof config.commentsLabel?config.commentsLabel:"Comment",$(this).html(config.numOfComments>=3?'<span class="at300bs"></span>'+config.numOfComments+" "+$(this).html():'<span class="at300bs"></span> '+commentsLabel),$(this).click(function(){window.location.href=config.comments})):$(this).hasClass("abcnews_comments_icon")&&($(this).html('<span class="at300bs"></span>'),$(this).parent().click(function(){scrollToDiv("disqus")}))}),$("#"+this.options.renderDiv+" > div > div > div > div").each(function(index){$(this).hasClass("abcnews_font_sizes")&&(increaseText="undefined"!=typeof config.fontIncSymbol?config.fontIncSymbol:"+",decreaseText="undefined"!=typeof config.fontDecSymbol?config.fontDecSymbol:"-",showFontLabelFirst=!0,$(this).html("undefined"!=typeof config.fontLabelFirst?'<span class="at300bs"></span><div class="btn"><a href="javascript:void(0);" id="decrease" onclick="shareUtil.changeFontSize(\'decrease\',\''+config.fontDiv+'\');return false;" title="decrease">'+decreaseText+'</a> <span class="divide">/</span> <a href="javascript:void(0);" id="increase" onclick="shareUtil.changeFontSize(\'increase\',\''+config.fontDiv+'\');return false;" title="increase">'+increaseText+'</a></div><div class="label">Text Size</div>':'<span class="at300bs"></span> <div class="label">Text Size</div> <div class="btn"><a href="javascript:void(0);" id="decrease" onclick="shareUtil.changeFontSize(\'decrease\',\''+config.fontDiv+'\');return false;" title="decrease">'+decreaseText+'</a> <span class="divide">/</span> <a href="javascript:void(0);" id="increase" onclick="shareUtil.changeFontSize(\'increase\',\''+config.fontDiv+'\');return false;" title="increase">'+increaseText+"</a></div>"))})},this.render=function(){var overrideURL,config=this.options,options=(document.getElementById(config.renderDiv),config.share),group="",button="",lastGroup="",title="",button="",lastItem="",fblike="",label="",removeHref=!1,setURL="",tooltip="",plusOneOpts="",tweetOpts="",twitterOpts="",linkedInOpts="",fbLayoutOpts="",isPreview=("preview.abcnews.go.com"==document.domain,!0);for(s=0;s<options.length;s++){for(lastGroup=s==options.length-1?" share-group-last":"",title=""!=options[s].title?'<span class="share-title">'+options[s].title+"</span>":"",button="",m=0;m<options[s].items.length;m++)lastItem=m==options[s].items.length-1?" share-btn-last":"","addthis_button_facebook_like"==options[s].items[m].code?(fblike="undefined"!=typeof config.fbOpts&&""!=config.fbOpts?"":' fb:like:action="recommend" fb:like:width="125"',fbLayoutOpts="undefined"!=typeof config.fbConfig&&""!=config.fbConfig?config.fbConfig:""):(fblike="",fbLayoutOpts=""),removeHref="abcnews_font_sizes"==options[s].items[m].code?!0:!1,tooltip=options[s].items[m].name,label=options[s].items[m].label?options[s].items[m].name:"",button+='<div class="share-btn share-btn-'+m+" "+lastItem+'">',plusOneOpts="addthis_button_google_plusone"==options[s].items[m].code&&"undefined"!=typeof config.plusOneConfig&&""!=config.plusOneConfig?config.plusOneConfig:"",tweetOpts="addthis_button_tweet"==options[s].items[m].code?"undefined"!=typeof config.tweetOpts&&""!=config.tweetOpts?config.tweetOpts+' tw:related="abc"':' tw:related="abc"':"",linkedInOpts="addthis_button_linkedin_counter"==options[s].items[m].code&&"undefined"!=typeof config.linkedInOpts&&""!=config.linkedInOpts?config.linkedInOpts:"",overrideURL=options[s].items[m].url,setURL="undefined"!=typeof overrideURL&&""!=overrideURL?'addthis:url="'+overrideURL+'"':"",button+=removeHref?'<div class="'+options[s].items[m].code+" label-"+options[s].items[m].label+'"'+fblike+">"+label+"</div>":'<a class="'+options[s].items[m].code+" label-"+options[s].items[m].label+'"'+fblike+" "+setURL+' title="'+tooltip+'"'+plusOneOpts+fbLayoutOpts+tweetOpts+twitterOpts+linkedInOpts+">"+label+"</a>",button+="</div>","addthis_button_facebook_like"==options[s].items[m].code&&isPreview&&(button="");group+='<div class="share-group share-group-'+s+lastGroup+'">'+title+button+'<div class="clearboth"><!-- empty //--></div></div>'}document.write('<div class="share-container">'+group+'<div class="clearboth"><!-- empty //--></div></div>'),addthis.toolbox("#"+this.target),this.toolbox(config),void 0!=config.fontDiv&&(shareUtil.current=readCookie("fontSize"),shareUtil.current?shareUtil.setFontSize(shareUtil.current,config.fontDiv):shareUtil.current="storyTextMd")}}function shareIt(){var sTop=window.screen.height/2-218,sLeft=window.screen.width/2-313,shareThisURL=window.location.href.replace(/localhost:8080|preview.abcnews.go.com|qa.n7.abcnews.go.com/,"abcnews.go.com");shareThisURL=shareThisURL.indexOf("?")>-1?shareThisURL+"&cid=fb_share":shareThisURL+"?cid=fb_share";var title=escape(document.title),shareUrl="http://www.facebook.com/sharer.php?u="+shareThisURL+"&t="+title;window.open(shareUrl,"sharer","toolbar=0,status=0,width=626,height=256,top="+sTop+",left="+sLeft)}function getShareCount(){var sharedURL=window.location.href.replace(location.hash,"");sharedURL=sharedURL.replace(/localhost:8080|preview.abcnews.go.com|qa.n7.abcnews.go.com/,"abcnews.go.com"),FB.api("/fql","GET",{q:'select share_count from link_stat where url="'+sharedURL+'"'},function(response){response&&response.data&&$(".sharebtn-fbshare .bubbleCount .num").html(response.data[0].share_count),$(".sharebtn-fbshare .bubbleWrapper").show()})}function renderShareCount(selector){var cSelector="undefined"!=selector?selector:".sharebtn-fbshare .shareCount",sharedURL=(window.screen.height/2-218,window.screen.width/2-313,window.location.href.replace(location.hash,""));sharedURL=sharedURL.replace(/localhost:8080|preview.abcnews.go.com|qa.n7.abcnews.go.com/,"abcnews.go.com"),FB.api("/fql","GET",{q:'select share_count from link_stat where url="'+sharedURL+'"'},function(response){response&&response.data&&$(cSelector).html(response.data[0].share_count),$(cSelector).show()})}function scrollToDiv(id){$("html,body").animate({scrollTop:$("#"+id).offset().top},"slow")}function renderFacebookShare(layout){layout?"vertical"==layout&&document.write('<a class="shareBtn" name="lpos=widget[sharetools]&lid=[fb_share]" target="_new" onclick="shareIt();return false;" href="javascript:void(0);">                <div class="shareCount"><div class="num">0</div></div>                <div class="fb_icon">Share</div>           </a>'):document.write('<a class="shareBtn" name="lpos=widget[sharetools]&lid=[fb_share]" target="_new" onclick="shareIt();return false;" href="javascript:void(0);">            <div class="fb_icon">Share</div>            <div class="shareCountWrapper">                <div class="arrow arrowBorder"></div>                <div class="arrow arrowFill"></div>                <div class="shareCount"><div class="num">0</div></div>            </div>        </a>')}function bindSponsorShare(){$("#sponsoredmodule .shareflyout .trigger").click(function(e){e.preventDefault(),$(this).hide(),$(".ffl_wrapper #sponsoredmodule #sponsor-115x30").css("margin-right","50px"),$(this).next(".shareflyout-buttons").fadeIn()}),$("#sponsoredmodule .shareflyout-buttons a.twitter").click(function(e){e.preventDefault();var loc=encodeURIComponent($(this).attr("href")),title=escape($(this).attr("title"));window.open("http://twitter.com/share?text="+title+"&url="+loc+"&","twitterwindow","height=450, width=550, top="+($(window).height()/2-225)+", left="+$(window).width()/2+", toolbar=0, location=0, menubar=0, directories=0, scrollbars=0")}),$("#sponsoredmodule .shareflyout-buttons a.facebook").click(function(e){e.preventDefault();var sTop=window.screen.height/2-218,sLeft=window.screen.width/2-313,loc=$(this).attr("href"),title=escape($(this).attr("title")),shareUrl="http://www.facebook.com/sharer.php?u="+loc+"&t="+title;window.open(shareUrl,"sharer","toolbar=0,status=0,width=626,height=256,top="+sTop+",left="+sLeft)})}if("undefined"==typeof deconcept)var deconcept={};"undefined"==typeof deconcept.util&&(deconcept.util={}),"undefined"==typeof deconcept.SWFObjectUtil&&(deconcept.SWFObjectUtil={}),deconcept.SWFObject=function(swf,id,w,h,ver,c,quality,xiRedirectUrl,redirectUrl,detectKey){if(document.getElementById){this.DETECT_KEY=detectKey?detectKey:"detectflash",this.skipDetect=deconcept.util.getRequestParameter(this.DETECT_KEY),this.params={},this.variables={},this.attributes=[],swf&&this.setAttribute("swf",swf),id&&this.setAttribute("id",id),w&&this.setAttribute("width",w),h&&this.setAttribute("height",h),ver&&this.setAttribute("version",new deconcept.PlayerVersion(ver.toString().split("."))),this.installedVer=deconcept.SWFObjectUtil.getPlayerVersion(),!window.opera&&document.all&&this.installedVer.major>7&&(deconcept.unloadSet||(deconcept.SWFObjectUtil.prepUnload=function(){__flash_unloadHandler=function(){},__flash_savedUnloadHandler=function(){},window.attachEvent("onunload",deconcept.SWFObjectUtil.cleanupSWFs)},window.attachEvent("onbeforeunload",deconcept.SWFObjectUtil.prepUnload),deconcept.unloadSet=!0)),c&&this.addParam("bgcolor",c);var q=quality?quality:"high";this.addParam("quality",q),this.setAttribute("useExpressInstall",!1),this.setAttribute("doExpressInstall",!1);var xir=xiRedirectUrl?xiRedirectUrl:window.location;this.setAttribute("xiRedirectUrl",xir),this.setAttribute("redirectUrl",""),redirectUrl&&this.setAttribute("redirectUrl",redirectUrl)}},deconcept.SWFObject.prototype={useExpressInstall:function(path){this.xiSWFPath=path?path:"expressinstall.swf",this.setAttribute("useExpressInstall",!0)},setAttribute:function(name,value){this.attributes[name]=value},getAttribute:function(name){return this.attributes[name]||""},addParam:function(name,value){this.params[name]=value},getParams:function(){return this.params},addVariable:function(name,value){this.variables[name]=value},getVariable:function(name){return this.variables[name]||""},getVariables:function(){return this.variables},getVariablePairs:function(){var key,variablePairs=[],variables=this.getVariables();for(key in variables)variablePairs[variablePairs.length]=key+"="+variables[key];return variablePairs},getSWFHTML:function(){var swfNode="";if(navigator.plugins&&navigator.mimeTypes&&navigator.mimeTypes.length){this.getAttribute("doExpressInstall")&&(this.addVariable("MMplayerType","PlugIn"),this.setAttribute("swf",this.xiSWFPath)),swfNode='<embed type="application/x-shockwave-flash" src="'+this.getAttribute("swf")+'" width="'+this.getAttribute("width")+'" height="'+this.getAttribute("height")+'" style="'+(this.getAttribute("style")||"")+'"',swfNode+=' id="'+this.getAttribute("id")+'" name="'+this.getAttribute("id")+'" ';var params=this.getParams();for(var key in params)swfNode+=[key]+'="'+params[key]+'" ';var pairs=this.getVariablePairs().join("&");pairs.length>0&&(swfNode+='flashvars="'+pairs+'"'),swfNode+="/>"}else{this.getAttribute("doExpressInstall")&&(this.addVariable("MMplayerType","ActiveX"),this.setAttribute("swf",this.xiSWFPath)),swfNode='<object id="'+this.getAttribute("id")+'" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="'+this.getAttribute("width")+'" height="'+this.getAttribute("height")+'" style="'+(this.getAttribute("style")||"")+'">',swfNode+='<param name="movie" value="'+this.getAttribute("swf")+'" />';var params=this.getParams();for(var key in params)swfNode+='<param name="'+key+'" value="'+params[key]+'" />';var pairs=this.getVariablePairs().join("&");pairs.length>0&&(swfNode+='<param name="flashvars" value="'+pairs+'" />'),swfNode+="</object>"}return swfNode},write:function(elementId){if(this.getAttribute("useExpressInstall")){var expressInstallReqVer=new deconcept.PlayerVersion([6,0,65]);this.installedVer.versionIsValid(expressInstallReqVer)&&!this.installedVer.versionIsValid(this.getAttribute("version"))&&(this.setAttribute("doExpressInstall",!0),this.addVariable("MMredirectURL",escape(this.getAttribute("xiRedirectUrl"))),document.title=document.title.slice(0,47)+" - Flash Player Installation",this.addVariable("MMdoctitle",document.title))}if(this.skipDetect||this.getAttribute("doExpressInstall")||this.installedVer.versionIsValid(this.getAttribute("version"))){var n="string"==typeof elementId?document.getElementById(elementId):elementId;return n.innerHTML=this.getSWFHTML(),!0}return""!=this.getAttribute("redirectUrl")&&document.location.replace(this.getAttribute("redirectUrl")),!1}},deconcept.SWFObjectUtil.getPlayerVersion=function(){var PlayerVersion=new deconcept.PlayerVersion([0,0,0]);if(navigator.plugins&&navigator.mimeTypes.length){var x=navigator.plugins["Shockwave Flash"];x&&x.description&&(PlayerVersion=new deconcept.PlayerVersion(x.description.replace(/([a-zA-Z]|\s)+/,"").replace(/(\s+r|\s+b[0-9]+)/,".").split(".")))}else if(navigator.userAgent&&navigator.userAgent.indexOf("Windows CE")>=0)for(var axo=1,counter=3;axo;)try{counter++,axo=new ActiveXObject("ShockwaveFlash.ShockwaveFlash."+counter),PlayerVersion=new deconcept.PlayerVersion([counter,0,0])}catch(e){axo=null}else{try{var axo=new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7")}catch(e){try{var axo=new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");PlayerVersion=new deconcept.PlayerVersion([6,0,21]),axo.AllowScriptAccess="always"}catch(e){if(6==PlayerVersion.major)return PlayerVersion}try{axo=new ActiveXObject("ShockwaveFlash.ShockwaveFlash")}catch(e){}}null!=axo&&(PlayerVersion=new deconcept.PlayerVersion(axo.GetVariable("$version").split(" ")[1].split(",")))}return PlayerVersion},deconcept.PlayerVersion=function(arrVersion){this.major=null!=arrVersion[0]?parseInt(arrVersion[0]):0,this.minor=null!=arrVersion[1]?parseInt(arrVersion[1]):0,this.rev=null!=arrVersion[2]?parseInt(arrVersion[2]):0},deconcept.PlayerVersion.prototype.versionIsValid=function(fv){return this.major<fv.major?!1:this.major>fv.major?!0:this.minor<fv.minor?!1:this.minor>fv.minor?!0:this.rev<fv.rev?!1:!0},deconcept.util={getRequestParameter:function(param){var q=document.location.search||document.location.hash;if(null==param)return q;if(q)for(var pairs=q.substring(1).split("&"),i=0;i<pairs.length;i++)if(pairs[i].substring(0,pairs[i].indexOf("="))==param)return pairs[i].substring(pairs[i].indexOf("=")+1);return""}},deconcept.SWFObjectUtil.cleanupSWFs=function(){for(var objects=document.getElementsByTagName("OBJECT"),i=objects.length-1;i>=0;i--){objects[i].style.display="none";for(var x in objects[i])"function"==typeof objects[i][x]&&(objects[i][x]=function(){})}},!document.getElementById&&document.all&&(document.getElementById=function(id){return document.all[id]});var getQueryParamValue=deconcept.util.getRequestParameter,FlashObject=deconcept.SWFObject,SWFObject=deconcept.SWFObject,shareUtil=new Object;shareUtil.settings=["storyTextSm","storyTextMd","storyTextLg"],shareUtil.current="",shareUtil.setFontSize=function(size,div){$("#"+div).removeClass(),$("#"+div).addClass(size)},shareUtil.changeFontSize=function(action,div){var index=0;for(i=0;i<shareUtil.settings.length;i++)if(shareUtil.settings[i]==shareUtil.current){index=i;break}var flag=1;"decrease"==action&&(flag=-1),-1==index?size="storyTextMd":index+flag<shareUtil.settings.length&&index+flag>=0&&(size=shareUtil.settings[index+flag]),shareUtil.current!=size&&(shareUtil.current=size,createCookie("fontSize",size,4641),shareUtil.setFontSize(size,div),leftRailVideoOpen&&setTimeout(positionPlayer(leftRailContainerObj),500),"undefined"!=typeof listStoryFlag&&listStoryFlag&&(listContainerDiv=$("#listItems"),listItemDiv=$("#listItems > .listItem").eq(listStoryCurrTab),listDivOffSet=60,$.browser.msie&&parseInt($.browser.version,10)<8&&(listDivOffSet=80),"decrease"==action?(listContainerDiv.height(listContainerDiv.height()-listDivOffSet),listItemDiv.height(listItemDiv.height()-listDivOffSet)):"increase"==action&&(listContainerDiv.height(listContainerDiv.height()+listDivOffSet),listItemDiv.height(listItemDiv.height()+listDivOffSet))))},$(document).ready(function(){$(".shareflyout .trigger").click(function(e){e.preventDefault(),$(this).hide(),$(this).next(".shareflyout-buttons").fadeIn()}),$(".shareflyout-buttons a.twitter").click(function(e){e.preventDefault();var loc=$(this).attr("href"),delim=loc.indexOf("?")>-1?"&":"?";loc=loc+delim+"cid=twitter_share",loc=encodeURIComponent(loc);var title=escape($(this).attr("title"));window.open("http://twitter.com/share?text="+title+"&url="+loc+"&","twitterwindow","height=450, width=550, top="+($(window).height()/2-225)+", left="+$(window).width()/2+", toolbar=0, location=0, menubar=0, directories=0, scrollbars=0")}),$(".shareflyout-buttons a.facebook").click(function(e){e.preventDefault();var sTop=window.screen.height/2-218,sLeft=window.screen.width/2-313,loc=$(this).attr("href"),delim=loc.indexOf("?")>-1?"&":"?";loc=loc+delim+"cid=fb_share";var title=escape($(this).attr("title")),shareUrl="http://www.facebook.com/sharer.php?u="+loc+"&t="+title;window.open(shareUrl,"sharer","toolbar=0,status=0,width=626,height=256,top="+sTop+",left="+sLeft)})}),("preview.abcnews.go.com"==document.domain||"newspreview.corp.dig.com"==document.domain)&&document.write("<style>.share_left .sharebtn-fbshare, .fblike, .fbshare{visibility:hidden;}</style>"),function(a){a.fn.zclip=function(c){if("object"==typeof c&&!c.length){var b=a.extend({path:"ZeroClipboard.swf",copy:null,beforeCopy:null,afterCopy:null,clickAfter:!0,setHandCursor:!0,setCSSEffects:!0},c);return this.each(function(){var e=a(this);if(e.is(":visible")&&("string"==typeof b.copy||a.isFunction(b.copy))){ZeroClipboard.setMoviePath(b.path);var d=new ZeroClipboard.Client;a.isFunction(b.copy)&&e.bind("zClip_copy",b.copy),a.isFunction(b.beforeCopy)&&e.bind("zClip_beforeCopy",b.beforeCopy),a.isFunction(b.afterCopy)&&e.bind("zClip_afterCopy",b.afterCopy),d.setHandCursor(b.setHandCursor),d.setCSSEffects(b.setCSSEffects),d.addEventListener("mouseOver",function(f){e.trigger("mouseenter")}),d.addEventListener("mouseOut",function(f){e.trigger("mouseleave")}),d.addEventListener("mouseDown",function(f){e.trigger("mousedown"),d.setText(a.isFunction(b.copy)?e.triggerHandler("zClip_copy"):b.copy),a.isFunction(b.beforeCopy)&&e.trigger("zClip_beforeCopy")}),d.addEventListener("complete",function(f,g){a.isFunction(b.afterCopy)?e.trigger("zClip_afterCopy"):(g.length>500&&(g=g.substr(0,500)+"...\n\n("+(g.length-500)+" characters not shown)"),e.removeClass("hover"),alert("Copied text to clipboard:\n\n "+g)),b.clickAfter&&e.trigger("click")}),d.glue(e[0],e.parent()[0]),a(window).bind("load resize",function(){d.reposition()})}})}return"string"==typeof c?this.each(function(){var f=a(this);c=c.toLowerCase();var e=f.data("zclipId"),d=a("#"+e+".zclip");"remove"==c?(d.remove(),f.removeClass("active hover")):"hide"==c?(d.hide(),f.removeClass("active hover")):"show"==c&&d.show()}):void 0}}(jQuery);var ZeroClipboard={version:"1.0.7",clients:{},moviePath:"ZeroClipboard.swf",nextId:1,$:function(a){return"string"==typeof a&&(a=document.getElementById(a)),a.addClass||(a.hide=function(){this.style.display="none"},a.show=function(){this.style.display=""},a.addClass=function(b){this.removeClass(b),this.className+=" "+b},a.removeClass=function(d){for(var e=this.className.split(/\s+/),b=-1,c=0;c<e.length;c++)e[c]==d&&(b=c,c=e.length);return b>-1&&(e.splice(b,1),this.className=e.join(" ")),this},a.hasClass=function(b){return!!this.className.match(new RegExp("\\s*"+b+"\\s*"))}),a},setMoviePath:function(a){this.moviePath=a},dispatch:function(d,b,c){var a=this.clients[d];a&&a.receiveEvent(b,c)},register:function(b,a){this.clients[b]=a},getDOMObjectPosition:function(c,a){var b={left:0,top:0,width:c.width?c.width:c.offsetWidth,height:c.height?c.height:c.offsetHeight};return c&&c!=a&&(b.left+=c.offsetLeft,b.top+=c.offsetTop),b},Client:function(a){this.handlers={},this.id=ZeroClipboard.nextId++,this.movieId="ZeroClipboardMovie_"+this.id,ZeroClipboard.register(this.id,this),a&&this.glue(a)}};ZeroClipboard.Client.prototype={id:0,ready:!1,movie:null,clipText:"",handCursorEnabled:!0,cssEffects:!0,handlers:null,glue:function(d,b,e){this.domElement=ZeroClipboard.$(d);var f=99;this.domElement.style.zIndex&&(f=parseInt(this.domElement.style.zIndex,10)+1),"string"==typeof b?b=ZeroClipboard.$(b):"undefined"==typeof b&&(b=document.getElementsByTagName("body")[0]);var c=ZeroClipboard.getDOMObjectPosition(this.domElement,b);this.div=document.createElement("div"),this.div.className="zclip",this.div.id="zclip-"+this.movieId,$(this.domElement).data("zclipId","zclip-"+this.movieId);var a=this.div.style;if(a.position="absolute",a.left=""+c.left+"px",a.top=""+c.top+"px",a.width=""+c.width+"px",a.height=""+c.height+"px",a.zIndex=f,"object"==typeof e)for(addedStyle in e)a[addedStyle]=e[addedStyle];b.appendChild(this.div),this.div.innerHTML=this.getHTML(c.width,c.height)},getHTML:function(d,a){var c="",b="id="+this.id+"&width="+d+"&height="+a;if(navigator.userAgent.match(/MSIE/)){var e=location.href.match(/^https/i)?"https://":"http://";c+='<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="'+e+'download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="'+d+'" height="'+a+'" id="'+this.movieId+'" align="middle"><param name="allowScriptAccess" value="always" /><param name="allowFullScreen" value="false" /><param name="movie" value="'+ZeroClipboard.moviePath+'" /><param name="loop" value="false" /><param name="menu" value="false" /><param name="quality" value="best" /><param name="bgcolor" value="#ffffff" /><param name="flashvars" value="'+b+'"/><param name="wmode" value="transparent"/></object>'}else c+='<embed id="'+this.movieId+'" src="'+ZeroClipboard.moviePath+'" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="'+d+'" height="'+a+'" name="'+this.movieId+'" align="middle" allowScriptAccess="always" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="'+b+'" wmode="transparent" />';return c},hide:function(){this.div&&(this.div.style.left="-2000px")},show:function(){this.reposition()},destroy:function(){if(this.domElement&&this.div){this.hide(),this.div.innerHTML="";var a=document.getElementsByTagName("body")[0];try{a.removeChild(this.div)}catch(b){}this.domElement=null,this.div=null}},reposition:function(c){if(c&&(this.domElement=ZeroClipboard.$(c),this.domElement||this.hide()),this.domElement&&this.div){var b=ZeroClipboard.getDOMObjectPosition(this.domElement),a=this.div.style;a.left=""+b.left+"px",a.top=""+b.top+"px"}},setText:function(a){this.clipText=a,this.ready&&this.movie.setText(a)},addEventListener:function(a,b){a=a.toString().toLowerCase().replace(/^on/,""),this.handlers[a]||(this.handlers[a]=[]),this.handlers[a].push(b)},setHandCursor:function(a){this.handCursorEnabled=a,this.ready&&this.movie.setHandCursor(a)},setCSSEffects:function(a){this.cssEffects=!!a},receiveEvent:function(d,f){switch(d=d.toString().toLowerCase().replace(/^on/,"")){case"load":if(this.movie=document.getElementById(this.movieId),!this.movie){var c=this;return void setTimeout(function(){c.receiveEvent("load",null)},1)}if(!this.ready&&navigator.userAgent.match(/Firefox/)&&navigator.userAgent.match(/Windows/)){var c=this;return setTimeout(function(){c.receiveEvent("load",null)},100),void(this.ready=!0)}this.ready=!0;try{this.movie.setText(this.clipText)}catch(h){}try{this.movie.setHandCursor(this.handCursorEnabled)}catch(h){}break;case"mouseover":this.domElement&&this.cssEffects&&(this.domElement.addClass("hover"),this.recoverActive&&this.domElement.addClass("active"));break;case"mouseout":this.domElement&&this.cssEffects&&(this.recoverActive=!1,this.domElement.hasClass("active")&&(this.domElement.removeClass("active"),this.recoverActive=!0),this.domElement.removeClass("hover"));break;case"mousedown":this.domElement&&this.cssEffects&&this.domElement.addClass("active");break;case"mouseup":this.domElement&&this.cssEffects&&(this.domElement.removeClass("active"),this.recoverActive=!1)}if(this.handlers[d])for(var b=0,a=this.handlers[d].length;a>b;b++){var g=this.handlers[d][b];"function"==typeof g?g(this,f):"object"==typeof g&&2==g.length?g[0][g[1]](this,f):"string"==typeof g&&window[g](this,f)}}};
+
+

@@ -1,0 +1,72 @@
+/*
+ * Social Links - Twitter and Facebook buttons
+ *
+ */
+/* Pager : Replace Next/Previous text and smooth scrolling to the top of the list */
+Drupal.behaviors.mettfunction = {
+	attach : function() {
+		if (!jQuery('#fb-root').length) {
+			jQuery('body').prepend('<div id="fb-root"></div>');
+		}
+
+		jQuery('.fb-like').each(function() {
+			jQuery(this).after('<fb:like href="' + jQuery(this).attr('data-href') + '" send="false" layout="button_count" width="' + (jQuery(this).attr('data-width') ? jQuery(this).attr('data-width') : 450) + '" show_faces="true"></fb:like>').remove();
+		});
+
+		jQuery('a.twitter-share-button').each(function() {
+			var startersiteDefaultURL = 'blinkemphaticrock.drupalgardens.com';
+			var href = jQuery(this).attr('data-url');
+			var result = href.replace(startersiteDefaultURL, WMG.basePath);
+			result = result.replace('wmgd2c_ss1', WMG.Twitter.handle);
+			jQuery(this).attr('data-url', result);
+			//add the via attribute if present in configuration
+			if (WMG.Twitter.via) {
+				jQuery(this).attr('data-via', WMG.Twitter.via);
+			}
+		});
+
+		try {
+			FB.XFBML.parse();
+		} catch (ex) {
+			_includeJS("//connect.facebook.net/en_US/all.js#xfbml=1");
+		}
+
+	}
+}; 
+
+! function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (!d.getElementById(id)) {
+		js = d.createElement(s);
+		js.id = id;
+		js.src = "//platform.twitter.com/widgets.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}
+}(document, "script", "twitter-wjs"); ;
+if (typeof (WMG.ChartBeat) === "undefined"){ WMG.ChartBeat = {} }
+if (typeof (WMG.ChartBeat.hostName) === "undefined") {
+	WMG.ChartBeat.hostName = (function() {
+		hn = window.location.hostname;
+		hna = hn.split(".");
+		hna.reverse();
+		hn = hna[1] + "." + hna[0]
+		return hn
+	})();
+}
+
+var _sf_async_config={uid:34204,domain:WMG.ChartBeat.hostName}; 
+(function(){ 
+  function loadChartbeat() { 
+    window._sf_endpt=(new Date()).getTime(); 
+    var e = document.createElement('script'); 
+    e.setAttribute('language', 'javascript'); 
+    e.setAttribute('type', 'text/javascript'); 
+    e.setAttribute('src', 
+       (("https:" == document.location.protocol) ? "https://a248.e.akamai.net/chartbeat.download.akamai.com/102508/" : "http://static.chartbeat.com/") + 
+       "js/chartbeat.js"); 
+    document.body.appendChild(e); 
+  } 
+  var oldonload = window.onload; 
+  window.onload = (typeof window.onload != 'function') ? 
+     loadChartbeat : function() { oldonload(); loadChartbeat(); }; 
+})();;

@@ -1,0 +1,49 @@
+jQuery(".akamai-media-popup").click(function(e){
+	e.preventDefault();
+	
+	var exHref = jQuery(this).attr('href');
+	
+	jQuery.get(exHref, function(data){
+		var mediaID = jQuery(".akamaiPlayerClass > div").attr("id");
+		
+		jQuery.fancybox({
+			width: 600,
+			height: 341,
+			margin: 0,
+			padding: 0,
+			openSpeed  : 150,
+			closeSpeed  : 150,
+			helpers : {
+				overlay : {
+					css : {
+						'background':'transparent',
+						'filter':'progid:DXImageTransform.Microsoft.gradient(startColorstr=#D2eeeeee,endColorstr=#D2eeeeee)',
+						'zoom': '1',
+						'background' : 'rgba(238, 238, 238, 0.85)'
+					}
+				}
+			},
+			type: 'iframe',
+			href: exHref + "#" + mediaID
+	    });
+		
+	});
+});
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+var getMediaPopup = getParameterByName("mediapopup");
+var getVideoSelect = getParameterByName("videoselect");
+getVideoSelect = parseInt(getVideoSelect);
+
+if(getMediaPopup && !isNaN(getVideoSelect)){
+	jQuery(".akamai-media-popup").eq(getVideoSelect-1).fancybox().trigger('click');
+}

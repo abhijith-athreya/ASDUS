@@ -1,0 +1,339 @@
+
+	window.googletag = window.googletag || {};
+	googletag.cmd = googletag.cmd || [];
+
+	var htlbid = htlbid || {};
+	htlbid.que = htlbid.que || [];
+	htlbid.opts = htlbid.opts || {};
+	(function() {
+	    var htlbidEl = document.createElement("script");
+	    htlbidEl.type = "text/javascript";
+	    htlbidEl.async = true;
+	    htlbidEl.src = "//htl.bid/build/bidder-adweek.js";
+	    var htlbidTargetEl = document.getElementsByTagName("head")[0];
+	    htlbidTargetEl.insertBefore(htlbidEl, htlbidTargetEl.firstChild);
+	})();
+
+	var adslot 		= adslot || {};
+
+	$ = jQuery;
+
+    // Information for site
+    adslot.pubId 	= "319737315";
+    adslot.site    	= "adweek";
+    adslot.prop 	= '/' + adslot.pubId + '/' + adslot.site + '/';
+
+    // Information for first page
+    adslot.zone    	= gptData.zone;     // CHANNEL FROM WP;
+    adslot.postid  	= gptData.id;       // POST ID FROM WP;     For indexes, use "home", not to be confused with the "homepage" zone.
+    adslot.term    	= gptData.posttags; // TERMS FROM WP;       These should be populated with any categories, tags and campaigns on an index or post
+	adslot.debug    = gptData.debug == 1 ? 'True' : 'False';
+
+    adslot.sizes	= [];
+    adslot.collection = [];
+
+    adslot.presentation = gptData.presentation;
+
+	adslot.referrer = document.referrer.replace(/http[s]?\:\/\/([^\/]+).*/,"$1");
+
+	// Init GPT and all our prefs
+    adslot.init = function() {
+
+	    var nfCookie	= Cookies.get('NewFront Reader'),
+	    	nfReader 	= typeof nfCookie !== 'undefined'? $.parseJSON( nfCookie ) : '';
+
+		adslot.nfCount	= typeof nfCookie !== 'undefined'? nfReader.nf_count : 0,
+		adslot.nfCompany= typeof nfCookie !== 'undefined'? nfReader.company : [];
+
+        googletag.cmd.push(function() {
+
+	        htlbid.init();
+
+	        // Set the standard adslot sizes usually used for an article ( to loop through later )
+            adslot.sizes = [
+                {slot: "t", 	size: "leaderboard" },
+                {slot: "a", 	size: "leaderboard" },
+                {slot: "m1",  size: "square" },
+                {slot: "m2",  size: "medrec" },
+                {slot: "m3", 	size: "medrec" }
+            ];
+
+			// Map sizes to each of the above
+            adslot.leaderboard = googletag.sizeMapping()
+                .addSize([0, 0], [1, 1])
+                .addSize([727, 0], [[1, 1],[728, 90]] )
+                .addSize([969, 0], [[1, 1],[970, 250], [970, 90], [728, 90]] )
+                .build();
+
+            adslot.square = googletag.sizeMapping()
+                .addSize([0, 0], [])
+                .addSize([300, 0], [[300, 600], [300, 250]])
+                .build();
+
+            adslot.medrec = googletag.sizeMapping()
+                .addSize([0, 0], [])
+                .addSize([300, 0], [[300, 250]])
+                .build();
+
+
+			// Enable a single call to GPT
+            googletag.pubads().enableSingleRequest();
+            // Collapse if empty
+            googletag.pubads().collapseEmptyDivs();
+            // Don't do initial load on .display call. Wait for refresh call
+            googletag.pubads().disableInitialLoad();
+
+			googletag.pubads().enableVideoAds();
+            // Enable services - now everything's ready to go. Init alway has to run first
+            googletag.enableServices();
+
+        });
+
+    };
+
+    // Define out of page slot
+    adslot.defineOop = function() {
+
+        googletag.cmd.push(function() {
+            adslot.oop = googletag.defineOutOfPageSlot(adslot.prop + adslot.zone, 'ad-div-oop')
+                .addService(googletag.pubads())
+                .setTargeting( 'page', 			adslot.postid )
+                .setTargeting( 'term', 			adslot.term )
+                .setTargeting( 'presentation', 	adslot.presentation )
+                .setTargeting( 'referrer', 		document.referrer.replace(/http[s]?\:\/\/([^\/]+).*/,"$1"))
+	            .setTargeting( 'nf_count', 		adslot.nfCount )
+	            .setTargeting( 'company', 		adslot.nfCompany );
+
+            googletag.display( 'ad-div-oop' );
+
+            // If this is an article add targeting for teads
+            if( $('body').hasClass('single-post') ){
+	         	adslot['oop'].setTargeting( 'outstream', $('article').data('outstream') );
+	        }
+
+            // After definition, refresh to render an ad.
+            googletag.pubads().refresh([adslot.oop], { changeCorrelator: false });
+        });
+    };
+
+	// Create and display a single slot instance
+    adslot.create = function( zone, slot, index, page, term, size ) {
+
+		// If there is a div available for the slot being called, then call it
+		if ( document.getElementById( 'ad-div-' + slot + index ) != null ) {
+	        adslot[slot + index] = googletag.defineSlot(adslot.prop + zone, [1, 1], 'ad-div-' + slot + index)
+	            .defineSizeMapping(size)
+	            .setTargeting( 'page', 			page )
+	            .setTargeting( 'instance', 		index )
+	            .setTargeting( 'term', 			term )
+	            .setTargeting( 'pos', 			slot )
+	            .setTargeting( 'presentation', 	adslot.presentation )
+	            .setTargeting( 'referrer', 		document.referrer.replace(/http[s]?\:\/\/([^\/]+).*/,"$1"))
+	            .setTargeting( 'nf_count', 		adslot.nfCount )
+	            .setTargeting( 'company', 		adslot.nfCompany )
+	            .addService( googletag.pubads() );
+
+            // If this is an article add targeting for teads
+            if( $('body').hasClass('single-post') ){
+	            adslot[slot + index].setTargeting( 'outstream', $('article').eq(index).data('outstream') );
+	        }
+
+	        googletag.display('ad-div-' + slot + index);
+			adslot.collection.push( adslot[slot + index] );
+
+			googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+				for ( var i = 0; i < adslot.rendered.length; i++) {
+					adslot.rendered[i]( event );
+				}
+			});
+		}
+
+    };
+
+	//cycle all positions and create slots
+    adslot.loadslots = function(index, zone, page, term) {
+        function createSlot(item) {
+            adslot.create( zone, item.slot, index, page, term, adslot[item.size] );
+        };
+
+        googletag.cmd.push(function() {
+            adslot.sizes.forEach(createSlot);
+            adslot.refresh();
+        });
+
+    };
+
+	// Once all the slots are loaded, call a single refresh
+	adslot.refresh = function() {
+		  window.htlbid.aWInfScroll(adslot.collection);
+	    adslot.collection = [];
+	};
+
+	adslot.rendered	= adslot.rendered ? adslot.rendered : [];
+
+    // Once JW player is ready replace ad
+
+    function awReplaceJWPlayerAd() {
+        if (typeof jwplayer != "undefined") {
+            $('.jwplayer').each(function(i, jwplayerEl){
+                jwplayer(jwplayerEl.id).on('ready', function (ready) {
+                    var adTag = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/319737315/adweek&impl=s&' + 'gdfp_req=1&env=vp&output=vast&ad_rule=1&unviewed_position_start=1&url=' + adslot.referrer + '&description_url=adweek.com&correlator=' + Date.now() + '&cust_params=term%3D' + adslot.term +
+                        '%26debug%3D' + adslot.debug + '%26page%3D' + adslot.postid;
+                    this.getConfig().advertising.schedule[0].tag = adTag;
+                });
+
+                // If there's an ad error at all (no ads returned or errors in general), serve a programmatic ad instead
+                // jwplayer(jwplayerEl.id).on('adError', function (ad) {
+                //     var fallback = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/319737315/Preroll_New&' +
+                //         'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&url=' + adslot.referrer + '&' + 'description_url=adweek.com&correlator=' + Date.now();
+                //     jwplayer(jwplayerEl.id).playAd(fallback);
+                // });
+
+                jwplayer(jwplayerEl.id).on('adError', function (ad) {
+                  // If we already did the fallback, don't try it again.
+                  if ($('#' + jwplayerEl.id).data('fallback') === 'true'){
+                    return;
+                  }
+
+                  $('#' + jwplayerEl.id).data('fallback', 'true');
+
+                  var fallback = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/319737315/Preroll_New&' +
+                      'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&url=' + adslot.referrer + '&' + 'description_url=adweek.com&correlator=' + Date.now();
+                  jwplayer(jwplayerEl.id).playAd(fallback);
+                });
+            });
+        }
+    }
+
+
+//Init services
+/*
+    To load new instance of any of these slots, use a new instance of the adslot.loadslots method.
+    1. Increment Index
+    2. adslot.zone should be replaced with vertical assignment for the new page.
+    3. adslot.postid should be replaced with the post ids for the new page.
+    4. adslot.term should be replaced with the terms for the new page. Use categories, tags and campaigns in the ['MSNBC', 'Politics'] format.
+*/
+(function($){
+
+    awReplaceJWPlayerAd();
+
+    //if there's an inline JW Player script, wait until it's loaded (this happens in the 'Brand' component of Post-Updates plugin)
+    var targetNode = document.getElementById('post-updates'),
+        observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function(mutation) {
+                if ( mutation.type == 'childList' ) {
+                    if (mutation.addedNodes.item(0) ) {
+                        if ( mutation.addedNodes.item(0).id ) {
+                            if ( mutation.addedNodes.item(0).id.match(/jwplayer_.*_div/) ) {
+                                if ( mutation.addedNodes.item(0).getAttribute('class') ) {
+                                    if ( mutation.addedNodes.item(0).getAttribute('class').includes('jwplayer') ) {
+                                        awReplaceJWPlayerAd();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+    var mutationConfig = {attributes: true, childList: true, subtree: true};
+
+    if ( targetNode ) observer.observe(targetNode, mutationConfig);
+
+    setUserCookie();
+    adslot.init();
+
+    // This is only used on pages where containers are used and its possible there will be multipl m and lb ads
+    if ( $('body').hasClass('page') ){
+		adslot.defineOop();
+
+        googletag.cmd.push(function() {
+    		$(".ad-div-m10-wrapper").each( function(i){
+    		    $(this).children().attr( "id", "ad-div-m1" );
+    			adslot.create( adslot.zone, 'm1', '', adslot.postid, adslot.term, adslot.square );
+    	    });
+
+            $(".ad-div-m20-wrapper").each( function(i){
+                $(this).children().attr( "id", "ad-div-m2" );
+                adslot.create( adslot.zone, 'm2', '', adslot.postid, adslot.term, adslot.medrec);
+            });
+
+            $(".ad-div-m30-wrapper").each( function(i){
+                $(this).children().attr( "id", "ad-div-m3");
+                adslot.create( adslot.zone, 'm3', '', adslot.postid, adslot.term, adslot.medrec);
+            });
+
+    	    $(".ad-div-lb-wrapper").each( function(i){
+    			if ( 0 == i ){
+    				$(this).children().attr( "id", "ad-div-t" );
+    				adslot.create( adslot.zone, 't', '', adslot.postid, adslot.term, adslot.leaderboard );
+    			}
+    			else if ( i == $(".ad-div-lb-wrapper").length - 1 ){
+    				$(this).children().attr( "id", "ad-div-a" );
+    				adslot.create( adslot.zone, 'a', '', adslot.postid, adslot.term, adslot.leaderboard );
+    			}
+    			else {
+    				$(this).children().attr( "id", "ad-div-lb" + (i + 1) );
+    				adslot.create( adslot.zone, 'lb' + (i + 1) ,'', adslot.postid, adslot.term, adslot.leaderboard );
+    			}
+    	    });
+
+			adslot.refresh();
+        });
+    }
+    // Archive pages use this call - articles use the infinite-ajax.js call loadGPT
+    else {
+		if( !$('body').hasClass('single') ){
+			adslot.defineOop();
+			adslot.loadslots( 0, adslot.zone, adslot.postid, adslot.term );
+		}
+    }
+
+})(jQuery);
+
+
+
+// Set Newfront cookies
+function setUserCookie(){
+
+	$ = jQuery;
+	// Get info from new infinite scroll article
+	var ai			= typeof awIS != 'undefined' && awIS.articleIndex > 0 ? awIS.articleIndex : 0,
+		newArticle  = $(".main-content").eq(ai),
+
+	// Get existing cookie, add new variables, reset cookie
+		nfCookie	= Cookies.get('NewFront Reader'),
+		nfReader 	= typeof nfCookie !== 'undefined'? $.parseJSON( nfCookie ) : '',
+		nfCount		= typeof nfCookie !== 'undefined'? nfReader.nf_count : 0,
+		nfCompany	= typeof nfCookie !== 'undefined'? nfReader.company : [],
+		postCats	= newArticle.data('categories'),
+		postCompany = newArticle.data('company');
+
+	postCats = typeof postCats != 'undefined'? postCats.split(', ') : '';
+
+	if ( $.inArray('newfronts', postCats) != -1 ){
+		nfCount = nfCount + 1;
+	}
+
+	if ( $.isArray(postCompany) )
+		[].forEach.call(postCompany, function(item){
+			if( $.inArray(item, nfCompany) == -1 )
+				nfCompany.push(item)
+		});
+
+    Cookies.set('NewFront Reader', {
+	    nf_count	: nfCount,
+	    company		: nfCompany
+    }, {
+	    expires		: 120
+    } );
+
+
+}
+
+// Add to infinite scroll functions called on new post
+if (typeof awIS !== 'undefined') {
+	awIS.functions.push( setUserCookie );
+}

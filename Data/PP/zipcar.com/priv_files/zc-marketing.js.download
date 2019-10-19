@@ -1,0 +1,14 @@
+function update_campaign_record(type,user_id,campaign_key,value,restrict){
+    $.ajax({
+        type: 'POST',
+        url: '/marketing/campaigns/update-campaign-record',
+        data: {
+            type: type,
+            user_id: user_id,
+            campaign_key: campaign_key,
+            value: value,
+            restrict: restrict
+        }
+
+    });
+}

@@ -1,0 +1,190 @@
+// Code goes here
+jQuery.fn.makeLinksExternal=function(){return this.each(function(){var a=jQuery(this).attr("href");if(a.indexOf(location.host)==-1&&a.indexOf("/")!==0){jQuery(this).attr("target","_blank")}})};
+
+WMG.namespace("Merch")
+
+WMG.Merch = function(inputObj){
+
+  this.dataSel = inputObj.dataSel,
+  this.template = inputObj.template,
+  this.targetSel = inputObj.targetSel;
+  
+  
+  this.populateDOM = function (){
+    var $merchData = jQuery(this.dataSel);
+    var $merchItem = $merchData.children(".merchItems");
+    var merchViewAllLink = $merchData.children(".merchViewAll").html();
+    
+    /* Code for the Merch Head */
+    var merchHead = '<div class="merchHead"><div class="visitStore"><a href="'+ merchViewAllLink +'" class="visitStoreLink"  >ALL</a></div></div>';
+    var visitStorehead = jQuery(this.targetSel).parent(".description").parent(".body").siblings(".head");
+          jQuery(merchHead).appendTo(visitStorehead);
+    jQuery(visitStorehead).find("a").makeLinksExternal();
+    /* End of Code for Merch Module */
+    
+    var merchBody='<ul class="merchItems">';
+    var that = this;
+    jQuery.each($merchItem.children(".merchItem"), function (i){      
+      var merchImage = jQuery(this).children(".merchImage").html();
+      var merchTitle = jQuery(this).children(".merchTitle").html();
+      var merchBuyNow = jQuery(this).children(".merchBuyNow").html();
+      var merchPrice = jQuery(this).children(".merchPrice").html();
+      var omnitureArrayLinks = that.getMerchOmnitureArray(merchBuyNow);
+   
+      merchBody += '<li class="merch small item'+(i+1)+'">\
+        <div class="merchImg"><a href="'+ omnitureArrayLinks["page-thumb"] +'"><img src="'+ merchImage +'"/></a><div class="merchZoomIcon"></div></div>\
+        <div class="merchDetail">\
+          <div class="merchPriceWrapper"><div class="merchName"><a href="'+ omnitureArrayLinks["page-title"]+'" >'+ merchTitle +'</a></div></div>\
+          <div class="merchBuy"><div class="merchPrice">'+ merchPrice +'</div><a href="'+omnitureArrayLinks["page-button"]+'" class="merchBuyLink">Buy Now</a></div>\
+        </div>';
+      merchBody += '</li>';
+    });
+    merchBody += '</ul><div class="clear"></div>';
+  
+    var merchFoot = '<div class="clear"></div><div class="merchFoot"><div class="visitStore"><a href="'+ merchViewAllLink +'" class="visitStoreLink" >View ALL</a></div></div>';
+    var visitStoreFoot = jQuery(this.targetSel).parent(".description").parent(".body").siblings(".foot");
+          jQuery(merchFoot).appendTo(visitStoreFoot);
+    jQuery(visitStoreFoot).find("a").makeLinksExternal();    
+    jQuery(this.targetSel).html(merchBody);
+    return merchBody;
+  }
+}
+
+WMG.Merch.prototype.testOmnitureStringPresence = function (omnitureString){
+  var omnitureStrRegex = /intcmp=(.*)(&.*|\/)$/;
+  var regExCapture = omnitureString.match(omnitureStrRegex);
+  return regExCapture; 
+}
+
+/*
+ * This function is used to tag store links with different omniture tags, 
+ * to track them. This will enable us to track which links the user clicked.
+ * 
+ * This needs to be revisited. Create a new object for pate-title, page-button, page-thumb etc.
+ * */
+WMG.Merch.prototype.getMerchOmnitureArray = function (omnitureString){
+  var omnitureArrayLinks = [];
+  omnitureString = jQuery.trim(omnitureString);
+  if (omnitureString.charAt(omnitureString.length-1) != "/" ){omnitureString += "/";}
+  regExCapture = this.testOmnitureStringPresence(omnitureString);
+  if (regExCapture !== null && regExCapture !== ""){
+    var regularExpCapture = regExCapture[1]; 
+    omnitureString = omnitureString.replace(/\/$/,'');
+    omnitureArrayLinks["page-title"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-page-title');
+    omnitureArrayLinks["page-button"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-page-button');
+    omnitureArrayLinks["page-thumb"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-page-thumb');
+  }else{
+    var intcmp = this.testQueryStringPresence(omnitureString) ? '&intcmp=' : '?intcmp=';
+    omnitureArrayLinks["page-title"] = omnitureString.replace(/\/$/,intcmp+'page-title');
+    omnitureArrayLinks["page-button"] = omnitureString.replace(/\/$/,intcmp+'page-button');
+    omnitureArrayLinks["page-thumb"] = omnitureString.replace(/\/$/,intcmp+'page-thumb');
+  }
+  return omnitureArrayLinks;
+};
+
+WMG.Merch.prototype.testQueryStringPresence = function (omnitureString){
+    var test = false;
+    if (omnitureString.indexOf("?") !== -1) {
+        test = true;
+    }
+    return test;
+};
+
+;
+/**
+ * Join Toaster for drive registration for users. 
+ * 
+ * To make sure that this is available only for anonymous users, 
+ * use Drupal's roles to have this block only for anonymous users.
+ * 
+ * Dependencies : jQuery (jQuery v1.4 and above)
+ * 
+ * configuration
+ *          An object which contains the following config parameters as key value pairs.
+ *          Needs to provided when instantiated. As a parameter to the init method.
+ *	        Need not pass all the parameters, just the ones that are required to be overriden.
+ *  
+ * 			message               :- message for user (def - Still hanging around? Join Now) 
+ * 			firstVisit            :- nth visit to show this - (def - 3) 
+ * 			visitsMultiple        :- multiple of visits to show - (def - 5)
+ * 			containerSelector     :- container to append the toaster to - (def - #footer)
+ * 			animationSpeed        :- animation speed for show/hide of toaster (def - slow)
+ * 
+ * public methods
+ * 			init 	    :- used to initialize the toaster. The input params needs to be passed as a config object.
+ * 			showToaster :- invoked to show the toaster. If the number of visits are right, then the toaster is shown. 
+ * 
+ * how to invoke
+ * 			JoinToaster.init({firstVist:12,visitsMultiple:10});
+ * 			JoinToaster.showToaster();
+ */
+var JoinToaster = function (){
+	var config = {
+		message:"Still hanging around? Join Now",
+		firstVisit:3,
+		visitsMultiple:5,
+		containerSelector:"#footer",
+		animationSpeed:"slow"
+	};
+	
+	var visitCounter = 0;
+
+	var setCookie = function(cVal){
+    	jQuery.cookie('UserVisitCount', cVal, { expires: 365 * 10, path: '/'});
+    }
+
+	var getCookie = function (){
+		var retCookie = jQuery.cookie("UserVisitCount");
+		return retCookie;		
+	}
+		
+	var setVisitCounter = function(){
+		var counter = getCookie();
+		if (counter !== null){
+			visitCounter = counter;
+		}
+		visitCounter++;
+		setCookie(visitCounter);
+	}
+
+	var showToaster = function (){
+		if (visitCounter % config.visitsMultiple === 0){
+			displayToaster();
+			return;
+		}
+		if (visitCounter === config.firstVisit){
+			displayToaster();
+		}
+	}
+
+	var displayToaster = function(){
+		/*var toaster_content='<div id="regFooter" style="display:none;"><div id="regFooterWrapper"><div id="regFooterLeft"><label id="regFooterLabel">' + config.message + '</label><a href="/user/register?intcmp=join-toaster" id="regFooterSign" name="regFooterSign"></a><div class="clear"></div></div><div id="regFooterRight"><a id="regFooterClose" name="regFooterClose" href="#">Close</a></div><div class="clear"></div></div></div>';
+                var toaster_content='<div id="regFooter"><div id="regFooterWrapper"><div id="regFooterLeft"><label id="regFooterLabel">STILL HANGING AROUND? DONT BE A STRANGER.</label><a href="/user/register?intcmp=join_toaster" id="regFooterSign">join sitename.com</a><a id="regFooterClose">&nbsp;</a></div></div></div>';*/
+                var toaster_content='<div id="regFooter" style="display: block; "><div id="regFooterWrapper"><div id="regFooterLeft"><label id="regFooterLabel">STILL HANGING AROUND? DON\'T BE A STRANGER.</label><a id="regFooterSign" href="/user/register/nojs?intcmp=join_toaster" class="use-ajax use-dialog"></a></div><div id="regFooterRight"><a id="regFooterClose"></a></div><div class="clear"></div></div></div>';
+		jQuery(config.containerSelector + ' .content').append(toaster_content);
+		jQuery(config.containerSelector).slideToggle(config.animationSpeed);
+		jQuery("#regFooterClose").bind("click", function(){
+		  jQuery(config.containerSelector).slideToggle(config.animationSpeed);
+		  return false;
+		});
+	}
+	var init = function (inputConfig){
+		if (typeof inputConfig !== "undefined"){
+			jQuery.extend(config,inputConfig);
+		}
+		setVisitCounter();
+	}
+	
+	return {
+		init:init,
+		showToaster:showToaster
+	}
+}();
+
+
+//DISABLED -  Initialize toaster using before document.ready, since register/login overlays attachment is being processed then and we need to do this earlier
+// jQuery(document).ready(function(){
+  JoinToaster.init({firstVist:5,visitsMultiple:3, containerSelector: '#block-block-151'});
+  JoinToaster.showToaster();
+// });
+;

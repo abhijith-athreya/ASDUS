@@ -1,0 +1,14 @@
+_satellite.pushAsyncScript(function(event, target, $variables){
+  var type = 'visit'
+var pageLevel2 = _satellite.getVar('Page Level 2');
+var pageLevel1 =  _satellite.getVar('Page Level 1');
+if(pageLevel2 == 'movie times | tlp'){
+  type = 'theaters'
+}
+if(pageLevel2 == 'movie times | tsp' || pageLevel2 == 'movie times | by movie' || pageLevel2 == 'movie | overview'){
+  type = 'showtimes'
+}
+
+
+_satellite.addImage('https://pt.ispot.tv/v2/TC-3328-1.gif?type='+type+'&customdata='+_satellite.getVar('Movie ID'));
+});

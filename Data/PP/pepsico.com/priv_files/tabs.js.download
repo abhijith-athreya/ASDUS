@@ -1,0 +1,40 @@
+(function() {
+    function addClass(element, className) {
+        var classNames = element.className.split(' ');
+        if (classNames.indexOf(className) === -1) {
+            classNames.push(className);
+            element.className = classNames.join(' ');
+        }
+    }
+    function removeClass(element, className) {
+        var classNames = element.className.split(' ');
+        var index = classNames.indexOf(className);
+        if (index !== -1) {
+            classNames.splice(index, 1);
+            element.className = classNames.join(' ');
+        }
+    }
+    if (document.querySelector('.contact-tabs') != null) {
+        var main = document.querySelector('.contact-tabs');
+        var tabs = main.querySelectorAll('.contact-tabs__tab');
+        var bodies = main.querySelectorAll('.contact-tabs__body');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].addEventListener('click', function (e) {
+                if (document.documentElement.getBoundingClientRect().width < 768) {
+                    e.preventDefault();
+                    return false;
+                }
+                var tabId = this.getAttribute('data-tab');
+                var activeTab = main.querySelector('.contact-tabs__tab--active');
+                var activeBody = main.querySelector('.contact-tabs__body--active');
+                removeClass(activeTab, 'contact-tabs__tab--active');
+                removeClass(activeBody, 'contact-tabs__body--active');
+
+                var newActiveTab = this;
+                var newActiveBody = main.querySelector('.contact-tabs__body[data-tab="' + tabId + '"]');
+                addClass(newActiveTab, 'contact-tabs__tab--active');
+                addClass(newActiveBody, 'contact-tabs__body--active');
+            });
+        }
+    }
+})();

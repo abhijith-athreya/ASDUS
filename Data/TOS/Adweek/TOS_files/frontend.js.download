@@ -1,0 +1,1353 @@
+
+// Google Tag Manager script (moved from its own file)
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KX5FCW');
+
+var adslot 			= adslot || {};
+	adslot.rendered	= adslot.rendered ? adslot.rendered : [];
+
+(function($) {
+	'use strict';
+
+	var searchBar 	= $("#searchbar"),
+		dropdown	= $("#dropdown"),
+		windowTop,
+		windowBottom,
+		lastScrollTop,
+		opacity,
+		width,
+		downPosition,
+		upPosition;
+
+    oldBrowserDetector();
+    
+	$(window).load( function(){
+
+		if( $(window).width() < 680 ){
+			$(".vcko-color").each( function(){
+				$(this).parent().css( {
+					height	: $(this).outerHeight() + 30,
+					overflow: "visible"
+				});
+			});
+		}
+
+		setAddThis();
+		fixSocialEmbeds();
+		credSparkFix();
+	});
+
+	fixSocialEmbeds();
+
+	function fixSocialEmbeds(){
+
+		$(".embed-wrapper.type-other").each( function(){
+			var iframe = $(this).find('iframe');
+			if( iframe.length && iframe.attr('src').search('facebook') !== -1 ){
+				//video post
+				if( iframe.attr('allowfullscreen') === 'true' ) {
+					iframe.outerHeight( (iframe.attr('height') * iframe.parent().width()) / iframe.attr('width') );
+				}
+				//non-video post
+				else {
+					iframe.outerHeight( iframe.attr('height') );
+				}
+			}
+		});
+
+		$(".instagram-media").each( function(){
+
+			var embedHeight = parseInt( $(this).attr('height') ) + 10;
+			$(this).outerHeight( embedHeight );
+
+			if( $(this).parent().hasClass('type-video') ){
+				$(this).parent().removeClass('type-video').addClass('type-other');
+			}
+		});
+
+	}
+
+
+    function oldBrowserDetector(){
+        var ie = ( !!window.ActiveXObject && +( /msie\s(\d+)/i.exec( navigator.userAgent )[1] ) ) || NaN;
+
+        //old IE doesn't like template literals, so need to use single quote on a single line
+        var domain = window.location.href,
+
+            modal = '<div id="IE-warning-modal"><a id="close-modal">X</a><p class="warning">Your Browser is no longer supported</p><p class="text">To browse Adweek.com please upgrade or use one of the recommended browsers below</p><div class="chrome"><img src="' + domain + 'wp-content/themes/AdWeek/assets/images/icons/chrome-logo.png"</img>Google Chrome</div><div class="firefox"><img src="' + domain + 'wp-content/themes/AdWeek/assets/images/icons/firefox-logo.png"</img>Mozilla Firefox</div><div class="ms-edge"><img src="' + domain + 'wp-content/themes/AdWeek/assets/images/icons/edge-logo.png"</img>Microsoft Edge</div></div>';
+
+        var dropdown = document.getElementById('dropdown');
+
+        if ( ie < 11 && document.cookie.search('oldBrowserModal') == -1 ) {
+
+            var background = document.getElementsByClassName('container')[0];
+            background.style.cssText = "color: #444444; opacity: 0.2;";
+
+            dropdown.insertAdjacentHTML('afterEnd', modal);
+
+            var closeModal = document.getElementById('close-modal');
+            closeModal.addEventListener('click', function(){
+                var modal = document.getElementById('IE-warning-modal');
+                modal.style.display = 'none';
+                background.style.cssText = "...";
+            });
+
+            var d = new Date();
+            d.setTime(d.getTime() + (24*60*60*1000));
+            var expires = "expires="+ d.toUTCString();
+            document.cookie = "oldBrowserModal=present;" + expires + ";";
+        }
+    }
+
+	$(".social-link button").click( function(){
+
+		var tempInput = $("<input>");
+		$("body").append(tempInput);
+
+		var copyText = $(this).siblings('.bitly').text();
+		tempInput.val( copyText ).select();
+
+		try {
+			var successful = document.execCommand('copy');
+			var msg = successful ? 'successful' : 'unsuccessful';
+
+			$(this).addClass("copied");
+			$(this).siblings(".copy-confirmation").addClass("copied");
+			window.setTimeout( clearCopiedMessage, 1800);
+		} catch (err) {
+			console.log('Oops, unable to copy');
+		}
+
+		tempInput.remove();
+
+	});
+
+	function clearCopiedMessage(){
+		$(".copied").removeClass("copied");
+	}
+
+	//Adjust scroll height when doing CredSpark surveys to account for hero image
+
+	function credSparkFix(){
+		window.addEventListener("message", function(evt) {
+			if ( evt.data.assessmentPageView ) {
+				var page = evt.data.assessmentPageView.page,
+					heroHeight =  $('.hero-media > img').outerHeight() ? $('.hero-media > img').outerHeight() : $('.hero-media iframe').outerHeight();
+
+				if( page !== 1 ){
+					$(document).scrollTop( $(document).scrollTop() + heroHeight );
+				}
+			}
+	    });
+	}
+
+	// -------------------------------------------------------
+	//! Custom Variable Push to Analytics
+	// -------------------------------------------------------
+
+	// Run first GA push from here for posts / brandshare as this function sets all the required variables.
+	// Other post types are sent in head-meta-tags.php
+	if ( $('body').hasClass('single-post') || $('body').hasClass('single-sponsored_post') ){
+		// Once GA function has loaded run the first gaPush function
+		ga( function(){ gaPush(0) }  );
+	}
+
+	function gaPush( ai ) {
+
+		var ai			= typeof ai != undefined ? ai : awIS.articleIndex,
+			trackerName = ga.getAll()[0].get('name' ),
+			newArticle  = $( "article.main-content:eq(" + ai + ")" );
+
+		if ( newArticle.data( 'pageview-sent' ) !== true ){
+
+			var authors		= newArticle.data("authors"),
+				publishDate = newArticle.data("date"),
+				nqName 		= $("#single-post").data("infinite-name"),
+				featured 	= newArticle.data("featured"),
+				categories  = newArticle.data("categories"),
+				vertical	= newArticle.data("zone");
+
+			ga( trackerName + '.set', {
+				page			: location.pathname,
+				title			: document.title,
+				'dimension1'	: authors,				    // contributors
+				'dimension2'	: publishDate,				// publish date
+				'dimension3'	: nqName,				    // nodequeue name
+				'dimension4'	: JSON.stringify( ai + 1 ), // index in queue
+				'dimension5'	: featured,				    // primary category / brandshare campaign
+				'dimension6'	: categories,				// comma separated list of categories on post
+				'dimension7'	: vertical					// vertical assigned to post
+			});
+
+			ga( trackerName + '.send', 'pageview' );
+
+			newArticle.data( 'pageview-sent', true );
+
+		} // end if pageview sent
+
+	}
+
+	// Add gaPush to infinite scroll functions called on new post
+	if (typeof awIS !== 'undefined') {
+	    awIS.functions.push( gaPush );
+	}
+
+
+	$(document).scroll( function(){
+
+		windowTop		= $(window).scrollTop();
+		windowBottom	= windowTop + $(window).height();
+
+		toggleDropdownPositioning( windowTop );
+
+		adjustHeaderStyles( windowTop );
+
+		// Scrolling down
+		if ( windowTop > lastScrollTop ){
+
+			if ( $(window).width() < 680 ){
+				adjustMobileHeader( 'down', windowTop );
+			}
+
+		}
+		// Scrolling up
+		else {
+
+			if ( $(window).width() < 680 ){
+				adjustMobileHeader( 'up', windowTop );
+			}
+		}
+
+		lastScrollTop = windowTop;
+
+	});
+
+	function toggleDropdownPositioning( windowTop ){
+
+		if ( windowTop > 0 && !searchBar.hasClass("fixie") ){
+			searchBar.addClass("fixie").removeClass('fixieremove');
+		}
+
+		else if ( windowTop === 0 && searchBar.hasClass("fixie") ){
+			searchBar.removeClass("fixie").addClass('fixieremove');
+		}
+
+		if ( windowTop > 0 && !dropdown.hasClass("fixie") ){
+			dropdown.addClass("fixie").removeClass('fixieremove');
+		}
+
+		else if ( windowTop === 0 && dropdown.hasClass("fixie") ){
+			dropdown.removeClass("fixie").addClass('fixieremove');
+		}
+
+	}
+
+	function adjustHeaderStyles( windowTop ){
+
+		if ( $(window).width() > 1039 ){
+
+			if ( windowTop > 0 ){
+				$("#masthead, #secondary-head").addClass('fixie');
+			}
+			else {
+				$("#masthead, #secondary-head").removeClass('fixie');
+			}
+
+		}
+	}
+
+	function adjustMobileHeader( direction, windowTop ){
+
+		if ( direction == 'down' && $("#dropdown").hasClass("hidden") && windowTop > 300 ){
+			$("#masthead").addClass("down-scroll");
+		}
+		else{
+			$("#masthead").removeClass("down-scroll");
+		}
+
+	}
+
+	$(".dropdown-toggle").click( function(){
+
+		if ( $("#dropdown, #searchbar").hasClass('fixieremove') ){
+			$("#dropdown, #searchbar").removeClass('fixieremove');
+		}
+
+		$(".dropdown-toggle").toggleClass("open");
+
+		if ( $("#searchbar").hasClass("hidden") && $("#dropdown").hasClass("hidden") ){
+			$("#searchbar").removeClass("hidden");
+			$("#dropdown").removeClass("hidden");
+			$(".search-bar-toggle").addClass("open");
+
+			$(".event-hero-title").css({"z-index" : 0});
+		}
+		else if ( !$("#searchbar").hasClass("hidden") && $("#dropdown").hasClass("hidden") ){
+			$("#dropdown").removeClass("hidden");
+
+			$(".event-hero-title").css({"z-index" : 0});
+		}
+		else {
+			$("#searchbar").addClass("hidden");
+			$("#dropdown").addClass("hidden");
+			$(".search-bar-toggle").removeClass("open");
+
+			$(".event-hero-title").css({"z-index" : 100});
+		}
+
+		$(".dd-menu .menu li:first-child").addClass("is-active");
+	});
+
+	$(".search-bar-toggle").click( function(e){
+
+		e.preventDefault();
+
+		// Remove fixie class or it'll popup from the bottom instead of slide in from the top
+		if ( $("#searchbar").hasClass('fixieremove') ){
+			$("#searchbar").removeClass('fixieremove');
+		}
+
+		// If search and dropdown are shown, hide dropdown
+		if ( !$("#searchbar").hasClass("hidden") && !$("#dropdown").hasClass("hidden") ){
+			$("#dropdown").addClass("hidden");
+			$(".dropdown-toggle").removeClass("open");
+		}
+		// If search and dropdown are hidden, show search
+		else if ( $("#searchbar").hasClass("hidden") && $("#dropdown").hasClass("hidden") ){
+			$("#searchbar").removeClass("hidden");
+			$(".search-bar-toggle").addClass("open");
+		}
+		// If search is visible, hide search
+		else {
+			$("#searchbar").addClass("hidden");
+			$(".search-bar-toggle").removeClass("open");
+		}
+
+	});
+
+	$(".container").click( function(){
+		if ( !$("#searchbar").hasClass("hidden") && !$("#dropdown").hasClass("hidden") || !$("#searchbar").hasClass("hidden") ){
+			$("#searchbar").addClass("hidden");
+			$("#dropdown").addClass("hidden");
+			$(".dropdown-toggle, .search-bar-toggle").toggleClass("open");
+		}
+	});
+
+// 	$(".dd-menu .menu li:first-child").addClass("dd-active");
+
+	$(".dd-menu .dd-left-menu li > ul").each( function(){
+		$(this).addClass("submenu");
+	});
+
+// Add specific IDs for Mixpanel's Autotrack feature to grab onto
+	//primary menu
+	$("#menu-primary-menu > li > a").each( function(){
+		$(this).attr("id", "primary-menu-" + $(this).text().replace(/ +/,'-'));
+	});
+	//dropdown menu
+	$(".dd-left-menu > li > a").each( function(){
+		$(this).attr("id", "dd-menu-" + $(this).text().replace(/ +/,'-'));
+	});
+	$(".dd-left-menu .submenu a").each( function(){
+		$(this).attr("id", "dd-sub-menu-" + $(this).text().replace(/ +/,'-'));
+	});
+
+	//container title
+	$(".container-title").each( function(i) {
+		$(this).find("a.view-more").attr("id", "view-more-" + (i + 1));
+	});
+
+	//container meno
+	$(".container-meno .hide-for-small-only > a:not(.contributor), .container-meno .show-for-small-only > a.show-for-small-only").attr("id", "meno-featured");
+	$(".container-meno .hide-for-small-only > a.contributor, .container-meno .show-for-small-only > a.contributor").attr("id", "meno-featured-author");
+
+	$(".container-meno #section-1 .aw-element").each( function(i){
+		$(this).find(".cat-name a").attr("id", "meno-section-1-link-" + (i+1) + "-cat");
+		$(this).find("a.contributor").attr("id", "meno-section-1-link-" + (i+1) + "-author");
+		if($(this).hasClass("vertical")) {
+			$(this).find("> a:not(.cat-name, .contributor)").attr("id", "meno-section-1-link-" + (i+1));
+		} else if( $(this).hasClass("title-excerpt") ){
+			$(this).find("> a").attr("id", "meno-section-1-link-" + (i+1));
+		}
+	});
+
+	$(".container-meno #section-2 .aw-element").each( function(i){
+		$(this).find("> a").attr("id", "meno-section-2-link-" + (i+1));
+	});
+
+	//container grid
+	$(".container-grid").each( function(i){
+		$(this).find(".aw-element").each( function(j){
+			$(this).find("> a:not(.cat-name, .contributor)").attr("id", "grid-" + (i+1) + "-link-" + (j+1));
+			$(this).find(".cat-name a").attr("id", "grid-" + (i+1) + "-link-" + (j+1) + "-cat");
+			$(this).find("a.contributor").attr("id", "grid-" + (i+1) + "-link-" + (j+1) + "-author");
+		});
+	});
+
+	//container dierlam
+	$(".container-dierlam").each( function(i){
+		$(this).find(".aw-element.show-for-large > a:not(.cat-name, .contributor), .aw-element.hide-for-large > a:not(.cat-name, .contributor)").attr("id", "dierlam-" + (i+1) + "-featured");
+		$(this).find(".section-1 > .aw-element.horizontal").each( function(j){
+			$(this).find("> a").attr("id", "dierlam-" + (i+1) + "-section-1-link-" + (j+1));
+		});
+		$(this).find(".section-2 > .aw-element").each( function(j){
+			if( $(this).hasClass("vertical") ) {
+				$(this).find("> a:not(.cat-name, .contributor)").attr("id", "dierlam-" + (i+1) + "-section-2-link-" +(j+1));
+			} else if( $(this).hasClass("horizontal-small") ) {
+				$(this).find("> a").attr("id", "dierlam-" + (i+1) + "-section-2-link-" +(j+1));
+			}
+		});
+		$(this).find(".section-3 > .hide-for-large > .aw-element").each( function(j){
+			$(this).find("> a:not(.cat-name, .contributor)").attr("id", "dierlam-" + (i+1) + "-section-3-mobile-link-" + (j+1) )
+		});
+		$(this).find(".section-3 .subscribewidget a").attr("id", "dierlam-subscribe");
+	});
+
+	//container g
+	$(".container-g").each( function(i){
+		$(this).find(".section-1 > .aw-element").each( function(j){
+			$(this).find("a:not(.cat-name, .contributor)").attr("id", "container-g-" + (i+1) + "-section-1-link-" + (j+1));
+			$(this).find(".cat-name a").attr("id", "container-g" + (i+1) + "-link-" + (j+1) + "-cat");
+			$(this).find("a.contributor").attr("id", "container-g" + (i+1) + "-link-" + (j+1) + "-author");
+		});
+		$(this).find(".section-2 div.aw-element").each( function(j){
+			$(this).find("> a").attr("id", "container-g-" + (i+1) + "-section-2-link-" + (j+1));
+		});
+		$(this).find(".view-more-link > a").attr("id", "container-g-" + (i+1) + "-view-more-link");
+	});
+
+	//container cards
+	$(".container-cards").each( function(i){
+		$(this).find(".aw-element").each( function(j){
+			if( $(this).parent(".col-1").length ){
+				$(this).find("a").attr("id", "cards-" + (i+1) + "-link-" + (j+1));
+			}
+			else if ( $(this).parent(".col-2").length ){
+				$(this).find("a").attr("id", "cards-" + (i+1) + "-link-" + (j));
+			}
+			else if ( $(this).parent(".col-3").length ){
+				$(this).find("a").attr("id", "cards-" + (i+1) + "-link-" + (j-1));
+			}
+			else if ( $(this).parent(".col-4").length ){
+				$(this).find("a").attr("id", "cards-" + (i+1) + "-link-" + (j-3));
+			}
+		});
+	});
+
+	//container latest
+	$(".container-latest > .aw-element").each( function(i){
+		$(this).find("a").attr("id", "latest-link-" + (i+1));
+	});
+
+	//container-video
+	$(".container-video > .aw-video").each( function(i){
+		$(this).find(".video-overlay").attr("id", "video-" + (i+1));
+	});
+
+	//full-width images
+	$(".aw-element.full-width.parent-width").each( function(i){
+		$(this).find("> a").attr("id", "full-width-image-" + (i+1));
+	});
+
+	//subscribe container
+	$(".container-subscribe button.button").attr("id", "subscribe-button");
+
+	// popular-now
+	$(".popular-now a").each( function(i){
+		$(this).attr("id", "popular-link-" + (i+1));
+	});
+
+	//footer menu
+	$("#menu-footer-menu > .menu-item").each( function(i) {
+		$(this).children("a").attr("id", "footer-col-" + (i+1));
+		$(this).find(".sub-menu .menu-item > a").each( function(j){
+			$(this).attr("id", "footer-col-" + (i+1) + "-sub-link-" + (j+1));
+		});
+	});
+
+//END Mix-Panel Stuff//
+
+	if( $(window).width() < 1040 ){
+		$("body").off( "mouseover", ".dd-menu .dd-left-menu li" );
+		$(".dd-menu .dd-left-menu li.menu-item-has-children").click( function(e){
+			e.preventDefault();
+			$(this).siblings(".dd-active").removeClass("dd-active");
+			$(this).addClass("dd-active");
+		});
+
+
+		$(".dd-left-menu").on( 'click', ".submenu li", function(e){
+			var link = $(this).find('a').attr('href');
+			$(location).attr('href', link);
+		});
+
+	}
+
+	else {
+		$(".dd-menu .dd-left-menu li").mouseover( function(){
+			$(".dd-active").removeClass("dd-active");
+			$(this).siblings(".dd-active").removeClass("dd-active");
+			$(this).addClass("dd-active");
+		});
+	}
+
+
+// 	$(".submenu").height( $("#menu-dd-menu").outerHeight() );
+
+	$(".dd-social-container a").attr('target','_blank');
+
+	// -------------------------------------------------------
+	// ADDTHIS SCRIPTS
+	// -------------------------------------------------------
+
+	$.getScript("//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5220cc19623b4a53");
+
+    var addthis_config = addthis_config || {};
+	addthis_config.data_track_addressbar = false;
+	addthis_config.data_track_clickback = false;
+	addthis_config.ui_click = true;
+	if (typeof BITLYURL !== 'undefined') {
+	    var addthis_share = {
+	        url : BITLYURL
+	    };
+	}
+
+	function setAddThis(){
+		if ( $('body').hasClass('single') ){
+			var newTitle 	= $( ".entry-title" ).text(),
+				newUrl	 	= $( ".main-content" ).data( "bitlyurl" ),
+				newDescr 	= $( ".main-content" ).data( "excerpt" );
+
+		    var addthis_config = addthis_config || {};
+			addthis_config.data_track_addressbar = false;
+			addthis_config.data_track_clickback = false;
+
+
+			addthis.update( 'share', 'title', 		encodeURIComponent(newTitle) );
+			addthis.update( 'share', 'url', 		newUrl );
+			addthis.update( 'share', 'description', newDescr );
+
+			addthis.toolbox( '.addthis_toolbox' );
+			addthis.toolbox( '#sticky-nav .addthis_toolbox' );
+
+		}
+	}
+
+	// -------------------------------------------------------
+	// BROWSER / FEATURE DETECTION
+	// -------------------------------------------------------
+	addBrowserClass();
+
+	function addBrowserClass(){
+
+		if( "ActiveXObject" in window ){
+			$('html').addClass('ie');
+		}
+
+	}
+
+
+	// -------------------------------------------------------
+	// STICKY ADS
+	// -------------------------------------------------------
+	var stickyConTop,
+		stickyConBottom,
+		stickyWidgets,
+		stickySiblings,
+		fixedPosition	= 70,
+		anchorMargin	= 0,
+		wrapperTop, wrapperBottom;
+
+
+	$( window ).scroll( function(){
+
+		windowTop 		= $(window).scrollTop();
+		windowBottom	= windowTop + $(window).height();
+
+		// check which of the .sidebar's are visible and use that one to set stickiness
+		$(".sidebar").each( function(){
+			stickUnstick( $(this) );
+		});
+
+		if( $(window).width() > 680 ){
+			$(".aw-container").each( function(){
+				stickUnstick( $(this) );
+			});
+		}
+
+	});
+
+
+	function stickUnstick( wrapper ){
+
+		// Sidebar / window variables
+		wrapperTop		= wrapper.offset().top;
+		wrapperBottom  	= wrapperTop + wrapper.outerHeight(true);
+
+		// Sticky container / positioning variables
+		var stickyContainer = wrapper.find(".sticky-container");
+
+		// If there's no sticky container, why bother going any further!?
+		if( stickyContainer.length === 0 ){ return; }
+
+		stickyContainer.each( function(i){
+
+			// Declare local variables for each sticky container so they don't mess with each other
+			var container		= $(this),
+				stickyConTop	= container.offset().top,
+				stickyConBottom = stickyConTop + container.height(),
+				stickyWidgets	= container.find(".sticky-widgets").width( container.width() );
+
+			var	swHeight		= stickyWidgets.outerHeight(true),
+				anchor 			= stickyConBottom - swHeight - fixedPosition - anchorMargin,
+				placeholder		= container.find(".sticky-placeholder").css('height', swHeight ); // create a placeholder for when the widgets are fixed
+
+			// If the top of the wrapper is above the bottom of the window ( in view or above )
+			// If the bottom of the wrapper is below the top of the window ( in view or below )
+			// i.e. If the wrapper is visible
+			if ( wrapperTop < windowBottom && wrapperBottom > windowTop ){
+
+				// If the top of the window passes the top of the sticky container and is above the anchor, make the widgets sticky
+				if( ( windowTop + fixedPosition ) > stickyConTop && windowTop < anchor ) {
+
+					placeholder.css({
+						"position"	: "relative",
+						"top"		: "auto",
+					});
+
+					stickyWidgets.css({
+						"position"	: "fixed",
+						"top"		: fixedPosition
+					});
+
+				}
+				// Otherwise either anchor it to the top or the bottom
+				else {
+
+					placeholder.css({
+						"position"	: "fixed",
+						"top"		: -99999
+					});
+
+					stickyWidgets.css({
+						"position"	: "relative",
+						"top"		: "auto",
+					});
+
+					if ( ( windowTop ) >= anchor ) {
+						container.css( "justify-content", "flex-end" );
+					}
+					else {
+						container.css( "justify-content", "flex-start" );
+					}
+				}
+			}
+		});
+
+	}
+
+	// -------------------------------------------------------
+	// CONTACT FORM POPUP
+	// -------------------------------------------------------
+
+	$(document).on( 'click', "#closepopwrap", function(){
+		$(this).parents('#popwrap').addClass('hide');
+	});
+
+	$(document).on( 'click', ".show-popup", function(e){
+		e.preventDefault();
+		var popupID = $(this).parents('article').data('popup');
+		$('.popup-' + popupID ).removeClass('hide');
+	});
+
+    // -------------------------------------------------------
+    // CONTACT FORM Styling
+    // -------------------------------------------------------
+
+    //add right margin to odd-numbered cf-half elements. can't use CSS because
+    //of sibling <p> tags that are not cf-half
+    $(document).ready( function() {
+        $('.cf-half').each( function(i, element) {
+            if (i%2 === 0) element.setAttribute("style", "margin-right: 20px");
+        });
+    });
+
+	// -------------------------------------------------------
+	// SEARCH FILTERS
+	// -------------------------------------------------------
+	if ( $('body').hasClass('search') ){
+		$("#filter-collapse").click( function(){
+			$("#search-filters").toggleClass('expanded');
+		});
+
+		jQuery(window).load(function($) {
+			$ = jQuery;
+
+			$('.auto-select2').each( function(){
+
+				var selectInput = $(this),
+					selectWidth	= (typeof selectInput.data('width') != "undefined" ) ? selectInput.data('width') : '95%';
+
+          if (selectInput.select2){
+            selectInput.select2({
+              placeholder: selectInput.data("placeholder"),
+              width:     selectWidth,
+            })
+
+          }
+
+			});
+
+			availableFilters( aw.query_vars );
+
+			$('.search-filter .auto-select2').each( function(){
+				var selectInput = $(this);
+
+          if (selectInput.select2){
+    				selectInput
+    					.select2({
+    						minimumResultsForSearch: 3, // stops sort by from having searchbox
+    					});
+          }
+// 					.on("select2:select select2:unselect", function (e) { processFilters() });
+			});
+
+
+
+	/*		// Don't show drop down until at least 2 letters entered
+			$(document).on( 'select2:open', '.auto-select2', function(e){
+				if( $(this).siblings('.select2').find('.select2-search__field').val().length < 2)
+					$('.select2-dropdown').addClass( 'hidden' );
+			});
+
+
+			$(document).on( 'keyup', '.select2-search__field', function(e){
+
+				if( $(this).val().length < 2 ){
+					$('.select2-dropdown').addClass( 'hidden' );
+				}
+				else {
+					$('.select2-dropdown').removeClass( 'hidden' );
+				}
+			});
+	*/
+
+		});
+
+
+		$("#search-filter-form").submit( function(){
+
+			if( $('.vertical-filter input:not(#all-verticals):checked').length == 5 ){
+				$('#all-verticals').val('all');
+			}
+			else {
+				$('#all-verticals').val('some');
+			}
+
+		});
+
+	    $(".clear-filter").click(function(e){
+		    e.preventDefault();
+			var clearName = $(this).data('input');
+
+			$('[name="'+ clearName +'"]').val( null ).trigger( 'change' );
+			processFilters();
+
+	    });
+
+
+	    $("#post-date-filter").daterangepicker( {
+	        format: 	'YYYY-MM-DD',
+	        maxDate: 	moment(),
+	        // Not setting a start date makes it equal to today. Test for this to include all dates
+	//         startDate:  typeof fromDate != undefined ?  fromDate : moment(),
+	//         endDate: 	typeof toDate 	!= undefined ? toDate 	: moment(),
+	        opens: 		'right',
+	        ranges: {
+				'Last 7 Days': 		[ moment().subtract(7,  'days'), moment().subtract(1, 'days') ] ,
+				'Last 30 Days': 	[ moment().subtract(30, 'days'), moment().subtract(1, 'days') ] ,
+				'Year to Date': 	[ moment().subtract(1, 'days').startOf('year') , moment().subtract(1, 'days') ] ,
+	        },
+	        alwaysShowCalendars	: true,
+	        autoUpdateInput		: false,
+	        parentEl			: '#search-filter-form'
+	    },
+	    function( fromDate, toDate ) {
+			$('#post-date-filter').val( fromDate.format('MM/DD/YYYY') + ' - ' + toDate.format('MM/DD/YYYY') );
+		});
+
+		var fromDate = $("#fromDate").val().length 	? $("#fromDate").val() 	: '';
+		var toDate 	 = $("#toDate").val().length 	? $("#toDate").val() 	: '';
+
+		if( fromDate.length ){
+			$('#post-date-filter').val( fromDate + ' - ' + toDate );
+			$("#post-date-filter").data('daterangepicker').setStartDate(fromDate);
+			$("#post-date-filter").data('daterangepicker').setEndDate(toDate);
+		}
+
+	    $("#post-date-filter").siblings('.glyphicon-calendar').click(function(){
+		    $(this).siblings('input').data('daterangepicker').toggle();
+	    });
+
+	}
+
+
+	function processFilters(){
+		// Prepare new query to send and get back filter data
+
+		var query_vars = aw.query_vars;
+
+		query_vars.tax_query = [
+			{
+				"taxonomy"	: "category",
+				"terms"		: $('[name="filter-category[]"]').val()
+			},
+			{
+				"taxonomy"	: "contributor",
+				"terms"		: $('[name="filter-contributor[]"]').val()
+			}
+		]
+
+		$('#search-filter-form .triple-circle-button').show();
+		availableFilters( query_vars );
+
+	}
+
+
+	function availableFilters( query_vars ){
+
+		var data = {
+				"action" 	: "get_terms_for_posts",
+				"nonce"	 	: aw.nonce,
+				"query_vars": query_vars
+			},
+			categories,
+			contributors,
+			taxQuery = query_vars.tax_query;
+
+		$.post( ajaxurl, data, function (response ) {
+
+			if ( response.success ) {
+
+				categories = response.data.categories;
+				contributors = response.data.contributors;
+
+				$('#search-filter-form .triple-circle-button').hide();
+
+				$('[name="filter-category[]"]')
+					.select2({ data: null }).empty()
+					.select2({ data: categories });
+
+				$('[name="filter-contributor[]"]')
+					.select2({ data: null }).empty()
+					.select2({ data : contributors  });
+
+				if ( typeof taxQuery != 'undefined' ){
+
+					taxQuery.forEach( function( tax ){
+						if ( tax.taxonomy == 'category' ){
+
+							$('[name="filter-category[]"]')
+								.val( null ).trigger( 'change' )
+								.val(tax.terms).trigger('change');
+						}
+						if ( tax.taxonomy == 'contributor' ){
+							$('[name="filter-contributor[]"]')
+								.val( null ).trigger( 'change' )
+								.val(tax.terms).trigger('change');
+						}
+					});
+				}
+
+			}
+		});
+
+	}
+
+
+	// -------------------------------------------------------
+	// JOBS WIDGET
+	// -------------------------------------------------------
+	function checkContainerSidebar( event ){
+		if( ( $('#'+ event.slot.j.m ).parents('.container-meno').length || $('#'+ event.slot.j.m ).parents('.container-dierlam').length ) && event.size[1] == '600' ) {
+			$('#'+ event.slot.j.m ).parents('.aw-container').find('.jobs-widget').parent().remove();
+		}
+
+	}
+
+	    adslot.rendered.push( checkContainerSidebar );
+
+
+	// -------------------------------------------------------
+	// EVENTS PAGE
+	// -------------------------------------------------------
+
+	var processing;
+
+	function scrollToAnchor(anchor){
+		var scrollAnchor = $(anchor).offset().top - 79,
+			scrollTime	 = (scrollAnchor / $('#footer-container').offset().top ) * 3500;
+
+	    $('html,body').animate({ scrollTop: scrollAnchor }, 2000, 'easeInOutQuart' );
+
+	}
+
+	$(".slow").click(function(e){
+		var href = $(this).find("a").attr("href");
+
+		$(this).siblings('.active').removeClass('active');
+		$(this).addClass('active');
+
+		e.preventDefault();
+		var hash 		= href.substring(href.indexOf('#'), 1000);
+
+		scrollToAnchor(hash);
+
+	});
+
+	$(document).scroll( function(){
+
+		if ( $(window).width() < 680 ) return;
+
+		var window_top	= $(window).scrollTop(),
+			sections	= $('.aw-full-width'),
+			thisTop,
+			nextTop,
+			sectionId,
+			href;
+
+		sections.each( function(i){
+
+			thisTop = 	$(this).offset().top - 80;
+			nextTop = 	$('.aw-full-width').eq( i + 1 ).length ? $('.aw-full-width').eq( i + 1 ).offset().top :
+						$('#footer-site-logo').offset().top;
+
+			if( window_top > thisTop && window_top < nextTop ){
+
+				$('.event-menu .active').removeClass('active');
+
+				sectionId 	= $(this).attr('id');
+				href		= '[href="#' + sectionId + '"]';
+				$(href).parent().addClass('active');
+
+			}
+		});
+
+	});
+
+	if ( $(window).width() < 680 ){
+		var eventMenuHeight = $('.event-menu a').outerHeight() * $('.event-menu li').length;
+		$('nav.event-menu').data( 'expandHeight', eventMenuHeight );
+	}
+
+	$('#mobile-menu-toggle').click( function(e){
+		e.preventDefault();
+
+		if( $(this).parents('.menu-toggle-wrapper').hasClass('menu-active') ){
+			$(this).parents('.menu-toggle-wrapper').removeClass('menu-active');
+			$('.slide-up').css('height', 0 );
+			$(this).parents('.event-nav').find('.event-menu').removeClass('slide-up');
+			$(this).html('MENU');
+		}
+		else {
+			$(this).parents('.menu-toggle-wrapper').addClass('menu-active');
+			$(this).parents('.event-nav').find('.event-menu').addClass('slide-up');
+			$('.slide-up').css('height', $('.slide-up').data('expandHeight') );
+			$(this).html('X');
+		}
+	});
+
+
+	$('#more-events').click( function(){
+		// Prevents double hit
+		if( processing !== true ){
+			processing = true;
+			$(this).html('Loading');
+			loadEventPage();
+		}
+	});
+
+	if ( $.isFunction('select2') ){
+		$('.single-event .wpcf7-select').select2({
+			minimumResultsForSearch: -1
+		});
+	}
+
+	function loadEventPage(){
+
+		// Add current page & total page to dom
+		// Reference page and if equal to total pages remove button to load more events
+		// Otherwise load the next 8 and append to .event-archive - remember to add nob-xl etc to previous posts
+
+		var currentPage = $("#past-events-list").data("page"),
+			nextPage	= parseInt( currentPage ) + 1,
+			totalPages 	= $("#past-events-list").data("totalpages"),
+			eventType	= $("#past-events-list").data("event-type");
+
+		var data = {
+	        "action"	: "load_event_page",
+	        "page"		: parseInt( currentPage ) + 1,
+	        "event_type": eventType
+	    };
+
+		$.ajax({
+	        url		: ajaxurl,
+	        type	:'GET',
+	        data	: data,
+	        success	: function( html ){
+
+	            $("#past-events-list .event").removeClass(' nob-xl nob-l nob-m nob-s');
+
+	            $("#past-events-list").append(html).data( "page", nextPage );
+
+				// Set processing back to false so new ajax calls can happen.
+				processing 	= false;
+
+				if( nextPage == parseInt( totalPages ) ){
+					$('#more-events').remove();
+				}
+				else {
+					$('#more-events').html('Load More');
+				}
+
+	        }
+	    });
+
+	    return false;
+	}// end loadArticle
+
+
+	$(window).load(function() {
+
+		if ( typeof $.flexslider != 'undefined' ){
+			$('.event-archive-slider').flexslider({
+				animation: "slide",
+				slideshowSpeed: 5000,
+				directionNav: false,
+				smoothHeight: true,
+				animationSpeed: 800,
+			});
+		}
+	});
+
+    // -------------------------------------------------------
+    // SINGLE EVENT PAGE
+    // -------------------------------------------------------
+
+    //if any speaker or attendee is missing a headshot, don't show any (in that group)
+
+    function headShotStyles(photoClass, detailsClass){
+        var allHavePic = true;
+
+        $(photoClass).each(function(e,i) {
+            if ( !i.hasChildNodes() ) {
+                allHavePic = false;
+                return false;
+            }
+        });
+
+        if ( !allHavePic ) {
+            $(detailsClass).each(function(){
+                $(this).css({
+                    position: 'static',
+                    background: 'white',
+                    bottom: 'auto'
+                }).prev().remove();
+                $(this).find('*').css("color", "#333333");
+            });
+        }
+    }
+
+    headShotStyles('.attendee-image', '.attendee-details');
+    headShotStyles('.speaker-image', '.speaker-details');
+
+
+    //add padding below footer to it isn't hidden by Events special footer
+
+    $(document).ready(function(){
+        if( $('.event-nav').length !== 0 ) {
+            $('#footer-copyright').css('padding-bottom', '50px');
+        }
+    });
+
+    //dynamically set color of the contact form submit button
+    $(document).ready( function () {
+        var $submitButton = $('.wpcf7-submit'),
+            $color = $('#day-tabs .tabs-title a').css("color");
+        $submitButton.css({
+            'background': $color
+        });
+    } );
+
+	// -------------------------------------------------------
+	// LYTICS TRACKING IN CF7
+	// -------------------------------------------------------
+
+	// Gather CF7 form data on submission
+	$(document).on( 'submit', '.wpcf7-form', function(e){
+		lytics.gatherData( $(this) );
+	});
+
+	// Send CF7 data to lytics if the mail sent successfully
+	$('.wpcf7').on( 'wpcf7:mailsent', function(e){
+		lytics.sendData();
+	})
+
+
+	// -------------------------------------------------------
+	// LYTICS LEAD GEN FORM FIX / IP ADDRESS
+	// -------------------------------------------------------
+
+	$(document).on( 'mouseover', '.pf-widget-modal.lead-gen', function(){
+		$(this).find( '.pf-widget-headline').detach().prependTo( $(this).find('.pf-widget-body') );
+	});
+
+	// Wait for the site to load and then check for Lytics modal to change the CTA text.
+	jQuery( document ).ready(function($) {
+		checkForLyticsModal();
+	});
+
+	function checkForLyticsModal(){
+		if( $( '.pf-widget.adweek' ).length){
+			$( '.pf-widget.adweek' ).find('.pf-widget-cancel').html('No Thanks');
+			var popupID = $('.pf-widget-modal.lead-gen:visible').attr('id');
+			$('#' + popupID).find( '.pf-widget-headline').detach().prependTo( $('#' + popupID).find('.pf-widget-body') );
+		}
+		else {
+			setTimeout( checkForLyticsModal, 400 );
+		}
+	}
+
+	$.getJSON( '//ip-api.com/json', function( data ) {
+		lytics.fields.ip 	= data.query;
+		lytics.fields.org 	= data.org;
+
+		lytics.sendData();
+
+		delete lytics.fields.ip;
+		delete lytics.fields.org;
+
+	});
+
+	jQuery( document ).ready(function($) {
+
+		var lyticsTopics = $('meta[name="lytics:topics"]').attr("content");
+
+		lytics.fields.AW_Page_Topic = lyticsTopics;
+
+		lytics.sendData();
+
+		delete lytics.fields.AW_Page_Topic;
+
+	});
+
+	// -------------------------------------------------------
+	// CREDSPARK
+	// -------------------------------------------------------
+
+	$('.credsparkQuiz').attr('data-uuid', 'user-' + Date.now() );
+
+	window.addEventListener("message", function(event) {
+		var lyticsProperty;
+		if ( event.origin == "https://www.credspark.com" ) {
+			if ( typeof event.data.embeddedRegistration != 'undefined' ){
+				for ( var propertyName in event.data.embeddedRegistration.formData ){
+					// Reset lyticsProperty variable so it doesn't overwrite the previous one
+					lyticsProperty = '';
+					// if substring (3333) = data field -> add to lytics fields to send
+					if ( typeof $('.credsparkQuiz').data( propertyName.substring(25,29) ) != 'undefined' ){
+						lyticsProperty = $('.credsparkQuiz').data( propertyName.substring(25,29) );
+					}
+					else if ( propertyName.indexOf( 'user' ) == 0 ){
+						lyticsProperty = propertyName.replace( 'user[', '' ).replace( ']', '' );
+					}
+
+					lytics.fields[lyticsProperty] = event.data.embeddedRegistration.formData[propertyName];
+				}
+				// Send credspark form data to lytics
+				lytics.sendData();
+			}
+		}
+    });
+
+    // -------------------------------------------------------
+    // GALLERY SLIDER (Uses Photoswipe JS Plugin)
+    // -------------------------------------------------------
+    if( typeof gallery_slides != 'undefined') {
+        $(document).ready(function () {
+            //gallery_slides localized in article-kickouts.php
+
+            //kickout slides
+            var slide_data = JSON.parse(gallery_slides);
+            var ko_slides = [];
+
+            slide_data.slides.forEach(function (slide) {
+                ko_slides.push(
+                    {
+                        url: slide['ko_img_src'],
+                        caption: slide['slide_caption'],
+                        credit: slide['slide_credit']
+                    }
+                );
+            });
+
+            //pre-load images
+            ko_slides.forEach(function (slide) {
+                $('.images-container').append('<img src="' + slide.url + '"></img>');
+            });
+
+            var current_ko_idx = 0;
+
+            var options = {
+                index: current_ko_idx,
+                shareEl: false,
+                fullscreenEl: false
+            };
+
+            var $img_wrap = $('#launch-photoswipe'),
+                $ko_caption = $('.gallery-caption'),
+                $ko_credit = $('.gallery-credit'),
+                $ko_wrap = $('.gallery-wrap'),
+                $arrows = $('.ko-gallery-slider .next-slide, .ko-gallery-slider .prev-slide'),
+                $next_arrow = $('.next-slide');
+
+            let original_height, new_height, new_img_html, new_img;
+
+            function setKickoutSlide() {
+                new_img_html = '<img src="' + ko_slides[current_ko_idx].url + '" />';
+                $img_wrap.hide(); //prevent new image from jumping outside container before max-height applied
+                $img_wrap.html(new_img_html);
+                new_img = document.getElementById('launch-photoswipe').childNodes[0];
+
+                //timeouts are so iOS and Safari play nice :-)
+                new_img.addEventListener('load', function () {
+                    new_img.setAttribute('style', 'max-height: ' + original_height + 'px;');
+                    $img_wrap.show();
+                    setTimeout(function () {
+                        new_height = new_img.height;
+                        new_img.setAttribute('style', 'max-height: ' + original_height + 'px; padding-top: ' + (original_height - new_height) / 2 + 'px;');
+                    }, 0);
+                    //get new rendered height after applying max-height rule
+                    setTimeout(function () {
+                        new_height = new_img.height;
+                    }, 0);
+                    //the 'next' arrow is positioned w/ negative margin to be relative to it's container, this must be adjust if the container's rendered height changes
+                    setTimeout(function () {
+                        if (new_height !== original_height) {
+                            $('.next-slide').css({'margin-top': -(new_height / 2 + 24) + 'px'});
+                        } else {
+                            $('.next-slide').css({'margin-top': -(original_height / 2 + 24) + 'px'});
+                        }
+                        $next_arrow.show();
+                    }, 0);
+
+                });
+            }
+
+            setKickoutSlide();
+
+            $img_wrap.children('img').load(function () {
+                original_height = $img_wrap.children('img').height();
+                //vertically position arrows
+                $arrows.each(function () {
+                    if ($(this).hasClass('prev-slide')) {
+                        $(this).css({'margin-top': ( original_height / 2 ) - 25 + 'px'});
+                    } else if ($(this).hasClass('next-slide')) {
+                        $(this).css({'margin-top': -( original_height / 2 + 24) + 'px'});
+                    }
+                });
+            });
+
+            $arrows.click(function (e) {
+                e.preventDefault();
+                $next_arrow.hide(); //prevent 'jumping' of arrow
+                if ($(this).hasClass('next-slide')) {
+                    current_ko_idx += 1;
+                    if (current_ko_idx > ko_slides.length - 1) current_ko_idx = 0;
+                } else if ($(this).hasClass('prev-slide')) {
+                    current_ko_idx -= 1;
+                    if (current_ko_idx < 0) current_ko_idx = ko_slides.length - 1;
+                }
+
+                $ko_wrap.height(original_height); //prevent container 'jumping'
+
+                $ko_caption.html(ko_slides[current_ko_idx].caption);
+                $ko_credit.html(ko_slides[current_ko_idx].credit);
+
+                options.index = current_ko_idx;
+                setKickoutSlide();
+
+            });
+
+            //photoswipe slides
+            var items = [];
+
+            slide_data.slides.forEach(function (slide) {
+                var slideInfo = '<div><span class="slide-caption">' + slide['slide_caption'] + '</span>';
+                slideInfo += '<span class="slide-credit">' + slide['slide_credit'] + '</span></div>';
+
+                items.push({
+                        src: slide['slide_src'],
+                        w: slide['slide_width'],
+                        h: slide['slide_height'],
+                        title: slideInfo
+                    }
+                );
+            });
+
+            var pswpElement = document.querySelectorAll('.pswp')[0];
+
+            document.getElementById('launch-photoswipe').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+
+                gallery.listen('afterChange', function () {
+                    current_ko_idx = options.index = gallery.getCurrentIndex();
+                    setKickoutSlide();
+                });
+                gallery.init();
+
+                gallery.listen('destroy', function () {
+                    gallery = null;
+                })
+            });
+        });
+    }
+
+
+})(jQuery);
+
+
+// -------------------------------------------------------
+// LYTICS GETTER / SENDER
+// -------------------------------------------------------
+var lytics = {};
+
+lytics.fields = {};
+
+lytics.gatherData = function( form ){
+
+	$ = jQuery;
+	var formFields = $(form).serializeArray();
+
+	$.each( formFields, function( i, field ) {
+
+		// System variables for CF7 start with _ so ignore those
+		if ( field.name.substring(0, 1) != '_' ){
+			lytics.fields[field.name] = field.value;
+		}
+
+    });
+};
+
+lytics.sendData = function(){
+
+	if ( typeof jstag != 'undefined' ){
+		jstag.send( lytics.fields );
+	}
+
+};

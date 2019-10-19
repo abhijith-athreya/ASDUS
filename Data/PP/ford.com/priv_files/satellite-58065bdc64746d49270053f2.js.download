@@ -1,0 +1,16 @@
+_satellite.pushAsyncScript(function(event, target, $variables){
+  s.manageVars("clearVars")
+
+s.linkTrackVars="eVar12,prop12,eVar16,prop16"
+
+if(digitaldata != undefined){
+  if(digitaldata.vehicle != undefined){
+    if(digitaldata.vehicle.nameplate != undefined){
+      s.eVar12=s.prop12=_satellite.getVar("vehicle: model year");
+      s.eVar16=s.prop16=_satellite.getVar("vehicle: nameplate");
+    }
+  }
+}
+
+_satellite.track("master-rule-onclick")
+});

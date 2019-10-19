@@ -1,0 +1,165 @@
+var Timer = function(millis, callback){
+	return this._init(millis, callback);
+}
+
+Timer.prototype = {
+	VERSION: 1.0,
+	_init: function(millis, callback){
+
+		this._interval = 1000;
+		this._timer = null;
+		this._cbs = [];
+		this._multipliers = [];
+		this._tickCounts = [];
+		this._canRun = [];
+		this._stoppedThreads = 0;
+		this._runOnce = false;
+		this._startedAt = -1;
+		this._pausedAt = -1;
+
+		if(typeof(millis)=='number') this._interval = millis;
+		this.addCallback(callback);
+		return this;
+	},
+
+	/* some preset operation, called from start() */
+
+	_preset: function(){
+		this._stoppedThreads = 0;
+		this._startedAt = -1;
+		this._pausedAt = -1;
+		for(var i=0; i<this._cbs.length; i++){
+			this._canRun[i] = true;
+			this._tickCounts[i] = 0;
+		}
+	},
+	_ticks: function(initInterval){
+
+		var me = this;
+		for(var i=0; i<this._cbs.length; i++){
+			if(typeof(this._cbs[i])=='function' && this._canRun[i]){
+				this._tickCounts[i]++;
+				if(this._tickCounts[i] == this._multipliers[i]){
+					this._tickCounts[i] = 0;
+					if(this.runOnce()){
+						this._canRun[i] = false;
+						this._stoppedThreads++;
+					}
+					window.setTimeout(me._cbs[i], 0);
+				}
+			}
+		}
+
+		if(this.runOnce() && this._stoppedThreads == this._cbs.length)
+			this.stop();
+
+		if(typeof(initInterval)=='number'){
+			this.stop().start(null, true);
+		}
+	},
+
+	runOnce: function(isRunOnce){
+		if(typeof(isRunOnce)=='undefined') return this._runOnce;
+		else if(typeof(isRunOnce)=='boolean') this._runOnce = isRunOnce;
+		else alert("Invalid argument for runOnce(...).\n\nUsage: runOnce(true | false) /*Default value: false*/\nor, runOnce() to get status");
+		return this;
+	},
+	interval: function(millis){
+		if(typeof(millis)=='undefined') return this._interval;
+		else if(typeof(millis)=='number') this._interval = Math.floor(millis);
+		return this;
+	},
+
+	stop: function(isPausing){
+		if(this._timer){
+			if(!isPausing) this._pausedAt = -1;
+			try{
+				window.clearInterval(this._timer);
+			}
+			catch(ex){
+			}
+			this._timer = null;
+		}
+		return this;
+	},
+
+	isStopped: function(){
+		return ((this._timer == null) && !this.isPaused());
+	},
+
+	start: function(_initialInterval, _withoutPreset){
+		if(this.isPaused())
+			return this.resume();
+		if(!this.isStopped())
+			return this;
+
+		if(!_withoutPreset)
+			this._preset();
+
+		var tmpInterval = this._interval;
+
+		if(typeof(_initialInterval)=='number') tmpInterval = _initialInterval;
+
+		var me = this;
+
+		this._timer = window.setInterval(function(){me._ticks(_initialInterval);}, tmpInterval);
+
+		this._startedAt = (new Date()).getTime();
+
+		this._startedAt -= (this._interval - tmpInterval);
+
+		return this;
+
+	},
+
+	pause: function(){
+		if(this._timer){
+			this._pausedAt = (new Date()).getTime();
+			this.stop(true);
+		}
+		return this;
+	},
+
+	isPaused: function(){
+		return (this._pausedAt >= 0);	
+	},
+
+
+	resume: function(){
+		if(this.isPaused()){
+			var tempInterval = this._interval - ((this._pausedAt - this._startedAt)%this._interval);
+			this._pausedAt = -1;
+			this.start(tempInterval, true);
+		}
+		return this;
+	},
+
+	restart: function(){
+		return this.stop().start();
+	},
+
+	addCallback: function(callback, N){
+		if(typeof(callback)=='function'){
+			this._cbs.push(callback);
+			if(typeof(N)=='number'){
+				N = Math.floor(N)
+				this._multipliers.push((N < 1 ? 1 : N));
+			}
+			else
+				this._multipliers.push(1);
+			this._tickCounts.push(0);
+
+			this._canRun.push(true);
+		}
+		return this;
+	},
+
+	clearCallbacks: function(){
+		this._cbs.length = 0;
+		this._multipliers.length = 0;
+		this._canRun.length = 0;
+		this._tickCounts.length = 0;
+		this._stoppedThreads = 0;
+		return this;
+	}
+};

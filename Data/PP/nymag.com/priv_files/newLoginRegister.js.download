@@ -1,0 +1,923 @@
+/*!
+ * jQuery-ajaxTransport-XDomainRequest - v1.0.1 - 2013-10-17
+ * https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest
+ * Copyright (c) 2013 Jason Moon (@JSONMOON)
+ * Licensed MIT (/blob/master/LICENSE.txt)
+ */
+(function($){if(!$.support.cors&&$.ajaxTransport&&window.XDomainRequest){var n=/^https?:\/\//i;var o=/^get|post$/i;var p=new RegExp('^'+location.protocol,'i');var q=/text\/html/i;var r=/\/json/i;var s=/\/xml/i;$.ajaxTransport('* text html xml json',function(i,j,k){if(i.crossDomain&&i.async&&o.test(i.type)&&n.test(i.url)&&p.test(i.url)){var l=null;var m=(j.dataType||'').toLowerCase();return{send:function(f,g){l=new XDomainRequest();if(/^\d+$/.test(j.timeout)){l.timeout=j.timeout}l.ontimeout=function(){g(500,'timeout')};l.onload=function(){var a='Content-Length: '+l.responseText.length+'\r\nContent-Type: '+l.contentType;var b={code:200,message:'success'};var c={text:l.responseText};try{if(m==='html'||q.test(l.contentType)){c.html=l.responseText}else if(m==='json'||(m!=='text'&&r.test(l.contentType))){try{c.json=$.parseJSON(l.responseText)}catch(e){b.code=500;b.message='parseerror'}}else if(m==='xml'||(m!=='text'&&s.test(l.contentType))){var d=new ActiveXObject('Microsoft.XMLDOM');d.async=false;try{d.loadXML(l.responseText)}catch(e){d=undefined}if(!d||!d.documentElement||d.getElementsByTagName('parsererror').length){b.code=500;b.message='parseerror';throw'Invalid XML: '+l.responseText;}c.xml=d}}catch(parseMessage){throw parseMessage;}finally{g(b.code,b.message,c,a)}};l.onprogress=function(){};l.onerror=function(){g(500,'error',{text:l.responseText})};var h='';if(j.data){h=($.type(j.data)==='string')?j.data:$.param(j.data)}l.open(i.type,i.url);l.send(h)},abort:function(){if(l){l.abort()}}}}})}})(jQuery);
+
+//---- convert json to string
+jQuery.extend({stringify:function(t){if("JSON"in window){return JSON.stringify(t)}var n=typeof t;if(n!="object"||t===null){if(n=="string")t='"'+t+'"';return String(t)}else{var r,i,s=[],o=t&&t.constructor==Array;for(r in t){i=t[r];n=typeof i;if(t.hasOwnProperty(r)){if(n=="string"){i='"'+i+'"'}else if(n=="object"&&i!==null){i=jQuery.stringify(i)}s.push((o?"":'"'+r+'":')+String(i))}}return(o?"[":"{")+String(s)+(o?"]":"}")}}});
+
+//--Serialize Form to JSON, http://css-tricks.com/snippets/jquery/serialize-form-to-json/
+$.fn.serializeObject=function(){var e={};var t=this.serializeArray();$.each(t,function(){if(e[this.name]){if(!e[this.name].push){e[this.name]=[e[this.name]]}e[this.name].push(this.value||"")}else{e[this.name]=this.value||""}});return e};
+
+/**  MD5 (Message-Digest Algorithm) http://www.webtoolkit.info/  **/
+function MD5(e){function t(e,t){return e<<t|e>>>32-t}function n(e,t){var n,r,i,s,o;i=e&2147483648;s=t&2147483648;n=e&1073741824;r=t&1073741824;o=(e&1073741823)+(t&1073741823);if(n&r){return o^2147483648^i^s}if(n|r){if(o&1073741824){return o^3221225472^i^s}else{return o^1073741824^i^s}}else{return o^i^s}}function r(e,t,n){return e&t|~e&n}function i(e,t,n){return e&n|t&~n}function s(e,t,n){return e^t^n}function o(e,t,n){return t^(e|~n)}function u(e,i,s,o,u,a,f){e=n(e,n(n(r(i,s,o),u),f));return n(t(e,a),i)}function a(e,r,s,o,u,a,f){e=n(e,n(n(i(r,s,o),u),f));return n(t(e,a),r)}function f(e,r,i,o,u,a,f){e=n(e,n(n(s(r,i,o),u),f));return n(t(e,a),r)}function l(e,r,i,s,u,a,f){e=n(e,n(n(o(r,i,s),u),f));return n(t(e,a),r)}function c(e){var t;var n=e.length;var r=n+8;var i=(r-r%64)/64;var s=(i+1)*16;var o=Array(s-1);var u=0;var a=0;while(a<n){t=(a-a%4)/4;u=a%4*8;o[t]=o[t]|e.charCodeAt(a)<<u;a++}t=(a-a%4)/4;u=a%4*8;o[t]=o[t]|128<<u;o[s-2]=n<<3;o[s-1]=n>>>29;return o}function h(e){var t="",n="",r,i;for(i=0;i<=3;i++){r=e>>>i*8&255;n="0"+r.toString(16);t=t+n.substr(n.length-2,2)}return t}function p(e){e=e.replace(/\r\n/g,"\n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t}var d=Array();var v,m,g,y,b,w,E,S,x;var T=7,N=12,C=17,k=22;var L=5,A=9,O=14,M=20;var _=4,D=11,P=16,H=23;var B=6,j=10,F=15,I=21;e=p(e);d=c(e);w=1732584193;E=4023233417;S=2562383102;x=271733878;for(v=0;v<d.length;v+=16){m=w;g=E;y=S;b=x;w=u(w,E,S,x,d[v+0],T,3614090360);x=u(x,w,E,S,d[v+1],N,3905402710);S=u(S,x,w,E,d[v+2],C,606105819);E=u(E,S,x,w,d[v+3],k,3250441966);w=u(w,E,S,x,d[v+4],T,4118548399);x=u(x,w,E,S,d[v+5],N,1200080426);S=u(S,x,w,E,d[v+6],C,2821735955);E=u(E,S,x,w,d[v+7],k,4249261313);w=u(w,E,S,x,d[v+8],T,1770035416);x=u(x,w,E,S,d[v+9],N,2336552879);S=u(S,x,w,E,d[v+10],C,4294925233);E=u(E,S,x,w,d[v+11],k,2304563134);w=u(w,E,S,x,d[v+12],T,1804603682);x=u(x,w,E,S,d[v+13],N,4254626195);S=u(S,x,w,E,d[v+14],C,2792965006);E=u(E,S,x,w,d[v+15],k,1236535329);w=a(w,E,S,x,d[v+1],L,4129170786);x=a(x,w,E,S,d[v+6],A,3225465664);S=a(S,x,w,E,d[v+11],O,643717713);E=a(E,S,x,w,d[v+0],M,3921069994);w=a(w,E,S,x,d[v+5],L,3593408605);x=a(x,w,E,S,d[v+10],A,38016083);S=a(S,x,w,E,d[v+15],O,3634488961);E=a(E,S,x,w,d[v+4],M,3889429448);w=a(w,E,S,x,d[v+9],L,568446438);x=a(x,w,E,S,d[v+14],A,3275163606);S=a(S,x,w,E,d[v+3],O,4107603335);E=a(E,S,x,w,d[v+8],M,1163531501);w=a(w,E,S,x,d[v+13],L,2850285829);x=a(x,w,E,S,d[v+2],A,4243563512);S=a(S,x,w,E,d[v+7],O,1735328473);E=a(E,S,x,w,d[v+12],M,2368359562);w=f(w,E,S,x,d[v+5],_,4294588738);x=f(x,w,E,S,d[v+8],D,2272392833);S=f(S,x,w,E,d[v+11],P,1839030562);E=f(E,S,x,w,d[v+14],H,4259657740);w=f(w,E,S,x,d[v+1],_,2763975236);x=f(x,w,E,S,d[v+4],D,1272893353);S=f(S,x,w,E,d[v+7],P,4139469664);E=f(E,S,x,w,d[v+10],H,3200236656);w=f(w,E,S,x,d[v+13],_,681279174);x=f(x,w,E,S,d[v+0],D,3936430074);S=f(S,x,w,E,d[v+3],P,3572445317);E=f(E,S,x,w,d[v+6],H,76029189);w=f(w,E,S,x,d[v+9],_,3654602809);x=f(x,w,E,S,d[v+12],D,3873151461);S=f(S,x,w,E,d[v+15],P,530742520);E=f(E,S,x,w,d[v+2],H,3299628645);w=l(w,E,S,x,d[v+0],B,4096336452);x=l(x,w,E,S,d[v+7],j,1126891415);S=l(S,x,w,E,d[v+14],F,2878612391);E=l(E,S,x,w,d[v+5],I,4237533241);w=l(w,E,S,x,d[v+12],B,1700485571);x=l(x,w,E,S,d[v+3],j,2399980690);S=l(S,x,w,E,d[v+10],F,4293915773);E=l(E,S,x,w,d[v+1],I,2240044497);w=l(w,E,S,x,d[v+8],B,1873313359);x=l(x,w,E,S,d[v+15],j,4264355552);S=l(S,x,w,E,d[v+6],F,2734768916);E=l(E,S,x,w,d[v+13],I,1309151649);w=l(w,E,S,x,d[v+4],B,4149444226);x=l(x,w,E,S,d[v+11],j,3174756917);S=l(S,x,w,E,d[v+2],F,718787259);E=l(E,S,x,w,d[v+9],I,3951481745);w=n(w,m);E=n(E,g);S=n(S,y);x=n(x,b)}var q=h(w)+h(E)+h(S)+h(x);return q.toLowerCase()};
+
+/*From: http://phpjs.org/functions, original by: Public Domain (http://www.json.org/json2.js), reimplemented by: Kevin van Zonneveld (http://kevin.vanzonneveld.net) ,improved by: Michael White
+input by: felix, bugfixed by: Brett Zamir (http://brett-zamir.me),
+http://www.JSON.org/json2.js 2008-11-19
+*--- example 1: json_encode(['e', {pluribus: 'unum'}]);
+*--- returns 1: '[\n    "e",\n    {\n    "pluribus": "unum"\n}\n]'
+*/
+function json_encode(e){var t,n=this.window.JSON;try{if(typeof n==="object"&&typeof n.stringify==="function"){t=n.stringify(e);if(t===undefined){throw new SyntaxError("json_encode")}return t}var r=e;var i=function(e){var t=/[\\\"\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;var n={"\b":"\\b","  ":"\\t","\n":"\\n","\f":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"};t.lastIndex=0;return t.test(e)?'"'+e.replace(t,function(e){var t=n[e];return typeof t==="string"?t:"\\u"+("0000"+e.charCodeAt(0).toString(16)).slice(-4)})+'"':'"'+e+'"'};var s=function(e,t){var n="";var r="    ";var o=0;var u="";var a="";var f=0;var l=n;var c=[];var h=t[e];if(h&&typeof h==="object"&&typeof h.toJSON==="function"){h=h.toJSON(e)}switch(typeof h){case"string":return i(h);case"number":return isFinite(h)?String(h):"null";case"boolean":case"null":return String(h);case"object":if(!h){return"null"}if(this.PHPJS_Resource&&h instanceof this.PHPJS_Resource||window.PHPJS_Resource&&h instanceof window.PHPJS_Resource){throw new SyntaxError("json_encode")}n+=r;c=[];if(Object.prototype.toString.apply(h)==="[object Array]"){f=h.length;for(o=0;o<f;o+=1){c[o]=s(o,h)||"null"}a=c.length===0?"[]":n?"[\n"+n+c.join(",\n"+n)+"\n"+l+"]":"["+c.join(",")+"]";n=l;return a}for(u in h){if(Object.hasOwnProperty.call(h,u)){a=s(u,h);if(a){c.push(i(u)+(n?": ":":")+a)}}}a=c.length===0?"{}":n?"{\n"+n+c.join(",\n"+n)+"\n"+l+"}":"{"+c.join(",")+"}";n=l;return a;case"undefined":case"function":default:throw new SyntaxError("json_encode")}};return s("",{"":r})}catch(o){if(!(o instanceof SyntaxError)){throw new Error("Unexpected error type in json_encode()")}this.php_js=this.php_js||{};this.php_js.last_error_json=4;return null}};
+
+//---------------------- QueryStrin for Livefyre shares and report in analytics omniture tracking
+
+if (typeof window.nymag === "undefined") {
+    window.nymag = {};
+}
+
+if (typeof window.nymag.pageurl === "undefined") {
+    //pageurl is about url of current web page.
+    window.nymag.pageurl = {};
+}
+
+window.nymag.pageurl.parseQueryString = function(query) {
+    if (!query) {
+        query = window.location.search.substring(1);
+    }
+    var args = {};
+    var splitted = query.split(/&/);
+    var n = splitted.length;
+    for (var i = 0; i < n; i++) {
+        var x = splitted[i];
+        var kv = x.split(/=/);
+        if (kv[0]) {
+            args[kv[0]] = kv[1];
+        }
+    }
+    return args;
+};
+
+window.nymag.pageurl.query = window.nymag.pageurl.parseQueryString();
+
+if (typeof window.nymag.livefyre === "undefined") {
+    window.nymag.livefyre = {
+        // returns livefyre comment share type: livefyre_facebook, livefyre_twitter, livefyre_email
+        getShareType: function() {
+            var shareType = window.nymag.pageurl.query['hubRefSrc'];
+            if (shareType) {
+                return 'livefyre_' + shareType;
+            }
+            return null;
+        }
+    };
+}
+
+//------------------------------------------------ GLOBAL FUNCTIONS--------------------------
+if (typeof window.NYM === "undefined") {
+  window.NYM = {};
+}
+
+if (typeof window.NYM.loginReg === "undefined") {
+  window.NYM.loginReg = {};
+}
+
+NYM.filesLoadedAsync = [];
+
+// Read the cookie
+NYM.readCookie = function(name) {
+  var needle = name + "=";
+  var cookieArray = document.cookie.split(';');
+  for (var i = 0; i < cookieArray.length; i++) {
+    var pair = cookieArray[i];
+    while (pair.charAt(0) == ' ') {
+      pair = pair.substring(1, pair.length);
+    }
+    if (pair.indexOf(needle) == 0) {
+      return pair.substring(needle.length, pair.length);
+    }
+  }
+  return null;
+}
+
+NYM.setCookie = function(name, value, days, domain) {
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    var expires = ";expires=" + date.toGMTString();
+  } else {
+    expires = "";
+  }
+  if (domain) var dom = ";domain=" + domain;
+  else dom = "";
+  document.cookie = name + "=" + value + expires + dom + ";path=/;";
+}
+
+
+NYM.eraseCookie = function(name, domain) {
+  NYM.setCookie(name, "", -1, domain);
+}
+
+NYM.isFunction = function(possibleFunction) {
+  return (typeof(possibleFunction) == typeof(Function));
+}
+
+NYM.IsJsonString = function(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+//----- check and load additional css and js files
+NYM.loadJsCss = function(filename, filetype, location) {
+  if (filetype === "js") { //if filename is a external JavaScript file
+    var fileref = document.createElement('script')
+    fileref.setAttribute("type", "text/javascript")
+    fileref.setAttribute("src", filename)
+  } else if (filetype === "css") { //if filename is an external CSS file
+    var fileref = document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    fileref.setAttribute("href", filename)
+  }
+  if (typeof fileref !== "undefined") {
+    if (location) {
+      document.getElementById(location).appendChild(fileref);
+    } else {
+      document.getElementsByTagName("head")[0].appendChild(fileref);
+    }
+  }
+};
+
+NYM.checkloadjscssfile = function(filename, filetype, location) {
+  if ($.inArray(filename, NYM.filesLoadedAsync) === -1) {
+    NYM.loadJsCss(filename, filetype, location)
+    NYM.filesLoadedAsync.push(filename); //List of files loaded in async.
+  }
+};
+
+//get path name query variable
+NYM.getQueryVariable = function(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    if (pair[0] == variable) {
+      return pair[1];
+    }
+  }
+  return (false);
+};
+
+function getClickURL() {
+  var url = document.getElementById("canonical");
+  if (url) {
+    url = url.href;
+    return url;
+  } else {
+    var url = self.clickURL || document.location.href;
+    url = url.replace(/\?.*/, "");
+    return url.replace(/[&?]$/, "");
+  }
+}
+
+function getMeta(name) {
+  var meta = document.getElementsByTagName("meta");
+  for (var i = 0; i < meta.length; i++) {
+    if (meta[i].name && name && meta[i].name.toLowerCase() == name.toLowerCase()) {
+      return meta[i].content;
+    }
+  }
+}
+
+function getMetaOg(prop) {
+  var meta = document.getElementsByTagName("meta");
+  for (var i = 0; i < meta.length; i++) {
+    var property = $(meta[i]).attr("property");
+    if (prop == property) {
+      return meta[i].content;
+    }
+  }
+}
+
+var utility = {
+  // Converting Unicode characters to HTML entities
+  symbolsToEntities: function(str) {
+    var newstr = "";
+    for (i = 0; i < str.length; i++) {
+      var code = str.charCodeAt(i);
+      newstr += (code > 256 ? "&#" + code + ";" : str.charAt(i));
+    }
+    return newstr;
+  }
+}
+
+function getClickTitle() {
+  var title = getMetaOg("og:title");
+  if (!title) {
+    title = getMeta("headline");
+  }
+  if (!title) {
+    title = document.title.replace(/(.*?)\s*(\-\-?\s*)?new york magazine\s*$/i, "$1");
+  }
+  title = title.replace(/^\s*|\s*$/g, "");
+  var safeTitle;
+  try {
+    //try and convert to html entity
+    safeTitle = utility.symbolsToEntities(title);
+  } catch (e) {
+    //if fail, return un-altered title
+    safeTitle = title;
+  }
+  return safeTitle;
+}
+
+function getClickExpire() {
+  if (self.clickExpire) return clickExpire;
+  return "";
+}
+
+function getClickSummary() {
+  if (self.clickSummary) return clickSummary;
+  return "";
+}
+
+function getClickImage() {
+  if (self.clickImage) return clickImage;
+  return "";
+}
+
+//-- Disable Zoom on mobile login/reg forms when input fields are selected
+var originalViewportContent;
+
+// check if this query selector exists so as not to break Krang pages
+if (document.querySelector("meta[name='viewport']")) {
+  originalViewportContent = document.querySelector("meta[name='viewport']").content;
+}
+
+function disableZoom(evt) {
+    var viewportmeta = document.querySelector('meta[name="viewport"]');
+    if (viewportmeta) {
+        viewportmeta.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui";
+    }
+}
+
+function enableZoom(evt) {
+    var viewportmeta = document.querySelector('meta[name="viewport"]');
+    if (viewportmeta) {
+        viewportmeta.content = originalViewportContent;
+    }
+}
+//----------------- End Disable Zoom
+
+
+function envConfigs() { //config development environments
+  var appid, // set FB app id
+  secureDomain, // set secured domains
+  frontEndAssetURL, //front end assets
+  currentSite, //current site
+  //getAllDomains = [],
+  newsletterURL, livefyreSiteId, //Livefyre site ID
+  livefyrelibrary = 'https://cdn.livefyre.com/libs/fyre.conv/v3.0.0/livefyre.min.js',
+    //Livefyre development script lib
+    livefyreNetwork = 'nymedia-int-0.fyre.co',
+    //Livefyre development network
+    livefyreTokenURL = 'http://tammanyhall.qa.nymetro.com',
+    //ajax get collectionMeta JWT token
+    domainEnv, refererFrom, checkHostDomain = document.domain;
+
+  //NYM.hostForVulture get the value from server config. we want this because document.domain is set to vulture.com for iframe access.
+  if (typeof NYM.hostForVulture !== 'undefined') {
+    checkHostDomain = NYM.hostForVulture;
+  }
+
+  if (checkHostDomain.match("homepagenginx.")) { //NYM homepage
+    appid = "357847397554";
+    currentSite = 'qa.nymetro.com';
+    frontEndAssetURL = 'http://origin-cache.qa.nymetro.com';
+    secureDomain = 'http://tammanyhall.qa.nymetro.com';
+    //getAllDomains = ["qa.nymetro.com", "qa.vulture.com", "qa.grubstreet.com"];
+    newsletterURL = 'http://qa.nymag.com';
+
+  } else if (checkHostDomain.match("dev.")) { //dev
+    if (checkHostDomain.match(".grubstreet.com")) {
+      currentSite = 'grubstreet';
+      livefyreSiteId = 304356;
+      refererFrom = 'http://dev.grubstreet.com';
+    } else if (checkHostDomain.match(".vulture.com")) {
+      appid = "219204411496650";
+      currentSite = 'vulture';
+      livefyreSiteId = 304355;
+      refererFrom = 'http://dev.vulture.com';
+    } else if (checkHostDomain.match('.thecut.com') || location.pathname.indexOf('/thecut/') > -1) {
+      livefyreSiteId = 304357;
+      currentSite = 'thecut';
+      refererFrom = 'http://dev.nymetro.biz';
+    } else if (location.pathname.indexOf('/daily/intelligencer/') > -1) {
+      livefyreSiteId = 304449;
+      currentSite = 'daily-intelligencer';
+      refererFrom = 'http://dev.nymetro.biz';
+    } else {
+      appid = "164574351267";
+      currentSite = 'nymag';
+      livefyreSiteId = 304354;
+      refererFrom = 'http://dev.nymetro.biz';
+    }
+
+    frontEndAssetURL = 'http://origin-cache.dev.nymetro.com';
+    secureDomain = 'http://tammanyhall.qa.nymetro.com';
+    //getAllDomains = ["dev.nymag.biz", "dev.vulture.com", "dev.grubstreet.com"];
+    newsletterURL = 'http://newsletterplay.dev.nymag.biz';
+    domainEnv = 'dev';
+
+  } else if (checkHostDomain.match("qa.")) { //QA
+    if (checkHostDomain.match(".grubstreet.com")) {
+      appid = "123010931104252";
+      currentSite = 'grubstreet';
+      livefyreSiteId = 304356;
+      refererFrom = 'http://qa.grubstreet.com';
+    } else if (checkHostDomain.match(".vulture.com")) {
+      appid = "217988618287532";
+      currentSite = 'vulture';
+      livefyreSiteId = 304355;
+      refererFrom = 'http://qa.vulture.com';
+    } else if (checkHostDomain.match('.thecut.com') || location.pathname.indexOf('/thecut/') > -1) {
+      appid = "357847397554";
+      currentSite = 'thecut';
+      livefyreSiteId = 304357;
+      refererFrom = 'http://qa.nymag.com/thecut';
+    } else if (location.pathname.indexOf('/daily/intelligencer/') > -1) {
+      appid = "357847397554";
+      currentSite = 'daily-intelligencer';
+      livefyreSiteId = 304449;
+      refererFrom = 'http://qa.nymag.com';
+    } else {
+      appid = "357847397554";
+      currentSite = 'nymag';
+      livefyreSiteId = 304354;
+      refererFrom = 'http://qa.nymag.com';
+    }
+
+    frontEndAssetURL = 'http://origin-cache.qa.nymetro.com';
+    secureDomain = 'http://tammanyhall.qa.nymetro.com';
+    //getAllDomains = ["qa.nymetro.com", "qa.vulture.com", "qa.grubstreet.com"];
+    newsletterURL = 'http://qa.nymag.com';
+    domainEnv = 'qa';
+
+  } else if (checkHostDomain.match("stg.")) { //stage
+    if (checkHostDomain.match(".grubstreet.com")) {
+      appid = "";
+      currentSite = 'grubstreet';
+      livefyreSiteId = 304356;
+      refererFrom = 'http://stg.grubstreet.com';
+    } else if (checkHostDomain.match(".vulture.com")) {
+      appid = "162498493853207";
+      currentSite = 'vulture';
+      livefyreSiteId = 304355;
+      refererFrom = 'http://stg.vulture.com';
+    } else if (checkHostDomain.match('.thecut.com') || location.pathname.indexOf('/thecut/') > -1) {
+      appid = "134556739904777";
+      currentSite = 'thecut';
+      livefyreSiteId = 304357;
+      refererFrom = 'http://stg.nymetro.com/thecut/';
+    } else if (location.pathname.indexOf('/daily/intelligencer/') > -1) {
+      appid = "134556739904777";
+      currentSite = 'daily-intelligencer';
+      livefyreSiteId = 304449;
+      refererFrom = 'http://stg.nymetro.com';
+    } else {
+      appid = "134556739904777";
+      currentSite = 'nymag';
+      livefyreSiteId = 304354;
+      refererFrom = 'http://stg.nymetro.com';
+    }
+
+    frontEndAssetURL = 'http://origin-cache.stg.nymetro.com';
+    secureDomain = 'https://secure.stg.nymetro.com';
+    //getAllDomains = ["stg.nymetro.com", "stg.vulture.com", "stg.grubstreet.com"];
+    newsletterURL = 'http://stg.nymetro.com';
+    domainEnv = 'stg';
+
+  } else { //production
+    if (checkHostDomain.match(".grubstreet.com")) {
+      appid = "206283005644";
+      currentSite = 'grubstreet';
+      livefyreSiteId = 352283;
+      refererFrom = 'http://www.grubstreet.com';
+    } else if (checkHostDomain.match(".vulture.com")) {
+      appid = "158902697551841";
+      currentSite = 'vulture';
+      livefyreSiteId = 349269;
+      refererFrom = 'http://www.vulture.com';
+    } else if (checkHostDomain.match('.thecut.com') || location.pathname.indexOf('/thecut/') > -1) {
+      appid = "120608177953522";
+      currentSite = 'thecut';
+      livefyreSiteId = 349271;
+      refererFrom = 'http://nymag.com/thecut';
+    } else if (location.pathname.indexOf('/daily/intelligencer/') > -1) {
+      appid = "120608177953522";
+      currentSite = 'daily-intelligencer';
+      livefyreSiteId = 351883;
+      refererFrom = 'http://nymag.com';
+    } else {
+      appid = "120608177953522";
+      currentSite = 'nymag';
+      livefyreSiteId = 352059;
+      refererFrom = 'http://nymag.com';
+    }
+
+    frontEndAssetURL = 'https://cache.nymag.com';
+    secureDomain = 'https://secure.nymag.com';
+    //getAllDomains = ["nymag.com", "vulture.com", "grubstreet.com"];
+    newsletterURL = 'http://nymag.com';
+    //Livefyre production script lib and network ID
+    livefyrelibrary = 'http://zor.livefyre.com/wjs/v3.0/javascripts/livefyre.js';
+    livefyreNetwork = 'nymedia.fyre.co';
+    domainEnv = 'production';
+  }
+
+  NYM.loginReg.getFB_appid = appid;
+  NYM.loginReg.secureDomain = secureDomain;
+  NYM.loginReg.frontEndAssetURL = frontEndAssetURL;
+  NYM.loginReg.currentSite = currentSite;
+  //NYM.loginReg.getAllDomains = getAllDomains;
+  NYM.loginReg.newsletterURL = newsletterURL;
+  NYM.loginReg.livefyreSiteId = livefyreSiteId;
+  NYM.loginReg.livefyrelibrary = livefyrelibrary;
+  NYM.loginReg.livefyreNetwork = livefyreNetwork;
+  NYM.loginReg.livefyreTokenURL = livefyreTokenURL;
+  NYM.loginReg.domainEnv = domainEnv;
+  NYM.loginReg.refererFrom = refererFrom;
+};
+envConfigs();
+
+//----------------------- NEW LOGIN REGISTER BEGINS HERE ------------------------------
+(function() {
+
+  NYM.loginReg.cmd = []; //functions in array, and callback later
+  NYM.loginReg.afterLoginCallback = [];
+  NYM.loginReg.openActivateModal = false; //to block any open credits and open acct activation or reset password modals
+  NYM.loginReg.alreadyHasModal = false; //check if login reg modal already on the page
+
+  function setCrossDomainsCookies(loginObj) {
+    var host = 'http://qa.nymag.com';
+    var loginOut = 'logout';
+    var loginfo = '';
+    var originUrl = getClickURL();
+    originUrl = originUrl.replace(/\#.*/, "");
+
+    if (NYM.loginReg.domainEnv === 'production') {
+      host = NYM.loginReg.secureDomain;
+    }
+
+    if (loginObj) {
+      loginOut = 'login';
+      loginfo = '&username=' + loginObj.username + '&session_id=' + loginObj.session_id + '&remember_me=' + loginObj.remember_me + '&userId=' + loginObj.userId;
+    }
+
+    window.location = host + '/account/' + loginOut + '/cookie?origin=' + originUrl + loginfo;
+  }
+
+  NYM.loginReg.login = function(loginObj) {
+    setCrossDomainsCookies(loginObj);
+  }; //end
+  NYM.loginReg.logout = function() {
+    setCrossDomainsCookies();
+  }; //end
+
+  NYM.loginReg.isLoggedInUser = function() {
+    var nymag_session = NYM.readCookie("nymag_session");
+    var nymag_session_user = NYM.readCookie("nymag_session_user");
+    return (nymag_session && nymag_session_user) ? true : false;
+  };
+
+  NYM.loginReg.getUserName = function() {
+    var nymag_session_user = unescape(NYM.readCookie("nymag_session_user"));
+    return NYM.loginReg.isLoggedInUser() ? nymag_session_user : '';
+  };
+
+
+  NYM.loginReg.initMembership = function(callback) {
+
+  };
+
+  NYM.loginReg.checkMemberStatus = function(callback) {
+    if (NYM.loginReg.isLoggedInUser()) {
+      return true;
+    } else {
+      NYM.loginReg.loadLoginForm();
+
+      if (NYM.isFunction(callback)) {
+        callback();
+      }
+      return false;
+    }
+  };
+
+  NYM.loginReg.updateNavInfo = function() {
+    function updateNavAcctProfile() {
+      var $acctNav = $('#sub_nav_mynewyork').css({
+        'position': 'relative',
+        'left': 0
+      }),
+        username = NYM.loginReg.getUserName();
+
+      $acctNav.load('/includes/components/mast/nav/sub_nav_mynewyork.txt', function() {
+        var $ul = $('ul', $acctNav).hide();
+
+        $('a', $ul).each(function() {
+          var href = $(this).attr('href').replace('{profile}', username);
+          $(this).attr('href', href);
+        });
+
+        $('#user_name').html(username).show();
+
+        $('.mynewyork').hover(function() {
+          $ul.toggle();
+        }, function() {
+          $ul.toggle();
+        });
+
+        $acctNav.on('click', '#utility_logout', function(e) {
+          e.preventDefault();
+          NYM.loginReg.logout();
+        });
+      });
+    };
+
+    if (NYM.loginReg.isLoggedInUser()) {
+      $('#logged_out_bar').hide();
+      $('#logged_in_bar').show();
+      updateNavAcctProfile();
+
+    } else {
+      $('#logged_out_bar').show();
+      $('#logged_in_bar').hide();
+      $('#sub_nav_mynewyork, #user_name').empty();
+    }
+  };
+
+  NYM.loginReg.getFBLoginStatus = function(callback) {
+    FB.getLoginStatus(function(response) {
+      if (response.status == 'connected') {
+        NYM.loginReg.FBLoginStatus = true;
+
+        if (NYM.isFunction(callback)) {
+          callback();
+        }
+      }
+    });
+  };
+
+  //------------------ call login/reg forms and css as neccessary ----
+  NYM.loginReg.openModal = function(modal, validateForm, callback) {
+    if (NYM.loginReg.alreadyHasModal) {
+      NYM.loginReg.display(modal, validateForm, callback);
+    } else {
+      NYM.loginReg.cmd.push(function() {
+        NYM.loginReg.display(modal, validateForm, callback);
+        NYM.loginReg.alreadyHasModal = true;
+      });
+    }
+    NYM.checkloadjscssfile(NYM.loginReg.frontEndAssetURL + "/css/screen/newLoginRegister.css", "css") //dynamically load and add this .css file
+    NYM.checkloadjscssfile(NYM.loginReg.frontEndAssetURL + "/scripts/loginRegisterForms.js", "js") //dynamically load and add this .css fil
+  };
+
+  NYM.loginReg.loadLoginForm = function(options) {
+    NYM.loginReg.openModal('loginForm', 'validateForm');
+  };
+
+  //for this page http://nymag.com/newsletters/
+  NYM.loginReg.initNewsletterSignUp = function(emailInputSelector, formSelector, recordLinkMsg) {
+        function callError(input, msg){
+            input.val(msg).addClass("error").effect("highlight", {color: "#ffe400"}, 1200).focus(function(){
+                this.value = "";
+                input.removeClass("error");
+            });
+        }
+
+        function callSuccess(input, msg){
+            input.val(msg).addClass("success").effect("highlight", {color: "#ffe400"}, 1200).focus(function(){
+                this.value = "";
+                input.removeClass("success");
+            });
+        }
+
+        var input = jQuery(emailInputSelector);
+        var form = jQuery(formSelector);
+        if (input.length < 1 || form.length < 1) {
+            //can't find such <input> and <form>. silently give up.
+            return;
+        }
+
+        input.origValidate({
+            form: formSelector,
+            searchText: "Enter your e-mail address",
+            errorMsg: "E-mail address is required",
+            onError: callError,
+            onSubmit: function() {
+                var checkboxes = form.find("input:checkbox");
+                var checked = checkboxes.filter(":checked");
+
+                var email = input.val().trim();
+                var isValidEmail = /^[^@]+@[^@]+$/.exec(email);
+
+                if (!isValidEmail) {
+                    callError(input, "Please enter valid email");
+                } else if (checkboxes.length > 0 && checked.length < 1) {
+                    callError(input, "Please check a newsletter");
+                } else {
+
+                    var url = window.nymag.domains.domain + "/newsletter/subscribe/new";
+
+                    if (recordLinkMsg) {
+                        nymag_recordLink(this, recordLinkMsg);
+                    }
+
+                    jQuery.ajax({
+                        url: url,
+                        method: 'GET',
+                        data: form.serialize(),
+                        success: function() {
+                            callSuccess(input, 'Newsletter Subscription Successful');
+                        }
+                    });
+                }
+
+                return false;
+            }
+        });
+    };
+
+  //before anything else, check url path query. block open credit ad if we have email confirmation.
+  function checkQueryParams() {
+    var account_activation = NYM.getQueryVariable('account_activation'); //if new registered email confirmation
+    var reset_password = NYM.getQueryVariable('reset-password'); //reset password
+    if (account_activation) {
+      if (account_activation == 0) {
+        NYM.loginReg.openActivateModal = 'newsletterForm';
+      } else if (account_activation == 1) {
+        NYM.loginReg.openActivateModal = 'activatedInvalid'; //after 48 hours
+      } else if (account_activation == 2) {
+        NYM.loginReg.openActivateModal = 'activatedValidated'; //already validated
+      }
+    }
+
+    if (reset_password) {
+      NYM.loginReg.openActivateModal = 'resetPwdForm';
+    }
+  };
+
+  // check any query params functions
+  checkQueryParams();
+})();
+
+//----------------------------- login/reg buttons
+$(document).ready(function() {
+  $('#user_name').hide(); //hide default 'UserName' on the nav
+  //Session Extension - post server every 25 mins, DB keep tracking of session status
+  setInterval(function() {
+    $.ajax({
+      type: 'POST',
+      url: '/account/alive',
+      data: {
+        'session_id': NYM.readCookie("nymag_session")
+      }
+    });
+  }, 1000 * 60 * 25);
+
+  //Update top nav login/logout drop down menu
+  NYM.loginReg.updateNavInfo();
+
+  //login/logout buttons
+  $('#logged_out_bar .register-lightbox').on('click', function(e) {
+    e.preventDefault();
+    NYM.loginReg.openModal('registrationForm', 'validateForm');
+  });
+
+  $('#logged_out_bar .login-lightbox').on('click', function(e) {
+    e.preventDefault();
+    NYM.loginReg.openModal('loginForm', 'validateForm');
+  });
+
+  function popUpModal() {
+    var socialUserStorage = localStorage.getItem('socialUser');
+
+    //open modal for reset password form
+    if (NYM.loginReg.openActivateModal === 'resetPwdForm') {
+      NYM.loginReg.openModal(NYM.loginReg.openActivateModal, 'validateForm', function() {
+        var code = NYM.getQueryVariable('code');
+        var email = NYM.getQueryVariable('email');
+
+        $('#oldP', '#resetPwdForm').val(code);
+        $('#id', '#resetPwdForm').val(email);
+      });
+
+    } else if (NYM.loginReg.openActivateModal == 'newsletterForm') { //open modal for newsletterForm
+      NYM.loginReg.openModal('newsletterForm', 'validateForm');
+
+      if(typeof G !== 'undefined') {
+          G.readOmnitureOnPageView(this, '', 'Registration/NYMag/newsletters');
+      }
+
+    } else if (NYM.loginReg.openActivateModal) {
+      NYM.loginReg.openModal(NYM.loginReg.openActivateModal, false); //open modal for email activation invalid/already validated
+    } else if (socialUserStorage) { //Registered through facebook, get info from localstorage and open welcome newsletter modal
+      socialUserStorage = jQuery.parseJSON(socialUserStorage);
+
+      if (socialUserStorage.newRegister) {
+        NYM.loginReg.openModal('newsletterForm', 'validateForm');
+        localStorage.removeItem('socialUser');
+
+        if(typeof G !== 'undefined') {
+            G.readOmnitureOnPageView(this, '', 'Registration/Facebook/newsletters');
+        }
+      }
+    }
+  } //end popUpModal
+  popUpModal();
+});
+//----------------------- NEW LOGIN REGISTER END HERE ------------------------------
+//-----------------------NYMAG RESTAURANT REVIEW LOGIN BEFORE MAKE ANY REVIEWS
+//Before, it checks if isLoggedInUser=false, call NYM.loginReg.loadLogin. Now we make sure users login first.
+$(function() {
+  if (!NYM.loginReg.isLoggedInUser()) {
+    $(document).on("change", "#review-submit-form input", function() {
+      NYM.loginReg.openModal('loginForm', 'validateForm');
+    });
+
+    $(document).on("focus", "#id_review_title, #id_review_text", function() {
+      NYM.loginReg.openModal('loginForm', 'validateForm');
+    });
+  }
+});
+//-----------------------END NYMAG RESTAURANT REVIEW LOGIN BEFORE MAKE ANY REVIEWS
+//----------------------- FALL BACK TO SOME OLD FILES USING THESE FUNCTIONS
+NYM.loginReg.loadLogin = function() {
+  NYM.loginReg.openModal('loginForm', 'validateForm');
+}
+
+var isLoggedInUser = function() {
+  return NYM.loginReg.isLoggedInUser();
+}
+
+var readCookie = function(name) {
+  return NYM.readCookie(name);
+}
+var eraseCookie = function(name, domain) {
+  NYM.eraseCookie(name, domain);
+}
+var setCookie = function(name, value, days, domain) {
+  NYM.setCookie(name, value, days, domain);
+}
+
+//-----------------------END FALL BACK TO SOME OLD FILES USING THESE FUNCTIONS
+
+//--------------------------GLOBAL MODULES ----------------------------------------------------------
+
+//--- Most popular modules - cross sites
+$(function() {
+  var API_HOST = {
+    'qa': 'api.qa.nymetro.com',
+    'stg': 'api.stg.nymetro.com',
+    'production': 'api.nymag.com'
+  };
+
+  var DOMAIN = {
+    'daily-intelligencer': {
+      'size': 8,
+      'dataObj': 'dailyintelligencer',
+      'template': 'htmlTemplate',
+      'brand': 'di'
+    },
+    'thecut': {
+      'size': 5,
+      'dataObj': 'thecut',
+      'header': '<h1>Most Popular</h1>',
+      'template': 'htmlTemplateTheCut',
+      'brand': 'thecut'
+    },
+    'vulture': {
+      'size': 8,
+      'dataObj': 'vulture',
+      'template': 'htmlTemplate',
+      'brand': 'vulture'
+    },
+    'nymag': { //this is not for the nymag HP, its for krang articles
+      'size': 10,
+      'dataObj': 'nymag.com',
+      'header': '<h4>Last 24 Hours</h4>',
+      'template': 'htmlTemplateKrang',
+      'brand': 'nymag'
+    },
+    'grubstreet': {
+      'size': 8,
+      'template': 'htmlTemplate',
+      'brand': 'grubstreet'
+    }
+  };
+
+  var TEMPLATE = {
+    htmlTemplate: function(data) {
+      var articles = data;
+      var num = 0;
+      var html = '';
+      var last = '';
+      var $ul = $('<ul></ul>');
+
+      for (var i = 0; i < articles.length; i++) {
+        num = i + 1;
+        last = num == articles.length ? 'last' : '';
+
+        html = '<li id="number-' + num + '" class="' + last + '">' + '<span class="num">' + num + '.</span>' + '<a name="&lpos=Vulture: HomePage: Most Popular: Viewed" href="' + articles[i].canonicalUrl + '" class="hed">' + articles[i].entryTitle + '</a>' + '</li>';
+
+        $(html).appendTo($ul);
+      }
+
+      $('#tab-viewed').empty();
+      $ul.appendTo($('#tab-viewed'));
+    },
+
+    htmlTemplateTheCut: function(data) {
+      var articles = data;
+      var num = 0;
+      var html = '';
+      var last = '';
+      var $ol = $('<ol></ol>');
+
+      $(whichSite['header']).appendTo($('#most-popular'));
+
+      for (var i = 0; i < articles.length; i++) {
+        num = i + 1;
+        last = num == articles.length ? 'last' : '';
+
+        html = '<li><a href="' + articles[i].canonicalUrl + '" sl-processed="1">' + articles[i].entryTitle + '</a></li>';
+
+        $(html).appendTo($ol);
+      }
+      $ol.appendTo($('#most-popular'));
+    },
+
+    htmlTemplateKrang: function(data) {
+      var articles = data;
+      var num = 0;
+      var html = '';
+      var last = '';
+      var $ol = $('<ol></ol>');
+
+      $('#most-viewed').empty();
+      $(whichSite['header']).appendTo($('#most-viewed'));
+
+      for (var i = 0; i < articles.length; i++) {
+        num = i + 1;
+        last = num == articles.length ? 'last' : '';
+
+        html = '<li><a href="' + articles[i].canonicalUrl + '" sl-processed="1">' + articles[i].entryTitle + '</a></li>';
+
+        $(html).appendTo($ol);
+      }
+      $ol.appendTo($('#most-viewed'));
+    }
+  };
+
+  var whichSite = DOMAIN[NYM.loginReg.currentSite];
+
+    if (typeof NYM.urls === 'undefined') {
+        NYM.urls = {
+            api: '//'+API_HOST[NYM.loginReg.domainEnv],
+            secure: NYM.loginReg.secureDomain,
+            asset: NYM.loginReg.frontEndAssetURL,
+            current: $('link[rel="canonical"]').attr('href'),
+            rendition: function(imageUrl, width, height, isThumbnail) {
+                if (imageUrl) {
+                    var spec = '.w'+width+'.h'+height;
+                    if (isThumbnail) {
+                        spec = '.nocrop'+spec;
+                    }
+                    return imageUrl.replace(/(\.[^.]+)$/, spec+"$1");
+                }
+                return imageUrl;
+            }
+        };
+    }
+
+  //Hack - after page load make sure if document.domain is vulture.com
+  // if(document.domain == 'vulture.com'){
+  //   whichSite = DOMAIN['vulture'];
+  // }
+  var url = '//' + API_HOST[NYM.loginReg.domainEnv] + '/v1/content/articles/'
+
+  // ----------------- most-popular (The cut, DI and vulture). mostpopular (krang articles)
+  if ($('#most-popular').length > 0 || $('#mostpopular').length > 0) {
+    $.ajax({
+      type: 'GET',
+      url: url,
+      data: {
+        status: 'published',
+        'most-viewed': 'lastday',
+        limit: whichSite['size'],
+        fields: 'canonicalUrl,entryTitle,excerpt,primaryImage,publishDate,featureRubric,assetNodePath,srcEnv',
+        brand: whichSite['brand'],
+        excludeTagged: 'paid story'
+      }
+    }).done(function(data) {
+      TEMPLATE[whichSite['template']](data['articles']);
+    });
+  }
+});

@@ -1,0 +1,59 @@
+var isCrossDomain = function (url) {
+    var hostname = new RegExp(window.location.hostname);
+    return !hostname.test(url);
+};
+
+var decoratePage = function () {
+    $.getScript(appData.research_host+'/assets/js/useraccount-bundle.dist.js')
+        .done(function( s, Status ) {
+            window.initializeUserAccountFeatures();
+        })
+        .fail(function( jqxhr, settings, exception ) {
+            console.warn( "Something went wrong: "+exception );
+        });
+};
+
+var getAuth = function (callback) {
+    if (typeof callback !== 'function') {
+        callback = function () {};
+    }
+
+    var successCallback = function (data) {
+        try {
+            data = JSON.parse(data);
+            window.localStorage.setItem('authtoken', data['authtoken']);
+
+            callback();
+        } catch (e) {
+
+        }
+    };
+
+
+    if (window.location.hostname.indexOf(appData.fred_host) >= 0) {
+        url = appData.fred_host + '/graph/ajax-requests.php?action=get_auth'
+    } else if (window.location.hostname.indexOf(appData.alfred_host) >= 0) {
+        url = appData.alfred_host + '/graph/ajax-requests.php?action=get_auth'
+    } else {
+        url = appData.research_host + '/ajax/get_auth.php';
+    }
+    $.ajax({
+            url: url, // must be relative to the same host so the session cookie is sent
+            success: successCallback,
+            crossDomain: isCrossDomain(url),
+            type: 'GET',
+            xhrFields: {
+                withCredentials: true
+            },
+            cache: false
+        });
+};
+
+window.getAuth = getAuth;
+
+if (!window.localStorage.getItem('authtoken') || !$.cookie('research-lirua') || window.localStorage.getItem('authtoken') === 'undefined' || window.localStorage.getItem('authtoken') === 'null') {
+    window.localStorage.setItem('authtoken', null);
+    window.getAuth(decoratePage);
+} else {
+    decoratePage();
+}

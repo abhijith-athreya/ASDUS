@@ -1,0 +1,144 @@
+var ObjectVar={defaultVal:{},data:{},data1:{},data2:{},globalpartnertype:{},CompIdArray:{},GetUserType:function(b){var a;
+if(b.getInitProperty("PNETCategories")){a=b.getInitProperty("PNETCategories")
+}else{if(b.getInitProperty("isCustomer")){a="Customer"
+}else{a="Default"
+}}return a
+},readFromClientContext:function(){var c;
+try{console.log("formattedName::"+ClientContext.get("profile").getInitProperty("formattedName"));
+c=ObjectVar.GetUserType(ClientContext.get("profile"));
+if(c!=null){ObjectVar.globalpartnertype=c.split(",")
+}else{ObjectVar.globalpartnertype="Default"
+}}catch(b){console.log("formattedName:: null");
+ObjectVar.globalpartnertype="Default"
+}finally{console.log("formattedName:: finally");
+try{ObjectVar.dataPopulate(ObjectVar.globalpartnertype);
+if(ObjectVar.globalpartnertype.length!=2){var a=ObjectVar.JsonForFlyOut(ObjectVar.defaultVal,ObjectVar.data);
+ObjectVar.dyNamicDiv(a)
+}else{var a=ObjectVar.JsonForFlyOut(ObjectVar.data2,ObjectVar.data1);
+a=ObjectVar.JsonForFlyOut(a,ObjectVar.defaultVal);
+ObjectVar.dyNamicDiv(a)
+}}catch(b){console.log("Error in data populate")
+}}},getURLParam:function(b){var a={};
+window.location.href.replace(location.hash,"").replace(/[?&]+([^=&]+)=?([^&]*)?/gi,function(c,d,e){a[d]=e!==undefined?e:""
+});
+if(b){return a[b]?a[b]:null
+}return a
+},dataPopulate:function(a){ObjectVar.defaultVal=JSON.parse(document.getElementById("Generic").getAttribute("data"));
+if(a.length==2){ObjectVar.data1=JSON.parse(document.getElementById(a[0]).getAttribute("data"));
+ObjectVar.data2=JSON.parse(document.getElementById(a[1]).getAttribute("data"))
+}else{ObjectVar.data=JSON.parse(document.getElementById(a).getAttribute("data"))
+}$("#DataIDMenuGroup").remove()
+},ajaxCall:function(a){$.ajax({url:a,type:"GET",success:function(d,g,c){try{if(d.PartnerType.length!=2){if(d.PartnerType!=null){ObjectVar.globalpartnertype=d.PartnerType
+}else{ObjectVar.globalpartnertype="Default"
+}ObjectVar.dataPopulate(ObjectVar.globalpartnertype);
+var b=ObjectVar.JsonForFlyOut(ObjectVar.defaultVal,ObjectVar.data);
+ObjectVar.dyNamicDiv(b)
+}else{ObjectVar.globalpartnertype=d.PartnerType;
+ObjectVar.dataPopulate(ObjectVar.globalpartnertype);
+var b=ObjectVar.JsonForFlyOut(ObjectVar.data2,ObjectVar.data1);
+b=ObjectVar.JsonForFlyOut(b,ObjectVar.defaultVal);
+ObjectVar.dyNamicDiv(b)
+}}catch(f){console.log("Issue with ajax call to retrive partner Type")
+}},error:function(b,f,d){try{ObjectVar.globalpartnertype="Default";
+ObjectVar.dataPopulate(ObjectVar.globalpartnertype);
+ObjectVar.dyNamicDiv()
+}catch(c){console.log("Issue with ajax call to retrive partner Type")
+}}})
+},imageIconHtml:function(c){if(c.icon!=""&&c.icon!=undefined){if(c.isImage){var b=$("<img></img>").attr("src",c.icon);
+return b
+}else{var a=$("<span></span>").addClass("fa fa-"+c.icon);
+return a
+}}},innerHtmlContent:function(b){var c=$("<li></li>").addClass(b.grouping+" "+b.hide);
+if(b.url!=""&&b.url!=undefined){if(b.target=="newwindow"){var a=$("<a></a>").attr({onclick:'window.open("'+b.url+'","_blank", "toolbar=0,location=0,menubar=0");',href:"#"}).append(b.text);
+c.append(a);
+c.append(ObjectVar.imageIconHtml(b))
+}else{if(b.target!="newwindow"){var a=$("<a></a>").attr({target:b.target,href:b.url}).append(b.text);
+c.append(a);
+c.append(ObjectVar.imageIconHtml(b))
+}}}else{if(b.text!=""&&b.text!=undefined){c.append(b.text);
+c.append(ObjectVar.imageIconHtml(b))
+}}return c
+},UniqArrayFilter:function(a){a.reverse();
+var c=[];
+var d=[];
+for(var b=0;
+b<a.length;
+b++){if(c.indexOf(a[b].text)==-1){c.push(a[b].text);
+d.push(a[b])
+}}return d.reverse()
+},JsonForFlyOut:function(l,i){var h=l;
+var e=i;
+var d=h.PartnerTypeValue;
+var a=e.PartnerTypeValue;
+var q=(d.length>a.length)?d:a;
+for(var v=0,t=q.length;
+v<t;
+v++){var x=d[v].MegaNavValue;
+var w=a[v].MegaNavValue;
+var r=(x.length>w.length)?x:w;
+for(var u=0,p=r.length;
+u<p;
+u++){var o=x[u].ColumnValue;
+var n=w[u].ColumnValue;
+var f=(o.length>n.length)?o:n;
+var y=(o.length>n.length)?n:o;
+var c=[];
+for(var m=0,s=0;
+((m<f.length)||(s<y.length));
+){var g="";
+var b="";
+if(f[m]!=null){g=f[m]
+}if(y[s]!=null){b=y[s]
+}if(g.text==b.text){c.push(g);
+m++;
+s++
+}else{if(m>=f.length&&s!=y.length){c.push(b);
+s++
+}else{if(s>=y.length&&m!=f.length){c.push(g);
+m++
+}else{if(g.grouping=="group"){if(b.grouping=="group"){c.push(g);
+m++
+}else{c.push(b);
+s++
+}}else{if(b.grouping=="group"){if(g.grouping=="group"){c.push(b);
+s++
+}else{c.push(g);
+m++
+}}else{c.push(g);
+c.push(b);
+m++;
+s++
+}}}}}}c=ObjectVar.UniqArrayFilter(c);
+r[u].ColumnValue=c
+}q[v].MegaNavValue=r
+}h.PartnerTypeValue=q;
+return h
+},dyNamicDiv:function(f){var n=f;
+var a=n.PartnerTypeValue;
+var v="";
+for(var r=0,p=a.length;
+r<p;
+r++){var c=a[r].MegaNavValue;
+var d=a[r].MegaNav;
+v=v+","+d;
+var b=0;
+var s=0;
+var h=$("#CompId-"+d+" .menu section").attr("role","region");
+h=h.attr("aria-label",d);
+for(var q=0,e=c.length;
+q<e;
+q++){var i=$("<div></div>").addClass("sub-section");
+var u=$("<ul></ul>").addClass("sub-list");
+var g=c[q].ColumnValue;
+if(g.length==0){b++
+}else{for(var o=0,m=g.length;
+o<m;
+o++){var t=g[o];
+u.append(ObjectVar.innerHtmlContent(t))
+}i.append(u);
+h.append(i)
+}}cssObject.ColumnNumChange((a.length-r),"#CompId-"+d,c.length,c.length-b);
+if((c.length-b)!=1){cssObject.ColumnControlFunc("#CompId-"+d+" .menu section")
+}ObjectVar.CompIdArray=v
+}$(".main-navigation .main-nav").append($("<div></div>").addClass("MenuWrapperReadyToGo"))
+},};

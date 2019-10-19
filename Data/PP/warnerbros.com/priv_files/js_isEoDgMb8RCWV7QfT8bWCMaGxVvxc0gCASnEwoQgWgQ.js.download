@@ -1,0 +1,81 @@
+(function($, Drupal, window, document, undefined) {
+
+    Drupal.behaviors.WBNotify = {
+        createNotice: function(context, settings) {
+
+            try {
+
+                var newlegalShow =  $.cookie('wb-notify-new-legal');
+
+                if (!settings.wb_notify
+                    || (newlegalShow
+                    && parseInt(settings.wb_notify.version, 10) <= parseInt(newlegalShow, 10))) {
+                    return;
+                }
+                var message = settings.wb_notify.markup;
+                // settings && settings.wb_truste
+                // $('body').prepend('<div class="wb-notify screen-reader">' + message + '</div>');
+
+                var getUpperLevelDomain  = function () {
+                    var parts = location.hostname.split('.');
+                    var subdomain = parts.shift();
+                    var upperleveldomain = parts.join('.');
+                    return upperleveldomain;
+                }
+                var clickClose = function (event) {
+
+                    var cookie_config = {
+                        path: '/',
+                        domain: getUpperLevelDomain()
+                    };
+                    if (settings.wb_notify.use_session_cookie !== 1) cookie_config.expires = 180;
+                    $.cookie('wb-notify-new-legal', settings.wb_notify.version, cookie_config);
+
+                    $('body .wb-notify').remove();
+                }
+
+                var notifyInserted = function (event) {
+                    if ($('.wb-notify').length) {
+                        $('body').off('DOMNodeInserted', arguments.callee);
+
+                        $('.wb-notify .icon-close').on('click', $.proxy(clickClose, this));
+
+                    }
+                };
+
+                $('body').on('DOMNodeInserted', $.proxy(notifyInserted, this));
+
+                $('body').prepend('<div class="wb-notify"><div class="icon-close"></div>' +
+                    '<div class="notify-body"> ' +
+                    '' + message + '' +
+                    '</div>' +
+                    '</div>');
+
+
+            } catch (e) {
+                console.warn(e);
+            }
+
+        },
+        attach: function(context, settings) {
+            try {
+               //https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js
+                if (!$.cookie) {
+                    var url = "https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js";
+                    var onScriptComplete = function() {
+                       this.createNotice(context, settings);
+                    }
+                    $.getScript( url, $.proxy(onScriptComplete, this));
+                    return;
+                }
+
+                this.createNotice(context, settings);
+            } catch (e) {
+                console.warn(e);
+            }
+
+        }
+    }
+
+})(jQuery, Drupal, this, this.document);
+;

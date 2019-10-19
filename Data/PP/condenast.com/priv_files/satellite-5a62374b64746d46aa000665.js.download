@@ -1,0 +1,8 @@
+_satellite.pushAsyncScript(function(event, target, $variables){
+  function addPixel(pid, id) {
+  var track = new Image();
+  track.src = 'https://pixel.tapad.com/idsync/ex/receive?partner_id='+pid+'&partner_device_id='+id;
+}
+addPixel('ADB', _satellite.getVar('AAM_UUID'));
+addPixel('648', _satellite.getVar('Infinity ID'));
+});

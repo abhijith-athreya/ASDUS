@@ -1,0 +1,3 @@
+//tealium universal tag - utag.74 ut4.0.201506041536, Copyright 2015 Tealium.com Inc. All Rights Reserved.
+try{(function(id,loader,u){try{u=utag.o[loader].sender[id]={}}catch(e){u=utag.sender[id]};u.ev={'view':1};u.qsp_delim="&";u.kvp_delim="=";u.zoneid="1";u.clientid="18503";u.base_url="//radar.cedexis.com/"+u.zoneid+"-"+u.clientid+"-radar10.min.js";u.map={};u.extend=[];u.send=function(a,b){if(u.ev[a]||typeof u.ev.all!="undefined"){u.s=document.getElementsByTagName("script")[0];u.scr=document.createElement("script");u.scr.type="text/javascript";u.scr.src=u.base_url;u.s.parentNode.insertBefore(u.scr,u.s);}}
+try{utag.o[loader].loader.LOAD(id)}catch(e){utag.loader.LOAD(id)}})('74','teg.main');}catch(e){}

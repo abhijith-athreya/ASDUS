@@ -1,0 +1,61 @@
+﻿var fatsecret_multiSearch_enterSearch = 'Enter search';
+
+function multiSearchSetEnterSearchText(newText) {
+    fatsecret_multiSearch_enterSearch = newText;
+}
+
+function multiSearchDowned(evt, searchTypeList, multiSearchText) {
+    if (evt.keyCode == 13) {
+        multiSearch(searchTypeList, multiSearchText);
+        return false;
+    }
+    return true;
+}
+
+function multiSearch(searchTypeList, multiSearchText) {
+    var idx = document.getElementById('searchIndex').value;
+    multiSearchForIndex(idx, multiSearchText);
+}
+
+function multiSearchForIndex(idx, multiSearchText) {
+    var url = multisearchurls[idx];
+    var exp = document.getElementById(multiSearchText).value;
+    if (exp == fatsecret_multiSearch_enterSearch) exp = '';
+    window.location.href = url + encodeURIComponent(exp);
+}
+
+function multiOnClick(el) {
+    if (el.style.color != '#000000' && el.style.color != 'rgb(0, 0, 0)') {
+        el.value = '';
+        el.style.color = '#000000';
+    }
+    else {
+        if (navigator.userAgent.indexOf('Chrome') != -1 || navigator.userAgent.indexOf('Apple') != -1)
+            el.select();
+    }
+}
+
+function multiOnFocus(el) {
+    if (el.style.color == '#000000' || el.style.color == 'rgb(0, 0, 0)') {
+        if (!(navigator.userAgent.indexOf('Chrome') != -1 || navigator.userAgent.indexOf('Apple') != -1))
+            el.select();
+    }
+}
+
+function multiOnBlur(el) {
+    if (el.value == '') {
+        el.value = fatsecret_multiSearch_enterSearch;
+        el.style.color = '#BBB';
+    }
+}
+
+function quicksearch_onclick() {
+    var img = document.getElementById('searchTypeList');
+    if (img.src.indexOf('_alt.png') < 0)
+        img.src = img.src.replace('.png', '_alt.png');
+}
+
+function quicksearch_onhoverout() {
+    var img = document.getElementById('searchTypeList');
+    img.src = img.src.replace('_alt', '');
+}

@@ -1,0 +1,849 @@
+/* prod/detm-container-hdr 20180219 */
+detmScriptLoader.component = {
+    UNKNOWN: 0,
+    VISITORAPI: 1,
+    GOLDENEYE: 2,
+    ADOBETARGET: 3,
+    DATAMANAGER: 4,
+    DATADEFINITION: 5,
+    SATELLITELIB: 6,
+    MAPPINGFRAMEWORK: 7
+};
+
+function isIE(e, t) { var n, c = "IE", d = document.createElement("B"), i = document.documentElement; return e && (c += " " + e, t && (c = t + " " + c)), d.innerHTML = "<!--[if " + c + ']><b id="iecctest"></b><![endif]-->', i.appendChild(d), n = !!document.getElementById("iecctest"), i.removeChild(d), n }
+
+// ECAP-16234
+(function() {
+    function getQueryStringParameterValue(params, name) {
+      var q = params.match(new RegExp('[?&]' + name + '=([^&#]*)'));
+      return q && q[1];
+    }
+
+    function getParameters(raw) {
+        var parameters = [];
+
+        var keys = [ {attr: "purchaseID", prop: "page.attributes.directvOrderId"}, {attr: "v10", prop: "page.pageInfo.flowCode"}, {attr: "mid", prop: "page.attributes.directvMID"}, {attr: "pageName", prop: "page.attributes.directvPageName"} ];
+
+    for (var i = 0; i < keys.length; i++) {
+      var name = keys[i].attr;
+      var value = getQueryStringParameterValue(raw, name);
+            if (value != null) {
+                parameters.push({prop: keys[i].prop, value: value});
+            }
+    }
+
+        return parameters;
+    }
+
+  window.addEventListener("DETM_DTV_TRACK", function(e) {
+        if (typeof e.detail !== "undefined" && typeof e.detail["s-object"] !== "undefined") {
+          var params = getParameters(unescape(e.detail["s-object"]));
+          var json = { eventAction: "pageLoad", eventCode: "intercepted DTV page load", eddsupported: false };
+
+          var dataset = {};
+          for (var i = 0; i < params.length; i++) {
+              dataset[params[i].prop] = params[i].value;
+          }
+
+          json["dataset"] = dataset;
+
+          DataMappingInterface.disableAutoPageLoad();
+          DataMappingInterface.init(json);
+        }
+    console.log("detmScriptLoader - intercepted a DTV track request for a page view");
+  });
+})();
+
+(function() {
+        var queryAdobe = (/(.*dtmScriptOwner=adobe)/).test(location.href);
+        var queryDetm = (/(.*dtmScriptOwner=detm)/).test(location.href);
+        var dtmScriptOwner = queryAdobe ? 'adobe' : queryDetm ? 'detm' : '';
+
+        if (dtmScriptOwner != '') {
+            var value = localStorage.getItem('detm-assets-owner');
+            if (value != dtmScriptOwner) {
+                value = dtmScriptOwner;
+                localStorage.setItem('detm-assets-owner', value);
+            }
+        }
+
+})();
+
+(function() {
+    var restrictions = location.href.match('[?&]detmTagRestrictions=([^&#]*)');
+
+    if (restrictions && typeof restrictions.length !== 'undefined' && restrictions.length > 0) {
+        var key = "detm-tag-restrictions";
+
+        if ("" == restrictions[1]) {
+            sessionStorage.removeItem(key);
+        } else {
+            var tags = unescape(restrictions[1]);
+
+            var tokens = tags.split('|');
+
+            if (tokens && tokens.length > 0) {
+                var value = sessionStorage.getItem(key);
+                if (value != tags) {
+                    value = tags;
+                    sessionStorage.setItem(key, value);
+                }
+            }
+        }
+    }
+})();
+
+
+
+detmDomainMapper = function(mappings) {
+   var mappings = mappings;
+
+   if ('undefined' === typeof mappings || null == mappings) {
+      this.clear();
+   }
+
+   this.push = function(domain, url, tags, operation) {
+      mappings.push( { domain: domain, url: url, tags: tags, operation: operation } );
+   }
+
+   this.map = function(domain, attr) {
+      var value = null;
+
+      var prop = 'url';
+
+      switch(attr) {
+          case detmDomainMapper.attrs.url: prop = 'url'; break;
+          case detmDomainMapper.attrs.composite: prop = 'composite'; break;
+      case detmDomainMapper.attrs.tags: prop = 'tags'; break;
+      }
+
+      for (var i = 0; i < mappings.length; i++) {
+         var mapping = mappings[i];
+         switch( mapping.operation ) {
+            case detmDomainMapper.operations.equals:
+               if (domain === mapping.domain) {
+                  value = mapping[prop];
+               }
+               break;
+
+            case detmDomainMapper.operations.contains:
+               if (domain.indexOf(mapping.domain) > -1) {
+                  value = mapping[prop];
+               }
+               break;
+         }
+
+         if (value != null) {
+            break;
+         }
+      }
+
+      return value;
+   }
+
+   this.clear = function() {
+       mappings = [];
+   }
+},
+detmDomainMapper.attrs = { url: 1, composite: 2, tags: 3 },
+detmDomainMapper.operations = { equals: 1, contains: 2 }
+
+if ('undefined' === typeof detmTagControls) {
+    detmTagControls = [
+        {
+            path: ['/shop/xpress/','/shop/login/','/shop/wireless/'],
+            tags: {
+              adobe_target_1: { name: 'mbox-contents.js', expires: new Date(2017,9,19,15).valueOf() },
+              adobe_target_2: { name: 'Target-main-mbox-contents', expires: new Date(2017,9,19,15).valueOf() },
+              adobe_target_3: { name: 'CrazyEgg_2432', expires: new Date(2017, 9, 19, 15).valueOf() },
+              adobe_target_4: { name: 'CrazyEgg_2432_CE_DM', expires: new Date(2017, 9, 19, 15).valueOf() },
+              adobe_target_5: { name: 'CrazyEgg_6954', expires: new Date(2017, 9, 19, 15).valueOf() },
+              adobe_target_6: { name: 'CrazyEgg_6954_CE_DM', expires: new Date(2017, 9, 19, 15).valueOf() },
+              opinion_lab_1:  { name: 'OpinionLab_Desktop_2Conf_CE_DM', expires: new Date(2017,9,18,15).valueOf() },
+              opinion_lab_2:  { name: 'OpinionLab_Desktop_2Conf', expires: new Date(2017,9,18,15).valueOf() },
+              marketing_1:    { name: 'eComm_Universal_Atlas_CE_DM', expires: new Date(2017,9,20,15).valueOf() },
+              marketing_2:    { name: 'eComm_Universal_Atlas', expires: new Date(2017,9,20,15).valueOf() },
+              marketing_3:    { name: 'MOB_bAccessoryGroups_RT', expires: new Date(2017,9,20,15).valueOf() },
+              foresee_1:      { name: 'Foresee_FailSafe_Global', expires: new Date(2017,9,21,15).valueOf() },
+              foresee_2:      { name: 'Foresee_FailSafe_Global_CE_DM', expires: new Date(2017,9,21,15).valueOf() },
+              foresee_3:      { name: 'Foresee_POC_CE_DM', expires: new Date(2017,9,21,15).valueOf() },
+              foresee_4:      { name: 'Foresee_POC', expires: new Date(2017,9,21,15).valueOf() }
+            }
+        }
+    ]
+}
+var detmScriptLoaderConfig = {
+    async: true,
+    environment: 'prod',
+    type: 'text/javascript',
+    version: '20180219',
+    scripts: [
+    {
+        'component': detmScriptLoader.component.VISITORAPI,
+        'name': 'detm-visitorapi.js',
+        'source': "https://www.att.com/scripts/adobe/{environment}/{name}",
+        'warranted': (function(pgUrl) {
+            var warranted = true;
+
+            // Begin EAP to refer to Walled Garden
+            if (pgUrl.indexOf("/easyactivate/") > -1) {
+                warranted = false;
+            } else if (pgUrl.indexOf("coamoffdevice") > -1) {
+                warranted = false;
+            } else if (pgUrl.indexOf("/shopmobile/easyactivate") > -1) {
+                warranted = false;
+            }
+            // End EAP refer to Walled Garden
+
+            return warranted;
+        })(location.hostname + location.pathname)
+    },
+    {
+        'component': detmScriptLoader.component.GOLDENEYE,
+        'name': 'goldeneye.js',
+        'source': "https://www.att.com/scripts/goldeneye/scripts/goldeneye.js",
+        'warranted': (function (domain) {
+            var warranted = false;
+
+            if (typeof prodconfig != "object" && typeof stagconfig != "object") {
+                warranted = true;
+            }
+
+           if (true === warranted) {
+               if ( domain == "www.att.com" ||
+                    domain == "m.att.com" ||
+                    //document.location.hostname == "www.wireless.att.com" || //ECAP-12356
+                    domain == "www.cricketwireless.com" ||
+                    domain == "www.directv.com" ||
+                    domain == "att.yahoo.com" ||
+                    domain == "www.att.yahoo.com" ||
+                    domain == "att.net" ||
+                    domain == "www.att.net" ||
+                    //ECAP-12356 enable uverse and directvnow
+                    domain == "uverse.com" ||
+                    domain == "www.uverse.com" ||
+                    domain == "directvnow.com" ||
+                    domain == "www.directvnow.com" ||
+                    domain == "mobile.directv.com" ||
+                    domain == "www.mobile.directv.com" ||
+                    //ECAP-14302
+                    domain == "ufix.att.com" ||
+                    domain == "troubleshoot.att.com") {
+                       ;
+               } else {
+                   warranted = false;
+               }
+           }
+
+            return warranted;
+        })(window.location.hostname),
+    'canrestrict': true
+    },
+    {
+        'component': detmScriptLoader.component.ADOBETARGET,
+        'name': 'mbox-contents.js',
+        'source': "https://www.att.com/scripts/adobe/{environment}/{name}",
+        'warranted': (function() {
+            return false == isIE(8) && false == (window.location.href.indexOf('/prbuyflow') > -1) && false == (window.location.hostname.indexOf('start.att.net') > -1);
+        })(),
+    'canrestrict': true
+    },
+    {
+        'component': detmScriptLoader.component.DATAMANAGER,
+        'name': 'edmDataManager.js',
+        'source': '//www.att.com/scripts/adobe/{environment}/{name}'
+    },
+    {
+        'component': detmScriptLoader.component.DATADEFINITION,
+        'name': 'edmDataDefinition.js',
+        'source': '//www.att.com/scripts/adobe/{environment}/{name}'
+    },
+    {
+        'component': detmScriptLoader.component.SATELLITELIB,
+        'name': 'satellite library',
+        'source': (function(pgUrl) {
+           var domain = '//www.att.com';
+
+            var owner = localStorage.getItem('detm-assets-owner');
+            if ('undefined' === typeof owner || null == owner) {
+        owner = 'detm'
+            }
+            else {
+                if (owner != 'adobe' && owner != 'detm') {
+                    owner = 'detm';
+                }
+            }
+
+            if ('adobe' == owner) {
+              domain = '//assets.adobedtm.com';
+            }
+
+            var default_mapping =
+            {
+                composite: { preamble: "", path: "/8bb7555f31d461fe2aef4e2d53a11a03e7f9a04c/", file: "satelliteLib-bee1ce9b89e943a46b1dfd167adc564fe75eef37.js" },
+                operation: detmDomainMapper.operations.contains
+            };
+
+            var mappings = [
+              { domain: "paygonline.com",  composite: { preamble: "", path: "/8bb7555f31d461fe2aef4e2d53a11a03e7f9a04c/", file: "satelliteLib-76bf78dc6674bbd3a4d4e851c5c36135a3cc9ea7.js" }, operation: detmDomainMapper.operations.contains },
+              { domain: "/easyactivate/", composite: { preamble: "", path: "/8bb7555f31d461fe2aef4e2d53a11a03e7f9a04c/", file: "satelliteLib-fbb4967966de28cdc2de129137985fac3edfbc59.js" }, operation: detmDomainMapper.operations.contains },
+              { domain: "coamoffdevice",  composite: { preamble: "", path: "/8bb7555f31d461fe2aef4e2d53a11a03e7f9a04c/", file: "satelliteLib-fbb4967966de28cdc2de129137985fac3edfbc59.js" }, operation: detmDomainMapper.operations.contains }
+            ];
+
+            var mapper = new detmDomainMapper(mappings);
+            var composite = mapper.map(location.hostname, detmDomainMapper.attrs.composite)
+            if (null == composite) {
+                composite = default_mapping.composite;
+            }
+
+            path = composite.path;
+            if ('detm' === owner) {
+                path = "/scripts/satellite/" + composite.preamble + "{environment}" + composite.path;
+            }
+
+            return domain + path + composite.file;
+        })(window.location.host + window.location.pathname),
+    'canrestrict': true
+    },
+    {
+        'component': detmScriptLoader.component.MAPPINGFRAMEWORK,
+        'name': 'dataMappingFramework.min.js',
+        'source': '//www.att.com/scripts/adobe/{environment}/{name}'
+    }
+    ],
+    whitelist: [ // lowercase please
+    { path: [ '/pmt/','/view/','/shop/address/','/shop/service/' ] },
+    { domain: 'www.att.com', path: ['/wireless/index.html','/internet/index.html'] },
+    { domain: 'start.att.net', path: [ '/' ] },
+    { domain: 'startuat.att.net', path: [ '/' ] },
+    { domain: 'startuat01.att.net', path: [ '/' ] },
+    { domain: 'startuat02.att.net', path: [ '/' ] },
+    { domain: 'startuat03.att.net', path: [ '/' ] },
+    { domain: 'startuat04.att.net', path: [ '/' ] },
+    { domain: 'tst.stage.att.com', path: [ '/cart/','/checkout/' ] },
+    { domain: 'tst31.stage.att.com', path: [ '/cart/','/checkout/' ] }
+    ],      
+    blacklist: []
+}
+
+// START Promise: PolyFill for IE
+!function (a) { function b(a, b) { return function () { a.apply(b, arguments) } } function c(a) { if ("object" != typeof this) throw new TypeError("Promises must be constructed via new"); if ("function" != typeof a) throw new TypeError("not a function"); this._state = null, this._value = null, this._deferreds = [], i(a, b(e, this), b(f, this)) } function d(a) { var b = this; return null === this._state ? void this._deferreds.push(a) : void k(function () { var c = b._state ? a.onFulfilled : a.onRejected; if (null === c) return void (b._state ? a.resolve : a.reject)(b._value); var d; try { d = c(b._value) } catch (e) { return void a.reject(e) } a.resolve(d) }) } function e(a) { try { if (a === this) throw new TypeError("A promise cannot be resolved with itself."); if (a && ("object" == typeof a || "function" == typeof a)) { var c = a.then; if ("function" == typeof c) return void i(b(c, a), b(e, this), b(f, this)) } this._state = !0, this._value = a, g.call(this) } catch (d) { f.call(this, d) } } function f(a) { this._state = !1, this._value = a, g.call(this) } function g() { for (var a = 0, b = this._deferreds.length; b > a; a++) d.call(this, this._deferreds[a]); this._deferreds = null } function h(a, b, c, d) { this.onFulfilled = "function" == typeof a ? a : null, this.onRejected = "function" == typeof b ? b : null, this.resolve = c, this.reject = d } function i(a, b, c) { var d = !1; try { a(function (a) { d || (d = !0, b(a)) }, function (a) { d || (d = !0, c(a)) }) } catch (e) { if (d) return; d = !0, c(e) } } var j = setTimeout, k = "function" == typeof setImmediate && setImmediate || function (a) { j(a, 1) }, l = Array.isArray || function (a) { return "[object Array]" === Object.prototype.toString.call(a) }; c.prototype["catch"] = function (a) { return this.then(null, a) }, c.prototype.then = function (a, b) { var e = this; return new c(function (c, f) { d.call(e, new h(a, b, c, f)) }) }, c.all = function () { var a = Array.prototype.slice.call(1 === arguments.length && l(arguments[0]) ? arguments[0] : arguments); return new c(function (b, c) { function d(f, g) { try { if (g && ("object" == typeof g || "function" == typeof g)) { var h = g.then; if ("function" == typeof h) return void h.call(g, function (a) { d(f, a) }, c) } a[f] = g, 0 === --e && b(a) } catch (i) { c(i) } } if (0 === a.length) return b([]); for (var e = a.length, f = 0; f < a.length; f++) d(f, a[f]) }) }, c.resolve = function (a) { return a && "object" == typeof a && a.constructor === c ? a : new c(function (b) { b(a) }) }, c.reject = function (a) { return new c(function (b, c) { c(a) }) }, c.race = function (a) { return new c(function (b, c) { for (var d = 0, e = a.length; e > d; d++) a[d].then(b, c) }) }, c._setImmediateFn = function (a) { k = a }, "undefined" != typeof module && module.exports ? module.exports = c : a.Promise || (a.Promise = c) }(this);
+// END Promise
+
+// START CustomEvent: PolyFill for IE
+(function () {
+    if (typeof window.CustomEvent === "function") return false;
+
+    function CustomEvent(event, params) {
+        params = params || { bubbles: false, cancelable: false, detail: undefined };
+        var evt = null;
+
+        if (typeof document.createEvent !== 'undefined') {
+            evt = document.createEvent('CustomEvent');
+            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        }
+
+        return evt;
+    }
+
+    CustomEvent.prototype = window.Event.prototype;
+
+    window.CustomEvent = CustomEvent;
+})();
+// END CustomEvent
+
+// data mapping
+var DataMappingInterface = {
+    placeholder: true,
+    disableAutoPageLoad: function () { console.info('edmContainerHeader:: auto page load is disabled by application!!!'); DataMappingInterface.updateLocalStorage('_ipld', true, false); },
+    resetcache: true,
+    customEventNotification: function (data, currentscope) { console.info("dummyFramework call for customevent..."); this.pushToTempHold('c', data, currentscope); },
+    directiveInvocation: function (data, currentscope) { console.info("dummyFramework call for directive..."); this.pushToTempHold('d', data, currentscope); },
+    init: function (data) { console.info("dummyFramework call for init..."); this.pushToTempHold('i', data); },
+    isObjectEmpty: function (inputobject) {
+        var key;
+        for (key in inputobject) { return false; }
+        return true;
+    },
+    updateLocalStorage: function (name, data, isarray) {
+        if (isarray)
+            localStorage.setItem(name, JSON.stringify({ 'data': data }));
+        else
+            localStorage.setItem(name, data);
+    },
+    pushToTempHold: function (method, data, currentScope) {
+        var tempHold;
+        try {
+            console.info("edmContainerHeader: event being held for data manager..." + data.eventAction);
+
+            if (typeof currentScope !== 'undefined') {
+                data[ "scopeid" ] = currentScope.$id;
+            }
+
+            if (DataMappingInterface.resetcache) {
+                localStorage.removeItem('_dmnahold');
+                DataMappingInterface.resetcache = false;
+            }
+            this.tempHold = ((localStorage.getItem('_dmnahold') !== 'undefined' &&
+                                  localStorage.getItem('_dmnahold') !== null) ?
+                        (JSON.parse(localStorage.getItem('_dmnahold')).data) : []);
+
+            if (DataMappingInterface.isObjectEmpty(this.tempHold))
+                this.tempHold[0] = data;
+            else
+                this.tempHold[this.tempHold.length] = data;
+
+            data['method'] = method;
+
+            DataMappingInterface.updateLocalStorage('_dmnahold', this.tempHold, true);
+            return true;
+        } catch (e) {
+            console.info("edmContainerHeader:: error happened during DMF placeholder initialization ...");
+            return false;
+        }
+    }
+};
+
+//Adobe mid persistence
+var href = document.location.href;
+if (href.indexOf("?mid=") > -1 || href.indexOf("&mid=") > -1) {
+    var hrefArr = href.split("mid=");
+    var midArr = hrefArr[1].split("&");
+    var analytics_app_visitor_id = midArr[0];
+    var ts = (new Date).getTime();
+    if (history.pushState) {
+        if (href.indexOf("?") > -1) {
+            var newurl = window.location.href + '&adobe_mc=MCMID=' + analytics_app_visitor_id + '|MCORGID=55633F7A534535110A490D44@AdobeOrg|TS=' + ts;
+        } else {
+            var newurl = window.location.href + '?adobe_mc=MCMID=' + analytics_app_visitor_id + '|MCORGID=55633F7A534535110A490D44@AdobeOrg|TS=' + ts;
+        }
+
+        window.history.pushState({ path: newurl }, '', newurl);
+    }
+}
+
+function detmScriptLoader(config) {
+    var $me = this;
+    this.config = config;
+
+    var iscontrolled = function (tag) {
+        var result = false;
+        var name = tag.name;
+        var check_group = (typeof tag.group !== 'undefined') ? tag.group : false;
+        var epoch = new Date().valueOf();
+
+        for (var i = 0; i < detmTagControls.length; i++) {
+            var mapping = detmTagControls[i];
+
+            var governed = $me.isGoverned(window.location.hostname, window.location.pathname, [ mapping ]);
+            if (governed.confirmed) {
+                for (var prop in mapping.tags) {
+                    var item = mapping.tags[prop];
+
+                    if (epoch > item.expires) {
+                        continue;
+                    } else if (item.name == tag.name) {
+                        result = true;
+                        break;
+                    } else if (check_group) {
+                        var idx = prop.lastIndexOf('_');
+                        if (idx >= 0) {
+                            var group = prop.substr(0, idx);
+                            if (group == tag.name) {
+                                result = true;
+                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (result) {
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    var executeFooterEvent = new CustomEvent('detmExecuteFooter', { detail: { loader: this } });
+
+    this.loadAsync = true;
+
+    this.restrictedTags = function() {
+        var value = sessionStorage.getItem('detm-tag-restrictions');
+        if (typeof value !== 'undefined' && value != null && value.length > 0) {
+            value = value.split('|');
+        }
+
+        return value;
+    }
+
+    var getScriptLoadTypeFromQueryString = function() {
+        var scriptLoadType = '';
+        var queryAsync = (/(.*detmScriptLoadType=async)/).test(location.href);
+        var querySync = (/(.*detmScriptLoadType=sync)/).test(location.href);
+        scriptLoadType = queryAsync ? 'async' : querySync ? 'sync' : '';
+
+        return scriptLoadType;
+    }
+
+
+    this.configure = function() {
+        var explanation = '';
+        var criteria = '';
+        var manipulated = false;
+
+        var scriptLoadType = getScriptLoadTypeFromQueryString();
+        if (scriptLoadType != '') {
+            explanation = 'the user has manipulated the query string';
+            manipulated = true;
+        } else if (typeof detmScriptLoadType !== 'undefined' && typeof detmScriptLoadType === 'string') {
+            scriptLoadType = detmScriptLoadType.toLowerCase();
+            explanation = 'the application has overridden the default setting';
+        }
+
+        if (false == manipulated && true == (function(host, path, list) {
+            var result = $me.isGoverned(host, path, list);
+            if (typeof result.confirmed !== 'undefined' && true == result.confirmed) {
+                for (attr in result) {
+                    if (attr != 'confirmed') {
+                        if (criteria != '') {
+                           criteria += ' and ';
+                        }
+
+                        if (typeof result[attr] !== 'undefined' && true == result[attr]) {
+                            criteria += attr;
+                        }
+                    }
+                }
+            }
+
+            return result.confirmed;
+        })(window.location.hostname, window.location.pathname, $me.config.blacklist)) {
+            explanation = 'the ' + criteria + " of this page is black-listed";
+            $me.loadAsync = false;
+        } else if (scriptLoadType != '') {
+            var error = false;
+
+            switch (scriptLoadType.toLowerCase()) {
+                case 'async': $me.loadAsync = true; break;
+                case 'sync': $me.loadAsync = false; break;
+                default: error = true; console.log('Adobe Solutions: detmScriptLoadType must be either "sync" or "async"');
+            }
+
+            if (error) {
+                explanation = 'this is the default setting';
+            }
+        } else {
+            criteria =  '';
+            if (false == (function (host, path, list) { // if not whitelisted then we load synchronously
+                var result = $me.isGoverned(host, path, list);
+                if (typeof result.confirmed !== 'undefined' && true == result.confirmed) {
+                    for (attr in result) {
+                        if (attr != 'confirmed') {
+                            if (criteria != '') {
+                                criteria += ' and ';
+                            }
+
+                            if (typeof result[attr] !== 'undefined' && true == result[attr]) {
+                                criteria += attr;
+                            }
+                        }
+                    }
+                }
+                return result.confirmed;
+            })(window.location.hostname, window.location.pathname, $me.config.whitelist)) {
+                explanation = "this is normally how detm script components are loaded";
+                $me.loadAsync = false;
+            } else {
+                explanation = 'the ' + criteria + " of this page is white-listed";
+            }
+        }
+
+        if ('undefined' === typeof document.createEvent) {
+            explanation = "the browser does not support custom events";
+            $me.loadAsync = false;
+
+            if (typeof detmScriptLoadType !== 'undefined') {
+                detmScriptLoadType = 'sync';
+            }
+        }
+
+        var msg = 'detm scripts were loaded ';
+
+        msg += ($me.loadAsync) ? 'asynchronously' : 'synchronously';
+        msg += " because " + explanation;
+
+        console.log("----------");
+        console.log("detmScriptLoader - " + config.environment + " version: " + config.version);
+        console.log(msg);
+        console.log("----------");
+    }
+
+    this.isRestricted = function(tag) {
+        var value = false;
+
+        if ("satellitelib" === tag) {
+            tag = "_dtm";
+        }
+
+        var restrictions = this.restrictedTags();
+        if (typeof restrictions !== 'undefined' && restrictions != null && restrictions.length > 0) {
+            value = restrictions.includes(tag);
+
+            if (false == value && tag != "_dtm") {
+                value = restrictions.includes('_all');
+            }
+        }
+
+        return value;
+    }
+
+    this.isWarranted = function(tag) {
+//        return ! iscontrolled(tag);
+        return true;
+    }
+
+    this.isGoverned = function (host, path, list) {
+        var lchost = host.toLowerCase();
+        var lcpath = path.toLowerCase();
+        var governedresult = { confirmed: false };
+
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i];
+
+            if (typeof item.domain !== 'undefined') {
+                governedresult.domain = false;
+
+                if (typeof item.domain !==  'string' && typeof item.domain.length !== 'undefined') {
+                    for (var j = 0; j < item.domain.length; j++ ) {
+                        if (0 == lchost.indexOf(item.domain[j])) {
+                            governedresult.domain = true;
+                            break;
+                        }
+                    }
+                } else {
+                    if (0 == lchost.indexOf(item.domain)) {
+                        governedresult.domain = true;
+                    }
+                }
+            }
+
+            if (typeof item.path !== 'undefined') {
+                governedresult.path = false;
+
+                if (typeof item.path !==  'string' && typeof item.path.length !== 'undefined') {
+                    for (var j = 0; j < item.path.length; j++ ) {
+                        if (0 == lcpath.indexOf(item.path[j])) {
+                            governedresult.path = true;
+                            break;
+                        }
+                    }
+                } else {
+                    if (0 == lcpath.indexOf(item.path)) {
+                        governedresult.path = true;
+                    }
+                }
+            }
+
+            if (typeof governedresult.domain !== 'undefined') {
+                if (true == governedresult.domain && typeof governedresult.path !== 'undefined' && true == governedresult.path) {
+                    governedresult.confirmed = true;
+                } else if (true == governedresult.domain && 'undefined' == typeof governedresult.path) {
+                    governedresult.confirmed = true;
+                }
+                else {
+                    governedresult.confirmed = false;
+                }
+            } else {
+                if (typeof governedresult.path !== 'undefined' && true == governedresult.path) {
+                    governedresult.confirmed = true;
+                }
+            }
+
+             if (governedresult.confirmed) {
+                 break;
+             } else {
+                 governedresult.domain = false;
+                 governedresult.path = false;
+             }
+        }
+
+        return governedresult;
+    }
+
+    var load = function (component) {
+        return new Promise(function (resolve, reject) {
+            var script = get(component);
+
+            var isrestricted = false;
+            if (typeof script.canrestrict !== 'undefined' && script.canrestrict) {
+                var tag = Object.keys(detmScriptLoader.component)[script.component].toLowerCase();
+                isrestricted = $me.isRestricted(tag);
+            }
+
+            function loadTimer(epoch) {
+                this.start = epoch;
+                var timer$ = this;
+
+                this.report = function () {
+                    var allowed = sessionStorage.getItem('detm-script-loader-allowtimings') || true;
+
+                    if (typeof allowed === 'boolean' && allowed) {
+                        var stop = Date.now();
+                        var elapsed = stop - timer$.start;
+
+                        console.log("detmScriptLoader - loading (and initializing): " + script.name + (function (start, stop, elapsed) {
+                            var t1 = new Date(start);
+                            var t2 = new Date(stop);
+
+                            var begin = t1.toTimeString().substr(0, 8);
+                            begin += '.' + t1.getMilliseconds();
+                            var end = t2.toTimeString().substr(0, 8);
+                            end += '.' + t2.getMilliseconds();
+
+                            return (" start: " + begin + " stop: " + end + " elapsed: " + elapsed + "ms");
+                        })(timer$.start, stop, elapsed));
+                    }
+                }
+            }
+
+            var warranted = (typeof script.warranted !== 'undefined') ? script.warranted: true;
+            if (warranted) {
+                warranted = $me.isWarranted({ name: script.name, group: false });
+            }
+
+            if (false == isrestricted && true == warranted) {
+                var element = document.createElement('script');
+                var url = script.source.replace('{environment}', $me.config.environment);
+                url = url.replace('{name}', script.name);
+
+                element.type = $me.config.type;
+                element.async = $me.loadAsync;
+                element.setAttribute('data-loadedby','detm');
+
+                var timing = new loadTimer(Date.now());
+
+                // set handlers before setting src
+                element.onload = element.onreadystatechange = function () {
+                    timing.report();
+                    resolve();
+                }
+
+                element.onerror = function () {
+                    timing.report();
+                    reject("Adobe solutions: could not load script " + script.name);
+                }
+
+                element.src = url; // IE starts the load immediately after setting src
+
+                document.getElementsByTagName('head')[0].appendChild(element);
+            }
+            else {
+                if (isrestricted) {
+                    console.log("detmScriptLoader - " + script.name + " was not loaded due to a user-specified tag restriction");
+                }
+        
+                resolve();
+            }
+        });
+    }
+
+    var get = function (component) {
+        var script = null;
+
+        for (var i = 0; i < $me.config.scripts.length; i++) {
+            if ($me.config.scripts[i].component == component) {
+                script = $me.config.scripts[i];
+                break;
+            }
+        }
+
+        return script;
+    }
+
+    this.run = function () {
+        if ($me.loadAsync) {
+            load(detmScriptLoader.component.VISITORAPI).then(
+                function () { return load(detmScriptLoader.component.GOLDENEYE) }
+            ).then(
+                function () { return load(detmScriptLoader.component.ADOBETARGET) }
+            ).then(
+                function () { return load(detmScriptLoader.component.DATAMANAGER) }
+            ).then(
+                function () { return load(detmScriptLoader.component.DATADEFINITION) }
+            ).then(
+                function () { return load(detmScriptLoader.component.SATELLITELIB) }
+            ).then(
+                function () { return load(detmScriptLoader.component.MAPPINGFRAMEWORK) }
+            ).then(
+                function () {
+                    document.dispatchEvent(executeFooterEvent);
+                }
+            );
+        } else {
+            for (var i = 0; i < $me.config.scripts.length; i++) {
+                var script = $me.config.scripts[i];
+
+                var isrestricted = false;
+                if (typeof script.canrestrict !== 'undefined' && script.canrestrict) {
+                    var tag = Object.keys(detmScriptLoader.component)[script.component].toLowerCase();
+                    isrestricted = $me.isRestricted(tag);
+                }
+
+                var warranted = (typeof script.warranted !== 'undefined') ? script.warranted: true;
+                if (warranted) {
+                    warranted = $me.isWarranted({ name: script.name, group: false });
+                }
+
+                if (false == isrestricted && true == warranted) {
+                    var url = script.source.replace('{environment}', $me.config.environment);
+                    url = url.replace('{name}', script.name);
+                    document.write('<script type="' + $me.config.type + '" src="' + url + '" data-loadedby="detm"><\/script>');
+                } else {
+                    if (isrestricted) {
+                        console.log("detmScriptLoader - " + script.name + " was not loaded due to a user-specified tag restriction");
+                    }
+                }
+            }
+        }
+    }
+}
+
+var detmLoadTrigger = (function () {
+    var loadTrigger = '';
+
+    var scripts = document.getElementsByTagName('script');
+    for (var i = 0; i < scripts.length; i++) {
+        var script = scripts[i];
+        if (typeof script.dataset !== 'undefined' && typeof script.dataset.trigger !== 'undefined') {
+            var src = script.src.toLocaleLowerCase();
+            if (src.indexOf('detm-container-hdr.js') > -1) {
+                loadTrigger = script.dataset.trigger;
+                break;
+            }
+        }
+    }
+
+    return loadTrigger;
+})();
+
+if (typeof detmLoader === 'undefined') {
+    var detmLoader = new detmScriptLoader(detmScriptLoaderConfig);
+    detmLoader.configure();
+
+    var AllowDelayedLoad = true;
+
+    if (false == AllowDelayedLoad || "" == detmLoadTrigger || false == detmLoader.loadAsync) {
+        detmLoader.run(); // load all scripts
+    } else {
+        console.log("detmScriptLoader - load delayed for trigger: " + detmLoadTrigger);
+        document.addEventListener(detmLoadTrigger, function (e) {
+            if (detmLoadTrigger !== "" && detmLoader.loadAsync) {
+                console.log("detmScriptLoader - received trigger: " + detmLoadTrigger);
+                detmLoader.run(); // load all scripts
+            }
+        });
+    }
+}

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<!-- saved from url=(0082)https://assets.bounceexchange.com/assets/bounce/local_storage_frame7.min.html#1098 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<script>
+function clearCookie(a){var b="; expires=Thu, 01 Jan 1970 00:00:01 GMT";document.cookie=a+"="+b+";path=/;"}function setCookie(a,b){var c=new Date;c.setDate(c.getDate()+365);var d=b+"; expires="+c.toUTCString();document.cookie=a+"="+d+";path=/;"}function getCookie(a){for(var b,c,d,e=document.cookie.split(";"),b=0;b<e.length;b++)if(c=e[b].substr(0,e[b].indexOf("=")),d=e[b].substr(e[b].indexOf("=")+1),c=c.replace(/^\s+|\s+$/g,""),c==a)return d}function addEvent(a,b,c){a.addEventListener?a.addEventListener(b,c,!1):a.attachEvent&&a.attachEvent("on"+b,function(){c.apply(a,new Array(window.event))})}function receiveMyMessage(a){addEvent(window,"message",a)}function postMyMessage(a){parent.postMessage(a,"*")}function makePostMessage(a){for(var b="",c=0;c<client_ids.length;c++){var d="bounceClientVisit"+client_ids[c],e=localStorage.getItem(d);e&&(b&&(b+=","),b+='"'+client_ids[c]+'":'+e)}return b?encodeURIComponent("{"+b+"}"):""}if(parent!=window){var client_ids=location.hash.replace("#","").split("&"),client_id=client_ids[0],bounceCookieName="bounceClientVisit"+client_id,epCookieName="epid"+client_id,test_name="test",test_value="test",test_passed=!0;setCookie(test_name,test_value),getCookie(test_name)!=test_value?test_passed=!1:clearCookie(test_name);try{localStorage.setItem(test_name,test_value),localStorage.removeItem(test_name)}catch(a){test_passed=!1}test_passed?(addEvent(window,"storage",function(a){postMyMessage(makePostMessage())},!1),postMyMessage(makePostMessage()),receiveMyMessage(function(a){if(a&&a.data){var b=decodeURIComponent(a.data);if(b.indexOf("getEpCookieValue")>-1){var c=getCookie(epCookieName);c&&postMyMessage("epCookieValue="+c)}else b.indexOf('"vid":')>-1&&b.indexOf('"vpv":')>-1&&localStorage.setItem(bounceCookieName,b)}})):postMyMessage("third_party_cookies_disabled")}
+		</script>
+	</head>
+	<body>
+	
+
+</body></html>

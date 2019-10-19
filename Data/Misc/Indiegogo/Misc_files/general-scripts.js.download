@@ -1,0 +1,689 @@
+/**
+ * IGG general Visual Composer jQuery
+ *
+ * @since 1.0.0
+ *
+ * @package IGG Visual Composer Add Ons
+ */
+
+/**
+ * Browser class Plugin v1.0
+ *
+ * Public repository: https://github.com/hosszukalman/browserclass
+ * Examples and documentation at:
+ * Author: Kálmán Hosszu
+ * - twitter: kalmanhosszu
+ * - github: https://github.com/hosszukalman
+ * - drupal.org: https://drupal.org/user/267481
+ */
+var BrowserClass = {
+	init: function() {
+		this.classes = [];
+		this.agent = navigator.userAgent.toLowerCase();
+		this.checkBrowser();
+		this.checkPlatform();
+		if (this.isMobile(this.classes)) {
+			this.classes.push('mobile');
+		} else {
+			this.classes.push('desktop');
+		}
+	},
+
+	checkBrowser: function() {
+		var matches = [];
+		var aresult = '';
+		var aversion = '';
+		var resultant = '';
+
+		var iePattern = /(?:\b(ms)?ie\s+|\btrident\/7\.0;.*\s+rv:)(\d+)/;
+		var ieMatch = this.agent.match(iePattern);
+
+		if (ieMatch) {
+			this.classes.push('ie');
+
+			if (typeof ieMatch[2] !== 'undefined') {
+				this.classes.push('ie' + ieMatch[2]);
+			}
+		}
+
+		if (this.agent.match(/opera/)) {
+			this.classes.push('opera');
+
+			aresult = this.stristr(this.agent, 'version').split('/');
+			if(aresult[1]) {
+				aversion = aresult[1].split(' ');
+				this.classes.push('opera' + this.clearVersion(aversion[0]));
+			}
+		}
+
+		// Check for chrome desktop first, then chrome mobile, lastly check for
+		// safari, as these are mutually exclusive.
+		if (this.agent.match(/chrome/)) {
+			this.classes.push('chrome');
+
+			aresult = this.getSrtingAfter(this.agent, 'chrome').split('/');
+			aversion = aresult[1].split(' ');
+			this.classes.push('chrome' + this.clearVersion(aversion[0]));
+		} else if (this.agent.match(/crios/)) {
+			this.classes.push('chrome');
+			aresult = this.getSrtingAfter(this.agent, 'crios').split('/');
+
+			if (aresult[1]) {
+				aversion = aresult[1].split(' ');
+				this.classes.push('chrome' + this.clearVersion(aversion[0]));
+			}
+		} else if (this.agent.match(/safari/)) {
+			this.classes.push('safari');
+			aresult = this.getSrtingAfter(this.agent, 'version').split('/');
+
+			if(aresult[1]) {
+				aversion = aresult[1].split(' ');
+				this.classes.push('safari' + this.clearVersion(aversion[0]));
+			}
+		}
+
+		if (this.agent.match(/netscape/)) {
+			this.classes.push('netscape');
+
+			matches = this.agent.match(/navigator\/([^ ]*)/);
+			if (matches) {
+				this.classes.push('netscape' + this.clearVersion(matches[1]));
+			}
+			else {
+				matches = this.agent.match(/netscape6?\/([^ ]*)/);
+				if (matches) {
+					this.classes.push('netscape' + this.clearVersion(matches[1]));
+				}
+			}
+		}
+
+		if (this.agent.match(/firefox/)) {
+			this.classes.push('ff');
+			matches = this.agent.match(/firefox[\/ \(]([^ ;\)]+)/);
+			if(matches) {
+				this.classes.push('ff' + this.clearVersion(matches[1]));
+			}
+		}
+
+		if (this.agent.match(/konqueror/)) {
+			this.classes.push('konqueror');
+
+			aresult = this.getSrtingAfter(this.agent, 'konqueror').split(' ');
+			aversion = aresult[0].split('/');
+			this.classes.push('konqueror' + this.clearVersion(aversion[1]));
+		}
+
+		if (this.agent.match(/dillo/)) {
+			this.classes.push('dillo');
+		}
+
+		if (this.agent.match(/chimera/)) {
+			this.classes.push('chimera');
+		}
+
+		if (this.agent.match(/beonex/)) {
+			this.classes.push('beonex');
+		}
+
+		if (this.agent.match(/aweb/)) {
+			this.classes.push('aweb');
+		}
+
+		if (this.agent.match(/amaya/)) {
+			this.classes.push('amaya');
+		}
+
+		if (this.agent.match(/icab/)) {
+			this.classes.push('icab');
+		}
+
+		if (this.agent.match(/lynx/)) {
+			this.classes.push('lynx');
+		}
+
+		if (this.agent.match(/galeon/)) {
+			this.classes.push('galeon');
+		}
+
+		if (this.agent.match(/opera mini/)) {
+			this.classes.push('operamini');
+
+			resultant = this.getSrtingAfter(this.agent, 'opera mini');
+			if(resultant.match('/\//')) {
+				aresult = resultant.split('/');
+				aversion = aresult[1].split(' ');
+				this.classes.push('operamini' + this.clearVersion(aversion[0]));
+			}
+			else {
+				aversion = this.getSrtingAfter(resultant, 'opera mini').split(' ');
+				this.classes.push('operamini' + this.clearVersion(aversion[1]));
+			}
+		}
+	},
+
+	checkPlatform: function() {
+		if (this.agent.match(/windows/)) {
+			this.classes.push('win');
+		}
+
+		if (this.agent.match(/ipad/)) {
+			this.classes.push('ipad');
+		}
+
+		if (this.agent.match(/ipod/)) {
+			this.classes.push('ipod');
+		}
+
+		if (this.agent.match(/iphone/)) {
+			this.classes.push('iphone');
+		}
+
+		if (this.agent.match(/mac/)) {
+			this.classes.push('mac');
+		}
+
+		if (this.agent.match(/android/)) {
+			this.classes.push('android');
+		}
+
+		if (this.agent.match(/linux/)) {
+			this.classes.push('linux');
+		}
+
+		if (this.agent.match(/nokia/)) {
+			this.classes.push('nokia');
+		}
+
+		if (this.agent.match(/blackberry/)) {
+			this.classes.push('blackberry');
+		}
+
+		if (this.agent.match(/freebsd/)) {
+			this.classes.push('freebsd');
+		}
+
+		if (this.agent.match(/openbsd/)) {
+			this.classes.push('openbsd');
+		}
+
+		if (this.agent.match(/netbsd/)) {
+			this.classes.push('netbsd');
+		}
+	},
+
+	isMobile: function(classes) {
+		var mobile_devices = ['ipad', 'ipod', 'iphone', 'android', 'blackberry', 'operamini'];
+		var mobile_devices_test = false;
+
+		for (var i = 0; i < mobile_devices.length; i++) {
+			if (classes.indexOf(mobile_devices[i]) != -1) {
+				mobile_devices_test = true;
+
+				// Terminate the for loop, since a match has been found.
+				return false;
+			}
+		}
+
+		if (mobile_devices_test || this.agent.match(/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|vodafone|o2|pocket|kindle|mobile|pda|psp|treo)/)) {
+			return true;
+		}
+	},
+
+	clearVersion: function(version) {
+		version = version.replace('/[^0-9,.,a-z,A-Z-]/', '');
+		var find = (version + '').indexOf('.');
+		return version.substr(0, find);
+	},
+
+	getSrtingAfter: function(string, find) {
+		if (matches = string.match('(' + find + '.*)')) {
+			return matches[1];
+		}
+
+		return null;
+	}
+};
+
+( function( $ ) {
+
+	var $body   = $( 'body' );
+	var $window = $( window );
+
+	/**
+	 * Functions.
+	 */
+
+	// Return the number of digits after the decimal point that a float has.
+	function iggDecimalPlaces( num ) {
+		var match = ( '' + num ).match( /(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/ );
+		if ( ! match ) { return 0; }
+		return Math.max(
+			0,
+			// Number of digits right of decimal point.
+			(match[1] ? match[1].length : 0)
+			// Adjust for scientific notation.
+			- (match[2] ? +match[2] : 0)
+		);
+	}
+
+	// Utility function for getting the height of the document across all browsers.
+	function iggGetDocHeight() {
+		var D = document;
+		return Math.max(
+			D.body.scrollHeight, D.documentElement.scrollHeight,
+			D.body.offsetHeight, D.documentElement.offsetHeight,
+			D.body.clientHeight, D.documentElement.clientHeight
+		);
+	}
+
+	// Utility function for getting the height of the viewport across all browsers.
+	function iggGetViewportHeight() {
+		var height = window.innerHeight; // Safari, Opera
+		var mode = document.compatMode;
+
+		if ( (mode || !$.support.boxModel) ) { // IE, Gecko
+			height = (mode == 'CSS1Compat') ?
+			document.documentElement.clientHeight : // Standards
+			document.body.clientHeight; // Quirks
+		}
+
+		return height;
+	}
+
+	// Hide leaderboard "show more" button if necessary.
+	function iggLeaderboardDoHideButton( $button ) {
+		var $table = $button.parents( '.leaderboard' ).find( 'table' );
+		if ( $table.find( 'tr.hidden' ).length < 1 ) {
+			$button.fadeOut( 'slow' );
+		}
+	}
+
+	// Full width row and component resizing.
+	function iggResizeVCFullWidthRows() {
+		$( '.vc_row.full-width, .hero-banner.full-width, .success-story.full-width' ).each( function() {
+			var row = $( this );
+			var rowWidth = row.parent().width();
+			var containerWidth = $( '.site-container' ).width();
+			var margin = ( containerWidth - rowWidth ) / 2;
+			var bgImage = row.css( 'background-image' );
+
+			// IE8 background cover.
+			row.css( "filter", "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + bgImage + "', sizingMethod='scale' )" );
+
+			// Set margin and padding.
+			row.css( 'margin-left', -1 * margin );
+			row.css( 'margin-right', -1 * margin );
+			row.css( 'padding-left', margin - 15 );
+			row.css( 'padding-right', margin - 15 );
+		});
+	}
+
+	// Scroll callback function for detecting when elements enter and exit the viewport.
+	// Author: Remy Sharp - http://remysharp.com/2009/01/26/element-in-view-event-plugin/
+	function iggScrollCallback() {
+		var vpH = iggGetViewportHeight(),
+			scrolltop = ( document.documentElement.scrollTop ?
+				document.documentElement.scrollTop :
+				document.body.scrollTop ),
+			elems = [];
+
+		// naughty, but this is how it knows which elements to check for
+		$.each( $.cache, function () {
+			if ( this.events && this.events.inview ) {
+				elems.push( this.handle.elem );
+			}
+		});
+
+		if ( elems.length ) {
+			$( elems ).each( function () {
+				var $el = $( this ),
+					top = $el.offset().top,
+					height = $el.height(),
+					inview = $el.data( 'inview' ) || false;
+
+				if ( scrolltop > ( top + height ) || scrolltop + vpH < top ) {
+					if ( inview ) {
+						$el.data( 'inview', false );
+						$el.trigger( 'inview', [ false ] );
+					}
+				} else if ( scrolltop < ( top + height ) ) {
+					if ( ! inview ) {
+						$el.data( 'inview', true );
+						$el.trigger( 'inview', [ true ] );
+					}
+				}
+			});
+		}
+	}
+
+	// Wrap selected select elements for custom styling.
+	function iggWrapSelectElements() {
+		$( '.igg-gravityform select' ).each(function() {
+			var $select = $( this );
+			if ( ! $select.parent( '.custom-select' ).length ) {
+				$select.wrap( '<div class="custom-select"></div>' );
+			}
+		});
+	}
+
+	// Initialize countdown components.
+	function iggInitCountdowns() {
+		var $targets = $( '.countdown' );
+
+		$targets.each( function() {
+
+			var $this = $( this );
+			var year = parseInt( $this.data( 'year' ) );
+			var month = parseInt( $this.data( 'month' ) - 1 ); // Not sure why, but this one property is indexed differently.
+			var day = parseInt( $this.data( 'day' ) );
+			var hour = parseInt( $this.data( 'hour' ) );
+			var minute = parseInt( $this.data( 'minute' ) );
+			var second = parseInt( $this.data( 'second' ) );
+			var timezone_offset = parseInt( $this.data( 'timezone-offset' ) );
+
+			// Form end date object (not including timezone).
+			var dateObj = new Date( Date.UTC( year, month, day, hour, minute, second, 0 ) );
+
+			// Adjust end date object to factor in timezone offset.
+			dateObj.setUTCHours( dateObj.getUTCHours() - timezone_offset );
+
+			$this
+				.countdown( dateObj )
+				.on( 'update.countdown finish.countdown', function( event ) {
+					$this.html( event.strftime( ''
+					+ '<div class="unit days"><span class="count">%-D</span><span class="label">day%!D</span></div>'
+					+ '<div class="unit hours"><span class="count">%-H</span><span class="label">hour%!H</span></div>'
+					+ '<div class="unit minutes"><span class="count">%-M</span><span class="label">minute%!M</span></div>'
+					+ '<div class="unit seconds"><span class="count">%-S</span><span class="label">second%!S</span></div>'
+				));
+			});
+
+		});
+	}
+
+	// Initialize any Count Up components.
+	function iggInitCountUps() {
+
+		var $countUps = $( '.igg-count-up' );
+
+		if ( $countUps.length ) {
+
+			// Trigger the counting when the element enters the viewport.
+			$countUps.on( 'inview', function( event, visible ) {
+				if ( visible == true ) {
+					$( this ).trigger( 'iggTriggerCountUp' );
+				}
+			});
+
+			// Set up scrolling detection for when CountUps come into the viewport.
+			$window.on( 'scroll', iggScrollCallback );
+		}
+
+		$countUps.each( function() {
+
+			var $this = $( this );
+
+			$this.on( 'iggTriggerCountUp', function() {
+
+				// Only count up once for each instance.
+				if ( $this.hasClass( 'done-counting' ) ) {
+					return;
+				}
+
+				var $numberWrap = $this.find( '.igg-count-up-number-wrap' );
+				var number      = $this.attr( 'data-number' );
+				var duration    = $this.attr( 'data-duration' ) * 1000;
+				var floatDigits = iggDecimalPlaces( number );
+
+				$( { Counter: 0 } ).animate( { Counter: number }, {
+					duration: duration,
+					easing: 'swing',
+					step: function () {
+						if ( 0 === floatDigits ) {
+							$numberWrap.text( Math.ceil( this.Counter ) );
+						} else if ( 1 === floatDigits ) {
+							$numberWrap.text( ( Math.round( ( this.Counter ) * 10 ) / 10 ).toFixed( 1 ) );
+						} else if ( 2 === floatDigits ) {
+							$numberWrap.text( ( Math.round( ( this.Counter ) * 100 ) / 100 ).toFixed( 2 ) );
+						}
+					},
+					complete: function() {
+						$this.addClass( 'done-counting' );
+					}
+				});
+			});
+		});
+	}
+
+	// Initialize any Category Filter components.
+	function iggInitCategoryFilters() {
+		$( 'body' ).on( 'click', '.category-filter .button', function( e ) {
+
+			e.preventDefault();
+
+			var $button = $( this );
+
+			// Remove focus.
+			$button.blur();
+
+			// Toggle active button.
+			$button.addClass( 'active' ).siblings( '.button' ).removeClass( 'active' );
+
+			// Get all filterable containers.
+			var $containers = $( '.filterable' );
+
+			// Get prefix to detect all filterable elements.
+			var $prefix = $button.attr( 'data-prefix' );
+
+			// Get current filter values as array (necessary for All button which has multiple filter values).
+			var buttonFilterVals = $button.attr( 'data-filter' ).split( /\s+/ );
+
+			// Create filter.
+			$containers.find( '[data-filter-values]' ).each( function() {
+				var $elem = $( this );
+				var elemFilterVals = $elem.attr( 'data-filter-values' );
+
+				// Check element against all filter values.
+				var show = false;
+				$.each( buttonFilterVals, function( key, buttonFilterValue ) {
+
+					// Check if element has filter values matching active button.
+					if ( elemFilterVals.indexOf( buttonFilterValue ) >= 0 ) {
+						show = true;
+					}
+				});
+
+				// Hide or show depending on above checks.
+				if ( show ) {
+					$elem.slideDown();
+				} else {
+					$elem.slideUp();
+				}
+			});
+		});
+	}
+
+	// Initialize any Leaderboard components.
+	function iggInitLeaderboards() {
+
+		// Hide all but first ten campaigns.
+		$( '.leaderboard tr' ).slice( 11 ).addClass( 'hidden' ).addClass( 'hidden2' );
+
+		// Load the images for the first group in the table.
+		$( '.leaderboard tr' ).not( '.hidden' ).each( function() {
+			var $img = $( this ).find( 'td.photo img' );
+			var src = $img.data( 'src' );
+			$img.attr( 'src', src );
+		});
+
+		$( '.leaderboard button.show-more' ).on( 'click', function() {
+
+			var $button = $( this );
+			var $table = $button.parents( '.leaderboard' ).find( 'table' );
+			var $hiddenRows = $table.find( 'tr.hidden' ).slice( 0, 10 );
+
+			// Remove initial class to toggle display.
+			$hiddenRows.removeClass( 'hidden' );
+
+			// Re-add src to images for delayed loading.
+			$hiddenRows.each( function() {
+				var $img = $( this ).find( 'td.photo img' );
+				var src = $img.data( 'src' );
+				$img.attr( 'src', src );
+			});
+
+			// Delay removing secondary class to toggle opacity.
+			setTimeout( function() {
+				$hiddenRows.removeClass( 'hidden2' );
+			}, 200 );
+
+			// Hide button if necessary.
+			iggLeaderboardDoHideButton( $button );
+		});
+
+		// Hide button if necessary.
+		iggLeaderboardDoHideButton( $( '.leaderboard button.show-more' ) );
+	}
+
+	// Initialize any lightboxes (part of the Gravity Forms component).
+	function iggInitLightboxes() {
+
+		/**
+		 * Add lightbox classes to main lightbox container.
+		 *
+		 * This is necessary because, by default, we can only pass classes to
+		 * the inner content of a lightbox, however we need to be able to add
+		 * classes to the outermost lightbox wrapper to style things like the
+		 * close icon/link.
+		 */
+		$( 'a.fancybox' ).on( 'click', function() {
+			var $link,
+				oldLightboxWrapClass,
+				newLightboxWrapClass,
+				$fancyboxContainer;
+
+			$link = $( this );
+			$fancyboxContainer = $( '#fancybox-wrap' );
+
+			// Get old and new lightbox classes to remove/add.
+			oldLightboxWrapClass = $fancyboxContainer.attr( 'data-lightbox-old-wrap-class' );
+			newLightboxWrapClass = $link.attr( 'data-lightbox-wrap-class' );
+
+			// Remove old, add new classes and data att to main #fancybox-content container.
+			$fancyboxContainer
+				.removeClass( oldLightboxWrapClass )
+				.addClass( newLightboxWrapClass )
+				.attr( 'data-lightbox-old-wrap-class', newLightboxWrapClass );
+		});
+	}
+
+	// Initialize any SailThru components.
+	function iggInitSailThru() {
+		$( '.sailthru_form' ).each(function() {
+			var $form = $( this );
+			$form.find( '.sailthru-add-subscriber-errors' ).clone().appendTo( $form.find( '.form-group' ).last() );
+		});
+	}
+
+	// Initialize any Twitter Feed components using the Carousel template.
+	function iggInitTwitterFeeds() {
+		$( '.template-carousel .fetch-tweets' ).each( function() {
+			$( this ).bxSlider({
+				adaptiveHeight: true,
+				infiniteLoop: false,
+				hideControlOnEnd: true,
+				pager: false
+			});
+		});
+	}
+
+	/**
+	 * Start the party.
+	 */
+	$( document ).ready( function() {
+
+		// Resize full-width rows and components.
+		iggResizeVCFullWidthRows();
+
+		// Add a Hero Banner row class.
+		$( '.vc_row' ).has( '.hero-banner:only-child' ).addClass( 'hero-row' );
+
+		// Ensure that VC columns that contain floated VC elements get the right height.
+		$( '.wpb_column' ).has( '.icon-box' ).addClass( 'overflow-hidden' );
+
+		// Add classes to VC rows to indicate how many child columns are in the row
+		// and if all of the child columns are the same width.
+		$( '.vc_row' ).each( function() {
+
+			var $this      = $( this );
+			var widthClass = '';
+			var equalWidth = true;
+			var children   = 0;
+
+			$this.find( '.wpb_column' ).each( function( i ) {
+				if ( i == 0 ) {
+					if ( $( this ).hasClass( 'vc_col-sm-6' ) ) {
+						widthClass = 'vc_col-sm-6';
+					} else if ( $( this ).hasClass( 'vc_col-sm-4' ) ) {
+						widthClass = 'vc_col-sm-4';
+					} else if ( $( this ).hasClass( 'vc_col-sm-3' ) ) {
+						widthClass = 'vc_col-sm-3';
+					} else if ( $( this ).hasClass( 'vc_col-sm-2' ) ) {
+						widthClass = 'vc_col-sm-2';
+					}
+				} else {
+					if ( ! $( this ).hasClass( widthClass ) ) {
+						equalWidth = false;
+					}
+				}
+				children++;
+			});
+
+			if ( equalWidth ) {
+				$this.addClass( 'equal-width-children' );
+			}
+
+			$this.addClass( 'child-count-' + children );
+		});
+
+		// Initialize countdown components.
+		iggInitCountdowns();
+
+		// Initialize any Count Up components.
+		iggInitCountUps();
+
+		// Initialize any Category Filter components.
+		iggInitCategoryFilters();
+
+		// Initialize any Leaderboard components.
+		iggInitLeaderboards();
+
+		// Initialize any lightboxes (part of the Gravity Forms component).
+		iggInitLightboxes();
+
+		// Initialize any SailThru components.
+		iggInitSailThru();
+
+		// Initialize any Twitter Feed components.
+		iggInitTwitterFeeds();
+
+		// Trigger the scroll event once to ensure our inview listeners fire if their elements
+		// are initially in view.
+		$window.trigger( 'scroll' );
+
+		// Resize VC full-width rows when the screen size changes.
+		$( window ).on( 'orientationchange resize', function() {
+			iggResizeVCFullWidthRows();
+		});
+
+		// Post Gravity Forms form rendering - done here to account for Ajax validation re-rendering.
+		$( document ).on( 'gform_post_render', function() {
+			iggWrapSelectElements();
+		});
+
+		// Add browser and devices classes.
+		BrowserClass.init();
+		$body.addClass( BrowserClass.classes.join(' ') );
+	});
+
+})( jQuery );

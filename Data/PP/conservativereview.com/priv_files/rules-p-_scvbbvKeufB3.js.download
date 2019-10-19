@@ -1,0 +1,8 @@
+/*
+ Quantcast measurement tag
+ Copyright (c) 2008-2017, Quantcast Corp.
+*/
+(function(c,b,a){var h="twitter:title og:title title author authors article:author article:authors bt:author bt:authors sailthru.author sailthru.authors sailthru.title lv:author lv:authors lv:title".split(" "),k=function(b){return b.replace(/^[\s\ufeff\xA0]+|[\s\ufeff\xA0]+$/g,"")},l=function(b,a){var d,e;a:{for(d=0;d<h.length;d++)if(h[d]===b){d=!1;break a}d=!0}if(!a)return a;if(d){e=a.split(",");for(d=0;d<e.length;d++)e[d]=k(e[d]);return e}return k(a.replace(/,+/g," "))};b=function(a,b,d){b=document.getElementsByTagName("meta");
+for(var e,c,f=[],g=0;g<b.length;g++)e=b[g],c=e.getAttribute("name")||e.getAttribute("property"),c==d&&(f=f.concat(l(d,e.getAttribute("content"))));0<f.length?a(f):a(!1)};a=function(b,a){var d=[],c;if("array"==={}.toString.call(a).match(/\s([a-zA-Z]+)/)[1].toLowerCase()){for(c=0;c<a.length;c++)d.push(b+"."+a[c]);return{labels:d.join(",")}}return{labels:b+"."+a}};__qc.apply(null,["rules",[c,null,[[a,"keywords"]],[[b,"exactmatch","sailthru.tags"]]],[c,null,[[a,"keywords"]],[[b,"exactmatch","news_keywords"]]],
+[c,null,[[a,"keywords"]],[[b,"exactmatch","keywords"]]],[c,null,[[a,"category"]],[[b,"exactmatch","article:tag"]]],[c,null,[[a,"category"]],[[b,"exactmatch","article:section"]]],[c,null,[[a,"title"]],[[b,"exactmatch","twitter:title"]]],[c,null,[[a,"title"]],[[b,"exactmatch","og:title"]]],[c,null,[[a,"title"]],[[b,"exactmatch","title"]]],[c,null,[[a,"author"]],[[b,"exactmatch","article:author"]]],[c,null,[[a,"author"]],[[b,"exactmatch","sailthru.author"]]],[c,null,[[a,"author"]],[[b,"exactmatch","authors"]]],
+[c,null,[[a,"author"]],[[b,"exactmatch","author"]]]])})("p-_scvbbvKeufB3",window,document);

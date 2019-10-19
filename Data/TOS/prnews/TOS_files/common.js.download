@@ -1,0 +1,182 @@
+require.config({
+  baseUrl: '/includes/',
+    // set paths to libraries/plugins/scripts
+    paths: {
+      'jquery': 'jquery',
+      'jquery-ui': 'lib.jquery-ui.min',
+      'masonry': 'masonry.pkgd',
+      'imagesloaded': 'imagesloaded.pkgd',
+      'viewport': 'viewport',
+      'waypoints': 'jquery.waypoints',
+      'inview': 'inview',
+      'lightbox': 'ekko-lightbox',
+      'flickity': 'flickity.pkgd',
+      'flexslider': 'lib.flexslider.min',
+      'bridget': 'jquery.bridget',
+      'bootstrap': 'bootstrap',
+      'datepicker': 'lib.bootstrap-datepicker',
+      'mmenu': 'lib.jquery.mmenu.min.all',
+      'isotope': 'lib.isotope.pkgd.min',
+      'hammer': 'lib.jquery.hammer',
+      'typeahead': 'lib.typeahead.jquery.min',
+      'select': 'lib.bootstrap-select',
+      'tokenfield': 'lib.tokenfield.min',
+      'prn.mobilenav': 'prn.mobilenav',
+      'prn.mobilemenu-build' : 'prn.mobilemenu-build',
+      'collapse-xs' : './prncom/collapse-xs',
+      'prn.footer': 'prn.footer',
+      'prn.datepicker': 'prn.datepicker',
+      // datepicker locales,
+      'datepicker-cs' : 'bootstrap-datepicker.cs',
+      'datepicker-da' : 'bootstrap-datepicker.da',
+      'datepicker-de' : 'bootstrap-datepicker.de',
+      'datepicker-es' : 'bootstrap-datepicker.es',
+      'datepicker-fi' : 'bootstrap-datepicker.fi',
+      'datepicker-fr' : 'bootstrap-datepicker.fr',
+      'datepicker-it' : 'bootstrap-datepicker.it',
+      'datepicker-nl' : 'bootstrap-datepicker.nl',
+      'datepicker-no' : 'bootstrap-datepicker.no',
+      'datepicker-pl' : 'bootstrap-datepicker.pl',
+      'datepicker-pt' : 'bootstrap-datepicker.pt',
+      'datepicker-ru' : 'bootstrap-datepicker.ru',
+      'datepicker-sk' : 'bootstrap-datepicker.sk',
+      'datepicker-sv' : 'bootstrap-datepicker.sv',
+      'prn.masonry': 'prn.masonry',
+      'prn.lightbox': 'prn.lightbox',
+      'prn.sitepreview': 'prn.sitepreview',
+      'marketingpromo': 'prn.marketingpromo',
+      'prn.marketingpersona': 'prn.marketingpersona',
+      'prn.info-overlay': 'prn.info-overlay',
+      'prn.gallerycarousel': 'prn.gallerycarousel',
+      'prn.gallery-legacy': 'prn.gallery-legacy',
+      'prn.gallery-legacy-two': 'prn.gallery-legacy-two',
+      'prn.hash-change' : './prn.hash-change',
+      'prn.search': 'prn.search',
+      'page.advanced-search': 'page.advanced-search',
+      'prn.subnav': 'prn.subnav',
+      'prn.stickynav': 'prn.stickynav',
+      'prn.share': 'prn.share',
+      'page.multimedia': 'page.multimedia',
+      'prn.footerfixed.mkt': 'prn.footerfixed.mkt',
+      'prn.carousel': 'prn.carousel',
+      'prn.promo-height': 'prn.promo-height',
+      'prn.match-height': 'prn.match-height',
+      'prn.center-image': 'prn.center-image',
+      'prn.omniture': 'prn.omniture',
+      'omniture': 'prn.omniture',
+      'prn.twitter': 'prn.twitter',
+      'prn.select': 'prn.select',
+      'prn.getparam': 'prn.getparam',
+      'PRNR_search': 'PRNR_search',
+      'prn.templateversion': 'prn.templateversion',
+      'prn.newstogram': 'prn.newstogram',
+      'prn.modalcarousel': 'prn.modalcarousel',
+      'prn.tickers': 'prn.tickers',
+      'prn.social-links': 'prn.social-links',
+      'prn.google.analytics': 'prn.google.analytics',
+      'prn.floodlight': 'prn.floodlight',
+      'prn.sitecatalyst': 'prn.sitecatalyst',
+      'bootstrap-formhelpers': 'bootstrap-formhelpers',
+      'prn.adv-search': 'prn.adv-search',
+      'bootstrap-formhelpers.min': 'bootstrap-formhelpers.min',
+      'jquery-cookie': 'jquery.cookie'
+    },
+    // set dependencies
+    shim: {
+      'bootstrap': {
+        'deps': ['jquery']
+      },
+      'datepicker' : {
+        'deps' : ['jquery','jquery-ui','bootstrap'],
+        'exports': '$.fn.datepicker'
+      },
+      'datepicker-cs' : { 'deps' : ['datepicker'] },
+      'datepicker-da' : { 'deps' : ['datepicker'] },
+      'datepicker-de' : { 'deps' : ['datepicker'] },
+      'datepicker-es' : { 'deps' : ['datepicker'] },
+      'datepicker-fi' : { 'deps' : ['datepicker'] },
+      'datepicker-fr' : { 'deps' : ['datepicker'] },
+      'datepicker-it' : { 'deps' : ['datepicker'] },
+      'datepicker-nl' : { 'deps' : ['datepicker'] },
+      'datepicker-no' : { 'deps' : ['datepicker'] },
+      'datepicker-pl' : { 'deps' : ['datepicker'] },
+      'datepicker-pt' : { 'deps' : ['datepicker'] },
+      'datepicker-ru' : { 'deps' : ['datepicker'] },
+      'datepicker-sk' : { 'deps' : ['datepicker'] },
+      'datepicker-sv' : { 'deps' : ['datepicker'] },
+      'bootstrap-formhelpers': {
+        'deps': ['jquery', 'bootstrap']
+      },
+      'bootstrap-formhelpers.min': {
+        'deps': ['jquery', 'bootstrap']
+      },
+      'masonry': {
+        'deps': ['imagesloaded', 'bridget']
+      },
+      'isotope': {
+        'deps': ['imagesloaded', 'bridget']
+      },
+      'viewport': {
+        'deps': ['jquery']
+      },
+      'lightbox': {
+        'deps': ['jquery', 'viewport']
+      },
+      'flickity': {
+        'deps': ['jquery', 'bridget']
+      },
+      'flexslider': {
+        'deps': ['jquery']
+      },
+      'bridget': {
+        'deps': ['jquery']
+      },
+      'waypoints': {
+        'deps': ['jquery']
+      },
+      'inview': {
+        'deps': ['jquery', 'waypoints']
+      },
+      'mmenu': {
+        'deps': ['jquery']
+      },
+      'prn.fbshare': {
+        'exports': 'fbshare'
+      },
+      'imagesloaded': {
+        'deps': ['jquery']
+      },
+      'hammer': {
+        'deps': ['jquery']
+      },
+      'jquery-ui': {
+        'deps': ['jquery']
+      },
+      'select': {
+        'deps': ['jquery', 'bootstrap']
+      }
+    }
+  });
+
+require(['jquery', 'bootstrap']);
+require(['jquery', 'prn.search']);
+require(['jquery', 'prn.stickynav']);
+require(['jquery', 'prn.mobilenav']);
+require(['jquery', 'prn.subnav']);
+require(['jquery', 'prn.twitter']);
+require(['jquery', 'prn.footer']);
+require(['jquery', 'prn.share']);
+require(['jquery', 'PRNR_search']);
+require(['jquery', 'omniture']);
+
+// Site Catalyst
+require(['prn.sitecatalyst'], function(prnSiteCatalyst){
+ prnSiteCatalyst();
+});
+
+
+
+
+
+
+

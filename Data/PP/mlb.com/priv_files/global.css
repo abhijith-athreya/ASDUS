@@ -1,0 +1,350 @@
+/* default styles  */
+body,td,th { color:#000; font:12px Arial,Helvetica,sans-serif; }
+input,select,textarea,button { color:#000; font:11px Arial,Helvetica,sans-serif; }
+/*a { font-family:Arial,Helvetica,sans-serif; }*/
+body,form { margin:0px; padding:0px; }
+
+body {font:12px arial,helvetica,sans-serif;color:#000;}
+
+/* begin added to overcome injected css from third-party ads via DC */
+body {
+  overflow-y: auto!important;
+}
+/* end added to overcome injected css from third-party ads */
+
+body.mlb {background:url(/images/masthead/y2010/mlb_bg_gradient.png) 0 0 repeat-x fixed;}
+*html body.mlb #bodyWrap {behavior: url(/scripts/fix_png_bg.htc)}
+#metaWrap {width:100%; margin:0 auto;}
+#contentWrap {width:990px; margin:0 auto; position:relative;}
+#content_wrapper {background-color:#fff;overflow:hidden;zoom:1;}
+/* #content_under_header {-moz-box-shadow: 0px 0px 25px #000;-webkit-box-shadow: 0px 0px 25px #000;box-shadow: 0px 0px 25px #000;} */
+
+/* template tw_blank isn't centered and has no background */
+body.tw_blank           {background:none;}      
+body.tw_blank #metaWrap, body.tw_blank #bodyWrap {width:auto; overflow:auto; position:static; margin:0;background:none;}
+
+/* anchor behavior */
+a { text-decoration:none; }
+a:hover { text-decoration:underline; }
+
+/* headlines */
+.hlXs { font-size:12px; font-weight:bold; }                                             /*  9 pt */
+.hlSm { font-size:16px; font-weight:bold; }                                             /* 12 pt */
+.hlMd { font-size:18px; font-weight:bold; }
+.hl { font-size:25px; font-weight:bold; }                                                   /* 18 pt */
+.hlBlack { font:25px Arial Black,Arial,Helvetica,sans-serif; }
+.hlLg { font-size:34px; font-weight:bold; }                                             /* 28 pt */
+.hlLgBlack { font:34px Arial Black,Arial,Helvetica,sans-serif; }
+.hlXl { font-size:43px; font-weight:bold; letter-spacing:-1px; }    /* 36 pt */
+.hlXxl { font-size:52px; font-weight:bold; letter-spacing:-3px; }   /* 42 pt */ 
+
+/* sub/secondary-headline */
+.subHead { font-size:16px; font-weight:bold; }
+.subHeadBlack { font:16px Arial Black,Arial,Helvetica,sans-serif; }
+.subHeadLite { color:#666; font-size:16px; font-weight:bold; }
+
+/* other editorial */
+.blurb { font-size:12px; }
+.timeStamp { font-size:11px; }
+.byLine, .caption { font-size:10px; }
+.tagLine { color:#666; font-size:11px; font-style:italic; }
+
+/* all-purpose text */
+.textXs, .textXs td { font-size:10px; } /* 7 pt */
+.textSm, .textSm td { font-size:11px; } /* 8 pt */
+.text, .text td { font-size:12px; }         /* 9 pt */
+.textLg, .textLg td { font-size:14px; } /* 11 pt */
+.textXl, .textXl td { font-size:16px; } /* 12 pt */
+
+/* tab-style component header */
+.tab { color:#000; font:10px Tahoma,Arial,Helvetica,sans-serif; margin-left:8px; }
+.tab a { color:#000; font:10px Tahoma,Arial,Helvetica,sans-serif; }
+
+/* component header */
+.compHdr, .compHdr a { font-weight:bold; }
+.compHdrW, .compHdrW a,.compHdrW a:visited,a:visited.compHdrW { color:#fff; font-weight:bold; }
+
+/* section header (above left nav) */
+.secHdr { color:#999; font-size:19px; text-transform:capitalize; }
+
+/* main component title bar */
+.mcTitle { background-color:#999; color:#fff; font-weight:bold; padding-left:6px; } 
+
+/* global buttons */
+.btnGrey { background-color:#ccc; border-width:1px; border-style:solid; border-color:#000000; font:bold 10.5px Verdana,Arial,Helvetica,sans-serif;cursor: pointer; }
+.btnGreyOn { background-color:#666; border-width:1px; border-style:solid; border-color:#000000; color:#fff; font:bold 10.5px Verdana,Arial,Helvetica,sans-serif;cursor: pointer; }
+.btnGreen { background-color:#9c6; border-width:1px; border-style:solid; border-color:#000000; font:bold 10.5px Verdana,Arial,Helvetica,sans-serif;cursor: pointer; }
+.btnGreenOn { background-color:#693; border-width:1px; border-style:solid; border-color:#000000; color:#fff; font:bold 10.5px Verdana,Arial,Helvetica,sans-serif;cursor: pointer; }
+
+/* color-only */
+.red, .red td, a:visited.red { color:#c00; }
+.green, .green td, a:visited.green { color:#090; }
+form td.red, form span.red, form div.red { color:#c00; font-weight:bold; } /* red class within forms gets bolded */
+.white, .white td, a:visited.white { color:#fff; }
+.greyLite, .greyLite td, a:visited.greyLite { color:#ccc; }
+.grey, .grey td, a:visited.grey  { color:#999; }
+.greyDark, .greyDark td, a:visited.greyDark  { color:#666; }
+.greyBlack, .greyBlack td, a:visited.greyBlack { color:#333; }
+.black, .black td, a:visited.black { color:#000; }
+
+
+
+/* image padding */
+.floatLeft { float:left; margin-right:5px; margin-bottom:3px; } /* left-aligned with right- and bottom- */
+.floatRight { float:right; margin-left:5px; margin-bottom:3px; } /* right-aligned with left- and bottom- */
+
+/* margins (space between block-level box and border) */
+.mar0 { margin:0px; }
+.mar3 { margin:3px; }
+.mar5 { margin:5px; }
+.mar7 { margin:7px; }
+.mar3tb { margin:3px 0px; }
+.mar3lr { margin:0px 3px; }
+.mar5tb { margin:5px 0px; }
+.mar5lr { margin:0px 5px; }
+.mar7tb { margin:7px 0px; }
+.mar7lr { margin:0px 7px; }
+
+/* padding (space between border and content) */
+.pad0 { padding:0px; }
+.pad3 { padding:3px; }
+.pad5 { padding:5px; }
+.pad7 { padding:7px; }
+.pad3tb { padding:3px 0px; }
+.pad3lr { padding:0px 3px; }
+.pad5tb { padding:5px 0px; }
+.pad5lr { padding:0px 5px; }
+.pad7tb { padding:7px 0px; }
+.pad7lr { padding:0px 7px; }
+form td.pad3 { padding-top:3px; } /* form <td>s that need 3px top padding */
+
+
+.mini { font:10px Tahoma,Arial,Helvetica,sans-serif; }
+
+/* header anchors not underlined on hover */
+#hdr a:hover { text-decoration:none; }
+
+/* use to set transparency in IE on PNGs */
+img.png { behavior: url("/scripts/fix_png.htc"); }
+
+/* sphere it style */
+#sphere{text-align:center; font-size:11px; font-weight:bold;}
+
+/* team.com footers  -- THESE CAN BE REMOVED IF ALL CLUB/MLB PAGES NOW USE RESPONSIVE HEADER/FOOTER */
+#team_footer { color: #b8b8b8; background-color:#000000; clear:both; width: 990px; height:275px;position:relative;}
+#team_footer .footer_logo {position:absolute;top:-8px;padding-left:9px;}
+#team_footer_links ul li {float:left; margin:0px; padding:14px 0px 12px 25px;}
+#team_footer_links ul li.home {border-bottom:none;padding:0px; width:215px; height:76px; overflow:hidden;}
+#team_footer_links ul li.home a {text-indent:-9999em; display:block; width:190px; height:66px; overflow:hidden; margin:10px 0px 0px 0px; padding:0px;}
+#team_footer_links ul li.second {padding-left:0;}
+#team_footer_global {clear:both;}
+#team_footer_global { padding: 16px 20px 0px; width: 950px; }
+#team_footer_global #sponsor_image_container {width:230px;float:left;}
+#team_footer_global #sponsor_image {float:left;border:none;padding-right:20px;}
+#team_footer_global #footer_blurb {margin:2px 0 0 0;float:left;width:690px;}
+#team_footer_global a { color: #d4d4d4; font-weight: bold; margin-right:15px; }
+
+/* mlb.com footers  -- THESE CAN BE REMOVED IF ALL CLUB/MLB PAGES NOW USE RESPONSIVE HEADER/FOOTER */
+#mlb-footer {padding:10px;color:#dadada;background:#1e1e1e;}
+#mlb-footer li, #mlb-footer ul {margin:0;padding:0;list-style-type: none;}
+#mlb-footer a {color:#dadada;}
+
+#mlb-footer #sponsor-image-container {float:left;padding:0 30px 0 0;}
+#mlb-footer #sponsor-image-container li {float:left;}
+#mlb-footer #sponsor-image-container #footer-mlb-logo {position:relative;top:6px;}
+#mlb-footer #sponsor-image-container #footer-bgca-logo {}
+
+#mlb-footer #footer-links-container {float:left;width:62%;position:relative;top:8px;}
+@media (max-width: 990px) {
+  #mlb-footer #footer-links-container {width:100% !important;top:-20px;} 
+}
+
+@media (min-width: 500px) {
+  #mlb-footer #footer-language-links {display:none;} 
+}
+
+#mlb-footer #footer-links {margin:0 0 10px 0;width:100%;}
+#mlb-footer #footer-links li {display:inline;margin:0 18px 0 0;line-height:18px;}
+#mlb-footer #footer-links li a {white-space:nowrap;}
+
+#mlb-footer #copyright-container {margin:0 0 8px 0;color: #8d8d8d;}
+#mlb-footer #mlbpa-container {margin:0 0 8px 0;color: #8d8d8d;}
+
+#mlb-footer #footer-social {clear:both;padding:0px 0 34px 0;}
+#mlb-footer #footer-social dt {color: #8d8d8d;float: left;font: 400 12px/24px mlb_secondary;
+margin-right: 10px;text-transform: uppercase;}
+#mlb-footer #footer-social dd {float:left;margin-right:10px;}
+#mlb-footer #footer-social dd a {
+background: url("http://ui.bamstatic.com/bridge/images/social/social_icons_24x24@2x.png") no-repeat scroll 0 0 / 24px 300px rgba(0, 0, 0, 0);
+display: block;height: 24px;text-indent: -999em;width: 24px;}
+#mlb-footer #footer-social .twitter a {background-position: 0 -70px;}
+#mlb-footer #footer-social .facebook a {background-position: 0 0;}
+#mlb-footer #footer-social .google a {background-position: 0 -186px;}
+
+#mlb-footer #footer-language-links {clear:both;}
+#mlb-footer #footer-language-links li {display:inline;margin:0 4px 0 0;padding:0 6px 0 0;}
+#mlb-footer #footer-language-links li:first-child {border-right:1px solid #8d8d8d;}
+
+#global-footer-container ul {
+  padding: 0;
+}
+
+/* ADA */
+.ada {position:absolute; z-index:1; top:-1px; left:-1px; width:1px; height:1px; overflow:hidden;}
+.screen_reader {position: absolute;left: -9999em;top: 0;width: 1px;height: 1px;overflow: hidden;}
+
+/* Responsive Header */
+#banner_ad {
+  background: none repeat scroll 0 0 black;
+  margin: 0 auto;
+  text-align: center;
+  max-width: 990px;
+}
+
+body.team #banner_ad > div {
+  background: none repeat scroll 0 0 black;
+  margin: 0 auto;
+  max-width: 728px;
+  text-align: center;
+}
+
+body.mlb #banner_ad {
+  max-width: 100%;
+}
+
+body.mlb #banner_ad div {
+  margin: 0 auto;
+}
+
+.team #header_container .main-container,
+.team_es #header_container .main-container {
+  margin: 0 auto;
+  max-width: 990px;
+}
+
+
+/* overrides for 2009 header to work */
+#masthead img{border:0;}
+#masthead .screen_reader {position: absolute;left: -9999em;top: 0;width: 1px;height: 1px;overflow: hidden;}
+
+/* section_navigation */
+#section_navigation h2 {color:#999; font-size:19px; text-transform:capitalize;}
+#section_navigation h2 img {padding-right:2px;}
+#section_navigation {width:160px;margin:0 0 5px 5px;display:block;}
+#section_navigation_links {width:160px;margin:0 0 5px 5px;display:block;}
+#section_navigation ul {font-size:11px;line-height:14px;}
+#section_navigation ul, #section_navigation ul ul {list-style:none;margin:0;padding:0;}
+#section_navigation ul em,#section_navigation ul a {font-style:normal;color:#666;}
+#section_navigation ul li {margin:1em 0;}
+#section_navigation ul li ul li {margin:0;}
+#section_navigation ul li ul li em,#section_navigation ul li ul li a {color:#11225B;}
+#section_navigation ul.accessibleNav em,#section_navigation ul.accessibleNav a {display:inline-block;cursor:pointer;background:transparent url(/images/nav/plus_minus_arrow_toggle.gif) no-repeat left -148px;}
+#section_navigation ul.accessibleNav li em.accessibleNav-hovered {background-position:left -308px;}
+#section_navigation ul.accessibleNav li em.accessibleNav-expanded {background-position:left -468px;}
+#section_navigation ul.accessibleNav li em.accessibleNav-hovered.accessibleNav-expanded {background-position:left -628px;}
+#section_navigation ul.accessibleNav li a {background-position:left -788px;}
+#section_navigation ul.accessibleNav li a.accessibleNav-hovered {background-position:left -948px;}
+#section_navigation ul.accessibleNav li em, #section_navigation ul.accessibleNav li a, #section_navigation ul.accessibleNav li ul li {padding-left:15px;}
+#section_navigation ul.accessibleNav span.accessibleNav-selected {display:block;padding-left:15px;background:transparent url(/images/nav/plus_minus_arrow_toggle.gif) no-repeat left -948px;}
+*html #section_navigation ul.accessibleNav span.accessibleNav-selected {display:inline;}
+#section_navigation ul.accessibleNav li ul li em, #section_navigation ul.accessibleNav li ul li a, #section_navigation ul.accessibleNav li ul li span.accessibleNav-selected {background:none !important;padding-left:0;color:#11225B;}
+#section_navigation ul.accessibleNav span.accessibleNav-selected {font-weight:bold;}
+#section_navigation ul#section_navigation_ad li {text-align:center;margin:20px 0;}
+.main_content_table {margin-left:5px;}
+
+/* autocomplete - Removed from http://mlb.mlb.com/components/search/style/jquery.autocomplete.css on 4/28/2009.
+For more info: http://docs.jquery.com/UI/Autocomplete */
+.ac_results {padding: 0px;border: 1px solid WindowFrame;background-color: Window;overflow: hidden;z-index:101;position:relative;}
+.ac_results ul {width: 100%;list-style-position: outside;list-style: none;padding: 0;margin: 0;}
+.ac_results iframe {display:none;/*sorry for IE5*/display/**/:block;/*sorry for IE5*/position:absolute;top:0;left:0;z-index:-1;filter:mask();width:3000px;height:3000px;}
+.ac_results li {margin: 0px;padding: 2px 5px;cursor: pointer;display: block;width: 100%;font: menu;font-size: 12px;overflow: hidden;}
+.ac_loading {background: Window url('../images/loading.gif') top no-repeat;}
+.ac_over {background-color: Highlight;color: HighlightText;}
+
+/* The following styles have been put in to facilitate the new wrapper and navigation moving to the right */
+/* overrides */
+#breadcrumbs_container ul, #breadcrumbs_container li, #related_container ul, #related_container li, #tw_interior h3 {margin:0;padding:0;}
+#breadcrumbs_container li, #related_container li {list-style:none;}
+
+/* recreating retired_template */
+#tw_interior.retired_template #mc {border-bottom:1px solid #9a9a9a;border-left:1px solid #9a9a9a;border-right:1px solid #9a9a9a;width:581px;padding:6px;margin-left:30px;}
+#tw_interior.retired_template #mc h3 {margin:-7px 0 0 -7px;}
+*html #tw_interior.retired_template #mc h3 {margin:-6px -7px 0 -7px;}
+#tw_interior.retired_template #mc h3#page_title_text {background-color:#9a9a9a;height:17px;padding:2px;color:#fff;margin-right:-7px;}
+
+/* template wrappers */
+#tw_interior #mc_container {width:649px;float:left;margin:0 0 0 11px;padding-bottom:11px;}
+#tw_interior #contentWrap a { font-family:Arial,Helvetica,sans-serif; }
+#tw_interior #contentWrap { font:12px Arial,Helvetica,sans-serif; }
+*html #tw_interior #mc_container {margin:0 0 0 6px;}
+#tw_interior #related_container {width:300px;float:left;margin:0 0 0 17px;padding-bottom:11px;}
+
+#footer_container, #footerLegal {clear:both;background:#000;}
+
+#tw_mc, #tw_interior, #tw_mc_ad, #tw_secnav_mc, #tw_secnav_mc_ad {margin: 0 auto; width:100%;} 
+
+/* breadcrumbs */
+#breadcrumbs_container {margin:8px 0;font-size:10px;font-weight:bold;padding:0 11px;}
+#breadcrumbs_container h2 {font-size:10px;display:inline;font-weight:bold;}
+#breadcrumbs_container ul li {display:inline;padding-right:4px;}
+
+/* related container */
+#related_container .related_links {border-top:1px solid #4d4d4d;padding:2px 0}
+#related_container h3 {font-size:14px;text-transform:uppercase;padding:0 0 0 12px;background:none;line-height:1em;}
+#related_container h3 a, #related_container h3 {display:inline;}
+#related_container .related_links {background:transparent url(/images/global/related_links_bg.gif) repeat-x;margin-bottom:24px;}
+#related_container .ad {margin-bottom:24px;}
+#related_container .related_links ul {padding-top:2px;}
+#related_container .related_links li {background:transparent url(/images/icons/bullet_square_black.gif) no-repeat scroll 1.6em .45em; padding-left:30px;}
+
+#related_container .related_links li.video {background:transparent url(/images/icons/video.gif) no-repeat scroll .6em .1em; padding-left:30px;}
+#related_container .related_links li.photo {background:transparent url(/images/icons/photo.gif) no-repeat scroll .7em .1em; padding-left:30px;}
+#related_container .related_links li.audio {background:transparent url(/images/icons/audio.gif) no-repeat scroll .7em .1em; padding-left:30px;}
+#related_container #ad_stubhub {text-align:center;}
+#related_container #ad_stubhub img {width:120px;display:block;margin:0 auto;border:0;}
+
+/* print styles */
+@media print {
+#header_container, #footer_container, #related_container, #breadcrumbs_container {display:none;}
+}
+
+.image_left { float:left; margin:0 4px 4px 0; }
+
+/* fonts */
+@font-face {
+  font-family: 'adelle';
+  src: url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-2.eot");
+  src: url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-2.eot?") format("embedded-opentype"),
+       url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-3.woff") format("woff"),
+       url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-1.ttf") format("truetype"),
+       url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-4.svg#web") format("svg");
+  font-style: normal;
+  font-weight: bold;
+}
+
+/* fonts */
+@font-face {
+  font-family: "mlb_primary";
+  src: url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-2.eot");
+  src: url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-2.eot?") format("embedded-opentype"),
+       url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-3.woff") format("woff"),
+       url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-1.ttf") format("truetype"),
+       url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-4.svg#web") format("svg");
+  font-style: normal;
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "mlb_secondary";
+  src: url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-2.eot");
+  src: url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-2.eot?") format("embedded-opentype"),
+       url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-3.woff") format("woff"),
+       url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-1.ttf") format("truetype"),
+       url("/shared/fonts/benton_sans_cond_medium/6ec61f10-00ea-4ffd-a36b-26e2577a83f1-4.svg#web") format("svg");
+  font-style: normal;
+  font-weight: bold;
+}
+
+@media (max-width: 1025px) {
+  body.team, body.team_es {background-image: none;}
+}

@@ -1,0 +1,2353 @@
+(function($){
+    $.fn.konami             = function( fn, params ) {
+        params              = $.extend( {}, $.fn.konami.params, params );
+        this.each(function(){
+            var tgt         = $(this);
+            tgt.bind( 'konami', fn )
+               .bind( 'keyup', function(event) { $.fn.konami.checkCode( event, params, tgt ); } );
+        });
+        return this;
+    };
+
+    $.fn.konami.params      = {
+        'code'      : [38, 38, 40, 40, 37, 39, 37, 39, 66, 65],
+        'step'      : 0
+    };
+
+    $.fn.konami.checkCode   = function( event, params, tgt ) {
+        if(event.keyCode == params.code[params.step]) {
+            params.step++;
+        } else {
+            params.step     = 0;
+        }
+
+        if(params.step == params.code.length) {
+            tgt.trigger('konami');
+            params.step     = 0;
+        }
+    };
+})(jQuery);
+
+
+// because ie doesn't follow the order tags and can load this before global,
+// then in both places we might need to create the initial object..
+if (typeof(window.zc) != "object") {
+    window.zc = {};
+}
+
+zc.getCookie = function(name){
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+};
+
+zc.registration = (function() {
+	function build_search_results( start, stop ) {
+
+        var insertion = [];
+
+        for( start; start < stop; start++ ) {
+
+            if( start >= zc.registration.search_results.length)
+                break;
+
+            var res = zc.registration.search_results[start];
+
+            var elt = "<li><a href='#' onclick='zc.registration.toggle_result(this," + start +"); event.returnValue=false; return false;'>";
+
+            if (res.name) {
+            	elt += res.name
+            } else {
+            	elt += zc.registration.generic_join_account_label;
+            }
+
+            res += "</a></li><hr class='search-result'>";
+
+            insertion.push( elt );
+        }
+
+        return insertion.join("");
+    }
+
+    function build_search_result_links() {
+
+        var pages = Math.ceil( zc.registration.search_results.length / 7 );
+
+        //only one page, no need for pagination
+        if( pages == 1 || pages == 0)
+            return "";
+
+        var page_links = [];
+
+        if( zc.registration.current_page == 1 )
+            page_links.push( "<li><span style='color:#777;pointer-events:none;'>&lt;&lt; "+zc.Utils.catalog.translate("zipsite.previous")+"</span></li>");
+        else
+            page_links.push( "<li><a href='#' onclick='zc.registration.change_result_page("+ (zc.registration.current_page-1) +"); event.returnValue=false; return false'>&lt;&lt; "+
+                         zc.Utils.catalog.translate("zipsite.previous") +"</a></li>");
+
+        var i = 1;
+        for( i; i <= pages; i++ ) {
+
+            if( zc.registration.current_page == i ) {
+                  page_links.push( "<li><span style='color:#777;font-weight:bold;pointer-events:none;'>" + i +"</span></li>");
+            } else {
+                  page_links.push( "<li><a href='#' onclick='zc.registration.change_result_page(" + i +"); event.returnValue=false; return false;'>" + i +"</a></li>");
+            }
+
+        }
+
+        if( zc.registration.current_page == pages )
+            page_links.push( "<li><span style='color:#777;pointer-events:none;'>"+ zc.Utils.catalog.translate("zipsite.next") +" &gt;&gt;</span></li>");
+        else
+                page_links.push( "<li><a href='#' onclick='zc.registration.change_result_page("+ (zc.registration.current_page+1) +"); event.returnValue=false; return false;'>"+
+                                 zc.Utils.catalog.translate("zipsite.next") +" &gt;&gt;</a></li>");
+
+
+        return page_links.join("");
+
+    }
+
+    function refresh_plan_page ( result )
+    {
+        $.get( "/registration/account/plan?plan_display_mode=top-picks&affiliate_id="+result.object_id, function( data ) {
+            $("div#plan_body").html( data );
+            $(".progress-bar").hide();
+            $(".search_affiliates").hide();
+            $( zc.registration.search_dialog ).dialog( "close" );
+            zc.analytics.trackEvent( "registration", "refresh_plans" );
+
+            $.get( "/registration/account/update-banner?affiliate_id="+result.object_id, function( data ) {
+               if ($("#echo").length > 0){
+                    $("#echo").remove();
+                }
+               $(".registration_content").before(data);
+            });
+            $(".plan-intro-fleet-type").empty().text( zc.Utils.catalog.translate("registration.we_re_showing_business_rates_for",[$(".plan-intro-fleet-type").attr("data_fleet-group-name")]));
+        });
+    }
+
+    function change_license_country() {
+        var country_select = $(this);
+
+        var region_id = country_select.data('region-id');
+        var user_id = country_select.data('user-id');
+
+        var id = country_select.attr('id');
+        var id_prefix = id.substring(0,id.indexOf('license_country_id'));
+
+        var name = country_select.attr('name');
+        var name_prefix = name.substring(0,name.indexOf('license_country_id'));
+
+        country_select.after("<div class='busy' style='display:inline-block;vertical-align:middle;' id='"+id_prefix+"license_busy'></div>");
+        $("#"+id_prefix+"license_region_container").remove();
+        $("#"+id_prefix+"license_region_id_error").hide();
+
+        $.get( "/registration/driver/get_regions", {
+                license_places_only_p: 't',
+                country_id: country_select.val(),
+                user_id: user_id,
+                region_id: region_id
+            }, function( data ) {
+
+                var html = update_license_region( data, id_prefix, name_prefix );
+                country_select.after( html );
+                var show_tax_id_f = data.show_tax_id_f;
+                $("#"+id_prefix+"license_busy").remove();
+                if (show_tax_id_f)
+                {
+                	$('#registration_tax_id_container').show();
+                }
+                else
+                {
+                	$('#registration_tax_id_container').hide();
+                }
+
+                if( $("#"+id_prefix+"license_region_id_error").length == 0 ) {
+                    $("#"+id_prefix+"license_country_id_error").after(zc.widgets.generateErrorHtml(id_prefix+"license_region_id"));
+                }else{
+                    $("#"+id_prefix+"license_region_id").change();
+                }
+
+        }, "json");
+    }
+    function update_license_region( data, id_prefix, name_prefix ) {
+        var regions = data.regions;
+
+        if( regions && regions.length > 0)
+        {
+
+            var html = "<div id='"+id_prefix+"license_region_container' class='license_region_container'><select id='"+id_prefix+"license_region_id' name='"+name_prefix+"license_region_id' class='required'>";
+
+            var i = 0, len = regions.length;
+            for( i; i<len; i++ )
+            {
+                var region = regions[i];
+                if( region.id == null ) {
+                   region.id = "";
+                }
+
+                if( region.name == null || region.name.length == 0 ) {
+                   region.name = "&nbsp;";
+                }
+
+                if( region.selected )
+                    html += "<option selected='true' value='"+region.id+"'>" + region.name + "</option>";
+                else
+                    html += "<option value='"+region.id+"'>" + region.name + "</option>";
+            }
+
+
+            html += "</select></div>";
+            return html;
+        }
+        return "";
+    }
+
+    return {
+        forbid_copy_paste : function( event ) {
+          	var forbiddenKeys = new Array('c', 'x', 'v');
+        	var keyCode = (event.keyCode) ? event.keyCode : event.which;
+        	var isCtrl;
+        	isCtrl = event.ctrlKey || event.metaKey;
+        	if (isCtrl) {
+        		for (i = 0; i < forbiddenKeys.length; i++) {
+        			if (forbiddenKeys[i] == String.fromCharCode(keyCode).toLowerCase()) {
+        				return false;
+        			}
+        		}
+        	}
+        	return true;
+
+        },
+        bind_buttons : function() {
+
+            $("button.continue").live( "mouseover", function( e ) {
+                $(e.target).removeClass("continue").addClass("continue-depressed");
+                } );
+            $("button.continue-depressed").live( "mouseout", function( e ) {
+                $(e.target).removeClass("continue-depressed").addClass("continue");
+                } );
+
+            $("button.search").live( "mouseover", function( e ) {
+                $(e.target).removeClass("search").addClass("search-depressed");
+                } );
+            $("button.search-depressed").live( "mouseout", function( e ) {
+                $(e.target).removeClass("search-depressed").addClass("search");
+                } );
+
+            $("button.select").live( "mouseover", function( e ) {
+                $(e.target).removeClass("select").addClass("select-depressed");
+                } );
+            $("button.select-depressed").live( "mouseout", function( e ) {
+                $(e.target).removeClass("select-depressed").addClass("select");
+                } );
+
+            $("button.select-this-plan").live( "mouseover", function( e ) {
+                $(e.target).removeClass("select-this-plan").addClass("select-this-plan-depressed");
+                } );
+            $("button.select-this-plan-depressed").live( "mouseout", function( e ) {
+                $(e.target).removeClass("select-this-plan-depressed").addClass("select-this-plan");
+                } );
+
+            $("#registration_additional_terms_id_container label a").bind("click", function() {
+                $("#additional_terms_text a").attr("target","_blank");
+                $("#additional_terms_text").dialog({
+                            title: $("#registration_additional_terms_id_container label a").text(),
+                            autoOpen: true,
+                            modal: true,
+                            resizable: false,
+                            width: 600,
+                            position: "center"
+                        });
+            });
+
+
+            $("#get-started-page .university-link").click(function() {
+                $("#university-button").click();
+            });
+
+            $("#get-started-page .options-question button").click(function() {
+                zc.registration.select_options_question_choice(this);
+            });
+            $("#get-started-page #register-status button").click(function() {
+            	zc.analytics.trackEvent( "reg-longform", "New or Existing?: " + $(this).data("status"));
+            	$("#register-type-" + $(this).data("status")).show();
+                zc.registration.reg_message_flash("#register-message-" + $(this).data("status"));
+                zc.registration.scrollToNextStep(this);
+            });
+            $("#get-started-page .options-question.options-type button").click(function() {
+            	var accountType = $(this).closest(".options-question").attr("id") + "-" + $(this).data("type");
+
+            	if ($(this).data("join")){
+            		accountType += "-" + $(this).data("join");
+            	}
+            	zc.analytics.trackEvent( "reg-longform", "Account type selected: " + accountType);
+            	zc.registration.select_account_type(this);
+            });
+            $("#get-started-page .options-question.options-business-add-or-join button").click(function(){
+            	var addOrJoin = "add";
+                if ($(this).data("join")) {
+                	addOrJoin = "join";
+                    zc.registration.select_account_type(this);
+                } else {
+                    zc.registration.show_registration_form("business");
+                    zc.registration.reg_message_flash("#register-message-new-business-add");
+                    zc.registration.scrollToNextStep(this);
+                }
+                zc.analytics.trackEvent( "reg-longform", "Add or Join Business?: " + addOrJoin);
+            });
+
+            $("#get-started-page #register-message-joining .change").live("click",function() {
+            	//$(".register-message").hide();
+            	zc.registration.scrollToNextStep("#register-search");
+                $("#register-search input:visible:first").focus();
+                zc.analytics.trackEvent( "reg-longform", "change affiliate/account link clicked");
+            });
+            $("#get-started-page #register-message-joining .remove").live("click", function() {
+                var selectedTypeButton;
+                if ($("#get-started-page .options-question.options-business-add-or-join").is(":visible")) {
+                    selectedTypeButton = $("#get-started-page .options-question.options-business-add-or-join button.selected");
+                } else {
+                    selectedTypeButton = $("#get-started-page .options-question.options-type button.selected");
+                }
+                zc.registration.select_options_question_choice(selectedTypeButton);
+                zc.registration.select_account_type(selectedTypeButton);
+                zc.analytics.trackEvent( "reg-longform", "remove affiliate/account link clicked");
+            });
+
+            $(".help-link").click(function() {
+            	var currentQuestion = $(this).closest(".options-question");
+
+            	if ($(this).hasClass("expand-on")){
+                	$(this).removeClass("expand-on");
+                	$(currentQuestion).next(".register-help").slideUp(500);
+                	zc.analytics.trackEvent( "reg-longform", "help link closed for " + currentQuestion.attr("id"));
+            	}else{
+                	$(this).addClass("expand-on");
+                	$(document).find($(this).data("help-section")).slideDown(500);
+                	zc.analytics.trackEvent( "reg-longform", "help link opened for " + currentQuestion.attr("id"));
+            	}
+
+
+            });
+
+            $(".help-link-close").click(function() {
+            	var currentQuestion = $(this).closest(".options-question");
+            	$(this).closest(".register-help").prev().find(".help-link").removeClass("expand-on");
+            	$(this).closest(".register-help").slideUp(500);
+            	currentQuestion.find(".help-link").show();
+            	zc.analytics.trackEvent( "reg-longform", "help link closed for " + currentQuestion.attr("id"));
+            });
+
+        },
+        /* This function is used to help progress the user through the longform registration funnel.
+         * In addition to scrolling the user to the correct place, we are dynamically adding
+         * white space to ensure that the section we scroll to is always positioned at the top of the screen.
+         * */
+        scrollToNextStep : function(targetElementOrSelector, backingUp)
+        {
+        	if ($(targetElementOrSelector).attr("data-scroll-to")){
+        		var scrollToThis = $(targetElementOrSelector).data("scroll-to");
+        	} else {
+        		var scrollToThis = $(targetElementOrSelector);
+        	}
+            if (scrollToThis.length > 0){
+            	var topOffset = $(scrollToThis).offset().top;
+            	var currentWhiteSpaceHeight = $("#scroll-friendly-white-space").height();
+            	var pageHeightNotIncludingWhiteSpace = $("body").height() - currentWhiteSpaceHeight;
+            	var elementDistanceToBottomOfPage = pageHeightNotIncludingWhiteSpace - topOffset;
+            	var viewHeight = $(window).height();
+
+            	//Rebuild the order of visible sections so that we can backtrack to previous sections later via the go-back link.
+            	var getStartedSectionCounter = 0;
+                $(".get-started-section[order-of-view]").removeAttr('order-of-view');
+                $(".get-started-section:visible").each( function() {
+                	$(this).attr('order-of-view', getStartedSectionCounter++);
+                });
+
+                //The placement of the account/affiliate search back link requires some spacing adjustments on the fly
+                if($(scrollToThis).attr("id").indexOf("register-search") > -1){
+                    var goBackLink = $("#register-search").find(".get-started-go-back-wrapper");
+                    if($(scrollToThis).attr("id") == "register-search-results") {
+                    	goBackLink.addClass("search-complete");
+                    }else if($(scrollToThis).attr("id") == "register-search" && $(".search-result-set li").length <= 0){
+                    	goBackLink.removeClass("search-complete");
+                    }
+                }
+
+
+            	if(!$(scrollToThis).hasClass("registration_content") &&
+            	    $(scrollToThis).find(".get-started-go-back").length <= 0 &&
+            	    $(scrollToThis).attr("id") != "register-search-results" &&
+            	    $("#start-over-container").length <= 0) {
+
+                    $(scrollToThis).append('<div class="centered get-started-go-back-wrapper"><a href="javascript:;" class="get-started-go-back">' + zc.Utils.catalog.translate("registration.back") + '</a></div>');
+                    $(scrollToThis).find(".get-started-go-back").bind( "click", function() {
+                        zc.analytics.trackEvent( "reg-longform", "go back link clicked");
+                        var previous_section = $(".get-started-section:visible[order-of-view=" + ($(this).closest(".get-started-section").attr("order-of-view") - 1) + "]").closest(".get-started-section");
+                        if(previous_section.attr("id") == "register-status"){
+                            //return to the top of the page instead
+                            previous_section = $(".registration_content");
+                        }
+                        zc.registration.scrollToNextStep(previous_section,true);
+                    });
+            	}
+
+            	//If we're displaying a new section, we may need to add adjust the white space
+            	//to ensure the new section is placed directly at the top of the users view
+            	if(!backingUp){
+                    if (viewHeight > elementDistanceToBottomOfPage){
+                        var whiteSpaceHeight = viewHeight - elementDistanceToBottomOfPage ;
+                        $("#scroll-friendly-white-space").height(whiteSpaceHeight);
+                    }else if (currentWhiteSpaceHeight > 0){ // if so, check if we have wasted white space that needs to be trimmed or removed entirely
+                        var spaceThatWeDontNeedForTheView = viewHeight - elementDistanceToBottomOfPage;
+                        var adjustedWhiteSpace = Math.max(0,spaceThatWeDontNeedForTheView);
+                        $("#scroll-friendly-white-space").height(adjustedWhiteSpace);
+                    }
+                }
+
+            	$("#get-started-blocking-overlay").show();
+                $('html,body').animate({scrollTop: topOffset},1500,'easeOutCubic', function() {
+                	$("#get-started-blocking-overlay").hide();
+                	var currentRegMessage = $(".register-message :visible").parent(); //TODO: fix hack. We shouldn't have to grab parent.
+
+                	if(currentRegMessage.length > 0){
+                		var persistedRegMessage = $(scrollToThis).find(".reg-message-container").first();
+                		persistedRegMessage.addClass("persisted-arrow-message").html(currentRegMessage.html());
+                		currentRegMessage.fadeOut();
+                	}
+
+                });
+
+                if ($(scrollToThis).data("page-name")){
+                	zc.analytics.trackPageview("/registration/getstarted/" + $(scrollToThis).data("page-name"));
+                }
+            }
+        },
+        reg_message_flash : function(selector)
+        {
+        	$(".register-message").fadeOut(300);
+        	$(selector).fadeIn(300);
+        },
+        load_search_affiliates : function()
+        {
+            if( zc.registration.search_dialog_type != "affiliates" && zc.registration.search_dialog != "" )
+            {
+                $(zc.registration.search_dialog).remove();
+                zc.registration.search_dialog = "";
+            }
+
+            zc.registration.search_dialog_type = "affiliates";
+            zc.registration.dialog_title = zc.Utils.catalog.translate("registration.search_for_a_group_discount");
+            $.get( "/registration/account/group", zc.registration.open_search_account_dialog );
+
+            return false;
+        },
+        load_search_account : function( event )
+        {
+
+            $(zc.registration.search_dialog).remove();
+            zc.registration.search_dialog = "";
+
+            zc.registration.dialog_title = zc.Utils.catalog.translate("registration.search_for_a_household_or_organization");
+            zc.registration.search_dialog_type = "account_or_both";
+
+
+            if( event.data.focus != "") {
+                zc.registration.focused_tab = event.data.focus;
+            }
+
+            var url = "/registration/account/search"
+            if( zc.registration.focused_tab == "organization" )
+            {
+                url += "?only_org=t"
+                if (event.type != "click" && getQueryParam("search_term")) {
+                    url += "&search.term=" + getQueryParam("search_term") + "&auto_populate=t";
+                }
+                zc.registration.dialog_title = zc.Utils.catalog.translate("registration.search_for_an_organization");
+            } else if (event.type != "click" && getQueryParam("search_term")) {
+                url += "?search.term=" + getQueryParam("search_term") + "&auto_populate=t";
+            }
+
+            $.get( url, zc.registration.open_search_account_dialog );
+
+            return false;
+        },
+        search_dialog: "",
+        search_dialog_type: "",
+        dialog_title: "",
+        focused_tab: "",
+        open_search_account_dialog : function( data )
+        {
+            //remove any search results we pulled out previously
+            $('#search_results_resp').remove()
+            zc.registration.search_results = null;
+
+            var response = $('<div>' + data + '</div>');
+            $('<div id="search_results_resp"></div>')
+                    .append(response.closest('script'))
+                    .appendTo('body');
+
+            if($("#group_search_and_results").length>0) {
+                $("#group_search_and_results").remove();
+            }
+
+            zc.registration.search_dialog = $(response.children('div'));
+            zc.registration.search_dialog.dialog({
+                autoOpen: true,
+                modal: true,
+                resizable: false,
+                width: 740,
+                title: zc.registration.dialog_title,
+                position: "center"
+            });
+
+            if (zc.registration.search_results) {
+                zc.registration.show_search_results();
+            }
+
+            if( $("#search-accounts-tabs").is(":visible") ) {
+                $("#search-accounts-tabs").tabs();
+
+                if( zc.registration.focused_tab != "" ) {
+                    $("#search-accounts-tabs").tabs( "select", zc.registration.focused_tab );
+                }
+
+            }
+
+
+            if( $("#search_term").is(":visible") ) {
+                $("#search_term").focus();
+            }
+
+            zc.analytics.trackEvent( "registration", "open_search_account_dialog" );
+        },
+        plan_options_dialog: "",
+        show_more_plan_options : function( data )
+        {
+
+            $("div#plan_body").html( data ).slideDown( 400 );
+            zc.analytics.trackEvent( "registration", "show_more_plan_options" );
+
+        },
+        plan_details_dialog: "",
+        show_plan_details : function( data )
+        {
+            if( zc.registration.plan_details_dialog != "" ) {
+                $(zc.registration.plan_details_dialog).remove();
+            }
+            zc.registration.plan_details_dialog = $(data).dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                width: 815,
+                title: zc.Utils.catalog.translate("registration.pick_a_plan_any_plan"),
+                position: "center"
+            });
+
+            $("#plan-details-tabs").tabs();
+
+
+
+            zc.registration.plan_details_dialog.dialog( "open" );
+
+
+            if( $("#plan_detail_selected").val() != "" ) {
+                //get the index of the selected tab
+                var selectedPlan = $(this).attr('id');
+                if (selectedPlan) {
+                    $("#plan-details-tabs").tabs( "select", "plan-detail-"+selectedPlan );
+                }
+            }
+
+
+
+            zc.analytics.trackEvent( "registration", "show_plan_details" );
+        },
+        show_registration_form : function(type) {
+            if(type == "personal"){
+                $("#what-to-expect-account-owner").show();
+                $("#what-to-expect-driver").hide();
+            }
+            $("#register-username-" + type).show();
+            zc.registration.reset_registration_form_errors();
+        },
+        reset_registration_form_errors : function() {
+            if ($("#registration, #z4b").find(".error_container").size() > 0) {
+                $("#registration, #z4b").find(".error_container").hide();
+                if ($("#registration").data("validator")) {
+                    $("#registration").data("validator").resetForm();
+                }
+                if ($("#z4b").data("validator")) {
+                    $("#z4b").data("validator").resetForm();
+                }
+            }
+        },
+        set_busy : function()
+        {
+            // ** NOTE **
+            // Using a non-standard way of selecting the div by ID b/c
+            // there are cases where there are multiple of the elements
+            // on the screen at one time.  This is admittedly a hack, but
+            // it fixes the problem of the activity indicator not showing
+            // without having to make more intrusive changes.
+            $("div[id=search_activity]").addClass("busy");
+        },
+        set_busy_done : function()
+        {
+            $("div[id=search_activity]").removeClass("busy");
+        },
+        search_account_affiliate_counter : 0,
+        start_account_affiliate_search : function(xhr) {
+        	if ($("#get-started-page").is(":visible")) {
+        		$(".registration.admin_form:visible").nextAll().remove();
+        		$("#register-username-personal").hide();
+                $(".registration.admin_form:visible").after('<div id="register-search-results" class="get-started-section hide"><div class="reg-message-container"></div></div>');
+        		zc.registration.reg_message_flash("#register-message-searching");
+        		zc.registration.scrollToNextStep($("#register-search-results").show());
+        	}else {
+        		zc.registration.set_busy();
+        	}
+            zc.registration.reset_registration_form_errors();
+            xhr.zc_reg_search_counter = ++zc.registration.search_account_affiliate_counter;
+        },
+        cancel_account_affiliate_search : function() {
+            zc.registration.set_busy_done();
+            ++zc.registration.search_account_affiliate_counter;
+        },
+        current_page : 1,
+        show_search_results : function( data, status, xhr )
+        {
+            // Another search has started since this search was kicked off,
+            // so don't display the results of this search.
+            if (xhr && xhr.zc_reg_search_counter != null && xhr.zc_reg_search_counter != zc.registration.search_account_affiliate_counter) {
+                return;
+            }
+
+            zc.registration.set_busy_done();
+            $("#group_search_and_results").html( data );
+
+            zc.registration.current_page = 1;
+            var i = 0;
+            var len = 7; //number of results per page
+
+            var result_html = build_search_results( i, len );
+            var links_html = build_search_result_links();
+
+            if( $("#search-accounts-tabs").is(":visible") ) {
+                   $("#search-accounts-tabs").tabs();
+            }
+
+            if( zc.registration.focused_tab != "" ) {
+                $("#search-accounts-tabs").tabs( "select", zc.registration.focused_tab );
+            }
+
+            $(".pagination").html( links_html );
+            $(".search-result-set:visible").html( result_html );
+
+            if (zc.registration.search_results.length <= 1) {
+                var singleResultLink = $(".search-result-set li:first a:first");
+                singleResultLink.data("autoopen", true).click().data("autoopen", null);
+            }
+            if ($("#get-started-page").is(":visible")) {
+            	zc.analytics.trackEvent( "reg-longform", "show_search_results");
+            } else {
+            	zc.analytics.trackEvent( "registration", "show_search_results" );
+            }
+
+            $("#group_search_and_results .reg-message-container").html(zc.Utils.catalog.translate("registration.searching_done") + '<div class="get-started-arrow"></div>');
+            return false;
+        },
+        clear_search_results : function() {
+            $(".pagination").html("");
+            $(".search-result-set").html("");
+            $(".search-result-descr").html("");
+        },
+        change_result_page : function( page )
+        {
+
+            zc.registration.current_page = page;
+
+            var len = 7*page;
+            var i = len-7;
+
+            var result_html = build_search_results( i, len );
+            var links_html = build_search_result_links();
+
+            $(".pagination").html( links_html );
+            $(".search-result-set:visible").html( result_html );
+
+            zc.analytics.trackEvent( "registration", "advance_search_results" );
+
+            return false;
+        },
+        toggle_result : function ( elt, index )
+        {
+            zc.registration.reset_registration_form_errors();
+
+            var result = zc.registration.search_results[index];
+
+            if( $("#"+result.object_id + "_description").is(":visible") ) {
+            	//$("#"+result.object_id + "_description").animate({'margin-bottom': '-50px'}, 400);
+
+                $("#"+result.object_id + "_description").closest(".result_container").slideUp(400, function () {$(this).remove();});
+                $(elt).removeClass( "search_result_title" );
+                $(elt.parentNode).removeClass( "search_result_open" );
+            } else {
+
+                var prefix = "";
+                var rate_info_html = '<p class="result_rate_info_header">' + zc.Utils.catalog.translate("registration.zipcar_membership") + '</p>';
+                var rate_info_fetch = false;
+
+                var gift_code = $(".choices").data('gift-code');
+                var gift_code_ele = "";
+                if( gift_code != null && gift_code.length ) {
+                    gift_code_ele = "<input name='gift_code' type='hidden' value='"+ gift_code +"'>";
+                }
+
+                if( result.account === "1" || result.account === "t") {
+                    prefix = "account";
+                    rate_info_html += '<span class="result_rate_info_subheader">' + zc.Utils.catalog.translate("registration.no_cost_to_you") + '</span>';
+                    rate_info_html += '<span>' + zc.Utils.catalog.translate("registration.account_owner_pays_fees") + '</span>';
+                } else {
+                    prefix = "affiliate";
+
+                    var results_container_data = $("#group_search_and_results").data;
+
+                    // set up a cache if this was the first load
+                    if( !results_container_data.rate_info_cache ) results_container_data.rate_info_cache = new Object();
+
+                    rate_info_cache = results_container_data.rate_info_cache;
+
+                    if( rate_info_cache[result.object_id] ) {
+                        rate_info_html += rate_info_cache[result.object_id];
+                    } else {
+                        rate_info_fetch = true;
+                        // fetch the rate info...
+                        rate_info_html += '<div class="result_rate_info_loading" id="result_rate_info_'+result.object_id+'">'+zc.Utils.catalog.translate("registration.loading_fees_elipsis")+'<img src="/registration/images/dots-horizontal.gif" alt="'+zc.Utils.catalog.translate("registration.loading_savings")+'" /></div>';
+                    }
+                }
+
+
+
+                $(elt).after( $("<div class='result_container' style='display:none;'><div class='result_description' id='" + result.object_id + "_description' >"+
+                                "<div class='result_description_text result_description_text_" + prefix + "'>" + result.application_note + rate_info_html +
+                                "</div>"+
+                                    "<div class='result_join_container ui-corner-all'>"+
+                                        "<div class='result_join_elements'>"+
+                                            "<form id='"+result.object_id+"_form' method='get' action='/registration/"+(prefix=="account"?"driver":"account")+"/user'>"+
+                                            "<input name='"+prefix+"_id' type='hidden' value='"+ result.object_id +"'>"+
+                                            gift_code_ele +
+                                            "<div class='result_join_text'>"+zc.registration.generic_join_text+"</div>"+
+                                            "<button onclick='zc.registration.select_plan(this," + index + "); return false;'class='orange-button large-button' type='submit' style='margin:auto'>"+zc.Utils.catalog.translate("zipsite.join_now")+"</button>"+
+                                            "<div style='text-align: center; margin-left: 35px'><div id='"+result.object_id+"_progress-bar' class='progress-bar'></div></div>"+
+                                            "</form>"+
+                                            "</div>"+
+                                    "</div>"+
+                                "</div></div>") );
+                if( rate_info_fetch ) {
+                    jQuery.ajax({
+                        url: '/registration/account/affiliate-fees?affiliate_id=' + result.object_id,
+                        success: function( data, textStatus, XMLHttpRequest ) {
+                            var results_container_data = $("#group_search_and_results").data;
+                            // set up a cache if this was the first load
+                            if( !results_container_data.rate_info_cache ) results_container_data.rate_info_cache = new Object();
+                                rate_info_cache[result.object_id] = data;
+                                $('#result_rate_info_'+result.object_id).replaceWith(data);
+                            }
+                        });
+                }
+
+                $("#"+result.object_id+"_form").submit( function() { return false; } );
+                var divToOpen = $("#"+result.object_id + "_description").closest(".result_container");
+                if ($(elt).data("autoopen")) {
+                  divToOpen.show();
+                } else {
+                  divToOpen.slideDown(400);
+                }
+                $(elt).addClass( "search_result_title" );
+                $(elt.parentNode).addClass( "search_result_open" );
+
+            }
+
+            return false;
+
+        },
+        select_account_or_affiliate : function(account_or_affiliate) {
+            $("#registration_account_id").val("");
+            $("#registration_affiliate_id").val("");
+            $("input#registration_join_acct_or_group_selection").val("");
+            $("#registration_email_note").html(zc.Utils.catalog.translate("registration.user.email_note"));
+            $.validator.addMethod("email_pattern", function() { return true; }, "");
+            if (account_or_affiliate) {
+            	zc.analytics.trackEvent( "reg-longform", "account or affiliate selected");
+                $("input#registration_join_acct_or_group_selection").val(JSON.stringify(account_or_affiliate));
+                var emailPatternValidationMessage = "";
+                if (account_or_affiliate.account === "1" || account_or_affiliate.account === "t") {
+                    $("#registration_account_id").val(account_or_affiliate.object_id);
+                    if (account_or_affiliate.account_type == 'corporate') {
+                        $("#register-message-joining p").html(zc.Utils.catalog.translate("registration.you_re_applying_to_join_the_var_var_account", [account_or_affiliate.name]) + " " + $("#change-remove-links").html());
+                    } else {
+                        $("#register-message-joining p").html(zc.Utils.catalog.translate("registration.you_re_applying_to_join_the_account_of_var", [account_or_affiliate.name]) + " " + $("#change-remove-links").html());
+                    }
+                    emailPatternValidationMessage = zc.Utils.catalog.translate("registration.your_email_address_does_not_match_the_account_you_are_trying_to_join");
+                } else {
+                    $("#registration_affiliate_id").val(account_or_affiliate.object_id);
+                    $("#register-message-joining p").html(zc.Utils.catalog.translate("registration.you_re_requesting_the_var_group_discount", [account_or_affiliate.name]) + " " + $("#change-remove-links").html());
+                    emailPatternValidationMessage = zc.Utils.catalog.translate("registration.your_email_address_does_not_match_the_group_you_are_trying_to_join");
+                }
+
+                if (account_or_affiliate.email_note != null && account_or_affiliate.email_note.length > 0) {
+                    $("#registration_email_note").html(account_or_affiliate.email_note);
+                }
+
+                if (account_or_affiliate.pattern != null && account_or_affiliate.pattern.length > 0) {
+                    jQuery.validator.addMethod("email_pattern", function(element) {
+                        return element.match(new RegExp(account_or_affiliate.pattern));
+                    }, emailPatternValidationMessage);
+                }
+                $("#intro-and-questions").nextAll(".get-started-section").hide().find(".reg-message-container").removeClass("persisted-arrow-message").html("");
+                zc.registration.reg_message_flash("#register-message-search-selected");
+                zc.registration.show_registration_form("personal");
+                $("#register-message-joining").show();
+
+                if($("#registration_account_id").val() == ""){
+                    $("#what-to-expect-account-owner").show();
+                    $("#what-to-expect-driver").hide();
+            	}else{
+                    $("#what-to-expect-account-owner").hide();
+                    $("#what-to-expect-driver").show();
+            	}
+
+                zc.registration.scrollToNextStep($("#register-username-personal").show());
+
+            }
+        },
+        select_account_type : function(button) {
+            var status = "new";
+            zc.registration.select_account_or_affiliate(null);
+            if ($(button).data("join")) {
+                status = "join";
+                zc.registration.cancel_account_affiliate_search();
+                zc.registration.clear_search_results();
+                $("#register-search").data("page-name","search-" + $(button).data("join"));
+                $("#search-accounts-tabs").tabs();
+                $("#search-accounts-tabs").tabs("select", $(button).data("join"));
+                $("#register-search").show();
+                $("#register-search input:visible:first").focus();
+            } else {
+                if ($(button).data("type") == "personal") {
+                    zc.registration.show_registration_form("personal");
+                } else if ($(button).data("type") == "business") {
+                    $("#register-new-business-add-or-join").show();
+                }
+            }
+            zc.registration.reg_message_flash("#register-message-" + status + "-" + $(button).data("type"));
+
+
+            zc.registration.scrollToNextStep(button);
+
+
+        },
+        select_options_question_choice : function(button) {
+            $(".register-help").hide();
+            $(".help-link").removeClass("expand-on").show();
+            $(button).addClass("selected");
+            $("#register-message-joining").hide();
+            $(button).closest(".options-question").find("button").not(button).removeClass("selected");
+            $(button).closest(".get-started-section").nextAll(".get-started-section").hide();
+            $(button).closest(".get-started-section").nextAll(".get-started-section").find(".reg-message-container").removeClass("persisted-arrow-message").html("");
+
+            $("#intro-and-questions").nextAll(".get-started-section").hide().find(".reg-message-container").removeClass("persisted-arrow-message").html("");
+            $(button).closest(".get-started-section").nextAll(".options-question").find("button").removeClass("selected");
+        },
+        select_plan : function( elt, index, update )
+        {
+            var result = zc.registration.search_results[index];
+
+            $(".email_error_text").empty();
+
+            //if the email field has been shown, we should use that value
+            var email_to_test = zc.registration.email;
+            if( $("#email_error").is(":visible") )
+            {
+                email_to_test = $("#email_error").val();
+            }
+
+            //if an email pattern is required and you are not either on the username creation page or the registration landing page
+            if( result.pattern != "" && $("#registration_username").length <= 0 && $("ul.choices #individual").length <= 0)
+            {
+                //check regex
+                var regex_check = true;
+                try {
+                    var ex = new RegExp( result.pattern );
+                    regex_check = email_to_test.match( ex );
+                } catch( e ) {
+
+                    //if the reg ex won't compile, just let the person add the affiliate/account
+                    regex_check = true;
+                }
+
+                    if( !regex_check )
+                    {
+                    //if regex fails, display error box
+                    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g };
+                    var error_box_text = zc.Utils.catalog.translate("registration.applicants_must_sign_up_using_var_address", ["{{ name }}"]);
+                    var error_box_html = '<div id="{{ object_id }}_error" class="email_error ui-corner-all"><span class="email_error_text">'+error_box_text+'</span><input type="text" class="email" id="email_error" name="email.error" value="{{ email_to_test }}"><span class="notetxt">{{ email_note }}</span><button class="continue" onclick="zc.registration.select_plan(this,{{ index }},true); return false;">'+zc.Utils.catalog.translate("zipsite.select")+'</button>| <a href="#" onclick="zc.registration.cancel_select({{ index }}); event.returnValue=false; return false">'+zc.Utils.catalog.translate("zipsite.cancel")+'</a></div>';
+                    var compiled = _.template(error_box_html);
+
+                    var error_box = compiled({
+                                                object_id : result.object_id,
+                                                name: result.name,
+                                                email_note: result.email_note,
+                                                email_to_test: email_to_test,
+                                                index: index
+                                            });
+
+
+                    if( !$("#"+result.object_id+"_error").is( ":visible" ) ) {
+                        $("#"+result.object_id + "_description .result_description_text").after( error_box );
+                    } else {
+                        var compiled_msg = _.template(error_box_text);
+                        var error_msg = compiled_msg({
+                                name: result.name
+                            });
+                        $(".email_error_text").append(error_msg);
+                    }
+
+                    } else {
+
+                        if( $("#email_error").is(":visible") && $("#email_error").val() != zc.registration.email )
+                        {
+                            //TODO: loading icon
+                            $.ajax( { type: "POST",
+                                      url: "/registration/account/update-user",
+                                      data: { "email" : $("#email_error").val() },
+                                      success: function( data, textStatus, XMLHttpRequest ) {
+
+                                                    if( data.result == "success" )
+                                                    {
+
+                                                        zc.registration.email = $("#email_error").val();
+                                                        //destroy error dialog
+                                                        $("#" + result.object_id + "_error").remove();
+
+
+                                                        refresh_plan_page( result );
+
+                                                    } else {
+                                                        //no response from the server...
+                                                        //TODO: do something!
+                                                    }
+                                                    zc.analytics.trackEvent( "registration", "update_email" );
+                                                },
+                                    error: function( XMLHttpRequest, textStatus, errorThrown )
+                                    {
+                                        var error_msg = zc.Utils.catalog.translate("registration.email_unavailable_please_login");
+                                        var signature = $("#re_login_signature").data("re_login_signature");
+                                        $(".email_error_text").append(error_msg);
+                                        $(".email_error_text a").attr("href", "/register/logout?return_url=/register&signature="+signature);
+                                    },
+                                    dataType: "json" } );
+
+                        } else {
+
+                            if( $("div#plan_body").is( ":visible" ) ) {
+                                //we're on the plan page
+
+                                //no error dialog present, we just passed the email check
+                                refresh_plan_page(result);
+                            } else if ($("#get-started-page").is(":visible")) {
+                                //we're on the get-started longform page
+
+                                zc.registration.select_account_or_affiliate(result);
+                            } else if( $("ul.choices").is( ":visible" ) ) {
+                                //on choose page
+
+                                //submit the form
+                                $("#"+result.object_id+"_form").unbind( "submit" );
+                                $("#"+result.object_id+"_form").submit();
+
+                            } else {
+                                //other page, lets submit to change plan
+
+                                $("#"+result.object_id+"_form").unbind( "submit" );
+                                if( result.account === "1" || result.account === "t") {
+                                     //account
+                                     $("#"+result.object_id+"_form").attr( "action", "/registration/driver/change-account");
+                                } else {
+                                    //affiliate
+                                    $("#"+result.object_id+"_form").attr( "action", "/registration/account/change-affiliate");
+                                }
+                                $("#"+result.object_id+"_form").attr( "method", "POST");
+                                $("#"+result.object_id+"_form").submit();
+                            }
+
+                        }
+
+
+                    }
+
+            } else {
+                //no email check
+
+                if( result.account === "1" || result.account === "t") {
+                    if ($("#get-started-page").is(":visible")) {
+                        //we're on the get-started longform page
+
+                        zc.registration.select_account_or_affiliate(result);
+                    } else {
+                        //TODO: branch here?
+                        $("#" + result.object_id + "_form").unbind("submit");
+                        if (!$("ul.choices").is(":visible")) {
+                            //not on the choose page
+                            $("#" + result.object_id + "_form").attr("action", "/registration/driver/change-account");
+                            $("#" + result.object_id + "_form").attr("method", "POST");
+                        }
+                        $("#" + result.object_id + "_form").submit();
+                        //submit the form
+                    }
+                } else {
+                    //we have an affiliate...
+
+                    if( $("div#plan_body").is( ":visible" ) ) {
+                        //we're on the plan page
+
+                         refresh_plan_page( result );
+
+                        $("#"+result.object_id+"_progress-bar").fadeIn( "fast" );
+                        return false;
+
+                    } else if ($("#get-started-page").is(":visible")) {
+                        //we're on the get-started longform page
+
+                        zc.registration.select_account_or_affiliate(result);
+                    } else if( $("ul.choices").is( ":visible" ) ) {
+                        //on choose page
+
+                        //submit the form
+                        $("#"+result.object_id+"_form").unbind( "submit" );
+                        $("#"+result.object_id+"_form").submit();
+
+                    } else {
+                        //other page, lets submit to change plan
+
+
+                        $("#"+result.object_id+"_form").unbind( "submit" );
+                        $("#"+result.object_id+"_form").attr( "action", "/registration/account/change-affiliate");
+                        $("#"+result.object_id+"_form").attr( "method", "POST");
+                        $("#"+result.object_id+"_form").submit();
+                    }
+
+                }
+            }
+
+        },
+        cancel_select : function( index )
+        {
+            var result = zc.registration.search_results[index];
+            var error_box =  $("#"+result.object_id + "_description .email_error" );
+
+            error_box.detach();
+        },
+
+        open_info_overlay : function(popup_icon_element, overlay_name, position_next_to) {
+            zc.popup.show(overlay_name, { alreadySafe: true });
+            if ($(window).width() > 940) {
+                zc.popup.positionRightOf(position_next_to, $(popup_icon_element), {
+                    offset: -15
+                });
+            } else {
+                var overlayOffset = $(popup_icon_element).offset();
+                $("#overlay-" + overlay_name).css({ top: overlayOffset.top + 15 + "px" });
+            }
+        },
+        popup_html : function(popup_topic_translation_key, icon_class) {
+            return '<div> \
+                        <span id="registration_password_note" class="notetxt"> (' + zc.Utils.catalog.translate(popup_topic_translation_key) + ')  \
+                            <img class="' + icon_class + ' registration_info_icon jqModal" imgkey="icon.popup" alt="" src="/reservations/reservejs/images/icon-info.png"/> \
+                        </span> \
+                    </div>';
+        },
+        load_nearby_zipcars : function()
+        {
+
+            $("input[id*='registration_preferred_address']").each( function() {
+                if( $(this).val() == $(this).attr("placeholder") && $(this).hasClass("placeheld") )
+                   $(this).val('');
+            });
+
+            // Validate the form w/o triggering error messages.
+            var validate = $("form.registration").validate();
+            var isValid = validate.checkForm();
+            validate.submitted = {};
+
+            if (isValid) {
+                $("#registration_preferred_address_nearby_message_container").show();
+                zc.registration.set_busy();
+
+                var address = "";
+                var geocoder = new google.maps.Geocoder();
+
+                address += $("#registration_preferred_address_line_one").val();
+                address += " " + $("#registration_preferred_address_line_two").val();
+                address += " " + $("#registration_preferred_address_municipality_name").val();
+                if ($("#registration_preferred_address_region_name").length) {
+                    address += " " + $("#registration_preferred_address_region_name").val();
+                }
+                address += " " + $("#registration_preferred_address_postal_code").val();
+                address += " " + $("#registration_preferred_address_country_id :selected").text();
+
+                var counter = ++zc.registration.load_nearby_zipcars_counter;
+                geocoder.geocode({ 'address': address}, function (results, status) {
+                    // Verify that the address has not changed since search was executed.
+                    if (counter == zc.registration.load_nearby_zipcars_counter) {
+                        zc.registration.toggle_nearby_zipcars(results, status);
+                    }
+                });
+            }
+
+            $("input[id*='registration_preferred_address']").each( function( index ) {
+
+                if( $(this).val() == '' && $(this).hasClass("placeheld") )
+                   $(this).val( $(this).attr("placeholder") );
+            });
+            return false;
+        },
+        load_nearby_zipcars_counter: 0,
+        location_map : "",
+        location_latlng: "",
+        toggle_nearby_zipcars : function( results, status )
+        {
+
+            if( status == google.maps.GeocoderStatus.OK )
+            {
+                var newLoc = results[0].geometry.location;
+
+                if (zc.registration.location_latlng == ""
+                    || newLoc.lat() != zc.registration.location_latlng.lat()
+                    || newLoc.lng() != zc.registration.location_latlng.lng()) {
+
+                    zc.registration.location_latlng = newLoc;
+                    var counter = ++zc.registration.toggle_nearby_zipcars_counter;
+                    zc.registration.toggle_nearby_zipcars_pending = true;
+
+                    //request zipcar location markers
+                    $.post( "/registration/account/location/nearby",
+                        { "lat": zc.registration.location_latlng.lat(), "lng": zc.registration.location_latlng.lng() },
+                        function(data) {
+                            // Verify that the address has not changed since search was executed.
+                            if (counter == zc.registration.toggle_nearby_zipcars_counter) {
+                                zc.registration.toggle_nearby_zipcars_pending = false;
+                                zc.registration.set_busy_done();
+                                zc.registration.draw_markers(data);
+                            }
+                        });
+                } else {
+                    if (!zc.registration.toggle_nearby_zipcars_pending) {
+                        zc.registration.set_busy_done();
+                    }
+                }
+            } else {
+                ++zc.registration.toggle_nearby_zipcars_counter;
+                zc.registration.toggle_nearby_zipcars_pending = false;
+
+                zc.registration.set_busy_done();
+                $("#registration_nearby_zipcar_tip_container").hide();
+                zc.registration.location_latlng = "";
+            }
+
+            zc.analytics.trackEvent( "registration", "geocode_address" );
+        },
+        toggle_nearby_zipcars_counter: 0,
+        toggle_nearby_zipcars_pending: false,
+        draw_markers : function( data )
+        {
+            if( data.all_locations )
+            {
+                var len = data.all_locations.length;
+
+
+                var map_zoom = 15;
+                //TODO: need to test more cases?
+                if( data.nearest_distance != "" && data.nearest_distance > 1000)
+                {
+                    map_zoom = 13;
+                }
+
+                $("#nearby_message span").html( data.nearest_location_string );
+
+                if (zc.registration.location_map == "") {
+                    var myOptions = {
+                        zoom: map_zoom,
+                        center: zc.registration.location_latlng,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP,
+                        disableDefaultUI: true
+                    };
+                    zc.registration.location_map = new google.maps.Map(document.getElementById("nearby_zipcar"), myOptions);
+
+                    google.maps.event.addListener(zc.registration.location_map , 'tilesloaded', function() {
+                        $('#registration_nearby_zipcar_tip_container a').attr('tabindex', 999);
+                    });
+
+
+
+                } else {
+                    zc.registration.location_map.setZoom(map_zoom);
+                    zc.registration.location_map.panTo(zc.registration.location_latlng);
+                }
+                $("#registration_nearby_zipcar_tip_container").show();
+
+                // Remove all of the old markers from the map.
+                if (zc.registration.location_map.zc_markers) {
+                    $.each(zc.registration.location_map.zc_markers, function (idx, marker) {
+                        marker.setMap(null);
+                    });
+                }
+                zc.registration.location_map.zc_markers = [];
+
+                // Add the marker for the customer's location
+                var you_are_here_url = "/images/zipmarker-youarehere.png"
+                var currentLocation = zc.registration.location_latlng
+                zc.registration.location_map.zc_markers.push(new google.maps.Marker({
+                    position: currentLocation,
+                    map: zc.registration.location_map,
+                    icon: you_are_here_url,
+                    cursor: "hand"
+                }));
+
+
+                google.maps.event.trigger(zc.registration.location_map, 'resize');
+
+
+                google.maps.event.addListenerOnce(zc.registration.location_map, 'idle', function () {
+
+                    zc.registration.location_map.panTo(zc.registration.location_latlng);
+
+                    if (len > 0) {
+                        var origZoom = zc.registration.location_map.getZoom();
+                        zc.registration.location_map.setZoom(origZoom - 1);
+                        var bounds = zc.registration.location_map.getBounds();
+                        zc.registration.location_map.setZoom(origZoom);
+
+                        var atLeastOneLocationRendered = false;
+                        var closestDistance = 999999999;
+                        var closestLocation = null;
+
+                        for (var i = 0; i < len; i++) {
+                            var elt = data.all_locations[i];
+                            var loc = new google.maps.LatLng(elt.lat, elt.lng);
+                            var zipmarker_url = $('meta[name=data-zipmarker-uri]').attr("content");
+                            if (bounds.contains(loc)) {
+                                zc.registration.location_map.zc_markers.push(new google.maps.Marker({
+                                    position: loc,
+                                    map: zc.registration.location_map,
+                                    icon: zipmarker_url,
+                                    cursor: "hand"
+                                }));
+                                atLeastOneLocationRendered = true
+                            } else if (!atLeastOneLocationRendered) {
+                                var distanceToLoc = zc.Utils.distanceBetweenPoints(currentLocation, loc);
+                                if (distanceToLoc < closestDistance) {
+                                    closestDistance = distanceToLoc;
+                                    closestLocation = loc;
+                                }
+                            }
+                        }
+
+                        if (!atLeastOneLocationRendered) {
+                            zc.registration.location_map.zc_markers.push(new google.maps.Marker({
+                                position: closestLocation,
+                                map: zc.registration.location_map,
+                                icon: zipmarker_url,
+                                cursor: "hand"
+                            }));
+                        }
+
+                        var noVisibleLocations = function () {
+                            var mapBounds = zc.registration.location_map.getBounds();
+                            var markersCount = zc.registration.location_map.zc_markers.length;
+                            // Skip zc_markers[0] as that is the customer's location,
+                            // not a Zipcar vehicle location.
+                            for (var i = 1; i < markersCount; i++) {
+                                var markerPosition = zc.registration.location_map.zc_markers[i].getPosition();
+                                if (mapBounds.contains(markerPosition)) {
+                                    // This is a check to ensure that the marker isnt just at the tip top of the
+                                    // map, in which case the customer cannot see the marker b/c the bottom of
+                                    // the marker does not extend below the location lat/lng.
+                                    if (Math.abs(mapBounds.getNorthEast().lat() - markerPosition.lat()) > 0.001) {
+                                        return false;
+                                    }
+                                }
+                            }
+                            return true;
+                        };
+                        while (noVisibleLocations() && zc.registration.location_map.getZoom() > 1) {
+                            zc.registration.location_map.setZoom(zc.registration.location_map.getZoom() - 1);
+                        }
+                    }
+                });
+
+                zc.analytics.trackEvent( "registration", "draw_zipcar_markers" );
+            } else {
+                //html returned, show a dialog
+                if( data.error ) {
+                    $("#nearby_message span").html( data.error );
+                } else {
+                    $("#nearby_message span").html( zc.Utils.catalog.translate("registration.couldnt_find_your_address") );
+                }
+                $("#registration_nearby_zipcar_tip_container").hide();
+            }
+        },
+        show_zipcard_pickup: function( lat, lng, element_id ) {
+
+            var latlng = new google.maps.LatLng( lat, lng );
+
+            var myOptions = {
+                zoom: 15,
+                center: latlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                disableDefaultUI: true,
+                draggable: true,
+                scrollwheel: true
+              };
+
+            var map = new google.maps.Map(document.getElementById(element_id), myOptions);
+
+            var loc_marker = new google.maps.Marker({
+                        position: latlng,
+                        map: map,
+                        icon: $('meta[name=data-zipmarker-uri]').attr("content")
+                    });
+        },
+        apply_gc: function() {
+
+
+            //placeholders suck
+            if( $("#registration_gift_certificate").val() == $("#registration_gift_certificate").attr("placeholder") && $("#registration_gift_certificate").hasClass("placeheld") )
+                $("#registration_gift_certificate").val('');
+
+
+            $.post( "payment/update_gc", { "registration.gift_certificate": $("#registration_gift_certificate").val() }, function( data ) {
+
+
+               $("#summary_container").html( data );
+
+                if( zc.registration.payment_summary_errors != "" )
+                {
+
+                    var msg = zc.registration.payment_summary_errors.zoops[0].message;
+
+                    $("#registration_gift_certificate_error_content .error_message").html( msg );
+                    $("#registration_gift_certificate_error").show();
+
+                    zc.registration.payment_summary_errors = "";
+
+                } else {
+                    $("#registration_gift_certificate_error").hide();
+
+                    $("#apply_gc_link").hide();
+                    $("#apply_gc").show();
+                }
+
+            } );
+
+
+
+            return false;
+        },
+        payment_summary_errors: "",
+        apply_pc: function() {
+
+            if( $("#registration_promo_code").val() == $("#registration_promo_code").attr("placeholder") && $("#registration_promo_code").hasClass("placeheld") )
+                $("#registration_promo_code").val('');
+
+
+
+            $.post( "/registration/account/payment/update_pc", { "registration.promo_code": $("#registration_promo_code").val() }, function( data ) {
+
+                 $("#summary_container").html( data );
+
+
+                 if( zc.registration.payment_summary_errors != "" )
+                 {
+
+                     var msg = zc.registration.payment_summary_errors.zoops[0].message;
+
+                     $("#registration_promo_code_error_content .error_message").html( msg );
+                     $("#registration_promo_code_error").show();
+
+                     zc.registration.payment_summary_errors = "";
+
+                 } else {
+
+                    $("#registration_promo_code_error").hide();
+
+                    $("#apply_pc_link").hide();
+                    $("#apply_pc").show();
+                }
+
+            });
+
+
+            return false;
+        },
+
+        driving_assistants_sync: function() {
+            // this changes the required-ness of some fields
+            if ($('#registration_driving_assistants').attr('checked')) {
+                $('#registration_drivers_license_no,#registration_drivers_license_no_confirm').removeClass('required');
+            } else {
+                $('#registration_drivers_license_no,#registration_drivers_license_no_confirm').addClass('required');
+            }
+        },
+        change_license_country : change_license_country,
+        load_campus_dialog : function() {
+
+            $.get( "/registration/campus", zc.registration.open_campus_dialog );
+
+            return false;
+        },
+        campus_dialog: null,
+        open_campus_dialog : function( data ) {
+
+            $(zc.registration.search_dialog).remove();
+
+            zc.registration.campus_dialog = $(data).dialog({
+                autoOpen: true,
+                modal: true,
+                resizable: false,
+                width: 740,
+                position: "center"
+            });
+
+            zc.analytics.trackEvent( "registration", "open_campus_dialog" );
+
+        }
+
+    };
+})();
+
+  function partnerAddress() {
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(-34.397, 150.644);
+    var mapOptions = {
+      zoom: 14,
+      center: latlng,
+      panControl: false,
+      mapTypeControl: false,
+      streetViewControl: false
+    }
+    map = new google.maps.Map(document.getElementById("partner_address_map"), mapOptions);
+
+    var address = document.getElementById("address").value;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        map.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location
+        });
+
+      } else {
+     	$("#no_map").css({ 'display': "block" });
+     	$("#partner_address_map").css({ 'display': "none" });
+      }
+    });
+  }
+
+function store_form_data(d_key, d_value) {
+    $.post('/registration/ajax_handler', {key: d_key, value: d_value}, function(data){ /* nothing */ });
+}
+
+require.ready(function() {
+    zc.Utils.catalog.register({
+        keys: [
+            "registration.account_owner_pays_fees",
+            "registration.applicants_must_sign_up_using_var_address",
+            "registration.are_you_sure_you_want_to_remove_this_email_address",
+            "registration.back",
+            "registration.cheat_code_enabled",
+            "registration.checking_availability_elipsis",
+            "registration.congrats_that_username_is_available",
+            "registration.couldnt_find_your_address",
+            "registration.did_you_have_this_plan_in_mind",
+            "registration.loading_fees_elipsis",
+            "registration.loading_savings",
+            "registration.no_cost_to_you",
+            "registration.only_letters_numbers_underscores_dashes_and_dots_are_allowed",
+            "registration.pick_a_plan_any_plan",
+            "registration.search_for_a_group_discount",
+            "registration.search_for_a_household_or_organisation",
+            "registration.search_for_an_organization",
+            "registration.that_username_is_unavailable_try_another",
+            "registration.the_expiration_date_you_entered_is_not_valid",
+            "registration.user.email_note",
+            "registration.user.password_cant_contain_username_or_email",
+            "registration.user.password_is_too_common",
+            "registration.user.password_needs_letter",
+            "registration.user.password_needs_number_or_special",
+            "registration.user.password_note",
+            "registration.user.password_requirements",
+            "registration.user.password_too_short_needs_letter",
+            "registration.user.password_too_short_needs_number_or_special",
+            "registration.usernames_must_contain_at_least_one_letter",
+            "registration.validate_tax_id_turkey",
+            "registration.var_licenses_are_var",
+            "registration.where_the_cars_are",
+            "registration.you_re_applying_to_join_the_account_of_var",
+            "registration.you_re_applying_to_join_the_var_var_account",
+            "registration.you_re_requesting_the_var_group_discount",
+            "registration.your_email_address_does_not_match_the_account_you_are_trying_to_join",
+            "registration.your_email_address_does_not_match_the_group_you_are_trying_to_join",
+            "registration.your_expiration_date_must_be_in_the_future",
+            "registration.your_input_was_only_digits",
+            "registration.your_license_format_does_not_appear_to_be_correct",
+            "registration.zipcar_membership",
+            "registration.zipcard_numbers_can_contain_only_numbers",
+            "registration.zipcard_numbers_can_only_contain_numbers",
+            "zipsite.cancel",
+            "zipsite.email",
+            "zipsite.next",
+            "zipsite.previous",
+            "zipsite.select",
+            "zipsite.there_is_a_problem_with_your_credit_card_number"
+        ]
+    }, true);
+
+    $(document).ready(function() {
+    // these two are needed on the app-status page too
+    // invoke change right away so that the dropdown gets synced up.
+    $(".license_country_id").bind( "change", zc.registration.change_license_country ).change();
+
+    function getLicensePlaceInfo( element ) {
+        var id = element.getAttribute('id');
+        var prefix = id.substring(0,id.indexOf('drivers_license_no'));
+        if (!prefix) {
+            // and for transition, since our form fields are named differently
+            prefix = id.substring(0,id.indexOf('license'));
+        }
+
+        // and if the place is not a state..
+        var place_id = $('#' + prefix + 'license_region_id').val();
+        if (!place_id) {
+            place_id = $('#' + prefix + 'license_country_id').val();
+        }
+        return license_expressions[parseInt(place_id)];
+    }
+
+    require(["/js/third-party/xregexp-all.js"], function(XRegExp,value, element) {
+	jQuery.validator.addMethod("atleastoneletter", function(value, element) {
+		var hasLetter =  new XRegExp("^.*\\p{L}.*$");
+		return this.optional(element) || hasLetter.test(value);
+	}, zc.Utils.catalog.translate("registration.your_input_was_only_digits"));
+    });
+
+
+    jQuery.validator.addMethod("tax_id_valid_tr", function(value, element) {
+    	return this.optional(element) || /^[0-9]{10,11}$/.test(value);
+    }, zc.Utils.catalog.translate("registration.validate_tax_id_turkey"));
+
+    jQuery.validator.addClassRules({
+        license_valid : {tax_id_valid_tr  : true }
+    });
+
+    jQuery.validator.addMethod( "license_valid", function(value, element) {
+        if( !$(element).val() && this.optional(element) ) return true;
+
+        var expr = getLicensePlaceInfo( element );
+        if( expr ) {
+            return RegExp(expr.pattern).test( $(element).val() );
+        }
+
+        return true;
+    }, function(valid, element) {
+        var expr = getLicensePlaceInfo( element );
+
+        if( expr ) {
+           /*  hard code commented  return expr.place_name + " licenses are " + expr.description;*/
+
+       return zc.Utils.catalog.translate("registration.var_licenses_are_var", [expr.place_name , expr.description]);
+  }
+        return zc.Utils.catalog.translate("registration.your_license_format_does_not_appear_to_be_correct");
+    });
+    jQuery.validator.addClassRules({
+        license_valid : { license_valid : true }
+    });
+
+    jQuery.validator.addMethod(
+        "zipcard",
+        function(value, element, params) {
+            var val = $(element).val();
+
+            if( !val && this.optional(element) ) return true;
+
+            if( val ) {
+                if( /[^\d\s]/.test( val ) ) {
+                    return false;
+                }
+            }
+
+            return true;
+        }, zc.Utils.catalog.translate("registration.zipcard_numbers_can_contain_only_numbers")
+    );
+    jQuery.validator.addClassRules({
+        zipcard : { zipcard : true }
+    });
+
+    // is there a better way to do this?
+    if ($("body").hasClass("registration")) {
+
+        $(".vr").height( $("#elements").height() );
+
+        // Check for placeholder attribute support
+        if (!("placeholder" in $('<input>')[0])) {
+            $(".registration .zc_form_element input[placeholder]").placeHeld();
+        }
+
+
+        if (document.location.href.indexOf("/registration/") != -1 &&
+            document.location.href.indexOf("/registration/admin/") == -1) {
+            $.bbq.pushState( "#step" );
+        }
+
+       //back button support
+        $(window).bind( 'hashchange', function(e) {
+
+             var path = window.location.pathname;
+             var split_path = path.split( "/" );
+             var root = split_path[1];
+             var mode = split_path[2];
+             var current = split_path[3];
+
+             var to_go = "";
+
+            switch( current )
+            {
+                case "location":
+                      if( e.fragment == "" )
+                          window.location.pathname = "/" + root;
+                      break;
+                case "plan":
+                      to_go = "location";
+                      break;
+                case "info":
+                      to_go = "plan";
+                      break;
+                case "payment":
+                      to_go = "waiver";
+                      break;
+                case "waiver":
+                      to_go = "info";
+                      break;
+                case "zipcard":
+                      if( mode === "account" )
+                          to_go = "payment";
+                      else
+                          to_go = "info";
+                      break;
+                case "review":
+                      to_go = "zipcard";
+                      break;
+            }
+
+            if( to_go != "" && e.fragment == "" ) {
+              window.location.pathname = "/" + root + "/" + mode + "/" + to_go;
+             }
+         });
+
+
+
+
+        //binding for banner expanding
+        $("#fine_print").live( "click", function() {
+
+            if( $("#compressed_text").is(":visible") )
+            {
+                $("#compressed_text").slideUp(function () {
+                    $("#expanded_text").slideDown();
+                });
+            } else {
+                $("#expanded_text").slideUp(function() {
+                    $("#compressed_text").slideDown();
+                });
+            }
+
+            // this forces any inputs that errored to re-validate,
+            // which in turn moves their arrows up or down to
+            // accommodate the eligibility box
+            $("input.error, select.error").each(function() {
+                $(this).valid();
+            });
+
+            return false;
+
+        });
+
+        $("#hide_fine_print").live("click", function () {
+            $("#expanded_text").slideUp(function () {
+                $("#compressed_text").slideDown();
+            });
+
+            return false;
+        });
+
+        if( $("#completed_line").is( ":visible" ) && $("div.active").is(":visible") ) {
+            var active_left = $("div.active").position().left;
+            $("#completed_line").width( active_left - 85 );
+        }
+
+
+        $("#plan_steps li.completed").each( function() {
+
+           var url = $(this).attr("step");
+           var text = $(this).html();
+           var new_html = "<a href='" + url +"'>" + text + "</a>";
+           $(this).html( new_html );
+        });
+
+
+         //choose page events
+        $("#zipcar_campus").bind( "click", function() {
+           zc.registration.load_campus_dialog();
+           return false;
+        });
+
+        if( $("ul.choices").is( ":visible") ) {
+            $(document).konami( function() {
+                $("p.subheader").html(zc.Utils.catalog.translate("registration.cheat_code_enabled"));
+                $("body").append( '<audio id="egg" src="/registration/images/chime.wav" preload="auto"></audio>' );
+                $("#organization_button, #university, #individual").bind( "mouseover", function() {
+                   try{ $("#egg")[0].play();  }
+                   catch( e )
+                   { }
+                });
+                var $marquee = $('<marquee style="position: fixed; left: 0px; top: 150px; width: 100%;" direction=right></marquee>').appendTo('body');
+                $.each(['5door', 'cargo_van', 'convertible', 'coupe', 'electric', 'hatchback', 'hybrid', 'minivan', 'sedan', 'suv', 'truck', 'van', 'wagon'], function(idx, car) {
+                    $marquee.append('<img src="/images/models/styles/'+car+'.png" style="border: none;" />');
+                });
+
+
+            });
+        }
+
+        var create_payment_type_listener = function() {
+            $("#payment_choose_payment_type").change( function () {
+                $.ajax({
+                    type: "POST",
+                    url: $("form#payment_choose").attr("action"),
+                    data: {
+                        "payment_choose.payment_type": $(this).val(),
+                        "payment_choose.is_ajax": "yes",
+                        "__csrf_token": $(this).closest("form").find("input[name=__csrf_token]").val()
+                    },
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        $(".registration_content .primary").html(data);
+                        create_payment_type_listener();
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        zc.analytics.trackEvent("registration", "select_payment_type_error");
+                        $("#payment_choose").submit();
+                    },
+                    dataType: "html"
+                });
+
+            });
+        };
+
+        var stopForm = function() { return false; };
+
+        var usernameFail = function(reason) {
+            $("form#registration").bind( "submit", stopForm );
+
+            var checkingUsername = $("#checking_username");
+            if( checkingUsername.is( ":visible" ) ) {
+                checkingUsername.html( zc.Utils.catalog.translate("registration.that_username_is_unavailable_try_another") );
+            } else {
+                $("#registration_username_note").after(
+                    $("<span class='notetxt username_failure error-text' id='checking_username'>"+reason+"</span>")
+                );
+                checkingUsername = $("#checking_username");
+            }
+
+            checkingUsername.addClass("username_failure error-text");
+        };
+
+	    $("#registration_username").bind( "blur", function(e) {
+            if( $("#checking_username").is( ":visible" ) ) {
+                $("#checking_username").remove();
+            }
+
+            $("form#registration").bind( "submit", stopForm );
+
+            var value = $("#registration_username").val().replace(/(^\s+|\s+$)/,'','g');
+            if( value == "" )
+                return false;
+
+            $("#registration_username").val(value);
+
+            if ( value.length > 40 ) {
+                usernameFail(zc.Utils.catalog.translate("registration.usernames_must_be_1_to_40_characters_in_length"));
+                return false;
+            }
+            if( ! value.match( new RegExp("[a-z]", "i") ) ) {
+                usernameFail(zc.Utils.catalog.translate("registration.usernames_must_contain_at_least_one_letter"));
+                return false;
+            }
+            if( ! value.match( new RegExp("^[-_a-z0-9.]*$", "i") ) ) {
+                usernameFail(zc.Utils.catalog.translate("registration.only_letters_numbers_underscores_dashes_and_dots_are_allowed"));
+                return false;
+            }
+
+            $("form#registration").unbind( "submit", stopForm );
+
+        });
+
+        $("#registration_username").bind( "change", function(e) {
+           $("form#registration").unbind( "submit", stopForm );
+        });
+
+        //search accounts
+        $("#join_household_org, #change_account").live( "click", { focus: "household" }, zc.registration.load_search_account );
+        $("#join_org_company, #join_affiliate").bind( "click", { focus: "organization" }, zc.registration.load_search_account );
+        $("#change_affiliate").live( "click",  zc.registration.load_search_affiliates );
+
+        //search affiliates
+        $("#search_affiliates_link").bind( "click", zc.registration.load_search_affiliates );
+
+
+        //location page events
+        if ($("#registration_preferred_address_nearby_message_container").length > 0) {
+            $("#registration").delegate("input", "change.nearby", zc.registration.load_nearby_zipcars);
+
+            // Trigger in case page was reloaded with an address already populated.
+            //
+            // Do in a timeout to ensure that the form validator is added first, else
+            // the validate() call in load_nearby_zipcars will override the form
+            // validation options.
+            setTimeout(zc.registration.load_nearby_zipcars, 1);
+        }
+
+        if( $("#no_fleets").length > 0 )
+        {
+            var fleet_dialog = $("#no_fleets").dialog({
+                autoOpen: true,
+                modal: true,
+                resizable: false,
+                width: 740,
+                title: zc.Utils.catalog.translate("registration.where_the_cars_are"),
+                position: "center"
+            });
+        }
+
+        $("#registration_disability_link").bind( "click", function() {
+
+            if( $("#disability_content").is(":visible") ) {
+                $("#disability_content").hide();
+                $("#disability_green_arrow").removeClass("green-arrow-down").addClass("green-arrow-up")
+            } else {
+                $("#disability_content").show();
+                $("#disability_green_arrow").removeClass("green-arrow-up").addClass("green-arrow-down");
+            }
+
+            $(".vr").height( $("#elements").height() );
+             return false;
+        } );
+
+        $("#major_violations_trigger").bind( "mouseover", function() {
+            $("#major_violations_container").show();
+        } ).bind( "mouseout", function() {
+            $("#major_violations_container").hide();
+        } );
+
+
+
+        var create_license_expiration_validation = function(){
+            if($("#registration_does_not_expire, #registration_driving_assistants").is(":checked")) {
+                $('#registration_license_expiration_container select').each( function() {
+                    $(this).rules( "remove", "required");
+                });
+            }else{
+                $('#registration_license_expiration_container select').each( function() {
+                    $(this).rules( "add", {required: true});
+                });
+            };
+        }
+
+        // initial rule creation for expiration date
+        create_license_expiration_validation();
+
+        // add listeners
+        $("#registration_does_expire, #registration_driving_assistants, #registration_does_not_expire").live( "click", function() {
+            create_license_expiration_validation();
+        });
+
+
+        //plan events
+        $("a#more_plan_options").live( "click", function() {
+
+            $("#plan_body").hide();
+            $.get( "/registration/account/plan?plan_display_mode=all-options", zc.registration.show_more_plan_options );
+            return false;
+        });
+
+        $(".more_plan_details").live( "click", function( event ) {
+            var link = this;
+            if( event.target ) {
+
+                var selected_plan_id = $(event.target).attr( "id" );
+                $.get( "/registration/account/plan?plan_display_mode=details&selected_plan_id="+selected_plan_id, function(data) {
+                    zc.registration.show_plan_details.call(link, data);
+                });
+                return false;
+            }
+
+        });
+
+
+        var cols = $(".plan_results th").length;
+        var i = 0;
+        var cells  = $(".plan_results td");
+        for( i; i < cells.length; i++)
+        {
+            if( i % cols == (cols - 1 ) )
+                continue;
+            $(cells[i]).css( { "border-right": "1px solid #c5c7c9" } );
+        }
+
+        if (cols == 1) {
+            $('#more_plan_options').hide();
+        }
+
+            var selected_plan_dialog = $("#selected_plan_dialog").dialog({
+                autoOpen: true,
+                modal: true,
+                resizable: false,
+                width: 740,
+                title: zc.Utils.catalog.translate("registration.did_you_have_this_plan_in_mind"),
+                position: "center"
+            });
+
+            $("#selected_plan_dialog").data( "selected_plan_dialog", selected_plan_dialog );
+
+
+            $("a#close_selected_plan").live( "click", function() {
+
+                $( $("#selected_plan_dialog").data( "selected_plan_dialog" ) ).remove();
+            });
+
+
+		//z4b invite events
+
+		$(".delete_minus_icon").live( "click", function() {
+
+		   if( $(this).prev().val() == "" || confirm( zc.Utils.catalog.translate("registration.are_you_sure_you_want_to_remove_this_email_address") ) ) {
+
+				$(this).parent( ".zc_form_element" ).remove();
+				$("form#z4b").valid();
+			}
+		});
+
+		$("#add-more").bind( "click", function() {
+
+			$("ol#invites li:last").after( "<li id='z4b_invite_container' class='zc_form_element'><div class='error_container' id='z4b_invite_error' style='display: none;'><div class='error'><div class='tl'></div><div class='horizontal_fill_top'><div class='top_drop'></div></div><div class='tr'></div><div class='error_content' id='z4b_invite_error_content'><div class='error_drop_shadow'><div class='error_message'></div><div class='bl'></div><div class='horizontal_fill_bottom'><div class='error_bottom_drop'></div></div><div class='br'></div></div></div></div><div class='error_arrow'></div></div><input type='text' placeholder='"+zc.Utils.catalog.translate("registration.email")+"' class='email' name='z4b.invite' id='z4b_invite'> <div class='delete_minus_icon'></div></li>");
+
+			return false;
+		});
+
+		$("form#waiver").submit(function () {
+			if(!$("form#waiver input[name='waiver.choice']:checked").val()){
+				if ($(".waiver-error").length <= 0) {
+					$(".waiver-error-container").html('<div class="waiver-error error-box error"><ol><li>' + zc.Utils.catalog.translate("registration.please_select_a_waiver_option") + '</li></ol></div>');
+				}
+				return false;
+			}else{
+				return true;
+			}
+		});
+
+
+        $("a#waiver_faq").bind( "click", function() {
+
+           if( $("#faq").is( ":visible") )
+            $("#faq").slideUp();
+           else
+            $("#faq").slideDown();
+
+           return false;
+        });
+
+
+        create_payment_type_listener();
+
+        // payment events
+        $("[id^registration][id$=billing_address_link]").live("click", function() {
+            // if we have a preferred address, copy it to a new place
+            if( !$("[id^=registration][id$=billing_address_link]").data( "checked" ) ) {
+                if (preferred_address) {
+                    $("[id^=registration][id$=billing_address_line_one]").val(preferred_address.line_one);
+                    $("[id^=registration][id$=billing_address_line_two]").val(preferred_address.line_two);
+                    $("[id^=registration][id$=billing_address_municipality_name]").val(preferred_address.municipality_name);
+                    $("[id^=registration][id$=billing_address_region_name]").val(preferred_address.region_name);
+                    $("[id^=registration][id$=billing_address_postal_code]").val(preferred_address.postal_code);
+                    $("[id^=registration][id$=billing_address_country_id]").val(preferred_address.country_id);
+                    $("[id^=registration][id$=billing_address_link]").data( "checked", true );
+                }
+            } else {
+                $("[id^=registration][id$=billing_address_line_one]").val("");
+                $("[id^=registration][id$=billing_address_line_two]").val("");
+                $("[id^=registration][id$=billing_address_municipality_name]").val("");
+                $("[id^=registration][id$=billing_address_region_name]").val("");
+                $("[id^=registration][id$=billing_address_postal_code]").val("");
+                $("[id^=registration][id$=billing_address_country_id]").val(starting_address.country_id);
+                $("[id^=registration][id$=billing_address_link]").data( "checked", false );
+            }
+
+            return false;
+        });
+
+        $("#apply_gc_link").bind( "click", zc.registration.apply_gc );
+        $("#apply_pc_link").bind( "click", zc.registration.apply_pc );
+
+        $("#registration_promo_code").bind( "change keypress keyup", function() {
+            if($("#registration_promo_code").val().length > 0) {
+                $("#apply_pc_link").show();
+            } else {
+                $("#apply_pc_link").hide();
+            }
+            $("#apply_pc").hide();
+        });
+
+        $("#registration_gift_certificate").bind( "change keypress keyup", function() {
+            if($("#registration_gift_certificate").val().length > 0) {
+                $("#apply_gc_link").show();
+            } else {
+                $("#apply_gc_link").hide();
+            }
+            $("#apply_gc").hide();
+        });
+
+        // z4b info events
+     	$("#z4b_tax_exempt").bind( "click", function() {
+     	    if(  $("#tax_exempt_info").is( ":visible" ) )
+         	    $("#tax_exempt_info").slideUp( 400 );
+         	else
+     	        $("#tax_exempt_info").slideDown( 400 );
+     	});
+
+     	 if(  $("#z4b_tax_exempt").is( ":checked" ) ) {
+     	      $("#tax_exempt_info").slideDown( 400 );
+     	 }
+
+        //bind button clicks
+        zc.registration.bind_buttons();
+
+        //reload the group/affiliate selection if we're loading the longform get-started.adp page.
+        if ($("#get-started-page").is(":visible")) {
+            var currentSelection = $("input#registration_join_acct_or_group_selection").val();
+            if (currentSelection != "") {
+            	zc.registration.search_results = new Array();
+            	zc.registration.search_results.push($.parseJSON(currentSelection));
+            	zc.registration.select_plan(null,0);
+            }
+        }
+
+        // bind blur events for partial form ajax storage
+        $(".ajax_send").each(function(index, element){
+                var send_function = function(){
+                    if(!$(this).hasClass("error") && $(this).val().length > 0) {
+                        // Only store if jquery validator is happy
+                        store_form_data($(this).data('path'), $(this).val());
+                    }
+                }
+
+                if ($(this).is(":radio")){
+                    $(this).bind("click", send_function);
+
+                } else if($(this).is("select")){
+                    $(this).bind("change", send_function);
+
+                } else{
+                    $(this).bind("blur", send_function);
+                }
+        });
+    }
+    // more custom validations
+    jQuery.validator.addMethod(
+        "license_exp",
+        function(value, element, params) {
+            var does_expire_box_id = params[0];
+            var license_expire_id = params[1];
+
+            if( $(does_expire_box_id).is( ":checked" ) )
+            {
+                var today = new Date(); //current today
+                var y = $(license_expire_id + "_y").val();
+                var m = $(license_expire_id + "_m").val();
+                var d = $(license_expire_id + "_d").val();
+
+                //Run validation only if the day, month, and year are all populated.
+                if((y != null && y.length > 0) && (m != null && m.length > 0) && (d != null && d.length > 0)){
+
+                    var dt = new Date( y, m - 1, d);
+                    if( dt < today )
+                        return false;
+                }
+
+            }
+            return true;
+        }, zc.Utils.catalog.translate("registration.your_expiration_date_must_be_in_the_future")
+    );
+
+    $(document).ready(function(e) {
+        if (getQueryParam("search")) {
+            zc.registration.load_search_account(e);
+        }
+    });
+
+    jQuery.validator.addMethod(
+        "cc_expiration_date",
+        function(value, element, params) {
+            var year_id = params[0];
+            var month_id = params[1];
+
+            var today = new Date();
+
+            var d = new Date(
+                        $(year_id).val(),
+                        $(month_id).val() -1 ,
+                        today.getDate() + 1
+                    );
+
+            if( d < today )
+                return false;
+
+            return true;
+    }, zc.Utils.catalog.translate("registration.the_expiration_date_you_entered_is_not_valid") );
+
+
+    $("#view_invite_list").bind( "click", function() {
+		$("#invite_emails").toggle();
+		return false;
+    });
+
+    $('#post-app-modal').dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        width: 600,
+        position: "center",
+        draggable: false
+    });
+
+
+
+    function postVideoEvent(videoName, eventType) {
+        var $videosSection = $('#how-to-videos');
+        var userId = $videosSection.data('user-id');
+        var videoEventsUrl = $videosSection.data('video-events-url');
+
+        var d = {
+            video_event: {
+                video_name: videoName,
+                event_type: eventType
+            }
+        }
+
+        $.ajax({
+            url: videoEventsUrl,
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            dataType: 'json',
+            data: JSON.stringify(d),
+            beforeSend: function(xhr) {
+                xhr.withCredentials = true;
+                xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+                xhr.setRequestHeader('Accept', '*/*');
+            },
+            error:function (xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 404) {
+                  console.log(videoEventsUrl + " not found. " +
+                    "If in development mode relative paths will not work, " +
+                    "you must include the API host.");
+                }
+            }
+        });
+    }
+
+    $('.how-to-video-modal').dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        width: 600,
+        position: 'center',
+        draggable: false,
+        open: function(event, ui) {
+            var $modalEl = $(this);
+            var videoName = $modalEl.data('video-name');
+            var controlElId = $modalEl.data('video-control');
+            var videoPlayerId = $modalEl.find('iframe').attr('id');
+            var player = players[videoPlayerId];
+
+            var $controlEl = $('#' + controlElId);
+            var $playIcon = $controlEl.find('.video-play');
+
+            $('.ui-widget-overlay').live('click', function(){ $modalEl.dialog('close'); });
+
+            // Start video and record the video start event
+            player.addEventListener('onReady', function(event) {
+                event.target.playVideo();
+
+                // add event handler to show the modal navigation links when the video ends
+                player.addEventListener('onStateChange', function(event) {
+                    if(event.data == YT.PlayerState.ENDED) {
+                        $playIcon.removeClass('video-play').addClass('video-watched');
+
+                        if($('.video-control-overlay.video-play:visible').length === 0) {
+                            $('.how-to-section.panel-warning').removeClass('panel-warning').addClass('panel-success');
+                            $('.how-to-section .icon.icon-warning-sign').removeClass('icon-warning-sign').addClass('icon-check');
+                        }
+
+                        $modalEl.find('.video-controls').show();
+
+                        postVideoEvent(videoName, 'completed');
+                    }
+                });
+            });
+
+            postVideoEvent(videoName, 'started');
+        },
+        close: function(event, ui) {
+            var $modalEl = $(this);
+            var videoPlayerId = $modalEl.find('iframe').attr('id');
+            var player = players[videoPlayerId];
+
+            // Stop the video
+            player.stopVideo();
+            player.removeEventListener('onReady');
+            player.removeEventListener('onStateChange');
+        }
+    });
+
+    $('#how-to-video-1').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-1-modal').dialog('open');
+    });
+
+    $('#how-to-video-2').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-2-modal').dialog('open');
+    });
+
+    $('#how-to-video-3').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-3-modal').dialog('open');
+    });
+
+    $('#how-to-video-4').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-4-modal').dialog('open');
+    });
+
+    $('#next-extending').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-1-modal').dialog('close');
+        $('#how-to-video-2-modal').dialog('open');
+    });
+
+    $('#next-fueling-up').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-2-modal').dialog('close');
+        $('#how-to-video-3-modal').dialog('open');
+    });
+
+    $('#next-returning').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-3-modal').dialog('close');
+        $('#how-to-video-4-modal').dialog('open');
+    });
+
+    $('#back-the-basics').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-2-modal').dialog('close');
+        $('#how-to-video-1-modal').dialog('open');
+    });
+
+    $('#back-extending').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-3-modal').dialog('close');
+        $('#how-to-video-2-modal').dialog('open');
+    });
+
+    $('#back-fueling-up').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-4-modal').dialog('close');
+        $('#how-to-video-3-modal').dialog('open');
+    });
+
+    $('#how-to-close').live('click', function(e) {
+        e.preventDefault();
+        $('#how-to-video-4-modal').dialog('close');
+    });
+
+    $('.show-instantly').dialog('open');
+
+    $('.control-page').live('click', function(e) {
+        $('.active-page').hide().removeClass('active-page');
+        $($(this).attr('href')).show().addClass('active-page');
+        return false;
+    });
+
+    $('.close-dialog').live('click', function(e) {
+        $(this).closest('.ui-dialog-content').dialog('close');
+    });
+
+   $('.control-window').live('click', function(e) {
+        $($(this).data('modal-selector')).dialog('open');
+        return false;
+   });
+
+   $(".registration_content form input, .registration_content form textarea, .registration_content form select").change(function() {
+	   $(this).closest("form").data("form-changed",true);
+   });
+
+   $('a.back-nav').live('click', function(e) {
+	   var is_form_changed = false;
+       $("form").each( function( index ) {
+    	   if ($(this).data("form-changed")){
+    		   is_form_changed = true;
+    	   }
+       });
+
+       if (is_form_changed){
+           $("#are_you_sure_you_want_to_go_back").dialog({
+               autoOpen: true,
+               modal: true,
+               resizable: false,
+               width: 450,
+               title: zc.Utils.catalog.translate("registration.reg_are_you_sure_you_want_to_go_back_title"),
+               position: "center"
+           });
+       }else{
+    	   window.location.href = $(this).attr("href");
+       }
+       return false;
+  });
+
+    $('a.reg-continue-editing').live('click', function(e) {
+       $("#are_you_sure_you_want_to_go_back").closest(".ui-dialog").find(".ui-dialog-titlebar .ui-dialog-titlebar-close").trigger("click");
+       return false;
+    });
+
+
+    $('a.reg-go-back').live('click', function(e) {
+       window.location.href = $('a.back-nav').attr("href");
+       return false;
+    });
+
+}); }); //closing braces for jquery ready and require ready

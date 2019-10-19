@@ -1,0 +1,201 @@
+/* 960 is divisible by 60, so it is divisible evenly by 2,3,4, and 5.
+    if we are changing out site width, we will want to spot-check everything */
+/*
+.content {
+    width: 960px;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+*/
+
+/* should these be floated */
+.grid-left {
+    float: left;
+}
+
+.grid-right {
+    float: right;
+}
+
+#header h1.grid-right{font-size:22px;}
+
+.grid-middle {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* various grid widths
+    note that if you have multiple nested containers
+    then you might be partial-pixels off.
+*/
+.one-half {
+    width: 50%;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.one-third {
+    width: 33%;
+    float: left;
+}
+
+.two-thirds {
+    width: 66%;
+}
+
+.one-quarter {
+    width: 25%;
+}
+
+.three-quarters {
+    width: 75%;
+}
+
+.lt-ie9 .three-quarters {
+    width: 76%;
+}
+.one-fifth {
+    width: 20%;
+}
+.four-fifths {
+    width: 80%;
+}
+
+/* less used widths.. these don't have as cool of names
+    at what point do we just make js create this? */
+.w-5 {
+    width: 5%;
+}
+.w-6 {
+    width: 6%;
+}
+.w-10 {
+    width: 10%;
+}
+.w-15 {
+    width: 15%;
+}
+.w-16 {
+    width: 16%;
+}
+.w-70 {
+    width: 70%;
+}
+
+.w-23 {
+    width: 23%;
+}
+.clear-grid {
+    clear: right;
+}
+
+/* paddings and margins */
+/* should these be in ems instead of px? */
+.no-margin {
+    margin: 0;
+}
+
+/* this should be our default on paragraphs, but sadly it isn't. */
+.text-margin {
+    margin: 0 0 .2em 0;
+}
+
+.s-margin {
+    margin: 5px 10px;
+}
+.s-b-margin {
+    margin: 0 0 10px 0;
+}
+.s-b-padding {
+    padding: 0 0 10px 0;
+}
+
+.m-margin {
+    margin: 10px 20px;
+}
+.m-padding {
+    padding: 20px 20px;
+}
+.m-t-margin {
+    margin: 10px 0 0;
+}
+.m-tb-margin {
+    margin: 10px 0;
+}
+.m-b-margin {
+    margin: 0 0 10px;
+}
+
+.l-tb-margin {
+    margin: 20px 0;
+}
+
+.l-b-margin {
+    margin: 0 0 20px 0;
+}
+
+.l-t-margin {
+    margin: 20px 0 0 0;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.l-r-margin {
+    margin: 0 20px 0 0;
+}
+
+.l-l-margin {
+    margin: 0 0 0 20px;
+}
+
+.s-padding {
+    padding: 10px;
+}
+
+.s-padding-2 {
+    padding: 0 25px 5px 25px;
+}
+
+.s-padding-3 {
+    padding: 0 5px 5px 5px;
+}
+
+.s-padding-4 {
+    padding: 10px 10px 0 10px;
+}
+
+.s-t-padding {
+    padding: 10px 0 0 0;
+}
+
+.s-tb-padding {
+    padding: 15px 0 10px 0;
+}
+.micro-tb-padding {
+    padding: 5px 0;
+}
+/* might need another style for same top-bottom paddings */
+.l-t-padding {
+    padding: 20px 0 0 0;
+}
+.l-lr-padding {
+    padding: 0 20px;
+}
+.s-lr-padding {
+    padding: 0 10px;
+}
+
+/* clearing after grid is set up TODO: this isn't working right (hence the grid-clear class)*/
+.last-grid:after, .grid-clear {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+

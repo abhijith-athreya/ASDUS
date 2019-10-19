@@ -1,0 +1,130 @@
+/*
+ * jQuery FlexSlider v2.0
+ * http://www.woothemes.com/flexslider/
+ *
+ * Copyright 2012 WooThemes
+ * Free to use under the GPLv2 license.
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * Contributing author: Tyler Smith (@mbmufffin)
+ */
+
+
+/* Browser Resets */
+.flex-container a:active,
+.flexslider a:active,
+.flex-container a:focus,
+.flexslider a:focus  {outline: none;}
+.slides,
+.flex-control-nav,
+.flex-direction-nav {margin: 0; padding: 0; list-style: none;}
+
+/* FlexSlider Necessary Styles
+*********************************/
+.flexslider {margin: 0; padding-left: 12%; padding-right:12%;}
+.flexslider .slides > li {display: none; -webkit-backface-visibility: hidden;} /* Hide the slides before the JS is loaded. Avoids image jumping */
+.flex-pauseplay span {text-transform: capitalize;}
+
+/* Clearfix for the .slides element */
+.slides:after {content: "."; display: block; clear: both; visibility: hidden; line-height: 0; height: 0;}
+html[xmlns] .slides {display: block;}
+* html .slides {height: 1%;}
+
+/* No JavaScript Fallback */
+/* If you are not using another script, such as Modernizr, make sure you
+ * include js that eliminates this class on page load */
+.no-js .slides > li:first-child {display: block;}
+
+
+/* FlexSlider Default Theme
+*********************************/
+.flexslider {margin:0px; position: relative; zoom: 1;}
+.flex-viewport {max-height: 2000px; -webkit-transition: all 1s ease; -moz-transition: all 1s ease; transition: all 1s ease;}
+.loading .flex-viewport {max-height: 300px;}
+.flexslider .slides {zoom: 1;}
+
+.carousel li {margin-right: 5px}
+
+
+/* Control Nav */
+.flex-control-nav {width: 100%; position: absolute; bottom: -40px; text-align: center;}
+.flex-control-nav li {margin: 0 6px; display: inline-block; zoom: 1; *display: inline;}
+
+#fam_products {
+	background:url(../images/nogrout_bg.png) 0 0 repeat;
+	height:150px;
+	padding:5px 10% 0 10%;
+}
+
+#fam_products.builder {
+	height:300px;
+	padding:5px 14% 0 14%;
+	position:relative;
+}
+
+#fam_products ul li {
+	display:inline;
+	float:left;
+	width:140px;
+	padding:0 5px;
+	text-align:center;
+}
+#fam_products ul li.current {
+	background: url(../images/arrow_grey.png) no-repeat center bottom;
+	height:168px;
+}
+#fam_products.builder ul li { padding:0 20px; }
+
+#fam_products ul li a {
+	display:block;
+	color:#000;
+	font-weight:bold;
+}
+
+#fam_products ul li img { width:100px; }
+
+.flex-direction-nav a {
+	width:39px;
+	height:39px;
+	position:absolute;
+	top:50%;
+	margin-top:-19px;
+	cursor:pointer;
+	opacity:.75;
+	text-indent:-9999px;
+}
+#fam_products .flex-direction-nav a {
+	top:60px;
+}
+.builder .flex-direction-nav a { top:125px; }
+.flex-direction-nav a:hover { opacity:1; }
+.flex-direction-nav a.flex-disabled { opacity: .1; cursor:default; }
+.ieold .flex-direction-nav a.flex-disabled { display:none !important; }
+.flex-direction-nav a.flex-disabled:hover { cursor:default; }
+.flex-direction-nav a.flex-prev { background:url(../images/shelf/arrowleft.png) 0 0  no-repeat; left:5%; }
+.flex-direction-nav a.flex-next { background:url(../images/shelf/arrowright.png) 0 0  no-repeat; right:5%; }
+.builder .flex-direction-nav a.flex-prev { left:50px; }
+.builder .flex-direction-nav a.flex-next { right:50px; }
+
+/* FIND MENU SLIDER **********************/
+nav.main li ul.flex-direction-nav li {  }
+.results .flex-direction-nav a {
+	top:100px;
+	margin-top:0px;
+	width:25px;
+	height:25px;
+}
+.results .flex-direction-nav a.flex-prev { background:url(../images/nav/find_leftArrow.png) 0 0  no-repeat; left:-30px; }
+#altLocations .flex-direction-nav a.flex-prev { left:3px; }
+.results .flex-direction-nav a.flex-next { background:url(../images/nav/find_rightArrow.png) 0 0  no-repeat; right:0px; }
+
+
+@media screen and (max-width:720px) {
+
+.flex-direction-nav a.flex-prev { background-size:20px !important; width:20px; height:20px; left:5%; }
+	#mobileLocations .flex-direction-nav a.flex-prev { left:-10px; } /* for the mobile nav's Find results */
+.flex-direction-nav a.flex-next { background-size:20px !important; width:20px; height:20px; }
+#altLocations .flex-direction-nav a.flex-prev { left:3px!important; }
+
+}
+

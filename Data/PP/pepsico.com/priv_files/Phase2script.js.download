@@ -1,0 +1,345 @@
+
+function init() {
+    //Workaround to get actual window width with scrollbar
+    $('body').css('overflow', 'hidden');
+    windowWidth = $('body')[0].offsetWidth;
+    $('body').css('overflow', 'visible');
+
+    if (windowWidth < 1024) {
+        $('body').removeClass('desktop');
+        $('body').addClass('mobile');
+    }
+    else {
+        $('body').removeClass('mobile');
+        $('body').addClass('desktop');
+    }
+}
+
+
+(function($) {
+$(document).ready(function () {
+
+    init();
+
+    $('#openMenu').sidr({ /* 19Jul14 */
+        onOpen: function () {
+
+            $("#openMenu, .mainNavbar, section#explorer, section#contentFinderMobile").animate({
+                left: "260",
+            }, 200, function () {
+                // Animation complete.
+            });
+            closeCFMobile();
+
+        },
+        onClose: function () {
+            $("#openMenu, .mainNavbar, section#explorer, section#contentFinderMobile").animate({
+                left: "0",
+            }, 200, function () {
+                // Animation complete.
+            });
+        }
+    });
+
+    function closeCFMobile() {
+        $(".cfMobileContainer").slideUp();
+        $("#cfTogglerBtn").removeClass('collapsed');
+    }
+
+
+    $(".mainNav li").hover(function () {
+        $(this).find('.dd').fadeIn(150);
+    }, function () {
+        $(this).find('.dd').hide();
+    });
+
+    $("#sidr .searchBox input, footer .searchBox input").focus(function () {
+        $(this).closest('.searchBox').addClass('focus');
+    });
+
+    $(".headerBrandsLink").click(function(){
+        $(".headerBrandsLink").removeClass('active');
+        $(this).addClass('active');
+    })
+
+
+    $("ul.slidrMenuList li.dd > a").click(function () {
+        if ($(this).closest('li').hasClass('active')) {
+            $(this).closest('li').find('> ul').slideUp();
+            $(this).closest('li').removeClass('active');
+        }
+        else {
+            $(this).closest('li').find('> ul').slideDown();
+            $(this).closest('li').addClass('active');
+        }
+    });
+
+
+    /* Footer Sub Menu */
+    $("ul.footNavMenu > li").hover(function () {
+        $(this).addClass('active');
+    }, function () {
+        $(this).removeClass('active');
+    });
+
+
+
+    /* Scroll to Top Functionality */
+    $("#scrollTopBtn").click(function () {
+        $('body,html').stop().animate({
+            scrollTop: 0
+        }, 800);
+        return false;
+    });
+
+    
+
+
+
+    
+    
+    // Placeholder Fix for IE8 and IE9
+    //if(!Modernizr.input.placeholder){
+    //    $('[placeholder]').focus(function() {
+    //        var input = $(this);
+    //        if (input.val() == input.attr('placeholder')) {
+    //        input.val('');
+    //        input.removeClass('placeholder');
+    //        }
+    //    }).blur(function() {
+    //        var input = $(this);
+    //        if (input.val() == '' || input.val() == input.attr('placeholder')) {
+    //        input.addClass('placeholder');
+    //        input.val(input.attr('placeholder'));
+    //        }
+    //    }).blur();
+    //    $('[placeholder]').parents('form').submit(function() {
+    //        $(this).find('[placeholder]').each(function() {
+    //        var input = $(this);
+    //        if (input.val() == input.attr('placeholder')) {
+    //            input.val('');
+    //        }
+    //        })
+    //    });
+    //}
+    
+
+    $(window).resize(function () {
+
+    });
+
+
+
+
+
+    $(".tabContent:eq(0)").show();
+    $("ul.tab li").click(function () {
+        parentElement = $(this).closest('ul.tab');
+        tabID = $(this).index();
+        parentElement.find('li').removeClass('active');
+        $(this).addClass('active');
+        $(".tabContent").hide();
+        $(".tabContent:eq(" + tabID + ")").show();
+    });
+
+
+
+
+
+    /* $('#myselect').customSelect(); */
+    /*temp change to Append "+ icon" to collapse widget footer */
+   /* $("[id$='footerlink']").append("<span class='plus_btn'></span>");*/
+    //$(".collapsible:eq(0)").addClass('active');
+    $(".collapsible:eq(0)").addClass('active');
+    $(".collapsible a.toggleBtn, .collapsible h4").click(function (event) {
+
+        var InvestorType;
+        var _Action;
+        var _Section;
+        InvestorType = $(this).closest(".navigatorContent").find("h1.first").text();
+        _Section = $(this).closest(".collapsible").find("h4").clone().children().remove().end().text();
+        _Section = $.trim(_Section).replace(/'/g, "").replace(/\s/g, '-');
+       
+        if (InvestorType == 'Featured Event') {
+            _Action = 'main-events';
+            addGA('investors', _Action.toLowerCase(), _Section.toLowerCase());
+        }
+        else if (InvestorType == 'Latest Financial News') {
+            _Action = 'main-news';
+             addGA('investors', _Action.toLowerCase(), _Section.toLowerCase());
+        }
+        else if (InvestorType == 'Quarterly Earnings') {
+            _Action = 'main-earnings';
+             addGA('investors', _Action.toLowerCase(), _Section.toLowerCase());
+        }       
+      
+
+    	if( event.target == this ) {
+			collapseElement = $(this).closest('.collapsible');        
+		    if (collapseElement.hasClass('active')) {           
+	            collapseElement.removeClass('active');          
+	    	}
+	    	else {            
+	        	collapseElement.addClass('active');            
+	    	}
+	    }
+    });
+
+
+    $("ul.select > li > a").click(function(){
+        if( $(this).closest('ul.select').find('ul').hasClass('active') ){
+            $(this).closest('ul.select').find('ul').hide();
+            $(this).closest('ul.select').find('ul').removeClass('active');
+        }
+        else{
+            $(this).closest('ul.select').find('ul').show();
+            $(this).closest('ul.select').find('ul').addClass('active');
+        }
+    });
+
+    $("ul.select > li > ul > li > a").click(function(){
+        curUrl = $(this).attr('href');
+        $("ul.select + a").attr('href',curUrl);
+        $(this).closest('ul.select > li').find('span').html( $(this).html() );
+        $("ul.select > li > ul").hide();
+    });
+
+    //Handle click feature
+    $(document).click(function (event) {
+        if (!($(event.target).closest('ul.select > li').length)) {
+            if ($('ul.select > li ul').is(":visible")) {
+                $("ul.select > li ul").hide();
+                $("ul.select > li ul").removeClass('active');
+            }
+        }
+    });
+
+
+
+
+    
+        
+    /* GLOBAL SITES SCRIPT */
+    var sitesJson = { "countryInfo": [{ "countryID": "1", "country": "Argentina", "sites": [{ "caption": "Pepsi Argentina", "url": "http://www.pepsi.com.ar/" }, { "caption": "PepsiCo Argentina", "url": "http://www.pepsicoargentina.com/" }] }, { "countryID": "2", "country": "Brazil", "sites": [{ "caption": "PepsiCo Brazil ", "url": "http://www.pepsico.com.br/" }, { "caption": "PepsiCo do Brasil: Cheetos", "url": "https://www.cheetos.com.br/" }, { "caption": "Quaker Brasil: Gatorade", "url": "http://www.gatorade.com.br/" }, { "caption": "Quaker Brasil: GSSI", "url": "http://www.gssi.com.br/" }, { "caption": "Quaker Brasil: Quaker", "url": "http://www.quaker.com.br/" }, { "caption": "Quaker Brasil: Toddynho", "url": "http://www.toddynho.com.br/" }] }, { "countryID": "3", "country": "Canada", "sites": [{ "caption": "PepsiCo Canada", "url": "http://www.pepsico.ca/" }, { "caption": "Frito-Lay Canada", "url": "http://pepsico.ca/en/index.html" }, { "caption": "Quaker Oats Canada", "url": "http://www.quakeroats.ca" }] }, { "countryID": "5", "country": "Chile", "sites": [{ "caption": "PepsiCo Chile", "url": "http://www.pepsico.cl/Chile/index.html" }] }, { "countryID": "6", "country": "Mexico", "sites": [{ "caption": "PepsiCo Mexico", "url": "http://www.pepsico.com.mx/" }, { "caption": "Frito-Lay Listas Sabritas", "url": "http://www.sabritas.com.mx/" }, { "caption": "Frito-Lay Papassabritas", "url": "http://www.papassabritas.com.mx/" }, { "caption": "Frito-Lay/Sabritas", "url": "http://www.sabritas.com.mx/" }, { "caption": "Gamesa", "url": "http://www.gamesa.com.mx/" }, { "caption": "Gatorade", "url": "http://www.gatorade.com.mx/#principal" }] }, { "countryID": "7", "country": "United States", "sites": [{ "caption": "PepsiCo U.S.", "url": "http://www.pepsico.com" }, { "caption": "Aunt Jemima", "url": "http://www.auntjemima.com/" }, { "caption": "Diet Pepsi", "url": "http://www.pepsi.com/dietpepsi" }, { "caption": "PepsiCoBeverageFacts.com", "url": "http://www.pepsicobeveragefacts.com/" }, { "caption": "Frito-Lay Doritos", "url": "http://www.doritos.com/" }, { "caption": "Frito-Lay Fritos", "url": "http://www.fritos.com/" }, { "caption": "Frito-Lay Lays", "url": "https://www.dousaflavor.com/" }, { "caption": "Frito-Lay Tostitos", "url": "http://www.fritolay.com/tostitos/index.html" }, { "caption": "Frito-Lay.com", "url": "http://www.fritolay.com/" }, { "caption": "Gatorade Science", "url": "http://www.gssiweb.org/" }, { "caption": "Mountain Dew", "url": "http://mountaindew.com/" }, { "caption": "Near East", "url": "http://www.neareast.com/" }, { "caption": "Propel", "url": "http://www.propelzero.com/" }, { "caption": "Quaker Cap 'N Crunch", "url": "http://www.capncrunch.com" }, { "caption": "Quaker Mother's Cereal", "url": "http://www.mothersnatural.com/" }, { "caption": "Quaker Oatmeal", "url": "http://www.quakeroats.com/home.aspx" }, { "caption": "Quaker Rice Snacks", "url": "http://www.quakeroats.com/products.aspx?view=RiceSnacks" }, { "caption": "Rice a Roni", "url": "http://www.ricearoni.com" }, { "caption": "Sierra Mist", "url": "http://www.sierramist.com" }, { "caption": "SoBe", "url": "http://www.sobe.com" }, { "caption": "Starbucks", "url": "http://www.starbucks.com" }, { "caption": "Tropicana", "url": "http://www.tropicana.com/" }, { "caption": "Pepsi Lipton", "url": "http://www.pepsilipton.com/" }] }, { "countryID": "8", "country": "Uruguay", "sites": [{ "caption": "PepsiCo Uruguay", "url": "http://www.pepsico.com.uy" }] }, { "countryID": "32", "country": "Colombia", "sites": [{ "caption": "PepsiCo Colombia", "url": "http://www.pepsico.com.co" }] }, { "countryID": "9", "country": "Europe", "sites": [{ "caption": "PepsiCo Europe", "url": "http://www.pepsico.eu/" }] }, { "countryID": "10", "country": "Austria", "sites": [{ "caption": "PepsiCo Austria", "url": "http://www.pepsi.at/" }] }, { "countryID": "11", "country": "Belgium", "sites": [{ "caption": "PepsiCo Belgium", "url": "http://www.pepsico.be/" }, { "caption": "Frito-Lay Smiths Belgium", "url": "http://www.smiths.be/" }, { "caption": "Pepsi Belgium", "url": "http://pepsi.be/musicauction/" }] }, { "countryID": "12", "country": "France", "sites": [{ "caption": "PepsiCo France", "url": "http://www.pepsico.fr/" }] }, { "countryID": "13", "country": "Germany", "sites": [{ "caption": "PepsiCo Germany", "url": "http://www.pepsico.de/" }] }, { "countryID": "14", "country": "Greece", "sites": [{ "caption": "PepsiCo Greece", "url": "http://www.pepsico.com.gr/" }] }, { "countryID": "15", "country": "Italy", "sites": [{ "caption": "PepsiCo Italy", "url": "http://www.pepsico.co.it/" }, { "caption": "Gatorade Italy", "url": "http://www.gatorade.it/" }] }, { "countryID": "16", "country": "Netherlands", "sites": [{ "caption": "PepsiCo Netherlands", "url": "http://www.pepsico.nl/" }, { "caption": "Frito-Lay Doritos Netherlands", "url": "http://www.doritos.nl/" }, { "caption": "Frito-Lay Lays Netherlands", "url": "http://www.lays.nl/" }, { "caption": "Frito-Lay/Smiths Netherlands", "url": "http://www.smiths.nl/" }] }, { "countryID": "17", "country": "Poland", "sites": [{ "caption": "PepsiCo Poland", "url": "http://pepsicopoland.com" }, { "caption": "Frito-Lay Poland", "url": "http://lays.pl/" }] }, { "countryID": "18", "country": "Portugal", "sites": [{ "caption": "PepsiCo Portugal", "url": "http://www.pepsico.pt" }] }, { "countryID": "19", "country": "Romania", "sites": [{ "caption": "PepsiCo Romania", "url": "http://pepsico.ro" }] }, { "countryID": "20", "country": "Russia", "sites": [{ "caption": "PepsiCo Russia", "url": "http://www.pepsico.ru/" }] }, { "countryID": "21", "country": "Spain", "sites": [{ "caption": "PepsiCo Spain", "url": "http://www.pepsico.es/" }] }, { "countryID": "22", "country": "Slovak Republic", "sites": [{ "caption": "PepsiCo Slovak Republic", "url": "http://www.pepsico.cz/" }] }, { "countryID": "23", "country": "Czech Republic", "sites": [{ "caption": "PepsiCo Czech Republic", "url": "http://www.pepsico.cz/" }] }, { "countryID": "24", "country": "Sweden", "sites": [{ "caption": "PepsiCo Sweden", "url": "http://www.pepsi.com/sv-se/d/" }] }, { "countryID": "25", "country": "Turkey", "sites": [{ "caption": "PepsiCo Turkey", "url": "http://www.pepsico.com.tr/" }] }, { "countryID": "26", "country": "Ukraine", "sites": [{ "caption": "PepsiCo Ukraine", "url": "http://www.pepsico.ua/" }] }, { "countryID": "27", "country": "United Kingdom", "sites": [{ "caption": "PepsiCo United Kingdom", "url": "http://www.pepsico.co.uk/" }, { "caption": "Pepsi United Kingdom", "url": "http://www.pepsi.com/en-gb/d" }] }, { "countryID": "28", "country": "China", "sites": [{ "caption": "PepsiCo China", "url": "http://www.pepsico.com.cn/" }] }, { "countryID": "29", "country": "India", "sites": [{ "caption": "PepsiCo India", "url": "http://www.pepsicoindia.co.in/" }] }, { "countryID": "30", "country": "Australia", "sites": [{ "caption": "PepsiCo Australia", "url": "http://www.pepsico.com.au/" }, { "caption": "Smith's Australia", "url": "http://www.smiths.com.au/" }, { "caption": "Smith's TotalVend", "url": "http://www.smithssnackvend.com.au/" }, { "caption": "Sakata Australia", "url": "http://www.sakata.com.au/" }] }, { "countryID": "31", "country": "Japan", "sites": [{ "caption": "PepsiCo Japan", "url": "http://www.pepsico.com/pepsicojapan.html" }, { "caption": "Pepsi Suntory", "url": "http://www.pepsi.co.jp" }] }] };
+
+    $(".countryCol").click(function(){
+        ele = $(this);
+        continentEle = $(this).closest('.continent');
+        var countryIndex=ele.closest('.popupRow').find('.countryCol').index(this);
+        //var countryIndex=$(this).closest('.popupRow').find('.countryCol').index();
+        cID=ele.find('a').attr('data-country-id');
+        $.ajax({
+                    url: "/template/globalSiteTemplate.html", 
+                    cache: true,
+                    success: function (src) {
+                        for(i=0;i<sitesJson.countryInfo.length;i++){
+                            if( sitesJson.countryInfo[i].countryID == cID ){
+                                $(".popupContent").remove();
+                                template =  Handlebars.compile(src);
+                                var shtml = template( {siteInfo:sitesJson.countryInfo[i]});
+                                var colLength = 2;
+                                if($(window).outerWidth() >= 768){
+                                   colLength = 3;
+                                }
+                                var split = Math.ceil(parseInt(countryIndex + 1) / colLength);
+                                var phIndex = (split*colLength) - 1;
+                                c = split*colLength;
+                                if( !continentEle.find(".countryCol:eq("+ phIndex +")").length ){
+                                    phIndex = countryIndex;
+                                }
+                                //console.log("countryIndex: " + countryIndex);
+                                continentEle.find(".countryCol:eq("+ phIndex +")").after(shtml);
+                                $('.popupContent').animate({ 
+                                    opacity: 1,
+                                    marginTop: '0px',
+                                    queue: false
+                                },600);
+                            }
+                        }
+                    }
+        });
+    });
+
+
+    $( "body" ).on( "click", "section.globalSites .popupContent .close-button", function() {
+        ele = $(this).parent();
+        ele.animate({ 
+            opacity: 0,
+            marginTop: '-40px'
+        },300,function(){
+            ele.remove();
+        });
+
+    });
+
+    /* GLOBAL SITES SCRIPT ENDS */
+
+
+    /* SHOW STOCK INFORMATION FOR 5SECONDS AT THE START OF INVESTOR PAGE LOAD */
+    if( $("#investorPageIdentifier").length ){
+        $("#stockInfoFooterLink").addClass('active');
+        setTimeout(function(){
+            $("#stockInfoFooterLink").removeClass('active');
+        }, 8000);
+    }
+
+
+
+    /* Local Storage for Content Explorer Navigation */
+
+    function SaveContentExplorerNavigationFlag(flagNavigation) {
+
+        if (sessionStorage) {
+            sessionStorage.setItem("ContentNavigationFlag", flagNavigation);
+        }
+    }
+
+    $("table.fluidTable tbody tr:nth-child(2n) td").addClass('even'); /* IE8 FIX FOR EVEN PSEUDOCLASS SUPPORT */
+    $("table.alt tbody tr:nth-child(2n)").addClass('odd'); /* IE8 FIX FOR EVEN PSEUDOCLASS SUPPORT */
+    
+    $('.dateCalendar').datepicker();
+
+    $('label[for="NewsFrmDate"]').click(function(){        
+        $('#NewsFrmDate').datepicker('show');                
+    });
+
+    $('label[for="NewsToDate"]').click(function(){        
+        $('#NewsToDate').datepicker('show');                
+    });
+    
+
+
+    /* HOME PAGE SCRIPT */
+    //function setHomeCaptionAligned(){
+    //    if(window.outerWidth >= 1024){
+    //        containerOffset = $(".container").offset().left + 15;
+    //        $(".home-rg-caption-wrapper").css('left', containerOffset + 'px' );
+    //    }
+    //    else{
+    //        $(".home-rg-caption-wrapper").css('left', 'auto' );
+    //    }
+    //}
+    //$(window).load(function(){
+    //    setHomeCaptionAligned();
+    //});
+    //$(window).resize(function(){
+    //    setHomeCaptionAligned();
+    //});
+   
+
+    /* Set Homepage article image aspect ratio */
+    setHomeArticleAspectRatio();
+    function setHomeArticleAspectRatio(){
+	    $(".spotlighttImgHead, .latestVideotImgLeft, .latestVideotImgLeft, .careertImg").each(function(){
+	    	tImgWidth = $(this).outerWidth();
+	    	tImgHeight = tImgWidth/2;	    	
+	    	$(this).css('height', tImgHeight + 'px');
+	    });
+	}
+	$(window).resize(function(){
+		setHomeArticleAspectRatio();
+	});
+
+
+});
+})(jQuery)

@@ -1,0 +1,104 @@
+
+ipeGCCards.loadScripts = function() {
+    src = document.location.protocol + "//ips-invite.iperceptions.com/Invitations/InvitationsJS/126/s126452/iPGCC_layer.js";
+    callback = function () { };
+    "use strict";
+
+    var style = document.createElement("link");
+    style.type = "text/css";
+    style.rel = "stylesheet";
+    style.href = document.location.protocol + "//ips-invite.iperceptions.com/Invitations/InvitationsJS/126/s126452/iPGCC_stylesheet.css";
+
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = src;
+
+    if (typeof (script.onreadystatechange) == "undefined")
+        script.onload = function () { this.onload = null; callback(); };
+    else
+        script.onreadystatechange = function () { if (this.readyState != "loaded" && this.readyState != "complete") return; this.onreadystatechange = null; callback(); };
+
+    document.getElementsByTagName("head")[0].appendChild(style);
+    document.getElementsByTagName("head")[0].appendChild(script);
+
+}
+
+ipeGCCards.IPEOmniKey = (function () {
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+
+    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4()).toUpperCase();
+})();
+
+ipeGCCards.loadScript = function() {
+    var urlRef = document.location.href.toLowerCase();
+    var projectId = 0; //should not display
+
+    //Ford Owners domains
+    if (document.domain === "owner.ford.com" //Prod
+        || document.domain === "qa.owner.ford.com" //Staging
+        || urlRef.indexOf("126452online.html?owner.ford.com") >= 0) {
+        projectId = 126449;
+
+    }
+    //Lincoln Owners domains
+    else if (document.domain === "owner.lincoln.com" //Prod
+             || document.domain === "qa.owner.lincoln.com" //Staging
+             || urlRef.indexOf("126452online.html?owner.lincoln.com") >= 0) {
+        projectId = 126450;
+    }
+    //Lincoln domains
+    else if (document.domain === "www.lincoln.com" //Prod
+             || document.domain === "m.lincoln.com" //Prod
+             || document.domain === "www.brandus.lincoln.com" //Prod
+             || document.domain === "shop.lincoln.com" //Prod
+             || document.domain === "www.shopus.lincoln.com" //Prod
+             || document.domain === "mqa.lincoln.com" //Staging
+             || document.domain === "wwwqa.lincoln.com" //Staging
+             || document.domain === "wwwqa.brandus.lincoln.com" //Staging
+             || document.domain === "wwwqa.shop.lincoln.com" //Staging
+             || document.domain === "wwwqa.shopus.lincoln.com" //Staging
+             || document.domain === "mdev.lincoln.com" //Staging
+             || document.domain === "mobilefd.teamdetroit.com" //QA Mobile
+             || document.domain === "lincoln.dev.nextgen.teamdetroit.com" //QA
+             || urlRef.indexOf("126452online.html?lincoln.com") >= 0) {
+        projectId = 126451;
+    }
+    if (projectId === 126449 || projectId === 126450 || projectId === 126451) {
+        var urlReferrer=encodeURIComponent(window.location.href);
+        urlReferrer=urlReferrer.replace("%2F%23%2F",encodeURIComponent("%2F%23%2F"));// double encode special chars /#/
+        urlReferrer=urlReferrer.replace("%23%2F",encodeURIComponent("%23%2F"));//double encode special chars #/
+         urlReferrer=urlReferrer.replace("%2F%23",encodeURIComponent("%2F%23"));//double encode special chars /#
+
+        var directLink = iPGCC_url = document.location.protocol + "//ips-invite.iperceptions.com/WebValidator.aspx?lID=1&sdfc=75e0aae6-" + projectId + "-ec4be267-dd33-40c5-8b9a-8f53da7fa769&source=91787&destination=commentcard&hv1=Omniture_Key~" + ipeGCCards.IPEOmniKey + "&skipStart=true&referrer=" + urlReferrer;
+
+        window.open(iPGCC_url, "_blank", "width=800,height=800, right=0, top=0, resizable=yes, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, copyhistory=no");
+    }
+    //Ford domains
+    else if (document.domain === "www.ford.com"
+             || document.domain === "m.ford.com" //Prod
+             || document.domain === "www.brandus.ford.com" //Prod
+             || document.domain === "shop.ford.com" //Prod
+             || document.domain === "www.shopus.ford.com" //Prod
+             || document.domain === "www.cotus.ford.com" //Prod
+             || document.domain === "mqa.ford.com" //Staging
+             || document.domain === "wwwqa.ford.com" //Staging
+             || document.domain === "wwwqa.brandus.ford.com" //Staging
+             || document.domain === "wwwqa.shop.ford.com" //Staging
+             || document.domain === "wwwqa.shopus.ford.com" //Staging
+             || document.domain === "wwwqa.cotus.ford.com" //Staging
+             || document.domain === "ford.dev.nextgen.teamdetroit.com" //Staging
+             || document.domain === "mobilefd.teamdetroit.com"
+             || urlRef.indexOf("126452online.html?ford.com") >= 0) {
+        ipeGCCards.loadScripts();
+    }
+}
+
+
+
+
+
+
+
+//loadScript(document.location.protocol + "//ipa-ipinvite.iperceptions.com/Invitations/survey126199/layer.js", function () { });

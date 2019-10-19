@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!-- saved from url=(0087)https://webanalytics.europa.eu/index.php?module=CoreAdminHome&action=optOut&language=en -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+        
+    <script>
+        function submitForm(e, form) {
+            if (e.preventDefault) { // IE8 and below do not support preventDefault
+                e.preventDefault();
+            }
+
+            var now = Date.now ? Date.now() : (+(new Date())), // Date.now does not exist in < IE8
+                newWindow = window.open(form.action + '&time=' + now);
+
+            setInterval(function () {
+                if (newWindow.closed) {
+                    window.location.reload();
+                }
+            }, 5000);
+
+            return false;
+        }
+    </script>
+
+        </head>
+<body>
+    You are not being tracked since your browser is reporting that you do not want to. This is a setting of your browser so you won't be able to opt-in until you disable the 'Do Not Track' feature.
+
+
+
+</body></html>

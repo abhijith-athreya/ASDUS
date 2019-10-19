@@ -1,0 +1,5 @@
+function tgonclick(){var nonwin=navigator.appName!='Microsoft Internet Explorer'?'yes':'no'; window.open(this.href.replace('http', 'https'),'welcome','location='+nonwin+',scrollbars=yes,width=517,height='+screen.availHeight+',menubar=no,toolbar=no');return false;}
+function tgoncontextmenu(){var d = new Date(); alert('Copying Prohibited by Law - This image and all included logos are copyrighted by trust-guard '+d.getFullYear()+'.'); return false;}
+function addlink(doc,link,alt){doc.innerHTML += '<a name="trustlink" href="http://secure.trust-guard.com/certificates/5270" target="_blank" onclick="tgonclick()" oncontextmenu="tgoncontextmenu()"><img name="trustseal" alt="'+alt+'" style="border: 0;" src="https://popads-trustguard.cdn77-ssl.net/'+link+'-5270-mini.gif" /></a> ';}
+function addall() {doc=document.getElementById('trustguardbox'); addlink(doc,'security','Security Verified Seal'); addlink(doc,'privacy','Privacy Verified'); addlink(doc,'business','Business Seal'); addlink(doc,'certified','Trust Guard Certified');}
+addall(); 

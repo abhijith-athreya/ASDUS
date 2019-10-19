@@ -1,0 +1,194 @@
+/* Zipcar Global Javascript Functions
+
+By Will Moore and friends  - ISITE Design
+
+
+*/
+
+var cities = [];
+var city_matches = [];
+var hybrid_matches = [];
+var city_ids = [];
+var extra_url_vars;
+var initial_url_vars;
+
+var opacity = 40;
+
+var geocoder;
+var async_load_p;
+var geotimer;
+var match_indices;
+var matches;
+var overlay = opacity;
+
+// global for keeping track of divs that have maps associated with them
+var g_map_elements = new Array();
+
+/* clear search field on click - made into plugin so it can easily be used more than once. */
+jQuery.fn.inputClear = function() {
+	return this.focus(function() {
+		if( this.value == this.defaultValue ) {
+			this.value = "";
+		}
+	}).blur(function() {
+		if( !this.value.length ) {
+			this.value = this.defaultValue;
+		}
+	});
+};
+
+// alternate version of the above. pull label and insert as field. clear with click.
+jQuery.fn.inputSetter = function() {
+
+	return this.each(function() {
+
+		var $input = $(this);
+		var $label = $("label[for='"+$input.attr("id")+"']");
+		var labeltext = $label.text();
+
+		$label.hide();
+		$input.val(labeltext);
+
+		$input.focus(function() {
+			if (this.value == labeltext) {
+				this.value = "";
+			}
+		}).blur(function() {
+			if (!this.value.length) {
+				this.value = labeltext;
+			}
+		});
+
+	});
+};
+
+
+// clean console.log.  Wont break IE6 if you leave it in your code.  cl("stuff to log")
+function cl(logit){ if(window.console&&window.console.firebug) { console.log(logit) } };//cl()
+
+
+
+
+/*
+ * basic function to work around people double clicking on submit buttons
+ **/
+var dblClickPreventer = new Object();
+dblClickPreventer.ids = new Array();
+dblClickPreventer.onclick = function( evt, perm ) {
+    if( !evt ) return true;
+    var ele = ( evt.target ? evt.target : evt.srcElement );
+    var key = ele.tagName + "#" + ele.id + "#" + ele.name + "#" + ele.type + "#" + ele.value;
+    
+    if( perm ) {
+        if( !dblClickPreventer.ids[ key ] ) {
+            dblClickPreventer.ids[ key ] = true;
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        var oldVal = dblClickPreventer.ids[ key ];
+        var newVal = (new Date()).getTime();
+    
+        if( !oldVal || ( newVal - oldVal > 1000 ) ) {
+            dblClickPreventer.ids[ key ] = newVal;
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+//namespace
+// ie seems to load registration.js before this even though the order says it should do otherwise..
+if (typeof(window.zc) != "object") {
+    window.zc = {};
+}
+        
+zc.utility = (function() {
+    return {
+        jumpToErrors: function ()
+        {
+            // jump to an error on the page if we have one?
+            $(document).find("ul.error,ol.error").first().each(function() {
+                $(document).scrollTop($(this).offset().top);
+            });
+        }
+    }
+})();
+
+
+// random set of functions from global-old. they should be converted into interactions
+// in jquery; but some are used all over.
+function MM_openBrWindow(theURL,winName,features) { //v2.0
+   return PopUp(theURL, features);
+}
+
+// popup window script
+// DEPRECATED -- doesn't work quite right on newer browsers. Use PopUp below, instead.
+// used at zf/business/apply/create-account
+function PopupWindow(iUrl, iWidth, iHeight) {
+   if (!iWidth) { iWidth = 295; }
+   if (!iHeight) { iHeight = 200; }
+
+   popupWindow = window.open(iUrl,"Popup","toolbar=no,width=" + iWidth +",height=" + iHeight + ",directories=no,status=no,scrollbars=no,resize=no,menubar=no");
+
+   if (navigator.appName == "Microsoft Internet Explorer" && parseInt(navigator.appVersion) < 4) {} 
+   else popupWindow.focus();
+}
+
+// pass this a set of parameters. example:
+// 'width=670,height=580,scrollbars=yes,toolbars=no,resizable=yes'
+function PopUp(url, parameters, no_fileloc_p) {
+   if( !no_fileloc_p ) url = url + '?fileloc=' + document.location.href;
+
+   if (parameters == undefined) {
+       parameters = 'width=335,height=489,scrollbars,status';
+   }
+
+   popupWindow=window.open(url, "Popup", parameters);
+        
+   if (navigator.appName == "Microsoft Internet Explorer" && parseInt(navigator.appVersion) < 4) {} 
+   else popupWindow.focus();
+   return false;
+}
+
+// close popup window
+function noThanks() {
+   parent.close()
+}
+
+
+function getByID (n) {
+    var d = window.document;
+    if (d.getElementById)
+        return d.getElementById(n);
+    else if (d.all)
+        return d.all[n];
+}
+
+function toggleByID (c, id) {
+    var e = getByID(id);
+    if (c.checked) e.style.display = 'block';
+    if (!c.checked) e.style.display = 'none';
+}
+
+function show(elementName) {
+    var e = getByID(elementName);
+    e.style.display = 'block';
+}
+
+function hide(elementName) {
+    var e = getByID(elementName);
+    e.style.display = 'none';
+}
+
+function swap(elementName) {
+    var e = getByID(elementName);
+    if (e.style.display == 'none') {
+        e.style.display = '';
+    } else {
+        e.style.display = 'none';
+    }
+}
+

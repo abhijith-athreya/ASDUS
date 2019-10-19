@@ -1,0 +1,18 @@
+$(document).ready(function(){
+
+  $("#newsletter-subscribe-form").validate({
+    submitHandler: function(form, e) {
+      e.preventDefault();
+      $.ajax({type: "POST",
+      url: "//statcounter.com/newsletter/email/",
+      data: { "email": $("#email").val() },
+      success: function(result){
+        $("#newsletter-subscribe-content").html('<h2>Thank you for subscribing to our newsletter.</h2><p>You should receive an email from us shortly where you will need to confirm your subscription.</p>');
+      },
+      error: function(result){
+        console.log("Error :(");
+        $("#newsletterSubscribeResult").html('Error - please try again later.');
+      }});
+    }
+  });
+});

@@ -1,0 +1,4348 @@
+
+    
+
+/* Company:   Mavice LLC
+   Developer: Ben Nunemaker
+   Date:      11/01/2011
+*/
+
+/*body.fdcc_spc_active,*/
+.fdcc_spc_active #fdcc_spc a,.fdcc_spc_active #fdcc_spc a img,.fdcc_spc_active #fdcc_spc abbr,
+.fdcc_spc_active #fdcc_spc blockquote,.fdcc_spc_active #fdcc_spc div,.fdcc_spc_active #fdcc_spc dl,
+.fdcc_spc_active #fdcc_spc dt,.fdcc_spc_active #fdcc_spc dd,.fdcc_spc_active #fdcc_spc em,
+.fdcc_spc_active #fdcc_spc fieldset,.fdcc_spc_active #fdcc_spc form,.fdcc_spc_active #fdcc_spc iframe,
+.fdcc_spc_active #fdcc_spc h1,.fdcc_spc_active #fdcc_spc h2,.fdcc_spc_active #fdcc_spc h3,
+.fdcc_spc_active #fdcc_spc h4,.fdcc_spc_active #fdcc_spc h5,.fdcc_spc_active #fdcc_spc h6,
+.fdcc_spc_active #fdcc_spc img,.fdcc_spc_active #fdcc_spc input,.fdcc_spc_active #fdcc_spc li,
+.fdcc_spc_active #fdcc_spc label,.fdcc_spc_active #fdcc_spc object,.fdcc_spc_active #fdcc_spc p,
+.fdcc_spc_active #fdcc_spc pre,.fdcc_spc_active #fdcc_spc span,.fdcc_spc_active #fdcc_spc select,
+.fdcc_spc_active #fdcc_spc strong,.fdcc_spc_active #fdcc_spc sub,.fdcc_spc_active #fdcc_spc sup,
+.fdcc_spc_active #fdcc_spc ul{
+	margin:0;
+	padding:0;
+	border:0;
+	outline:0;
+	font-size:100%;
+	vertical-align:baseline;
+	text-align:left;
+	-webkit-focus-ring-color:transparent;
+	-webkit-tap-highlight-color:transparent;
+	-moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box;
+}
+/* ***************************************************************************
+   ***************************************************************************
+   *************************************************************************** 
+   DESKTOP VIEW */
+@media screen{
+	.fdcc_spc_active #fdcc_spc #media-query-test{
+		margin-top:1px;
+		display:none;
+	}
+	/* RESET */
+	.fdcc_spc_active #fdcc_spc *{
+		-webkit-focus-ring-color:rgba(0,0,0,0);
+		-webkit-tap-highlight-color:rgba(0,0,0,0);
+	}
+	.fdcc_spc_active #fdcc_spc ul,.fdcc_spc_active #fdcc_spc ol{
+		list-style-type:none;
+	}
+	.fdcc_spc_active #fdcc_spc table{
+		border-spacing:0;
+	}
+	.fdcc_spc_active #fdcc_spc h1,.fdcc_spc_active #fdcc_spc h2,.fdcc_spc_active #fdcc_spc h3,.fdcc_spc_active #fdcc_spc h4,.fdcc_spc_active #fdcc_spc p.h4,.fdcc_spc_active #fdcc_spc h5,.fdcc_spc_active #fdcc_spc p.h5,.fdcc_spc_active #fdcc_spc h6{
+		font-weight:bold;
+		font-size:10px;
+		line-height:12px;
+	}
+	.fdcc_spc_active #fdcc_spc a{
+		text-decoration:inherit;
+		color:inherit;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-standard-link:hover{
+		color:#1a325d;
+	}
+	/* MASTER */
+	body.fdcc_spc_active{
+		overflow-y:visible;
+		width:auto;
+	}
+	.fdcc_spc_active #fdcc_spc{
+		display:block;
+		background:none;
+	}
+	/* SYSTEM */
+	.fdcc_spc_active #fdcc_spc{
+		font-size:11px;
+		line-height:13px;
+		width:954px;
+		padding:0;
+		overflow:hidden;
+		position:absolute;
+		z-index:10000;
+		top:60px;
+		left:50%;
+		margin-left:-477px;
+		padding-bottom:25px;
+		overflow:visible;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-ender{
+		clear:both;
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-zip .spc-zip,
+	.fdcc_spc_active #fdcc_spc.spc-step-models .spc-models,
+	.fdcc_spc_active #fdcc_spc.spc-step-calc .spc-calc{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .container{
+		border:none;
+		    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .container-inner{
+		background-color:#fff;
+		min-height:555px;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .loader{
+		display:none;
+		position:absolute;
+		z-index:180;
+		top:0;
+		left:0;
+		height:100%;
+		width:100%;
+		opacity:1;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc.busy .loader{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .loader-inner{
+		display:block;
+		position:absolute;
+		left:50%;
+		top:50%;
+		margin-left:-20px;
+		margin-top:-20px;
+		width:40px;
+		height:40px;
+		background:#8c8c8c url('/cc/static/spc/img/loader.gif') no-repeat center center;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}	
+	.fdcc_spc_active #fdcc_spc .spc-print-header{
+		display:none;
+	}
+	/* FORM */
+	.fdcc_spc_active #fdcc_spc .spc-radio-wrapper{
+		width:20px;
+		height:20px;
+		float:left;
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc input.spc-radio{
+		opacity:0;
+		filter:alpha(opacity=0);
+		position:absolute;
+		top:0;
+		left:0;
+		width:20px;
+		height:20px;
+		z-index:5;
+		cursor:pointer;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select{
+		float:left;
+		color:#505254;
+		font-size:11px;
+		line-height:13px;
+		font-weight:bold;
+		cursor:pointer;
+		height:40px;
+		position:relative;
+		z-index:155;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-sizing{
+		float:left;
+		clear:both;
+		padding-right:15px;
+		height:1px;
+		overflow:hidden;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-sizing li{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select .spc-select-inner{ /* SPC-902 */
+		padding:0;
+		display: flex;
+		width: 100%; 
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.gas-guzzler {
+		display: none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-inner{
+		padding:6px;
+		border:1px solid #c0bfbf;
+		float:left;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+		position:relative;
+		background-color:#ffffff;
+	}
+	.fdcc_spc_active #fdcc_spc .lease-tab .col-item .spc-select{
+		font-size:13px;
+	}
+	.fdcc_spc_active #fdcc_spc .lease-tab .col-item .spc-select .spc-select-inner{
+		padding-right:6px;
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select-inner{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select-over .spc-select-inner{
+		background-color:#22a3e6;
+		color:#fff;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select-expanded .spc-select-inner{
+		background-color:#22a3e6;
+		color:#fff;
+    -moz-border-radius:4px 4px 0 0;
+    -webkit-border-radius:4px 4px 0 0;
+    border-radius:4px 4px 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-inner:after{
+		content:'';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select .spc-select-current{
+		padding:6px 31px 6px 6px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-current{
+		height:13px;
+		padding-right:31px;
+		float:left;
+		width:auto;
+		overflow: hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-current.aprspecial-selected{
+		overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: pre;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-trims .spc-select .spc-select-current{
+		min-width:150px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-trims .spc-select .spc-select-current .year-deemphasize{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-symbol{
+		position:absolute;
+		top:0;
+		right:0;
+		float:left;
+		margin-top:9px;
+		margin-right:8px;
+		z-index:0;
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select .spc-select-options-wrapper{
+		width:100%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-options-wrapper{
+		display:none;
+		float:left;
+		width:100%;
+		position:absolute;
+		top:25px;
+		left:0;
+		z-index:160;
+		overflow:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select-expanded .spc-select-options-wrapper{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-options{
+		color:#505254;
+		padding:4px 0 4px;
+		background-color:#fff;
+		border-right:1px solid #c0bfbf;
+		border-bottom:1px solid #c0bfbf;
+		border-left:1px solid #c0bfbf;
+    -moz-border-radius:0 0 4px 4px;
+    -webkit-border-radius:0 0 4px 4px;
+    border-radius:0 0 4px 4px;
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select .spc-select-option{
+		padding:5px 6px 5px 6px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-option{
+		display:block;
+		padding:4px 6px 4px 6px;
+	}
+	/* GLOBAL */
+	.fdcc_spc_active #fdcc_spc .spc-top{
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-top h2,.fdcc_spc_active #fdcc_spc .spc-top h1{
+		width:100%;
+		font-size:20px;
+		line-height:25px;
+		color:#425968;
+		float:none;
+	}
+	.spc-top h2.spc-title-allow-trim,.spc-allow-change-trim.spc-step-calc.spc-skin-Ford.spc-region-US .spc-title{
+		display: none;
+	}
+	.spc-allow-change-trim.spc-step-calc .spc-top h2.spc-title-allow-trim{
+		display: block;
+	}
+	.spc-allow-change-trim.spc-step-calc .spc-top h2.spc-title-allow-trim br{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc a{
+		color:#22a3e6;
+		text-decoration:none;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-standard-link:hover{
+		color:#1a325d;
+		text-decoration:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h3{
+		color:#425968;
+		font-size:14px;
+		line-height:18px;
+	}
+	/* ZIP CODE */
+	.fdcc_spc_active #fdcc_spc .spc-zip{
+		display:none;
+		color:#435968;
+		font-size:14px;
+		line-height:18px;
+		width:485px;
+		*height:100px;
+		padding:30px 30px 25px;
+		margin:150px auto 0 auto;
+		border:1px solid #b3b3b3;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip h2{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .ziphint{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip-box-primary{
+		width:70%;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip-box-secondary{
+		width:30%;
+		float:left;
+		padding-top:2px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip-box-secondary a.standard-button,
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip-box-secondary a.standard-button .text-content{
+		height:70px;
+		font-size:18px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip p{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip{
+		clear:both;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip input.spc-text{
+		margin-top:6px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip-box-primary .zipinstructions{
+		padding-right:15px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip .label{
+		padding-top:11px;
+		padding-right:8px;
+		width:230px;
+		font-weight:bold;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .spc-error{
+		margin-left:60px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .spc-error .spc-s-error{
+		margin-top:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .spc-error .spc-error-message{
+		padding-top:4px;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip-error a.standard-button{
+		background:#999;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip a.standard-button{
+		display:none;
+	}
+	/* SELECTOR */
+	.fdcc_spc_active #fdcc_spc .spc-scroll-container{
+		margin-top:10px;
+		position:relative;
+		/*overflow-x:hidden\9;
+		overflow-y:scroll\9;*/
+	}
+	.fdcc_spc_active #fdcc_spc .spc-native-scroll-container{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-native-scroll-inner{
+		padding:14px 22px 25px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scroll-container .spc-selector{
+		height:475px;
+		padding:4px 10px 0 0;
+		overflow:hidden;
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scroll-container .spc-selector .spc-selector{
+		padding:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scroll-container .spc-selector-inner{
+		width:100%\9;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-models{
+		display:none;
+		padding:0 18px 15px 20px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-calc{
+		display:none;
+		padding:0 18px 15px 20px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-friends-and-neighbors .spc-calc .col-item.netprice{
+		display: none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-calc .col-item.spc-friends-neighbors-savings,
+	.fdcc_spc_active #fdcc_spc .spc-calc .col-item.spc-friends-neighbors-price,
+	.fdcc_spc_active #fdcc_spc .spc-calc .col-item.spc-friends-neighbors-netprice{
+		display: none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-friends-and-neighbors .spc-calc .col-item.spc-friends-neighbors-savings,
+	/*.fdcc_spc_active #fdcc_spc.spc-friends-and-neighbors .spc-calc .col-item.spc-friends-neighbors-price,*/
+	.fdcc_spc_active #fdcc_spc.spc-friends-and-neighbors .spc-calc .col-item.spc-friends-neighbors-netprice{
+		display: block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-group h3{
+		color:#425968;
+		font-size:16px;
+		line-height:20px;
+		margin-bottom:5px;
+		font-weight:bold;
+		clear:both;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-models-list{
+		margin-right:15px;
+		*margin-right:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-models-list:after,
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-group-proceed .tab-proceed:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model{
+		display:block;
+		overflow:hidden;
+		float:left;
+		width:20%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model .spc-model-wrapper{
+		height:143px;
+		position:relative;
+		border:1px solid #c0bfbf;
+		margin-right:10px;
+		margin-bottom:15px;
+		cursor:pointer;
+		background:url('/cc/static/spc/img/ford/sprite-gradient.png') 0 -200px repeat-x;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-expanded .spc-model-wrapper{
+		background:#fff;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model:nth-child(5n+5) .spc-model-wrapper{/* SPC-813 */
+		margin-right:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-nameplate{
+		color:#425968;
+		font-size:13px;
+		line-height:16px;
+		position:absolute;
+		top:0;
+		left:0;
+		width:100%;
+		padding-top:6px;
+		font-weight:bold;
+		text-align:center;
+		text-transform:uppercase;
+		float:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-display{
+		width:100%;
+		display:block;
+		position:absolute;
+		left:0;
+		bottom:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-display img{
+		width:90%;
+		display:block;
+		margin:auto;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select{
+		display:none;
+		padding-top:40px;
+		*padding-top:55px;
+		margin:0 15px;
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select-inner{
+		display:table-cell;
+		height:90px;
+		width:140px;
+		vertical-align:middle;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select .standard-button{
+		margin-bottom:8px;
+		height:22px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-expanded .spc-model-display{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-expanded .spc-model-select{
+		display:block;
+	}
+	/* OVERLAY */
+	.fdcc_spc_active #fdcc_spc .spc-overlay{
+		position:absolute;
+		z-index:190;
+		display:block;
+		width:350px;
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-cover{
+		display:none;
+		position:absolute;
+		z-index:0;
+		width:100%;
+		height:2000px;
+		background:#fff;
+		top:100%;
+		left:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-modal-cover{
+		display:none;
+		position:absolute;
+		z-index:189;
+		top:0;
+		left:0;
+		width:100%;
+		height:557px;
+		background:#000;
+		opacity:0.25;
+		filter:alpha(opacity=25);
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=25)";
+	}
+	.fdcc_spc_active #fdcc_spc.spc-overlay-shown .spc-overlay-shown{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header .spc-header-close{
+		float:right;
+		display:none;
+		padding:3px;
+		width:20px;
+		height:20px;
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-close{
+		float:right;
+		display:block;
+		padding:3px;
+		width:20px;
+		height:20px;
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-overlay-shown .spc-overlay-shown.has-rollover .spc-overlay-close{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-relative{
+		position:relative;
+		padding-bottom:28px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-symbol-inner,
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-visible{
+		border:2px solid #b3b3b3;
+		background:#fff;
+		-moz-box-shadow:0 0 10px 2px #c2c2c2; /* Firefox */
+		-webkit-box-shadow:0 0 10px 2px #c2c2c2; /* Safari, Chrome */
+		box-shadow:0 0 10px 2px #c2c2c2; /* CSS3 */
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-visible{
+		position:relative;
+		z-index:1;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-symbol{
+		width:60px;
+		height:30px;
+		z-index:2;
+		position:absolute;
+		left:50%;
+		margin-left:-35px;
+		bottom:0;
+		overflow:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-symbol-inner{
+		width:30px;
+		height:30px;
+		margin:-17px auto 0;
+		margin-top:-25px\0/ !important;
+		-webkit-transform: rotate(45deg);
+		-moz-transform: rotate(45deg);
+		-ms-transform: rotate(45deg);
+		-o-transform: rotate(45deg);
+		transform: rotate(45deg);
+		filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.7071067811865476, M12=-0.7071067811865475, M21=0.7071067811865475, M22=0.7071067811865476, sizingMethod='auto expand');
+		zoom: 1;
+
+	}
+	
+	:root .fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-symbol-inner{
+		filter:none \0/IE9 !important;
+	}
+	
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner{
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay p{
+		font-family:arial,helvetica,sans-serif;
+		color:#435968;
+		font-size:10px;
+		line-height:11px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-scroll-container{
+		margin:0 8px 5px 15px;
+		/*overflow-x:hidden\9;
+		overflow-y:scroll\9;*/
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-incentives .spc-scroll-container{
+		margin:0 8px 5px 12px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .overlay-scroll{
+		overflow:hidden;
+		padding-right:8px;
+		height:auto\9;
+		margin-bottom:13px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scroll-up,
+	.fdcc_spc_active #fdcc_spc .spc-scroll-down{
+		float:left;
+		cursor:pointer;
+		position:absolute;
+		right:0;
+		padding:5px;
+		z-index:15;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scroll-up{
+		top:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scroll-down{
+		bottom:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-scroll-inner{
+		min-height:100%;
+	}
+	/* CUSTOM SCROLLBARS */
+	.fdcc_spc_active #fdcc_spc .spc-scrollbar-wrapperV{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scrollbarV{
+		position:absolute;
+		z-index:50;
+		pointer-events:auto !important;
+		cursor:pointer;
+	}
+	.fdcc_spc_active #fdcc_spc .ssb_down{
+		bottom:0;
+		cursor:pointer;
+		position:absolute;
+		right:0;
+	}
+	.fdcc_spc_active #fdcc_spc .ssb_sb{
+		cursor:pointer;
+		position:absolute;
+		right:0;
+	}
+	.fdcc_spc_active #fdcc_spc .ssb_sb_down{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .ssb_sb_over{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .ssb_st{
+		cursor:pointer;
+		height:100%;
+		position:absolute;
+		right:0;
+		top:0;
+	}
+	.fdcc_spc_active #fdcc_spc .ssb_up{
+		cursor:pointer;
+		position:absolute;
+		right:0;
+		top:0;
+	}
+	/* EACH OVERLAY */
+	.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures{
+		margin-top:-275px;
+		margin-left:-165px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-incentives{
+		margin-top:-212px;
+		margin-left:-6px;
+		width:275px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures .spc-overlay-header{
+		padding:13px 10px 10px 13px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures .spc-scroll-inner{
+		padding-right:20px;
+		padding-bottom:20px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures .overlay-scroll{
+		height:200px;
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-incentives .overlay-scroll{
+		height:130px;
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-incentives .spc-overlay-symbol-inner{
+		/* margin-top:-25px; */
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-incentives .spc-overlay-header{
+		padding:10px 10px 9px 10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-incentive{
+		border-bottom:2px solid #f2f2f2;
+		padding-bottom:10px;
+		margin-bottom:10px;
+		margin-right:15px;
+		margin-right:25px\9;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-incentive:last-child{
+		border-bottom:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-totalfees{
+		margin-top: -153px;
+		margin-left: -59px;
+		width:270px;
+	}	
+	.fdcc_spc_active #fdcc_spc .spc-overlay-totalfees .spc-overlay-header{
+		padding:10px 10px 9px 10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-totalfees .spc-overlay-container{
+		margin:0 10px 10px 10px;
+		height:70px;
+		color:#435968;
+		font-size:10px;
+		line-height:11px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-totalfees .col-item{
+		padding-bottom:6px;
+		clear:both;
+		width:100%;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-totalfees .col-item:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}	
+	.fdcc_spc_active #fdcc_spc .spc-overlay-totalfees .label{
+		float:left;
+		width:75%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-totalfees .value{		
+		float:right;
+		text-align:right;
+		max-width:39%;
+	}	
+	.fdcc_spc_active #fdcc_spc .spc-overlay-taxes{
+		margin-top: -144px;
+		margin-left: -88px;
+		width:275px;
+	}	
+	.fdcc_spc_active #fdcc_spc .spc-overlay-taxes .spc-overlay-header{
+		padding:10px 10px 9px 10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-taxes .spc-overlay-container{
+		margin:0 10px 10px 10px;
+		height:60px;	
+		color:#435968;
+		font-size:10px;
+		line-height:11px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-extlink{
+		margin-top: -370px;
+		margin-left: 280px;
+		width: 400px;
+	}	
+	.fdcc_spc_active #fdcc_spc .spc-overlay-extlink .spc-overlay-header{
+		padding:10px 10px 9px 10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-extlink .spc-overlay-container{
+		margin:0 20px 20px 20px;
+		color:#435968;
+		font-size:12px;
+		line-height:16px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-extlink .spc-overlay-container h2{
+		color: #425968;
+		font-size: 14px;
+		line-height: 18px;	
+		margin-bottom:20px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-extlink .spc-extlink-buttons{
+		margin:40px auto 20px;
+		width:280px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-extlink .spc-extlink-buttons .standard-button{
+		width:120px;
+		margin:0 10px;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-extlink .spc-extlink-buttons:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-cost{
+		margin-top:-133px;
+		margin-left:48px;
+		width:275px;
+	}	
+	.fdcc_spc_active #fdcc_spc .spc-overlay-cost .spc-overlay-header{
+		padding:10px 10px 9px 10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-cost .spc-overlay-container{
+		margin:0 10px 10px 10px;
+		height:54px;
+		color:#435968;
+		font-size:10px;
+		line-height:11px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-cost .col-item{
+		padding-bottom:6px;
+		clear:both;
+		width:100%;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-cost .col-item:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}	
+	.fdcc_spc_active #fdcc_spc .spc-overlay-cost .label{
+		float:left;
+		width:75%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-cost .value{		
+		float:right;
+		text-align:right;
+		max-width:39%;
+	}	
+
+/* HEADER */
+	.fdcc_spc_active #fdcc_spc .spc-header{
+		margin-bottom:0;
+		overflow:hidden;
+		padding:15px 20px 0 20px;
+	}
+	/* TABS */
+	.fdcc_spc_active #fdcc_spc .spc-calc-tabs{
+		padding-top:25px;
+		overflow:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs{
+		font-size:13px;
+		line-height:16px;
+		text-align:center;
+		font-weight:bold;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs .tab-payment-buy,
+	.fdcc_spc_active #fdcc_spc .top-tabs .tab-payment-lease{
+		font-size:11px;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li{
+		float:left;
+		width:187px;
+		padding-top:6px;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li.selected{
+		padding-top:0;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li a{
+		display:block;
+		position:relative;
+		height:18px;
+		padding-top:9px;
+		padding-bottom:7px;
+		color:#fff;
+		text-align:center;
+		background:url('/cc/static/spc/img/ford/sprite-gradient.png') 0 -100px repeat-x;		
+    -moz-border-radius:0;
+    -webkit-border-radius:0;
+    border-radius:0;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li:first-child a{
+    -moz-border-radius:4px 0 0 0;
+    -webkit-border-radius:4px 0 0 0;
+    border-radius:4px 0 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li:last-child a{
+    -moz-border-radius:0 4px 0 0;
+    -webkit-border-radius:0 4px 0 0;
+    border-radius:0 4px 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li.selected a{
+		padding-top:15px;
+		color:#21425b;
+		background:#f2f2f2;
+    -moz-border-radius:4px 4px 0 0;
+    -webkit-border-radius:4px 4px 0 0;
+    border-radius:4px 4px 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li a span{
+		display:block;
+		cursor:pointer;
+		position:absolute;
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-close{
+		float:right;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-close-button{
+		color:#91a4b1;
+		font-size:12px;
+		line-height:13px;
+		display:block;
+		height:25px;
+		width:110px;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-close-button .spc-close-decoration,
+	.fdcc_spc_active #fdcc_spc a.spc-overlay-close .spc-close-decoration,
+	.fdcc_spc_active #fdcc_spc a.spc-header-close .spc-close-decoration{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-close .spc-close-text{
+		float:left;
+		text-align:right;
+		padding-top:5px;
+		width:75px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-close .spc-close-symbol{
+		float:right;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header-info{
+		float:right;
+		margin-top:-6px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-trims{
+		float:left;
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-region-US.spc-skin-Ford .spc-calc-tabs-inner{
+		position: relative;
+		margin-top: 25px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-region-US.spc-skin-Ford .BP3CC_SPC_Copy_FordDealerPrice{
+		position: absolute;
+	    top: -35px;
+	    font-size: 14px;
+	    color: #425968;
+	    margin: -10px 0 0;
+	    float: left;
+	    width: 65%;
+	    line-height: 18px;
+	}
+	.spc-allow-change-trim.spc-skin-Ford.spc-region-US .spc-change-vehicle .spc-current-vehicle span,
+	.spc-change-vehicle .spc-current-vehicle span.spc-current-vehicle-allow-trim{
+		display: none;
+	}
+	.spc-allow-change-trim.spc-region-US .spc-change-vehicle .spc-current-vehicle span.spc-current-vehicle-allow-trim{
+		font-weight: bold;
+    	text-transform: uppercase;
+    	display: block;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-change-trim .spc-trims{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .back-to-calc{
+		display:none;
+		font-weight:bold;
+		padding-bottom:3px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-model .back-to-calc{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle{
+		float:left;
+		margin-right:10px;
+		margin-bottom:5px;
+		margin-top:7px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle.spc-change-trim{
+		float: none;
+		display: inline-table;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle.spc-change-trim::after{
+		content: '';
+		display: block;
+		clear: both;
+		float: none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle .spc-current-vehicle{
+		color:#435968;
+		font-size:11px;
+		line-height:13px;
+		padding-top:6px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-change-vehicle .spc-change-vehicle .spc-current-vehicle{
+		padding-top:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle .spc-current-vehicle .year{
+		font-weight:normal;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle a.change-vehicle{
+		color:#22a3e6;
+		font-weight:bold;
+		font-size:11px;
+		line-height:13px;
+		display:none;
+		font-family:arial;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-change-vehicle .spc-change-vehicle a.change-vehicle{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc p.directions{
+		color:#425968;
+		font-size:13px;
+		line-height:16px;
+		padding:10px 0 10px 19px;
+	}
+	.fdcc_spc_active #fdcc_spc .verbose-information{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc p.directions-short{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc p.directions-full{
+		display:block;
+		padding:0 0 20px 0;
+	}
+	/* TABS INNER */
+	.fdcc_spc_active #fdcc_spc .spc-tab{
+		clear:both;
+		*clear:none;
+	}
+	.fdcc_spc_active #fdcc_spc .buy-tab{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .lease-tab{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs .spc-tab-content,
+	.fdcc_spc_active #fdcc_spc .top-tabs .spc-tab-content .tab-payment-lease,
+	.fdcc_spc_active #fdcc_spc .top-tabs .spc-tab-content .tab-payment-buy {
+		max-width:none;
+		display: inline;
+	}
+	.fdcc_spc_active #fdcc_spc .lease-unavailable{
+		clear:both;
+	}
+	.fdcc_spc_active #fdcc_spc .lease-unavailable-inner{
+		height:234px;
+		padding:47px 9px 60px;
+		]padding-bottom:65px;
+		background:#f2f2f2; /* Old browsers */
+	}
+	.fdcc_spc_active #fdcc_spc .lease-unavailable p{
+		color:#425968;
+		font-size:14px;
+		line-height:17px;
+		text-align:center;
+		background-color:#fff;
+		padding:85px 190px;
+		margin:0 auto;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	/* *** */
+	.fdcc_spc_active #fdcc_spc .tab-column-configure-inner,
+	.fdcc_spc_active #fdcc_spc .tab-column-review-inner{
+		min-height: 341px;
+		overflow:visible;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-configure{
+		float:left;
+		*width:618px;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-configure-inner{
+		background-color:#f2f2f2;
+		padding-right:9px;
+    -moz-border-radius:0 4px 4px 4px;
+    -webkit-border-radius:0 4px 4px 4px;
+    border-radius:0 4px 4px 4px;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-configure-inner:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group1{
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group2{
+		float:left;
+		width:295px;
+		*width:303px;
+		margin-bottom:9px;
+		height:237px;
+		margin-left:9px;
+		background-color:#fff;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group3{
+		margin-left:20px;
+		clear:both;
+		width:579px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group4{
+		display:none;
+		margin:8px 18px 10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-group-proceed{
+		padding-top:15px;
+		background:#fff;
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group-proceed .tab-proceed{
+		padding-bottom:15px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review{
+		float:left;
+		width:295px;
+		]width:285px;
+		margin-left:9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review-inner{
+		background-color:#f2f2f2;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1{
+		margin:0 9px;
+		padding:0 10px;
+		background-color:#fff;
+		min-height:237px;
+		overflow:hidden;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-friends-and-neighbors .spc-tab .tab-column-review .spc-group1.gas-guzzler {
+		padding-bottom: 5px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group2{
+		margin:10px 18px 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1:after,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group2:after,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group2:after,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group4:after,
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-group-proceed .tab-proceed:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	/* *** */
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item-separator{
+		display:none;
+		clear:both;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .label{
+		color:#435968;
+		font-size:12px;
+		line-height:15px;
+		font-weight:bold;
+		display:block;
+		padding:8px 10px 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .label sup{
+		color:#636466;
+		font-size:8px;
+		line-height:10px;
+		vertical-align:top;
+		font-weight:normal;
+		margin-left:1px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .value{
+		color:#505254;
+		font-size:18px;
+		line-height:22px;
+		font-weight:bold;
+		padding-top:8px;
+		display:block;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .symbol-text,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .symbol-input{
+		color:#505254;
+		font-size:12px;
+		line-height:15px;
+		font-weight:bold;
+		display:block;
+		float:left;
+		padding:0 8px 0 10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item.aprcash .symbol-input:first-child{
+		font-weight:normal;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .aside{
+		font-size:11px;
+		line-height:13px;
+		font-weight:bold;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-error{
+		font-size:9px;
+		line-height:10px;
+		font-weight:normal;
+		bottom:-6px !important;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .aside{
+		color:#505254;
+		padding:0 10px 0 0;
+		float:none;
+		position:absolute;
+		bottom:9px;
+		left:112px;
+		width:57%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .item-detail{
+		clear:both;
+		font-style:italic;
+		font-size:10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure h4,.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure p.h4{
+		clear:both;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group4 h4,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group4 p.h4{
+		clear:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-error{
+		font-family:arial,helvetica,sans-serif;
+		display:none;
+		color:#bb0101;
+		padding-left:25px;
+		padding-right:10px;
+		position:relative;
+		margin:5px 0 0 10px;
+		min-height:22px;
+		clear:both;
+		font-weight:bold;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-error-sideline{
+		left:130px;
+		position:absolute;
+		margin:0;
+		margin-bottom:10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .aside sup{
+		font-size:8px;
+		line-height:8px;
+		vertical-align:top;
+		font-weight:normal;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .symbol-text{
+		padding-top:12px;
+		padding-right:5px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .symbol-input{
+		padding-top:14px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group1 .col-item{
+		margin-left:9px;
+		display:block;
+		background-color:#fff;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group2 .col-item{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group2 .col-item.subdetail-72-months {
+		display: none;
+		padding:9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .price,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .downpayment,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .tradein{
+		width:286px;
+		height:73px;
+		margin-bottom:9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .price{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .downpayment{
+		margin-bottom:9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .tradein{
+
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .leaseterm,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .mileageadjustments{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .buyterm,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .aprtype,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .aprspecial,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .aprcash,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .payfreq{
+		width:297px;
+	}
+	.fdcc_spc_active #fdcc_spc input.spc-text{
+		float:left;
+		color:#505254;
+		font-size:14px;
+		line-height:17px;
+		font-weight:bold;
+		width:65px;
+		height:20px;
+		height:16px\9;
+		padding:5px 5px 3px;
+		margin:7px 5px 5px 0;
+		border:1px solid #c0bfbf;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+		-moz-box-shadow:none; /* Firefox */
+		-webkit-box-shadow:none; /* Safari, Chrome */
+		box-shadow:none; /* CSS3 */
+		-webkit-appearance:none;
+		line-height:14px\9;
+		line-height:14px\0/;
+	}
+	.fdcc_spc_active #fdcc_spc input.spc-text::-webkit-outer-spin-button,
+	.fdcc_spc_active #fdcc_spc input.spc-text::-webkit-inner-spin-button {
+		-webkit-appearance:none;
+		margin:0;
+	}
+	.fdcc_spc_active #fdcc_spc input.spc-text:focus{
+		-moz-box-shadow:0 0 0 2px #22a3e6; /* Firefox */
+		-webkit-box-shadow:0 0 0 2px #22a3e6; /* Safari, Chrome */
+		box-shadow:0 0 0 2px #22a3e6; /* CSS3 */
+	}
+	.fdcc_spc_active #fdcc_spc .col-item-error input.spc-text,
+	.fdcc_spc_active #fdcc_spc .spc-zip-error input.spc-text{
+		-moz-box-shadow:0 0 0 2px #bb0101; /* Firefox */
+		-webkit-box-shadow:0 0 0 2px #bb0101; /* Safari, Chrome */
+		box-shadow:0 0 0 2px #bb0101; /* CSS3 */
+		color:#bb0101;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item-error .aside{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item-error .spc-error,
+	.fdcc_spc_active #fdcc_spc .spc-zip-error .spc-error{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .spc-error:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-error .spc-s-error{
+		position:absolute;
+		left:-2px;
+		bottom:4px;
+		margin-top:3px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-trm-selector{
+		margin:4px 9px 0;
+		padding-bottom:7px;
+		display:block;
+		border-bottom:2px solid #f2f2f2;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-trm-selector table{
+		width:288px;
+		border-collapse:separate;
+		border-spacing:6px;
+		margin-left:-6px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-trm-selector td{
+		font-weight:bold;
+		text-align:center;
+		padding:0;
+		margin:2px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-trm-selector a{
+		color:#fff;
+		font-size:14px;
+		line-height:18px;
+		padding:4px 0;
+		display:block;
+		height:100%;
+		cursor:pointer;
+		background:url('/cc/static/spc/img/ford/sprite-gradient.png') 0 0 repeat-x;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-trm-selector a.selected{
+		color:#fff;
+		background:url('/cc/static/spc/img/ford/sprite-gradient.png') 0 -100px repeat-x;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-trm-selector a span{
+		display:block;
+		width:35px;
+		margin:0 auto;
+		text-align:center;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item{
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .spc-select{
+		margin-top:9px;
+		margin-left:9px;
+		margin-right:9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item.aprspecial .spc-select{/* SPC-902 */
+	    -webkit-box-sizing: border-box;
+	    -moz-box-sizing: border-box;
+	    box-sizing: border-box;
+	    width:93%;
+	}
+	/* APR SELECTOR */
+	.fdcc_spc_active #fdcc_spc .aprtype1,
+	.fdcc_spc_active #fdcc_spc .aprtype2{
+		color:#435968;
+		font-size:10px;
+		line-height:12px;
+		font-weight:bold;
+		display:block;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .aprtype1{
+		width:56%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .aprtype2{
+		width:44%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .aprtype1 .col-item{
+		margin:9px 0 0 9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .aprtype2 .col-item{
+		margin:9px 9px 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-radio-label{
+		padding-top:3px;
+		padding-left:2px;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-radio-label sup{
+		color:#636466;
+		font-size:8px;
+		line-height:10px;
+		vertical-align:top;
+		font-weight:normal;
+		margin-left:1px;
+	}
+	/* PAYMENT FREQUENCY SELECTOR */
+	.fdcc_spc_active #fdcc_spc .spc-tab .payfreq{
+		clear:both;
+		padding-top:2px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab div.col-item-div{
+		height:2px;
+		margin:9px 9px 4px;
+		display:block;
+		border-bottom:2px solid #F2F2F2;		
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .payfreq .spc-pay-freq{
+		color:#435968;
+		font-size:10px;
+		line-height:12px;
+		font-weight:bold;
+		float:left;
+		padding:5px 0 0 15px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .payfreq .label{
+		float:left
+	}
+	/* REVIEW */
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .col-item{
+		font-size:11px;
+		line-height:12px;
+		padding:8px 0 2px;
+		clear:both;
+		width:100%;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .col-item:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .col-item .label{
+		color:#435968;
+		float:left;
+		width:75%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab.lease-tab .tab-column-review .spc-group1 .col-item.price .label{
+		width:78%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item a.review-incentives{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item a.review-incentives .spc-s-info{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item.other-incentives-options,
+	.fdcc_spc_active #fdcc_spc.spc-other-incentive-options .spc-tab .col-item.incentives{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-other-incentive-options .spc-tab .col-item.other-incentives-options{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item a.review-incentives{
+		cursor:default;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-incentives .spc-tab .col-item a.review-incentives{
+		cursor:pointer;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-incentives .spc-tab .col-item a.review-incentives .spc-s-info{
+		display:block;
+	}
+	
+	.fdcc_spc_active #fdcc_spc.spc-has-incentives .spc-tab .col-item.no-incentives,
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item.has-incentives{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-incentives .spc-tab .col-item.has-incentives{
+		display:block;
+	}
+	
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .line-item-totalfees,
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .line-item-taxes,
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .line-item-incentives{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item a.review-incentives:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;	
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .symbol-definer{
+		float:left;
+		padding-right:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .col-item .value{
+		color:#505254;
+		float:right;
+		text-align:right;
+		max-width:39%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .col-item sup{
+		color:#636466;
+		font-size:9px;
+		line-height:6px;
+		vertical-align:super;
+		font-weight:normal;
+		font-style: normal;
+		font-family: Arial;
+		margin-left:3px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .base,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .price,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .netprice,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .adjprice,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .spc-friends-neighbors-netprice,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .incentive-options-link{
+		font-weight:bold;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .adjprice{
+		padding-bottom:8px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group2 .col-item{
+		font-size:11px;
+		line-height:13px;
+		clear:both;
+		float:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-s-minus{
+		margin-top:7px;
+		margin-right:5px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .payment{
+		color:#505254;
+		font-weight:bold;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .payment .value{
+		font-size:30px;
+		line-height:36px;
+		float:right;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .payment .symbol-text{
+		font-size:18px;
+		line-height:22px;
+		padding-top:4px;
+		padding-right:4px;
+		float:right;
+	}
+	/* SHARED */
+	.fdcc_spc_active #fdcc_spc h4,.fdcc_spc_active #fdcc_spc p.h4,.fdcc_spc_active #fdcc_spc span.monthly-payment,.fdcc_spc_active #fdcc_spc div.monthly-payment{
+		color:#435968;
+		font-size:14px;
+		line-height:16px;
+		font-weight:normal;
+		margin-top:6px;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc h4 sup,.fdcc_spc_active #fdcc_spc p.h4 sup,.fdcc_spc_active #fdcc_spc span.monthly-payment sup,.fdcc_spc_active #fdcc_spc div.monthly-payment sup{
+		font-size:8px;
+		line-height:11px;
+		vertical-align:top;
+		margin-left:4px;
+	}
+	.fdcc_spc_active #fdcc_spc h5,.fdcc_spc_active #fdcc_spc p.h5{
+		color:#425968;
+		font-size:12px;
+		line-height:14px;
+		padding-top:6px;
+		clear:both;
+		font-weight:normal;
+	}
+	.fdcc_spc_active #fdcc_spc h5 span.emphasize,.fdcc_spc_active #fdcc_spc p.h5 span.emphasize{
+		font-weight:bold;
+		padding-left:3px;
+	}
+	.fdcc_spc_active #fdcc_spc h5 a.change-zip,.fdcc_spc_active #fdcc_spc p.h5 a.change-zip{
+		color:#22a3e6;
+		font-weight:bold;
+		margin-left:8px;
+	}
+	.fdcc_spc_active #fdcc_spc p.subdetail{
+		font-family:arial,helvetica,sans-serif;
+		color:#7f7c7c;
+		font-size:9px;
+		line-height:12px;
+		margin-top:4px;
+		float:left;
+		clear:left;
+		width:100%;
+		font-weight:normal;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review p.subdetail{
+		width:170px;
+		margin-bottom: 4px;
+	}
+	.fdcc_spc_active #fdcc_spc p.subdetail sup{
+		vertical-align:top;
+		font-size:8px;
+		line-height:8px;
+		margin-left:4px;
+	}
+	.fdcc_spc_active #fdcc_spc p.stepinstructions{
+		font-size:11px;
+		line-height:14px;
+		margin:6px 6px 0 9px;
+	}
+	/* FOOTER */
+	.fdcc_spc_active #fdcc_spc .spc-footer{
+		clear:both;
+		padding-top:12px;
+		*padding-top:6px;
+		padding-right: 2px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-credit{
+		float:left;
+		width:210px;
+		margin-top:10px;
+	}
+	.fdcc_spc_active #fdcc_spc .credit-unit{
+		float:left;
+		padding-top:5px;
+		padding-left:10px;
+	}
+	.fdcc_spc_active #fdcc_spc .credit-unit .credit-description{
+		font-size:14px;
+		line-height:18px;
+		color:#435968;
+		cursor:pointer;
+	}
+	.fdcc_spc_active #fdcc_spc .credit-unit .credit-description span{
+		font-weight:bold;
+		cursor:pointer;
+	}
+	.fdcc_spc_active #fdcc_spc .credit-link{
+		display:block;
+		cursor:pointer;
+	}
+	.fdcc_spc_active .spc-credit-link{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-show-credit .spc-credit-link{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview{
+		float:right;
+		width:395px;
+		padding-top:10px;
+		padding-bottom:16px;
+		border-right:1px solid #c2c2c2;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional,.fdcc_spc_active #fdcc_spc .spc-footer .footer-contact-dealer{
+		padding-top:10px;
+		padding-bottom:16px;
+		margin-left:10px;
+		]margin-left:8px;
+		width:160px;
+		float:right;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-contact-dealer{
+		width: 140px;
+		padding-left:10px;
+		border-left: 1px solid #c2c2c2;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-buttons .spc-si{display:none;}
+	.fdcc_spc_active #fdcc_spc.spc-allow-search-inventory .spc-footer .footer-buttons .spc-si{display:block;}
+	
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-contact-dealer .spc-contact-dealer{
+		font-weight: bold;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-print.spc-allow-save .spc-footer .footer-additional,
+    .fdcc_spc_active #fdcc_spc.spc-allow-print.spc-allow-quote .spc-footer .footer-additional{
+		border-right:1px solid #c2c2c2;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-print.spc-allow-save .spc-footer .footer-overview,
+    .fdcc_spc_active #fdcc_spc.spc-allow-print.spc-allow-quote .spc-footer .footer-overview,
+    .fdcc_spc_active #fdcc_spc.spc-allow-search-inventory .spc-footer .footer-overview{
+		width:243px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-print.spc-allow-save .spc-footer .footer-credit,
+    .fdcc_spc_active #fdcc_spc.spc-allow-print.spc-allow-quote .spc-footer .footer-credit{
+		width:190px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-save .change-zip,
+	.fdcc_spc_active #fdcc_spc.spc-have-vin .change-zip{
+		display:none !important;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional-print{
+		padding-top:10px;
+		margin-left:18px;
+		]margin-left:8px;
+		width:106px;
+		float:right;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-additional-disclosures{
+		font-weight:bold;
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-additional-disclosures .spc-s-add{
+		float:left;
+		margin-right:4px;
+		margin-top:1px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional-print a.spc-print{
+		font-weight:bold;
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-print .spc-s-print{
+		float:left;
+		margin-right:4px;
+		margin-top:1px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-disclosures{
+		clear:both;
+		padding-top:12px;
+		*padding-top:12px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-disclosures p{
+		color:#b3b3b3;
+		font-size:9px;
+		line-height:11px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-disclosures p sup{
+		font-size:8px;
+		line-height:10px;
+		vertical-align:top;
+		margin-left:1px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-buttons{
+		float:right;
+		width:124px;
+		height:20px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-buttons .spc-print{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-buttons .spc-print .text-content{
+		*padding-top:10px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-print .spc-footer .footer-buttons .spc-print{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-buttons .spc-close{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-save .spc-footer .footer-buttons .spc-save-close,
+    .fdcc_spc_active #fdcc_spc.spc-allow-quote .spc-footer .footer-buttons .spc-quote{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-print.spc-allow-save .spc-footer .footer-buttons .spc-print{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-print.spc-allow-quote .spc-footer .footer-buttons .spc-print{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-configuration{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional-print{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-contact-dealer{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-print.spc-allow-save .spc-footer .footer-additional-print,
+    .fdcc_spc_active #fdcc_spc.spc-allow-print.spc-allow-quote .spc-footer .footer-additional-print,
+    .fdcc_spc_active #fdcc_spc.spc-allow-search-inventory .spc-footer .footer-contact-dealer{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .display-zip{
+		display:block;
+		padding:9px 0;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-show-footer .display-zip{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-save .display-zip{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-have-vin .display-zip{
+		display:block;
+	}	
+/* BUTTON */
+	.fdcc_spc_active #fdcc_spc a.standard-button,
+	.fdcc_spc_active #fdcc_spc a.standard-button .text-content{
+		height:42px;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button-simple,
+	.fdcc_spc_active #fdcc_spc a.standard-button-simple .text-content{
+		height:auto;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button{
+		display:block;
+		cursor:pointer;
+		position:relative;
+		font-size:14px;
+		line-height:18px;
+		color:#fff;
+		font-weight:bold;
+		background:url('/cc/static/spc/img/ford/sprite-gradient.png') 0 0 repeat-x;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button:hover,.fdcc_spc_active #fdcc_spc a.standard-button.spc-button-cancel{
+		background:url('/cc/static/spc/img/ford/sprite-gradient.png') 0 -100px repeat-x;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button .button-inner{
+		padding:0 10px 2px;
+		clear:both;
+		vertical-align:middle;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button .button-inner:after{
+		content:'';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button.spc-save-close .text-content{
+		padding:0 30px 3px 0;
+		font-size:15px;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button .text-content{
+		padding:0 15px 0px 0;
+		display:table-cell;
+		vertical-align:middle;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button-simple .text-content{
+		display:block;
+		padding:4px;
+		*padding-top:1px;
+		text-align:center;
+		font-size:12px;
+		line-height:14px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional-print a.spc-print .text-content{
+		padding-top:14px;
+	}
+	.fdcc_spc_active #fdcc_spc a.reversed-button .text-content{
+		padding-right:0;
+		padding-left:20px;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button .text-content span{
+		font-weight:normal;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button .symbol-content{
+		margin:-9px 13px 0;
+		position:absolute;
+		top:50%;
+		right:0;
+	}
+	.fdcc_spc_active #fdcc_spc a.reversed-button .symbol-content{
+		right:auto;
+		left:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-button-close{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .tradein a.tradein-link{
+		display:inline;
+	}
+	.fdcc_spc_active #fdcc_spc .tradein .spc-link-out{
+		width:20px;
+		height:20px;
+		padding-right:16px;
+		background-position:-86px -99px;
+		display:inline;
+		margin-left:6px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tradein-link{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-show-tradein .spc-tradein-link{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .credit-unit .spc-link-out{
+		width:14px;
+		height:14px;
+		background-position:-86px -99px;
+		margin-top:-14px;
+		margin-right:-19px;
+		float:right;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-disc-text,
+	.fdcc_spc_active #fdcc_spc .spc-disc-text-pmt{
+		color:#435968;
+		font-family:arial,helvetica,sans-serif;
+		font-weight:normal;
+		font-size:9px;
+		line-height:9px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-model a.back-to-calc{
+		float:right;
+		margin-top:-30px;
+		padding:7px 18px 7px 12px;
+		color:#425968;
+		font-size:13px;
+		border:1px solid #cccccc;
+		margin-right:17px;
+		background:url('/cc/static/spc/img/ford/sprite-gradient.png') 0 -350px repeat-x;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-model a.back-to-calc:hover{
+		color:white;
+		text-decoration:none;
+		border:1px solid transparent;
+		background-position:0 -1px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-model a.back-to-calc span.back-to-calc-arrow{
+		background-position:-160px -13px;
+		width:3px;
+		height:5px;
+		float:left;
+		margin-right:12px;
+		margin-top:4px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-model a.back-to-calc:hover span.back-to-calc-arrow{
+		background-position:-160px -19px;
+	}
+
+}
+/* ***************************************************************************
+   ***************************************************************************
+   ***************************************************************************
+   MOBILE AND MOBILE OVERLAY */
+@media screen and (max-width:958px), screen and (min-width:958px) and (orientation:portrait), screen and (max-device-width:480px){
+	/* SYSTEM */
+	.fdcc_spc_active #fdcc_spc{
+		width:100% !important;
+		min-height:100%;
+		border:0;
+		margin:0;
+		padding:0;
+		max-width:auto;
+		position:absolute;
+		top:0;
+		left:0;
+	}
+	.fdcc_spc_active #fdcc_spc .container{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .container-inner{
+		height:auto;
+		background-color:#fff;
+		min-height:400px;
+	}
+	/* CLOSE AND BACK */
+	.fdcc_spc_active #fdcc_spc a.spc-header-close .spc-close-decoration,
+	.fdcc_spc_active #fdcc_spc a.spc-overlay-close .spc-close-decoration{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-close-button .spc-close-decoration{
+		display:block;
+		position:absolute;
+		left:0;
+		top:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header{
+		padding:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-models{
+		padding:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-calc{
+		padding:0;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-region-US.spc-skin-Ford .spc-calc-tabs-inner{
+		position: static;
+		margin-top: 0;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-region-US.spc-skin-Ford .BP3CC_SPC_Copy_FordDealerPrice{
+		position:static;
+		top:0;
+		margin: 0;
+		font-size: 12px;
+		width: auto;
+		padding: 0 15px;
+	}
+	/* PAGE UNITS */
+	.fdcc_spc_active #fdcc_spc p.directions-short{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc p.directions-full{
+		display:none;
+	}
+	/* SELECTOR */
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-trm-selector{
+		margin:4px -3px 0 9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-trm-selector table{
+		width:100%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector table td.spacer-cell{
+		width:47%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-models-list{
+		margin-right:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model{
+		float:none;
+		width:auto;
+		height:82px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-group{
+		border-bottom:1px solid #c0bfbf;
+		margin-bottom:20px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-group h3{
+		margin-left:20px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model .spc-model-wrapper{
+		margin:0;
+		border-right:0;
+		border-bottom:0;
+		border-left:0;
+		height:auto;
+		background:none;
+    -moz-border-radius:0;
+    -webkit-border-radius:0;
+    border-radius:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-nameplate{
+		left:110px;
+		width:auto;
+		margin-left:10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-display{
+		width:110px;
+		position:static;
+		left:auto;
+		bottom:auto;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-display img{
+		display:block;
+		vertical-align:middle;
+		padding:12px 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-display{
+		border-right:1px solid #c0bfbf;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-expanded .spc-model-display{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select{
+		display:block;
+		margin:0 0 0 110px;
+		padding-top:32px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select-inner{
+		margin:0 10px;
+		display:block;
+		height:auto;
+		width:auto;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select table{
+		display:table;
+		width:100%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select .spc-plain-year{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select a.spc-model-year-select{
+		margin-right:5px;
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select td:last-child a.spc-model-year-select{
+		margin-right:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select a.spc-model-year-select,
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-select a.spc-model-year-select .text-content{
+		height:auto;
+	}
+	/* OVERLAY */
+	.fdcc_spc_active #fdcc_spc.spc-overlay-shown .spc-static{
+		position:absolute;
+		width:100%;
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay{9490165413
+		/* display:block; */
+		height:0;
+		position:relative;
+		margin:0 !important;
+		bottom:auto !important;
+		right:auto !important;
+		top:0 !important;
+		left:100% !important;
+		width:100% !important;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-cover{
+		display:none;
+	}
+	/*
+	.fdcc_spc_active #fdcc_spc.spc-overlay-shown .spc-overlay .spc-overlay-cover{
+		display:block;
+	}
+	*/
+	.fdcc_spc_active #fdcc_spc .spc-overlay-modal-cover{
+		display:none !important;
+	}	
+	.fdcc_spc_active #fdcc_spc.spc-overlay-shown .spc-overlay-shown{
+		height:auto;
+		left:0 !important;
+		-webkit-transition:left 0.6s ease-in-out;
+		-moz-transition:left 0.6s ease-in-out;
+		-o-transition:left 0.6s ease-in-out;
+		-ms-transition:left 0.6s ease-in-out;
+		transition:left 0.6s ease-in-out;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner{
+		padding:0;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-models.spc-has-model .spc-header .spc-header-close{
+		height:40px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header .spc-header-close,
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-close{
+		position:absolute;
+		top:0;
+		left:0;
+		width:40px;
+		height:31px;
+		overflow:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-relative{
+		padding:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-header-close .spc-s-close-overlay,
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-close .spc-s-close-overlay{
+		margin:9px auto;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h1,.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h3{
+		font-size:15px;
+		line-height:19px;
+		color:#fff;
+		height:27px;
+		padding-top:10px;
+		padding-left:6px;
+		overflow:hidden;
+		background:-moz-linear-gradient(top,  #21425b 0%, #081219 100%); /* FF3.6+ */
+		background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#21425b), color-stop(100%,#081219)); /* Chrome,Safari4+ */
+		background:-webkit-linear-gradient(top,  #21425b 0%,#081219 100%); /* Chrome10+,Safari5.1+ */
+		background:-o-linear-gradient(top,  #21425b 0%,#081219 100%); /* Opera 11.10+ */
+		background:-ms-linear-gradient(top,  #21425b 0%,#081219 100%); /* IE10+ */
+		background:linear-gradient(top,  #21425b 0%,#081219 100%); /* W3C */
+	}
+	:root .fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h1,:root .fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h3{
+		filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#21425b', endColorstr='#081219',GradientType=0 )\9; /* IE6-9 */
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-symbol-inner,
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-visible{
+		border:0;
+		min-height:450px;
+		-moz-box-shadow:none; /* Firefox */
+		-webkit-box-shadow:none; /* Safari, Chrome */
+		box-shadow:none; /* CSS3 */
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-overlay-shown .spc-overlay .spc-overlay-symbol-inner,
+	.fdcc_spc_active #fdcc_spc.spc-overlay-shown .spc-overlay .spc-overlay-visible{
+		display:block;
+	}	
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-symbol{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-visible{
+		position:static;
+    -moz-border-radius:0;
+    -webkit-border-radius:0;
+    border-radius:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scroll-up,
+	.fdcc_spc_active #fdcc_spc .spc-scroll-down{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scroll-container{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-native-scroll-container{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures .spc-overlay-header,
+	.fdcc_spc_active #fdcc_spc .spc-overlay-incentives .spc-overlay-header,
+	.fdcc_spc_active #fdcc_spc .spc-overlay-totalfees .spc-overlay-header,
+	.fdcc_spc_active #fdcc_spc .spc-overlay-taxes .spc-overlay-header,
+	.fdcc_spc_active #fdcc_spc .spc-overlay-extlink .spc-overlay-header,
+	.fdcc_spc_active #fdcc_spc .spc-overlay-cost .spc-overlay-header{
+		padding:0;
+		text-indent:65px;
+		min-height: 30px;
+	}
+	/* EACH OVERLAY */
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-incentive{
+		margin:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-totalfees .spc-overlay-container{
+		margin:20px;
+		font-size:12px;
+		line-height:14px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-taxes .spc-overlay-container{
+		margin:20px;
+		font-size:12px;
+		line-height:14px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-cost .spc-overlay-container{
+		margin:20px;
+		font-size:12px;
+		line-height:14px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-extlink .spc-overlay-container{
+		margin:20px;
+	}
+	
+/* CORE ITEMS */
+	.fdcc_spc_active #fdcc_spc.spc-step-models.spc-has-model .spc-top h1,.fdcc_spc_active #fdcc_spc.spc-step-models.spc-has-model .spc-top h2{
+		padding-left:74px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-top h1,.fdcc_spc_active #fdcc_spc .spc-top h2{
+		font-size:14px;
+		line-height:26px;
+		color:#fff;
+		min-height:27px;
+		padding-top:10px;
+		padding-left:20px;
+		padding-bottom:10px;
+		background:#21425b; /* Old browsers */
+		background:-moz-linear-gradient(top,  #21425b 0%, #081219 100%); /* FF3.6+ */
+		background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#21425b), color-stop(100%,#081219)); /* Chrome,Safari4+ */
+		background:-webkit-linear-gradient(top,  #21425b 0%,#081219 100%); /* Chrome10+,Safari5.1+ */
+		background:-o-linear-gradient(top,  #21425b 0%,#081219 100%); /* Opera 11.10+ */
+		background:-ms-linear-gradient(top,  #21425b 0%,#081219 100%); /* IE10+ */
+		background:linear-gradient(top,  #21425b 0%,#081219 100%); /* W3C */
+		width:336px;
+	}
+	
+	/* .fdcc_spc_active #fdcc_spc .spc-top h2.spc-title-allow-trim{ SING-1327 
+		line-height:21px;
+		margin:15px;
+	} */
+
+	:root .fdcc_spc_active #fdcc_spc .spc-top h1,:root .fdcc_spc_active #fdcc_spc .spc-top h2{
+		filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#21425b', endColorstr='#081219',GradientType=0 )\9; /* IE6-9 */
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header-info{
+		float:none;
+		padding-left:20px;
+		padding-right: 2px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-change-trim .spc-header-info{
+		padding-left:15px;
+	}
+	/* TABS */
+	.fdcc_spc_active #fdcc_spc .top-tabs{
+		padding-top:10px;
+		float:none;
+		clear:both;
+		font-size:15px;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li{
+		width:50%;
+		padding-top:0;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li a{
+		margin-top:0;
+		padding-top:13px;
+		padding-bottom:10px;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li.selected a{
+		padding-top:13px;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li a,
+	.fdcc_spc_active #fdcc_spc .top-tabs li:first-child a,
+	.fdcc_spc_active #fdcc_spc .top-tabs li:last-child a,
+	.fdcc_spc_active #fdcc_spc .top-tabs li.selected a{
+    -moz-border-radius:0;
+    -webkit-border-radius:0;
+    border-radius:0;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-proceed .top-tabs li a{
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-proceed .top-tabs li.selected a{
+		visibility:visible;
+    -moz-border-radius:4px 4px 0 0;
+    -webkit-border-radius:4px 4px 0 0;
+    border-radius:4px 4px 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-close-button{
+		display:block;
+		height:auto;
+		width:55px;
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-close .spc-close-text{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-close .spc-close-symbol{
+		float:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-close .spc-close-symbol{
+		padding:18px 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-close .spc-close-symbol .spc-s-close{
+		margin:0 auto;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header-close .spc-close-decoration,
+	.fdcc_spc_active #fdcc_spc .spc-overlay-close .spc-close-decoration{
+		position:absolute;
+		top:0;
+		right:0;
+	}
+	/* ANIMATION STRUCTURE */
+	.fdcc_spc_active #fdcc_spc .buy-tab,
+	.fdcc_spc_active #fdcc_spc .lease-tab{
+		width:200%;
+		margin-left:0;
+		/*-webkit-transition:margin 0.6s ease-in-out;
+		-moz-transition:margin 0.6s ease-in-out;
+		-o-transition:margin 0.6s ease-in-out;
+		-ms-transition:margin 0.6s ease-in-out;*/
+		-webkit-transition-timing-function:ease-in-out;
+		-webkit-transition-duration:0.5s;
+		-webkit-transition-property:-webkit-transform;
+		-moz-transition-timing-function:ease-in-out;
+		-moz-transition-duration:0.5s;
+		-moz-transition-property:-moz-transform;
+		-o-transition-timing-function:ease-in-out;
+		-o-transition-duration:0.5s;
+		-o-transition-property:-o-transform;
+		-ms-transition-timing-function:ease-in-out;
+		-ms-transition-duration:0.5s;
+		-ms-transition-property:-ms-transform;
+		transition-timing-function:ease-in-out;
+		transition-duration:0.5s;
+		transition-property:transform;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-proceed .buy-tab,
+	.fdcc_spc_active #fdcc_spc.spc-step-proceed .lease-tab{
+		-moz-transform: translateX(-50%);
+		-webkit-transform: translateX(-50%);
+		-o-transform: translateX(-50%);
+		-ms-transform: translateX(-50%);
+		transform: translateX(-50%);
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-configure{
+		-webkit-transition:max-height 0s linear;
+		-moz-transition:max-height 0s linear;
+		-o-transition:max-height 0s linear;
+		-ms-transition:max-height 0s linear;
+		transition:max-height 0s linear;
+		max-height:1000px;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs{
+		-webkit-transition-timing-function:ease-in-out;
+		-webkit-transition-duration:0.5s;
+		-webkit-transition-property:-webkit-transform;
+		-moz-transition-timing-function:ease-in-out;
+		-moz-transition-duration:0.5s;
+		-moz-transition-property:-moz-transform;
+		-o-transition-timing-function:ease-in-out;
+		-o-transition-duration:0.5s;
+		-o-transition-property:-o-transform;
+		-ms-transition-timing-function:ease-in-out;
+		-ms-transition-duration:0.5s;
+		-ms-transition-property:-ms-transform;
+		transition-timing-function:ease-in-out;
+		transition-duration:0.5s;
+		transition-property:transform;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-proceed .top-tabs{
+		-moz-transform: translateX(-100%);
+		-webkit-transform: translateX(-100%);
+		-o-transform: translateX(-100%);
+		-ms-transform: translateX(-100%);
+		transform: translateX(-100%);
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-proceed .tab-column-configure{
+		max-height:1px;
+		-webkit-transition:max-height 1s linear;
+		-moz-transition:max-height 1s linear;
+		-o-transition:max-height 1s linear;
+		-ms-transition:max-height 1s linear;
+		transition:max-height 1s linear;
+		
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review{
+		width:50%;
+		float:left;
+		margin-left:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review{
+		margin-top:-41px;
+	}
+	.fdcc_spc_active #fdcc_spc p.subdetail{
+		width:auto;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab p.subdetail{
+		width:60%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item.aprspecial p.subdetail{
+		width:100%;
+		float:left;
+		clear:none;
+		margin-top:4px;
+		margin-left:1px;
+		color:#B3B3B3;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure-inner,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review-inner{
+    -moz-border-radius:0;
+    -webkit-border-radius:0;
+    border-radius:0;
+		padding-top:10px;
+		height:auto;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review-inner p.directions{
+		display:none;
+	}
+	/* COLUMNS */
+	.fdcc_spc_active #fdcc_spc .tab-column-configure{
+		padding-right:0;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-configure,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group1,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group2{
+		float:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group3{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group4{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-group-proceed{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group4 .value{
+		float:right;
+		font-size:30px;
+		line-height:38px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group4 .symbol-text{
+		float:right;
+		font-size:18px;
+		line-height:18px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .price,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .downpayment,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .tradein{
+		width:auto;
+		height:73px;
+		margin-bottom:9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group1,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group2{
+		margin-right:9px;
+	}
+	/* CONFIGURE COLUMN */
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group2{
+		width:auto !important;
+		height:auto !important;
+		padding-bottom:24px !important;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .leaseterm,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .mileageadjustments{
+		width:auto;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .buyterm,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .aprtype,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .aprspecial,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .aprcash,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .payfreq{
+		width:auto;
+	}
+	/* REVIEW COLUMN */
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1{
+		height:auto;
+		padding-bottom:8px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group2{
+		padding-bottom:9px;
+	}
+	/* NO LEASE */
+	.fdcc_spc_active #fdcc_spc .lease-unavailable{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .lease-unavailable-inner{
+		height:auto;
+		padding:9px;
+	}
+	.fdcc_spc_active #fdcc_spc .lease-unavailable p{
+		padding:26px 16px;
+		font-size:12px;
+		line-height:16px;
+	}
+	/* FOOTER */
+	.fdcc_spc_active #fdcc_spc .spc-footer{
+		padding-top:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-configuration,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-print,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-disclosures,
+	.fdcc_spc_active #fdcc_spc .spc-footer .credit-link{
+		font-family:arial,helvetica,sans-serif;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .spc-additional-disclosures .spc-s-add{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-disclosures{
+		padding:15px 20px 25px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-credit{
+		display:none;
+		float:none;
+		padding-top:50px;
+		padding-left:20px;
+		font-weight:bold;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-proceed .spc-footer .footer-credit{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-proceed{
+		display:block;
+		padding:0 20px 15px;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-proceed .tab-proceed-primary{
+		width:50%;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-proceed .tab-proceed-secondary{
+		width:50%;
+		float:right;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-proceed .tab-proceed-secondary .standard-button{
+		margin-left:10px;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-proceed .tab-proceed-secondary .spc-save-close,
+	.fdcc_spc_active #fdcc_spc .tab-proceed .tab-proceed-secondary .spc-si,
+	.fdcc_spc_active #fdcc_spc.spc-allow-search-inventory .tab-proceed .tab-proceed-secondary .spc-plain-close,
+    .fdcc_spc_active #fdcc_spc .tab-proceed .tab-proceed-secondary .spc-quote{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-save .tab-proceed .tab-proceed-secondary .spc-plain-close,
+    .fdcc_spc_active #fdcc_spc.spc-allow-quote .tab-proceed .tab-proceed-secondary .spc-plain-close{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-save .tab-proceed .tab-proceed-secondary .spc-save-close{
+		display:block;
+	}
+    .fdcc_spc_active #fdcc_spc.spc-allow-quote .tab-proceed .tab-proceed-secondary .spc-quote,
+    .fdcc_spc_active #fdcc_spc.spc-allow-search-inventory .tab-proceed .tab-proceed-secondary .spc-si{
+        display:block
+    }
+	.fdcc_spc_active #fdcc_spc .spc-group-proceed a.credit-link{
+		margin:0 auto;
+		width:170px;
+		padding:10px 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-group-proceed a.credit-link:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button,
+	.fdcc_spc_active #fdcc_spc a.standard-button .text-content{
+		height:50px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini{
+		display:block;
+		clear:both;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-buttons{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-configuration{
+		/*display:none;*/
+		display:block;
+		padding:5px 20px 10px;
+		border-top:1px solid #ededed;
+	}
+	/*
+	.fdcc_spc_active #fdcc_spc.spc-show-footer .spc-footer .footer-configuration{
+		display:block;
+	}
+	*/
+	.fdcc_spc_active #fdcc_spc .spc-footer p.subdetail{
+		color:#425968;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-configuration:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	/* ZIP AND DISCLOSURES */
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional{
+		float:left;
+		margin:0;
+		padding:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini{
+		width:58%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini h5 a,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional h5 a,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini p.h5 a,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional p.h5 a{
+		display:block;
+		padding:9px 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini h5,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional h5,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini p.h5,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional p.h5{
+		padding:0;
+		border-top:1px solid #ededed;
+		border-bottom:1px solid #ededed;
+		text-align:center;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini .zip-wrapper{
+		position:relative;
+		padding-right:18px;
+		padding-top:2px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini .spc-s-change{
+		position:absolute;
+		top:6px;
+		right:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini h5,.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview-mini p.h5{
+		padding-left:20px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional{
+		width:40%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional h5,.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional p.h5{
+		border-left:1px solid #ededed;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional h5 a,.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional p.h5 a{
+		text-align:right;
+		padding-right:19px;
+	}
+    .fdcc_spc_active #fdcc_spc.spc-allow-print .spc-footer,#fdcc_spc.spc-allow-search-inventory .spc-footer{
+        position: relative;
+    }
+    .fdcc_spc_active #fdcc_spc.spc-allow-print .spc-footer .footer-additional-print,#fdcc_spc.spc-allow-search-inventory .spc-footer .footer-contact-dealer{
+        display:block;
+        position: absolute;
+        width:auto;
+        right:20px;
+        top:-5px;
+    }
+    #fdcc_spc.spc-allow-search-inventory .spc-footer .footer-contact-dealer{
+    	border-left: 0 none;
+    }
+    .fdcc_spc_active #fdcc_spc.spc-allow-print.spc-have-vin .spc-footer .footer-additional-print{
+    	display:block;
+    }
+	/* ZIP CODE */
+	.fdcc_spc_active #fdcc_spc .spc-zip{
+		padding:0;
+		width:270px;
+		position:absolute;
+		top:50%;
+		left:50%;
+		margin:-100px 0 0 -135px;
+		background-color:#fff;
+		-webkit-box-shadow: 2px 4px 8px 1px rgba(0,0,0,0.4);
+		-moz-box-shadow: 2px 4px 8px 1px rgba(0,0,0,0.4);
+		box-shadow: 2px 4px 8px 1px rgba(0,0,0,0.4);
+		border:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip h2{
+		display:block;
+		color:#fff;
+		font-size:15px;
+		line-height:18px;
+		padding:13px 8px 11px;
+		text-align:center;
+		background-color:#1c394f;
+    -moz-border-radius:4px 4px 0 0;
+    -webkit-border-radius:4px 4px 0 0;
+    border-radius:4px 4px 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .ziphint{
+		display:block;
+		clear:both;
+		color:#425968;
+		font-size:11px;
+		line-height:13px;
+		text-align:center;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zipinstructions{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip a.standard-button,
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip a.standard-button .text-content{
+		width:40px;
+		height:32px;
+		padding:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip input.spc-text{
+		/*width:100%;*/
+		display:block;
+		float:none;
+		padding:9px 0 9px 7px;
+		font-size:15px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip{
+		display:block;
+		width:48%;
+		margin:25px auto 20px;
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip a.standard-button{
+		display:block;
+		position:absolute;
+		top:0;
+		right:-3px;
+		margin:4px -1px 0 0;
+		margin:2px -1px 0 0\9;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip a.standard-button .button-inner{
+		padding:0 0 0 10px;
+		text-align:center;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip a.standard-button,
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip a.standard-button .text-content{
+		width:40px;
+		height:32px;
+		padding:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip-box-primary{
+		width:auto;
+		padding:0 10px 20px;
+		float:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip-box-secondary{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip-error .spc-error{
+		margin:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .spc-error-sideline{
+		width:auto;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip-error .ziphint{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select .spc-select-inner{
+		padding:6px 0;
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select-inner{
+		width:100%;
+		-webkit-box-sizing:border-box;
+		-moz-box-sizing:border-box;
+		box-sizing:border-box;
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select .spc-select-current{
+		padding:0 21px 0 6px;
+		width: 100%;
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select .spc-select-option{
+		padding:5px 24px 5px 6px;
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select .spc-select-options-wrapper{
+	}
+	.fdcc_spc_active #fdcc_spc .col-item.aprspecial .spc-select .spc-select-symbol{
+		padding-right:6px;
+	}
+	.fdcc_spc_active #fdcc_spc .back-to-calc{
+		padding-left:20px;
+		padding-bottom:5px;
+	}
+	.fdcc_spc_active #fdcc_spc .tradein .spc-link-out{
+		background-position:-93px -52px;
+	}
+	.fdcc_spc_active #fdcc_spc .credit-unit .spc-link-out{
+		background-position:-93px -53px;
+		margin-top:-15px;
+	}
+	.fdcc_spc_active #fdcc_spc .tradein.col-item-error .spc-link-out{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-disc-text-pmt,
+	.fdcc_spc_active #fdcc_spc .spc-disc-text{
+		font-size:11px;
+		line-height:11px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-calc-tabs .tab-column-configure-inner p.directions{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle.spc-change-trim{
+		margin: 15px 0 0 29px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-change-trim .spc-calc-tabs{
+		padding-top: 10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle.spc-change-trim a.change-vehicle{
+		font-size: 11px !important;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-radio-label{
+		font-size:11px;
+		padding-left:3px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .spc-select{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-symbol{
+		float:right;
+		margin-top:3px;
+		margin-right:2px;
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc h5 a.change-zip,.fdcc_spc_active #fdcc_spc p.h5 a.change-zip{
+		margin-left:0;
+	}
+	/*
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .aside{
+		color:#505254;
+		padding:20px 6px 10px 12px;
+		float:left;
+		position:relative;
+		bottom:0;
+		right:0;
+		width:auto;
+	}
+	*/
+	.fdcc_spc_active #fdcc_spc.spc-has-model a.back-to-calc{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-model .spc-header .spc-header-close{
+		display:block;
+	}
+}
+/* ***************************************************************************
+   ***************************************************************************
+   ***************************************************************************
+   MOBILE OVERLAY */
+@media screen and (min-device-width:481px) and (min-width:481px) and (max-width:958px), screen and (min-device-width:481px) and (min-width:481px) and (max-width:958px) and (orientation:portrait), screen and (min-device-width:481px) and (min-width:958px) and (orientation:portrait){
+	.fdcc_spc_active #fdcc_spc #media-query-test{
+		margin-top:2px;
+	}
+	.fdcc_spc_active #fdcc_spc{
+		width:380px !important;
+		padding:0;
+		position:absolute;
+		z-index:100;
+		top:50px;
+		left:50%;
+		min-height:400px;
+		border:0;
+		margin-left:-180px;
+		padding-bottom:25px;
+		overflow:visible;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .container{
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+		-moz-box-shadow:0 0 5px 2px rgba(0,0,0,0.4); /* Firefox */
+		-webkit-box-shadow:0 0 5px 2px rgba(0,0,0,0.4); /* Safari, Chrome */
+		box-shadow:0 0 5px 2px rgba(0,0,0,0.4); /* CSS3 */
+	}
+	.fdcc_spc_active #fdcc_spc .container-inner{
+		position:relative;
+		overflow:hidden;
+		height:auto;
+		background:#fff;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-static-inner{
+		margin-top:0 !important;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header .spc-close{
+		display:block;
+		position:absolute;
+		right:0;
+		top:0;
+		z-index:5;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-change-trim .spc-header{
+		position: relative;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-change-trim .spc-header .spc-close{
+		top:50%;
+		margin-top: -27px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-models.spc-has-model .spc-header .spc-top h1,
+	.fdcc_spc_active #fdcc_spc.spc-step-models.spc-has-model .spc-header .spc-top h2{
+		padding:13px 22px 13px 88px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header .spc-top h1,
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h1,.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h3,
+	.fdcc_spc_active #fdcc_spc .spc-header .spc-top h2,
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h2{
+		background:#1c394f;
+		text-align:left;
+		padding:13px 22px;
+		font-size:17px;
+		line-height:27px;
+    -moz-border-radius:4px 4px 0 0;
+    -webkit-border-radius:4px 4px 0 0;
+    border-radius:4px 4px 0 0;
+	}
+	:root .fdcc_spc_active #fdcc_spc .spc-header .spc-top h1,
+	:root .fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h1,
+	:root .fdcc_spc_active #fdcc_spc .spc-header .spc-top h2,
+	:root .fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h2,
+	:root .fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h3{
+		filter:none\9;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-visible{
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header .spc-header-close{
+		padding-top:11px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header .spc-header-close,
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-close{
+		width:auto;
+		height:44px;
+		padding-left:10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures .spc-scroll-container{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures .spc-native-scroll-container{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures .overlay-scroll {
+		height:600px;	
+	}
+	.fdcc_spc_active #fdcc_spc .spc-calc-tabs{
+		margin:0 15px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-allow-change-trim .spc-calc-tabs{
+		padding-top: 10px;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li:first-child a{
+    -moz-border-radius:4px 0 0 0;
+    -webkit-border-radius:4px 0 0 0;
+    border-radius:4px 0 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs li:last-child a{
+    -moz-border-radius:0 4px 0 0;
+    -webkit-border-radius:0 4px 0 0;
+    border-radius:0 4px 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure-inner{
+    -moz-border-radius:0 0 4px 4px;
+    -webkit-border-radius:0 0 4px 4px;
+    border-radius:0 0 4px 4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review-inner{
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group1,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group2{
+		margin-right:0;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-header-close .spc-close-decoration,
+	.fdcc_spc_active #fdcc_spc a.spc-overlay-close .spc-close-decoration,
+	.fdcc_spc_active #fdcc_spc a.spc-close-button .spc-close-decoration{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-proceed{
+		padding-right:0;
+		padding-left:0;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .tab-proceed{
+		padding-bottom:15px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scroll-up,
+	.fdcc_spc_active #fdcc_spc .spc-scroll-down{
+		display:none;
+	}
+}
+/* ***************************************************************************
+   ***************************************************************************
+   ***************************************************************************
+   MOBILE */
+@media screen and (max-device-width: 480px), screen and (max-width:480px){
+	
+	body.fdcc_spc_active{
+		overflow:hidden;
+	}
+	
+	.fdcc_spc_active #fdcc_spc .spc-header .spc-close{
+		display:block;
+		position:absolute;
+		right:0;
+		top:0;
+		z-index:5;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle.spc-change-trim{
+		margin: 15px 0 0 15px;
+	}
+	.fdcc_spc_active #fdcc_spc{
+		top:0;/*!important;*/
+		/*position:static;*/
+		overflow-x: hidden;
+		overflow-y: auto;
+		height: 100%;
+		position: fixed;
+	}
+	.fdcc_spc_active #fdcc_spc h5,.fdcc_spc_active #fdcc_spc p.h5{
+		font-size:10px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-top{
+		float:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-close .spc-close-symbol{
+		padding:15px 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip{
+		margin:50px 0 0 -135px;
+		top:10%;
+	}
+	.fdcc_spc_active #fdcc_spc #media-query-test{
+		margin-top:3px;
+	}
+	body.fdcc_spc_active > * {
+		/*display: none !important; !* SPC-755 *!*/
+	}
+	body.fdcc_spc_active{
+		margin:0;
+	}
+	.fdcc_spc_active #fdcc_spc .loader,
+	.fdcc_spc_active #fdcc_spc .loader-inner{
+    -moz-border-radius:4;
+    -webkit-border-radius:4;
+    border-radius:4;
+	}
+	.fdcc_spc_active #fdcc_spc .container{
+		border:0;
+	}
+	.fdcc_spc_active #fdcc_spc .container-inner{
+		height:auto;
+		-moz-box-shadow:none; /* Firefox */
+		-webkit-box-shadow:none; /* Safari, Chrome */
+		box-shadow:none; /* CSS3 */
+    -moz-border-radius:0;
+    -webkit-border-radius:0;
+    border-radius:0;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-configure-inner{
+		padding-right:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scroll-up,
+	.fdcc_spc_active #fdcc_spc .spc-scroll-down{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-top h1,.fdcc_spc_active #fdcc_spc .spc-top h2{
+		width:100%;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .spc-select{
+		margin-right:9px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-overlay-shown .spc-static{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .container {
+    	min-height: 100%;
+	}
+}
+/* ***************************************************************************
+   ***************************************************************************
+   ***************************************************************************
+   PRINT */
+@media print{
+	body.fdcc_spc_active,
+	body.fdcc_spc_active *{
+		color:#435968;
+		font-size:13px;
+		line-height:16px;
+	}
+	.fdcc_spc_active #fdcc_spc a{
+		color:#435968;
+		color:inherit;
+		text-decoration:none;
+	}
+	body.fdcc_spc_active > *{
+		display:none !important;
+	}
+	body.fdcc_spc_active > #fdcc_spc{
+		display:block !important;
+		padding:30px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s{
+		display:inline;
+		padding-right:8px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-print-header{
+		display:block;
+		padding-bottom:25px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-print-header .spc-print-header-ford,
+	.fdcc_spc_active #fdcc_spc .spc-print-header .spc-print-header-lincoln{
+		display:none;
+	}
+	
+	.fdcc_spc_active #fdcc_spc.spc-skin-Ford .spc-print-header .spc-print-header-ford, .fdcc_spc_active #fdcc_spc.spc-skin-Lincoln .spc-print-header .spc-print-header-lincoln,
+	.syn-nav-brand-ford.fdcc_spc_active #fdcc_spc .spc-print-header .spc-print-header-ford,
+	.syn-nav-brand-lincoln.fdcc_spc_active #fdcc_spc .spc-print-header .spc-print-header-lincoln{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle.spc-change-trim{/*SPC-787*/
+		display: none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-print-header img{
+		float:left;
+		padding-right: 8px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-print-header .spc-logo-tagline{
+		font-size:14px;
+		font-weight:bold;
+		line-height:16px;
+		padding: 5px 0 0 20px;
+		display:none;
+	}
+	/* HIDE SECTIONS */
+	.fdcc_spc_active #fdcc_spc .hide,
+	.fdcc_spc_active #fdcc_spc .loader,
+	.fdcc_spc_active #fdcc_spc .spc-zip,
+	.fdcc_spc_active #fdcc_spc .spc-models,
+	.fdcc_spc_active #fdcc_spc .tab-column-configure,
+	.fdcc_spc_active #fdcc_spc .spc-native-scroll-container{
+		display:none;
+	}
+	/* HIDE ELEMENTS */
+	.fdcc_spc_active #fdcc_spc .spc-header,
+	.fdcc_spc_active #fdcc_spc .spc-calc .spc-header-info .spc-change-vehicle,
+	.fdcc_spc_active #fdcc_spc .spc-calc .spc-header-info .spc-select-sizing,
+	.fdcc_spc_active #fdcc_spc .spc-calc .spc-header-info .spc-select-options-wrapper,
+	.fdcc_spc_active #fdcc_spc .spc-calc .top-tabs,
+	.fdcc_spc_active #fdcc_spc .spc-calc .spc-group-proceed,
+	.fdcc_spc_active #fdcc_spc .spc-calc .spc-footer,
+	.fdcc_spc_active #fdcc_spc .spc-overlay-extlink{
+		display:none;
+	}
+	/* SHOW SECTIONS */
+	.fdcc_spc_active #fdcc_spc .spc-calc{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column .directions{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .verbose-information{
+		display:block;
+		padding:0 0 25px;
+		margin-bottom:20px;
+		border-bottom:1px solid #ddd;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column .verbose-information{
+		border-bottom:0;
+		padding:0;
+		margin:0;
+	}
+	.fdcc_spc_active #fdcc_spc .verbose-information h1{
+		font-size:16px;
+		line-height:20px;
+		padding-bottom:10px;
+	}
+	.fdcc_spc_active #fdcc_spc .verbose-information p{
+		font-size:12px;
+		line-height:16px;
+	}
+	.fdcc_spc_active #fdcc_spc .verbose-information p.price-disclaimer{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .verbose-information p span.verbose-information-pricedate{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .verbose-information p.verbose-information-attr{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-calc .spc-header-info .spc-select-current{
+		font-size:18px;
+		line-height:24px;
+		padding-bottom:4px;
+		margin-bottom:12px;
+		border-bottom:1px solid #91a4b1;
+		text-transform:uppercase;
+		font-weight:bold;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-trims .spc-select .spc-select-current .year-deemphasize{
+		display:inline;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review{
+		width:380px;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .col-item{
+		display:block;
+		clear:both;
+		padding:6px 0;
+		height:auto;
+		border-bottom:1px solid #ddd;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .col-item:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .adjprice{
+		border-bottom:0;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2 .payment,
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2 h4{
+		font-size:19px;
+		line-height:23px;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2 .payment{
+		border:0;
+		padding:0;
+		clear:none;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2 h4{
+		float:left;
+		width:40%;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2 .subdetail,
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2 .subdetail span{
+		color:#7f7c7c;
+		font-size:11px;
+		line-height:13px;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2 .subdetail sup{
+		color:#747c7c;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2 .subdetail{
+		float:left;
+		width:60%;
+		clear:left;
+	}
+	.fdcc_spc_active #fdcc_spc sup{
+		font-size:10px;
+		line-height:10px;
+		vertical-align:top;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item a .spc-s-info{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2{
+		border-top:2px solid #ddd;
+		padding-top:8px;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2:after,
+	.fdcc_spc_active #fdcc_spc .tab-column-review .col-item:after,
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item a.review-incentives:after,
+	.fdcc_spc_active #fdcc_spc .spc-print-header:after{
+		content:'.';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .col-item .label{
+		width:60%;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .col-item .value{
+		width:40%;
+		float:right;
+		text-align:right;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2 .col-item .value{
+		width:auto;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-group2 .col-item .symbol-text{
+		display:block;
+		text-align:right;
+		float:right;
+	}
+	.fdcc_spc_active #fdcc_spc .tab-column-review .base,
+	.fdcc_spc_active #fdcc_spc .tab-column-review .price,
+	.fdcc_spc_active #fdcc_spc .tab-column-review .netprice,
+	.fdcc_spc_active #fdcc_spc .tab-column-review .adjprice,
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-friends-neighbors-netprice{
+		font-weight:bold;
+	}
+
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-friends-neighbors-savings,
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-friends-neighbors-price,
+	.fdcc_spc_active #fdcc_spc .tab-column-review .spc-friends-neighbors-netprice {
+		display: none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-friends-and-neighbors .tab-column-review .col-item.netprice{
+		display: none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-friends-and-neighbors .tab-column-review .col-item.spc-friends-neighbors-savings,
+	/*.fdcc_spc_active #fdcc_spc.spc-friends-and-neighbors .spc-calc .col-item.spc-friends-neighbors-price,*/
+	.fdcc_spc_active #fdcc_spc.spc-friends-and-neighbors .tab-column-review .col-item.spc-friends-neighbors-netprice{
+		display: block;
+	}
+
+	/* OVERLAYS */
+	.fdcc_spc_active #fdcc_spc .spc-overlay{
+		position:relative;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-incentives{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-totalfees{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-taxes{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay-cost{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay{
+		border-top:1px solid #91a4b1;
+		padding-top:8px;
+		margin-top:20px;
+		clear:both;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay h1,
+	.fdcc_spc_active #fdcc_spc .spc-overlay p{
+		color:#7f7c7c;
+		font-size:14px;
+		line-height:18px;
+		font-family:arial,helvetica,sans-serif;
+		font-weight:bold;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-disc-text-pmt,
+	.fdcc_spc_active #fdcc_spc .spc-disc-text{
+		color:#7f7c7c;
+		font-family:arial,helvetica,sans-serif;
+		font-weight:normal;
+		font-size:12px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-inner h1{
+		font-weight:bold;
+		padding-bottom:8px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-header .spc-header-close,
+	.fdcc_spc_active #fdcc_spc .spc-overlay .spc-overlay-header .spc-overlay-close{
+		display:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .line-item-totalfees,
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .line-item-taxes,
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .line-item-incentives{
+		display:block;
+		clear:both;
+		padding-top:8px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .line-item-totalfees{
+		padding-bottom:12px;
+	}
+	body.fdcc_spc_active .spc-fee{
+		clear:both;
+		font-size:10px !important;
+		padding:0 15px 10px 15px !important;
+	}
+	body.fdcc_spc_active .spc-tax{
+		clear:both;
+		font-size:10px !important;
+		padding:0 15px 10px !important;
+	}
+	body.fdcc_spc_active .spc-tax p{
+		text-indent:0 !important;
+	}
+	body.fdcc_spc_active .spc-incentive{
+		clear:both;
+		font-size:10px !important;
+		padding:0 15px 10px !important;
+	}
+	body.fdcc_spc_active .spc-incentive p{
+		padding-top:10px;
+	}
+	body.fdcc_spc_active .spc-incentive strong{
+		font-weight:bold;
+		display:block;
+	}
+
+    /*
+        ( Print Only )
+        Remove left,top styles that might have been applied as a result of opening the 'Additionl Disclosures' flip.
+    */
+    .fdcc_spc_active .spc-overlay.spc-overlay-disclosures {
+		left: 0 !important;
+		top: 0 !important;
+	}
+}
+
+/* ***************************************************************************
+   ***************************************************************************
+   ***************************************************************************
+   EVERY OUTPUT */
+#fdcc_spc{
+	display:none;
+}
+body.fdcc_spc_active #fdcc_spc{
+	display:block !important;
+	z-index:100000;
+}
+#fdcc_spc .hide{
+	display:none !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.jspContainer{
+	overflow: hidden;
+	position: relative;
+}
+.jspPane{
+	position: absolute;
+}
+.jspVerticalBar{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 16px;
+	height: 100%;
+}
+.jspTrack{
+	position: relative;
+}
+.jspDrag{
+	position: relative;
+}
+.jspHorizontalBar .jspTrack,
+.jspHorizontalBar .jspDrag{
+	float: left;
+	height: 100%;
+}
+.jspVerticalBar .jspCap{
+	height:10px;
+}
+.jspArrow{
+	background: #50506d;
+	text-indent: -20000px;
+	display: block;
+	cursor: pointer;
+}
+.jspCorner{
+	background: #eeeef4;
+	float: left;
+	height: 100%;
+}
+
+/**
+
+	Buy/Lease details (i) icon tool tip fix
+
+**/
+.fdcc_spc_active #fdcc_spc .tab-column-review-inner a.spc-overlay-toggle{
+	display: block;
+}
+.spc-tab.buy-tab .spc-group1 a.spc-overlay-toggle,
+.spc-tab.buy-tab .spc-group2 a.spc-overlay-toggle {
+	display: block;
+}
+.spc-tab.lease-tab .spc-group1 a.spc-overlay-toggle,
+.spc-tab.lease-tab .spc-group2 a.spc-overlay-toggle {
+	display: block;
+}
+
+.fdcc_spc_active #fdcc_spc .spc-overlay-taxes.has-lease-tab {
+	margin-left:-44px;
+}
+
+@media only screen and (min-width: 768px) {
+	/* CSS FOR webAccessibility*/
+	
+	/* Ford webAccessibility CSS */
+	.fdcc_spc_active #fdcc_spc .top-tabs li a:focus{
+		outline: 3px solid #22a3e6;
+	   	outline-offset: -3px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle a.change-vehicle:focus,
+	#fdcc_spc a:focus,
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-option:focus,
+	.fdcc_spc_active #fdcc_spc .spc-select .spc-select-inner:focus{
+		outline: 2px solid #22a3e6;
+	    outline-offset: -2px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-incentives .spc-tab .col-item a.review-incentives:focus .spc-s-info,
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .spc-overlay-toggle:focus .spc-s-info{
+		outline: 2px solid #22a3e6;
+	    outline-offset: 2px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-incentives .spc-tab .col-item a.review-incentives:focus,
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item .spc-overlay-toggle{
+		outline: 0px solid #22a3e6;
+	    outline-offset: 0;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-skin-Ford .spc-overlay .spc-overlay-close{
+		margin: -4px -4px 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-skin-Ford .spc-s-close-overlay{
+		margin: 4px 4px 0 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-trm-selector a.selected:focus{
+		outline: 2px solid #22a3e6;
+	}
+	.fdcc_spc_active #fdcc_spc a.standard-button:focus,.fdcc_spc_active #fdcc_spc .spc-tab .spc-trm-selector a:focus{
+		outline: 2px solid #425968;
+	}
+	
+	
+	
+	/* Lincoln webAccessibility CSS */
+	.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln .top-tabs li a:focus{
+		outline: 3px solid #333333;
+	   	outline-offset: -3px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln .top-tabs li.selected a:focus{
+		outline: 3px solid #F26147;
+	   	outline-offset: -3px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln .spc-change-vehicle a.change-vehicle:focus,
+	#fdcc_spc.spc-skin-Lincoln a:focus,
+	.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln  .spc-select .spc-select-option:focus,
+	.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln .spc-select .spc-select-inner:focus{
+		outline: 2px solid #F26147;
+	    outline-offset: -2px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-has-incentives.spc-skin-Lincoln .spc-tab .col-item a.review-incentives:focus .spc-s-info,
+	.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln .spc-tab .col-item .spc-overlay-toggle:focus .spc-s-info{
+		outline: 2px solid #F26147;
+	    outline-offset: 2px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln a.standard-button:focus{
+		outline: 2px solid #333333;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln .spc-tab .spc-trm-selector a.selected:focus,.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln .spc-tab .spc-trm-selector a:focus{
+		outline: 2px solid #F26147;
+	}
+	
+	/* Ford & Lincoln Common webAccessibility CSS */
+	.fdcc_spc_active #fdcc_spc .credit-link,
+	.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln a.credit-link,
+	.fdcc_spc_active #fdcc_spc .tradein a.tradein-link,
+	.fdcc_spc_active #fdcc_spc p.h5 a.change-zip,
+	.fdcc_spc_active #fdcc_spc a.spc-additional-disclosures,
+	.fdcc_spc_active #fdcc_spc.spc-skin-Lincoln .spc-change-vehicle a.change-vehicle:focus,
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle a.change-vehicle:focus{
+		outline-offset: 2px;
+	}
+	.fdcc_spc_active #fdcc_spc a.spc-additional-disclosures,
+	.fdcc_spc_active #fdcc_spc.spc-allow-change-vehicle .spc-change-vehicle a.change-vehicle{
+	    display: inline-block;
+	}
+}
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* spc-footer */
+@media only screen and (min-width: 959px) { /* spc-footer desktop */
+	.spc-footer-mobile{display:none !important;}	
+	
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-buttons,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional-print,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-contact-dealer,
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-overview{
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer.spc-footer-desktop .spc-footer-insider{
+		float:right;
+		display: flex;
+	    padding-bottom: 4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer.spc-footer-desktop .spc-credit-link{
+		position: absolute;
+    	left: 15px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer.spc-footer-desktop{
+		position: relative;
+	}
+}
+
+@media screen and (max-width: 958px), screen and (min-width: 958px) and (orientation: portrait), screen and (max-device-width: 480px){ /* spc-footer mobile */
+	.spc-footer-desktop{display:none !important;}
+}
+
+@media screen and (max-width: 767px) {
+	.spc-allow-change-trim.spc-step-calc .spc-top h2.spc-title-allow-trim br {
+		display:none;
+	}
+}/* Company:   Mavice LLC
+   Developer: Ben Nunemaker
+   Date:      11/01/2011
+   
+   SPC Ford Skin 
+*/
+/* FONTS */
+@font-face{
+	font-family:AntennaSPC;
+	src:url('/cc/static/spc/fonts/AntennaRegular/AntennaRegular.eot');
+	src:local('AntennaRegular'),
+	url('/cc/static/spc/fonts/AntennaRegular/AntennaRegular.woff') format('woff'),
+	url('/cc/static/spc/fonts/AntennaRegular/AntennaRegular.ttf') format('truetype'),
+	url('/cc/static/spc/fonts/AntennaRegular/AntennaRegular.svg#web') format('svg');
+	font-weight:normal;
+	font-style:normal;
+}
+@font-face{
+	font-family:AntennaSPC;
+	src:url('/cc/static/spc/fonts/AntennaBold/AntennaBold.eot');
+	src:local('AntennaBold'),
+	url('/cc/static/spc/fonts/AntennaBold/AntennaBold.woff') format('woff'),
+	url('/cc/static/spc/fonts/AntennaBold/AntennaBold.ttf') format('truetype'),
+	url('/cc/static/spc/fonts/AntennaBold/AntennaBold.svg#web') format('svg');
+	font-weight:bold;
+	font-style:normal;
+}
+/* ***************************************************************************
+   ***************************************************************************
+   *************************************************************************** 
+   DESKTOP VIEW */
+@media screen{
+	#fdcc_spc a.standard-button,
+	#fdcc_spc .container,
+	#fdcc_spc a.standard-button:hover,
+	#fdcc_spc .loader-inner,
+	#fdcc_spc .spc-trm-selector a,
+	#fdcc_spc .spc-select-inner,
+	#fdcc_spc .spc-select-options,
+	#fdcc_spc .spc-overlay-visible,
+	#fdcc_spc .top-tabs li a,
+	#fdcc_spc .tab-column-configure-inner,
+	#fdcc_spc .col-item,
+	#fdcc_spc .spc-group2,
+	#fdcc_spc .tab-column-review-inner,
+	#fdcc_spc .spc-group1,
+	#fdcc_spc .spc-scrollbarV{
+				position:relative;
+		zoom:1;
+	}
+	.fdcc_spc_active #fdcc_spc,
+	.fdcc_spc_active #fdcc_spc input{
+		font-family:AntennaSPC,arial,helvetica,sans-serif;
+	}
+	.fdcc_spc_active #fdcc_spc .container{
+		background:white;
+		-webkit-box-shadow:0 0 5px 2px rgba(0,0,0,0.4);
+		-moz-box-shadow:0 0 5px 2px rgba(0,0,0,0.4);
+		box-shadow:0 0 5px 2px rgba(0,0,0,0.4);
+		border:1px solid #cccccc;
+	}
+	/* SPRITE DEFINITION */
+	.fdcc_spc_active #fdcc_spc .spc-s,
+	.fdcc_spc_active #fdcc_spc .jspArrowUp,
+	.fdcc_spc_active #fdcc_spc .jspArrowDown{
+		background:url('/cc/static/spc/img/ford/sprite-web.png') 1000px 1000px no-repeat;
+		overflow:hidden;
+		text-indent:-10000px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-error{
+		background-position:-166px 0;
+		width:20px;
+		height:20px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-close{
+		background-position:-116px 0;
+		width:24px;
+		height:25px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-close-overlay{
+		background-position:-88px -60px;
+		width:12px;
+		height:12px;
+		float:right;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-credit-logo{
+		background-position:0 -114px;
+		width:180px;
+		height:28px;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-add{
+		background-position:-88px -36px;
+		width:12px;
+		height:12px;
+	}
+	.fdcc_spc_active #fdcc_spc a:hover .spc-s-add{
+		background-position:-88px -48px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-print{
+		background-position:-140px 0;
+		width:18px;
+		height:15px;
+	}
+	.fdcc_spc_active #fdcc_spc a:hover .spc-s-print{
+		background-position:-140px -15px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-continue{
+		background-position:-88px -18px;
+		width:12px;
+		height:18px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-info{
+		background-position:-100px 0;
+		width:16px;
+		height:15px;
+		float:left;
+		margin-top:-2px;
+	}
+	.fdcc_spc_active #fdcc_spc a:hover .spc-s-info{
+		background-position:-100px -15px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-minus{
+		background-position:-186px 0;
+		width:4px;
+		height:1px;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-radio{
+		background-position:-71px 0;
+		width:17px;
+		height:17px;
+		margin:0 auto;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-radio.focused{
+		outline: 2px solid #22a3e6;
+    	outline-offset: 1px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-radio-checked .spc-s-radio{
+		background-position:-71px -17px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-select{
+		background-position:-88px 0;
+		width:12px;
+		height:9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select-over .spc-s-select,
+	.fdcc_spc_active #fdcc_spc .spc-select-expanded .spc-s-select{
+		background-position:-88px -9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-up,
+	.fdcc_spc_active #fdcc_spc .jspArrowUp{
+		background-position:-158px 0;
+		width:8px;
+		height:6px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-down,
+	.fdcc_spc_active #fdcc_spc .jspArrowDown{
+		background-position:-158px -6px;
+		width:8px;
+		height:6px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-launch, .fdcc_spc_active #fdcc_spc .spc-close-text{
+		display:none;
+	}
+	/* SCROLLBAR */
+	.fdcc_spc_active #fdcc_spc .spc-scrollbar-wrapperV{
+		width:8px !important;
+		background:#D9D9D9;
+		margin-right:5px !important;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scrollbarV{
+		right:0;
+		top:0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-scrollbarV,
+	.fdcc_spc_active #fdcc_spc .jspTrack{
+		width:8px;
+		bottom:20px;
+		background:#22a3e6;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .jspTrack{
+		bottom:0;
+		margin-top:5px;
+	}
+	.fdcc_spc_active #fdcc_spc .jspDrag{
+		width:8px;
+		background:#22a3e6;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+	}
+	.fdcc_spc_active #fdcc_spc .jspArrowUp{
+		position:absolute;
+		top:0;
+	}
+	.fdcc_spc_active #fdcc_spc .jspArrowDown{
+		position:absolute;
+		bottom:5px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model{
+		*width:179px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model .spc-model-wrapper{
+		
+	}
+	.fdcc_spc_active #fdcc_spc .zip .zipinstructions{
+		font-size:14px;
+	}
+	.fdcc_spc_active #fdcc_spc .zip .zipinstructions{
+		font-size:14px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-zip .zip-box-secondary a.standard-button .text-content{
+		*padding-top:20px;
+	}
+	/* VARIOUS */
+	.fdcc_spc_active #fdcc_spc .top-tabs .spc-tab-content,
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .col-item .label,
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle .spc-current-vehicle .label{
+		text-transform:uppercase;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle .spc-current-vehicle .label{
+		font-weight:bold;
+	}	
+	.fdcc_spc_active #fdcc_spc p.stepinstructions{
+		color:#435968;
+	}
+	
+	.fdcc_spc_active #fdcc_spc .top-tabs li a{
+		font-family:AntennaSPC,arial,helvetica,sans-serif;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-footer .footer-additional-print{
+		width:160px;
+	}
+	.fdcc_spc_active #fdcc_spc .credit-unit{
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item.taxestoggle{
+		position: absolute;
+		bottom: 0;
+	}
+}
+/* ***************************************************************************
+   ***************************************************************************
+   ***************************************************************************
+   MOBILE AND MOBILE OVERLAY */
+@media screen and (max-width:958px), screen and (min-width:958px) and (orientation:portrait), screen and (max-device-width:480px){
+	.fdcc_spc_active #fdcc_spc{
+		-moz-box-shadow:none;
+		-webkit-box-shadow:none;
+		box-shadow:none;
+	}
+	/* SPRITE DEFINITIONS */
+	.fdcc_spc_active #fdcc_spc .spc-s{
+		background-image:url('/cc/static/spc/img/ford/sprite-mobile.png');
+    -moz-background-size:200px 100px;
+    -webkit-background-size:200px 100px;
+    background-size:200px 100px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-up,
+	.fdcc_spc_active #fdcc_spc .jspArrowUp,
+	.fdcc_spc_active #fdcc_spc .spc-s-down,
+	.fdcc_spc_active #fdcc_spc .jspArrowDown,
+    .fdcc_spc_active #fdcc_spc .spc-s-print{
+        background-image:url('/cc/static/spc/img/ford/sprite-web.png');
+    -moz-background-size:inherit;
+    -webkit-background-size:inherit;
+    background-size:inherit;
+		/*background:url('/cc/static/spc/img/ford/sprite-web.png') 1000px 1000px no-repeat;*/
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-up,
+	.fdcc_spc_active #fdcc_spc .jspArrowUp {
+		background-position:-158px 0;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-down,
+	.fdcc_spc_active #fdcc_spc .jspArrowDown {
+		background-position:-158px -6px;	
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-x{
+		background-position:-132px 0;
+		width:18px;
+		height:17px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-continue{
+		background-position:-78px -41px;
+		width:12px;
+		height:17px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-return{
+		background-position:-78px -22px;
+		width:12px;
+		height:17px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-error{
+		background-position:-110px 0;
+		width:20px;
+		height:20px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-info{
+		background-position:-92px 0;
+		width:16px;
+		height:15px;
+		float:left;
+		margin-top:-2px;
+	}
+	.fdcc_spc_active #fdcc_spc a:hover .spc-s-info{
+		background-position:-92px -17px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-minus{
+		background-position:-174px 0;
+		width:4px;
+		height:1px;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-change{
+		background-position:-152px 0;
+		width:8px;
+		height:5px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-close{
+		background-position:-132px 0;
+		width:16px;
+		height:16px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-close-overlay{
+		background-position:-162px 0;
+		width:10px;
+		height:15px;
+		float:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-credit-logo{
+		background-position:-65px -75px;
+		width:135px;
+		height:21px;
+		float:left;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-decoration{
+		background-position:-182px 0;
+		width:2px;
+		height:47px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-radio{
+		background-position:-57px 0;
+		width:19px;
+		height:19px;
+		margin:0 auto;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-radio-checked .spc-s-radio{
+		background-position:-57px -21px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-select{
+		background-position:-78px 0;
+		width:12px;
+		height:9px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-select-over .spc-s-select,
+	.fdcc_spc_active #fdcc_spc .spc-select-expanded .spc-s-select{
+		background-position:-78px -11px;
+	}
+	
+	.fdcc_spc_active #fdcc_spc .spc-selector .spc-model-display{
+		background-image:url('/cc/static/spc/img/ford/vehicle-bg-mobile.png');
+    -moz-background-size:110px 90px;
+    -webkit-background-size:110px 90px;
+    background-size:110px 90px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-change-vehicle a.change-vehicle{
+		font-family:arial;
+		font-size:9px;
+	}
+	.fdcc_spc_active #fdcc_spc .top-tabs .tab-payment-buy, .fdcc_spc_active #fdcc_spc .top-tabs .tab-payment-lease{
+		font-family:arial;
+		font-weight:normal;
+		text-transform:initial;
+	}
+}
+/* ***************************************************************************
+   ***************************************************************************
+   ***************************************************************************
+   MOBILE OVERLAY */
+@media screen and (min-device-width:481px) and (min-width:481px) and (max-width:958px), screen and (min-device-width:481px) and (min-width:481px) and (max-width:958px) and (orientation:portrait), screen and (min-device-width:481px) and (min-width:958px) and (orientation:portrait){
+	.fdcc_spc_active #fdcc_spc .spc-s-close-overlay{
+		background-position:0 -70px;
+		width:64px;
+		height:30px;
+		float:none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-s-close-overlay .spc-s-text{
+		color:#fff;
+		text-indent:0;
+		padding-top:7px;
+		padding-left:3px;
+		text-align:center;
+		font-weight:bold;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-models.spc-has-model .spc-header .spc-top h1,
+	.fdcc_spc_active #fdcc_spc.spc-step-models.spc-has-model .spc-header .spc-top h2{
+		width:270px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item.taxestoggle{
+		position: relative;
+		bottom: 0;
+		margin-top:10px;
+	}
+}
+/* ***************************************************************************
+   ***************************************************************************
+   ***************************************************************************
+   MOBILE */
+@media screen and (max-device-width: 480px), screen and (max-width:480px){
+	.fdcc_spc_active #fdcc_spc .spc-s-close{
+		background-position:-92px -34px;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-step-models.spc-has-model .spc-s-close-overlay{
+		margin-top:12px;
+		margin-left:18px;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-tab .col-item.taxestoggle{
+		position: relative;
+		bottom: 0;
+		margin-top:10px;
+	}
+}
+
+/* initial setup for the taxes toggle */
+.fdcc_spc_active #fdcc_spc .taxestoggle .label,
+.fdcc_spc_active #fdcc_spc .taxestoggle .includedTaxes,
+.fdcc_spc_active #fdcc_spc .taxestoggle .excludedTaxes {
+	color: #435968;
+	display: inline-block;
+}
+
+.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .col-item.taxestoggle .label {
+	width: 25%;
+	font-weight: bold;
+	padding-top: 4px;
+}
+
+.fdcc_spc_active #fdcc_spc .taxestoggle .includedTaxes,
+.fdcc_spc_active #fdcc_spc .taxestoggle .excludedTaxes {
+	width: 35%;
+}
+
+/* ***************************************************************************
+   ***************************************************************************
+   ***************************************************************************
+   PRINT */
+@media print{
+	.fdcc_spc_active #fdcc_spc .spc-print-header .spc-print-header-ford{
+		display:block;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-print-header .spc-print-header-ford .spc-logo-tagline{
+		display:blocl;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-print-header .spc-logo-tagline{	
+		color:#425968;
+		font-family:AntennaSPC,arial,helvetica,sans-serif;	
+	}
+	body.fdcc_spc_active,
+	body.fdcc_spc_active * {
+		color:#425968;
+		font-family:AntennaSPC,arial,helvetica,sans-serif;
+	}
+	.fdcc_spc_active #fdcc_spc span.year-deemphasize{
+		font-weight:normal;
+	}
+
+	.fdcc_spc_active #fdcc_spc .spc-tab .spc-radio-label{
+		padding-top: 4px;
+	}
+
+	.fdcc_spc_active .col-item.taxestoggle .spc-radio-wrapper,
+	.fdcc_spc_active .col-item.taxestoggle.no-tax .excludedTaxes,
+	.fdcc_spc_active .col-item.taxestoggle.has-tax .includedTaxes {
+		float: left;
+	}
+
+	.fdcc_spc_active .col-item.taxestoggle {
+		border-top: 1px solid #cccccc !important;
+	}
+
+	.fdcc_spc_active .col-item.taxestoggle.no-tax .spc-radio-wrapper,
+	.fdcc_spc_active .col-item.taxestoggle.no-tax .includedTaxes,
+	.fdcc_spc_active .col-item.taxestoggle.has-tax .spc-radio-wrapper,
+	.fdcc_spc_active .col-item.taxestoggle.has-tax .excludedTaxes{
+		display: none;
+		visibility: hidden;
+		width: 0;
+	}
+
+	.fdcc_spc_active .col-item.taxestoggle.no-tax .excludedTaxes .spc-radio-label,
+	.fdcc_spc_active .col-item.taxestoggle.has-tax .includedTaxes .spc-radio-label{
+		font-weight: bold;
+	}
+
+	.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-review .spc-group1 .col-item.taxestoggle.has-tax .label {
+		padding-top: 0;
+	}
+}
+
+/**
+	SPC Standalone Project CSS FOR embed spc-frame
+**/
+.fdcc_spc_active #fdcc_spc.spc-embed{
+/*	position: relative;
+    top: 0 !important;
+    left: 0;
+    margin: 0;
+    clear: both;*/
+}
+.fdcc_spc_active #fdcc_spc.spc-embed .container{
+	background:white;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	border:0 none;
+	-moz-border-radius:0;
+    -webkit-border-radius:0;
+    border-radius:0;
+}
+.fdcc_spc_active #fdcc_spc.spc-embed .spc-close,
+.fdcc_spc_active #fdcc_spc.spc-embed .spc-button-close {
+	display:none;
+}
+.fdcc_spc_active #fdcc_spc.spc-embed .container-inner{
+	-moz-border-radius:0;
+    -webkit-border-radius:0;
+    border-radius:0;
+}
+
+.fdcc_spc_active #fdcc_spc.spc-embed .tab-proceed .tab-proceed-primary {
+	width: 100%;
+	float: none;
+}
+
+@media screen and (min-device-width:481px) and (min-width:481px) and (max-width:958px), screen and (min-device-width:481px) and (min-width:481px) and (max-width:958px) and (orientation:portrait), screen and (min-device-width:481px) and (min-width:958px) and (orientation:portrait){
+	.fdcc_spc_active #fdcc_spc.spc-embed{
+		width: auto !important;
+	}	
+	.fdcc_spc_active #fdcc_spc.spc-embed .spc-top{
+		float: none;
+	}
+	.fdcc_spc_active #fdcc_spc.spc-embed .spc-header .spc-top h1, .fdcc_spc_active #fdcc_spc.spc-embed .spc-overlay .spc-overlay-inner h1,
+	.fdcc_spc_active #fdcc_spc.spc-embed .spc-header .spc-top h2, .fdcc_spc_active #fdcc_spc.spc-embed .spc-overlay .spc-overlay-inner h3{
+		width: auto;
+		-moz-border-radius:0;
+    	-webkit-border-radius:0;
+    	border-radius:0
+	}
+	.fdcc_spc_active #fdcc_spc.spc-embed.spc-step-models.spc-has-model .spc-header .spc-top h1,.fdcc_spc_active #fdcc_spc.spc-embed.spc-step-models.spc-has-model .spc-header .spc-top h2{
+		width: auto;
+	}
+}
+
+
+/* BNP-680 */
+@media screen and (max-width: 767px) and (min-width: 320px),
+screen and (max-width: 767px) and (min-width: 320px) and (orientation: portrait){
+	.fdcc_spc_active #fdcc_spc .spc-scroll-container,.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures .spc-scroll-container {
+	    display: none !important;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-native-scroll-container,.fdcc_spc_active #fdcc_spc .spc-overlay-disclosures .spc-native-scroll-container {
+	    display: block !important;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-top{
+		float: none;
+	}
+	.fdcc_spc_active #fdcc_spc .spc-top h1,.fdcc_spc_active #fdcc_spc .spc-top h2{
+		width: auto;
+	}
+}/* Company:   Mavice LLC
+   Developer: Ben Nunemaker
+   Date:      11/01/2011
+   
+   SPC US Region Specific Overrides 
+*/
+
+.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group2 .col-item.payfreq,
+.fdcc_spc_active #fdcc_spc .spc-tab .tab-column-configure .spc-group2 .col-item.leaseapr{
+	display:none !important;
+}

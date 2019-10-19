@@ -1,0 +1,324 @@
+
+	
+	
+	
+
+//projectX
+
+
+
+var projectXData={
+
+							
+							phase:				0,
+
+							
+							net:					"6181",
+
+							
+							netTargets:		"393250,33363,16817,16765,35898,11818,39955,22516,40264,22513,22710,22677,26044,23524,26003,40104,26368,23132,33325,30411,30213,32557,36834,19157,32994,36754,19115,36356,33364,33243,36398,27484,22269,26951,26797,27635,23200,26825,30603,33634,36429,32387,32543,32785,32465,30360,36662,32060,27431,22974,26583,20115,23231,33747,40294,35925,35926,23270,33424,17277,30670,36778,16787,30275,33588,36775,40219,27464,29965,23222,33219,36608,26408,36409,22291,31873,33332,32089,30660,33456,19444,10311,10796,7843,54473,11426,11427,21522,11707,20231,8052,14065,12262,11351,11654,7756,11955,7017,20001,11060,12271,36727,7851,13560,19548,13343,3456,27476",
+							
+							
+							phaseForTarget:	{"19108":8, "25994":8},
+
+							
+							targetValForTarget:	{"19108":3, "25994":3},
+							
+							
+							targetVal:			8,
+							
+							
+							consoleLogOn	:	false,
+							
+							
+							version	:	"1.1"
+};
+
+
+
+(function(){
+
+	function consoleLog(_msg){
+		try{
+			if(projectXData.consoleLogOn && console && console.log){
+				console.log(_msg);
+			}
+		}
+		catch(e){}
+	}
+	
+	function getQueryStringAsObject(){
+		var qs = location.search;
+		var string = (qs.indexOf('?') > -1)? qs.split('?')[1] : qs;
+		var qArray = string.split("&");
+		var retVal = {};
+		for(var x = 0, len = qArray.length; x < len; x++){
+			var pairs = qArray[x].split("=");
+			retVal[pairs[0]] = pairs[1];
+		}
+		return retVal;
+	}
+
+	function setPhaseOverride(_phase){
+		_phase = parseInt(_phase, 10);
+		if(!isNaN(_phase) && _phase >= 0){
+			try{
+				projectXData.phase = _phase;
+			}
+			catch(e){
+				consoleLog("### error ### in setPhaseOverride()");
+			}
+		}
+	}
+	
+	function setPhaseForTargetOverride( _asNumPhase ) {
+		var asNum, 
+			phase, 
+			asNumPhase, 
+			asNumPhases, 
+			i;
+		asNumPhases = _asNumPhase.split(",");
+		for ( i = 0; i < asNumPhases.length; i++ ) {
+			asNumPhase = asNumPhases[i].split(":");
+			if ( asNumPhase.length == 2 ) {
+				asNum = asNumPhase[0];
+				phase = parseInt( asNumPhase[1], 10 );
+				if( asNum && !isNaN( phase ) && phase >=0 ) {
+					try {
+						projectXData.phaseForTarget[ asNumPhase[0] ] = phase;
+					}
+					catch( e ) {
+						consoleLog( "### error ### in setPhaseForTargetOverride()" );
+					}
+				}
+			}
+		}
+	}
+
+	function setTargetValForTargetOverride( _asNumTargetVal ) {
+		var asNum, 
+			targetVal, 
+			asNumTargetVal, 
+			asNumTargetVals, 
+			i;
+		asNumTargetVals = _asNumTargetVal.split(",");
+		for ( i = 0; i < asNumTargetVals.length; i++ ) {
+			asNumTargetVal = asNumTargetVals[i].split(":");
+			if ( asNumTargetVal.length == 2 ) {
+				asNum = asNumTargetVal[0];
+				targetVal = parseInt( asNumTargetVal[1], 10 );
+				if( asNum && !isNaN( targetVal ) && targetVal >=0 ) {
+					try {
+						projectXData.targetValForTarget[ asNumTargetVal[0] ] = targetVal;
+					}
+					catch( e ) {
+						consoleLog( "### error ### in setTargetValForTargetOverride()" );
+					}
+				}
+			}
+		}
+	}
+
+	function setNetOverride(_net){
+		if(_net){
+			try{
+				projectXData.net = _net;
+			}
+			catch(e){
+				consoleLog("### error ### in setNetOverride()");
+			}
+		}
+	}
+
+	function setConsoleLogOverride(_consoleLogOn){
+		if(_consoleLogOn){
+			try{
+				projectXData.consoleLogOn = _consoleLogOn;
+			}
+			catch(e){
+				consoleLog("### error ### in setConsoleLogOverride()");
+			}
+		}
+	}
+
+	function getOverrides(){
+		var qObj = getQueryStringAsObject();
+		try{
+			if(qObj.px_phase){
+				setPhaseOverride(qObj.px_phase);
+			}
+			if(qObj.px_net){
+				setNetOverride(qObj.px_net);
+			}
+			if(qObj.px_console){
+				setConsoleLogOverride(qObj.px_console);
+			}
+			if(qObj.px_phaseForNum){
+				setPhaseForTargetOverride(qObj.px_phaseForNum);
+			}
+			if(qObj.px_targetValForNum){
+				setTargetValForTargetOverride(qObj.px_targetValForNum);
+			}
+		}
+		catch(e){
+			consoleLog("### error ### in getOverrides()");
+		}
+	}
+
+	function getNetTargets(){
+		var retVal = null;
+		try{
+			retVal = projectXData.netTargets;
+		}
+		catch(e){
+			consoleLog("### error ### in getNetTargets()");
+		}
+		return retVal;
+	}
+
+	function getTargetVal(){
+		var retVal = null,
+			net = getNet();
+		try{
+			if ( net && projectXData.targetValForTarget[ net ] !== undefined ) {
+				retVal = parseInt( projectXData.targetValForTarget[ net ], 10 );
+			} else {
+				retVal = parseInt( projectXData.targetVal, 10 );
+			}
+		}
+		catch(e){
+			consoleLog("### error ### in getTargetVal()");
+		}
+		if(isNaN(retVal)){
+			
+			retVal = null;
+		}
+		return retVal;
+	}
+
+	function getPhase() {
+		var retVal = 0,
+			net = getNet();
+		try {
+			if ( net && projectXData.phaseForTarget[ net ] !== undefined ) {
+				retVal = parseInt( projectXData.phaseForTarget[ net ], 10 );
+			} else {
+				retVal = parseInt( projectXData.phase, 10 );
+			}
+		}
+		catch( e ) {
+			consoleLog("### error ### in getPhase()");
+		}
+		if( isNaN( retVal ) ) {
+			
+			retVal = 0;
+		}
+		return retVal;
+	}
+
+	function getNet(){
+		var retVal = null;
+		try{
+			retVal = projectXData.net;
+		}
+		catch(e){
+			consoleLog("### error ### in getNet()");
+		}
+		return retVal;
+	}
+
+	function isNetMatch() {
+		var retVal = false, 
+			targetNets, 
+			re;
+		try {
+			targetNets = "," + getNetTargets() + ",";
+			re = new RegExp( ",\\s*" + getNet() + "\\s*," );
+			if ( re.test( targetNets ) ){
+				retVal = true;
+			}
+		}
+		catch( e ) {
+			consoleLog("### error ### in isNetMatch()");
+		}
+		return retVal;
+	}
+
+	function outputProjectX(){
+		var priorKeyValues;
+		consoleLog("* * * * * * *");
+		consoleLog("*** phase: "+getPhase()+" ***");
+		if(getPhase() > 0){
+			consoleLog("*** targeted nets ***");
+			consoleLog(getNetTargets());
+			if(isNetMatch()){
+				try{
+					var targetVal = getTargetVal();
+					if(targetVal != null){
+						consoleLog("*** net match found: "+getNet()+" ***");
+						consoleLog("*** targetVal: " + targetVal + " ***");
+
+						
+						if(!window.MTVN) window.MTVN = {};
+						if(!window.MTVN.config) window.MTVN.config = {};
+						if(!window.MTVN.config.btg) window.MTVN.config.btg = {};
+						if(!window.MTVN.config.btg.DoubleClick) window.MTVN.config.btg.DoubleClick = {};
+
+						
+						window.MTVN.config.projectX = {};
+						window.MTVN.config.projectX.phase = getPhase();
+						window.MTVN.config.projectX.targetVal = targetVal;
+						window.MTVN.config.projectX.net = getNet();
+
+						
+						var keyVals = "px_phase=" + getPhase() + ";px_target=" + targetVal + ";";
+						consoleLog("*** targeted key values: " + keyVals + " ***");
+
+						if(typeof window.MTVN.config.btg.DoubleClick.keyValues == "string"){
+							priorKeyValues = window.MTVN.config.btg.DoubleClick.keyValues;
+							if ( priorKeyValues.charAt( priorKeyValues.length - 1 ) != ";" ) {
+								window.MTVN.config.btg.DoubleClick.keyValues  += ";" + keyVals;
+							} else {
+								window.MTVN.config.btg.DoubleClick.keyValues  += keyVals;
+							}
+						}else{
+							window.MTVN.config.btg.DoubleClick.keyValues = keyVals;
+						}
+						
+						window.MTVN.config.btg.enablePOE = true;
+					}
+					else{
+						consoleLog("*** targeting value is: " + targetVal + ", projectX NOT targeted ***");
+					}
+				}
+				catch(e){
+					consoleLog("### error ### if(isNetMatch())...");
+				}
+			}
+			else{
+				consoleLog("*** no net match for " + getNet() + " found, projectX NOT targeted ***");
+			}
+		}
+		else{
+			consoleLog("*** phase is not >0, projectX NOT targeted ***");
+		}
+	}
+
+	getOverrides();
+	outputProjectX();
+
+})();
+
+
+function getPxData(){
+	var retVal = null;
+	try{
+		if(typeof MTVN === "object" && typeof MTVN.config === "object" && typeof MTVN.config.projectX === "object"){
+			retVal = MTVN.config.projectX;
+		}
+	}
+	catch(e){}
+	return retVal;
+}
+
+//End of projectX

@@ -1,0 +1,82 @@
+$(function() {
+    $('#email').val('');
+    var el = $('.floating-newsletter');
+    var newsletterForm = $("#newsletterForm");
+    function GetCookieFloatingNewsLetter(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2)
+            return parts.pop().split(";").shift();
+        return null;
+    }
+
+    function SetCookieFloatingNewsLetter(name, value, days) {
+        var host = window.location.hostname.split('.');
+        host.shift();
+        var currentdomain = host.join('.');
+
+        if ((days === undefined) || (days === null) || (days === '')) {
+            var cookieValue = name + '=' + value + '; path=/';
+            document.cookie = cookieValue;
+        } else {
+            // day based expiration
+            var now = (new Date()).getTime();
+            var exp = new Date(now + parseInt(days) * (24 * 60 * 60 * 1000));
+            exp = exp.toGMTString();
+
+            var cookieValue = name + '=' + value + '; expires=' + exp + '; path=/';
+            document.cookie = cookieValue;
+        }
+    }
+
+    var nextFloatingNewsLetterTime = GetCookieFloatingNewsLetter('cookie_expiration_date');
+    var dismiss_flag = GetCookieFloatingNewsLetter('dismiss_flag');
+    if(dismiss_flag == null){
+        $(".floating-newsletter").removeClass('dm_hide');
+        $(".floating-newsletter").addClass('dm_show');
+    }
+    var flag  = 0;
+    var dismissTrigger = el.find('.header a.dismiss');
+    var now = (new Date()).getTime();
+    now = parseInt(now);
+
+    dismissTrigger.on('click', function(e) {
+        flag  = 1;
+        var cookieExpirationTime = $('#cookie_expiration_time').val();
+        var expirationTime = (cookieExpirationTime * 24 * 60 * 60 * 1000);
+        if(dismiss_flag == null){
+            SetCookieFloatingNewsLetter('cookie_expiration_date', now + expirationTime, cookieExpirationTime);
+            SetCookieFloatingNewsLetter('dismiss_flag', flag, cookieExpirationTime);
+        }
+
+        e.preventDefault();
+
+        el.removeClass('open');
+
+        setTimeout(function() {
+            el.addClass('remove-fn');
+            setTimeout(function() {
+                el.remove();
+            }, 500);
+        }, 600);
+        $.validate({
+            // modules : 'html5',
+            scrollToTopOnError : false,
+            form : '#newsletterForm'
+        });
+    });
+
+    if (nextFloatingNewsLetterTime != null) {
+        nextFloatingNewsLetterTime = parseInt(nextFloatingNewsLetterTime);
+        if ((1 == dismiss_flag) && (now < nextFloatingNewsLetterTime)){
+            $(".floating-newsletter").addClass('dm_hide');
+            $(".floating-newsletter").removeClass('dm_show');
+        }else{
+            $(".floating-newsletter").removeClass('dm_hide');
+            $(".floating-newsletter").addClass('dm_show');
+        }
+
+
+    }
+
+});

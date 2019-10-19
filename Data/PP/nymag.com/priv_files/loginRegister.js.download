@@ -1,0 +1,627 @@
+//---- LOAD livefyre library---------------------
+$.getScript(NYM.loginReg.livefyrelibrary);
+
+//----- livefyre likes --------------------
+NYM.LivefyreLikes = (function() {
+	"use strict";
+
+	/**
+	 *  Base64 encode utility function
+	 *  Modified from http://stackoverflow.com/a/246813/1472477
+	 */
+	var Base64Encode = {
+		// private property
+		_keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+		// public method for encoding
+		encode: function(input) {
+			var output = "";
+			var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+			var i = 0;
+			input = Base64Encode._utf8_encode(input);
+			while (i < input.length) {
+				chr1 = input.charCodeAt(i++);
+				chr2 = input.charCodeAt(i++);
+				chr3 = input.charCodeAt(i++);
+
+				enc1 = chr1 >> 2;
+				enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+				enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+				enc4 = chr3 & 63;
+				if (isNaN(chr2)) {
+					enc3 = enc4 = 64;
+				} else if (isNaN(chr3)) {
+					enc4 = 64;
+				}
+				output = output + this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) + this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+			}
+			return output;
+		},
+		// private method for UTF-8 encoding
+		_utf8_encode: function(string) {
+			string = string.replace(/\r\n/g, "\n");
+			var utftext = "";
+			for (var n = 0; n < string.length; n++) {
+
+				var c = string.charCodeAt(n);
+
+				if (c < 128) {
+					utftext += String.fromCharCode(c);
+				} else if ((c > 127) && (c < 2048)) {
+					utftext += String.fromCharCode((c >> 6) | 192);
+					utftext += String.fromCharCode((c & 63) | 128);
+				} else {
+					utftext += String.fromCharCode((c >> 12) | 224);
+					utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+					utftext += String.fromCharCode((c & 63) | 128);
+				}
+			}
+			return utftext;
+		}
+	};
+
+	/**
+	 * Returns the base64 encoded string
+	 * @param{String} url The URL to encode
+	 * @return{String}
+	 */
+
+	function getBase64URL(url) {
+		// check to see if there's browser support for native JavaScript base64 encoding
+		if (typeof window.btoa !== "undefined") {
+			return window.btoa(url);
+		}
+		// if there isn't, use this function from webtoolkit.info
+		else {
+			return Base64Encode.encode(url);
+		}
+	};
+
+	/**
+	 * Creates a URL out of a username linking to that user's profile page
+	 * Also checks to see if the current user is the one who liked something,
+	 * and changes the language appropriately
+	 * @param{String} user The name of the user
+	 * @return{String} The URL to the user's profile page
+	 */
+
+	function getUserProfile(user) {
+		return "<a href=\"http://my.nymag.com/" + user + "/account/\" title=\"" + user + "'s account page\">" + (user === $(".fyre-user-drop").text() ? "You" : user) + "</a>";
+	};
+
+	/**
+	 * Prints the user likes
+	 * @param{Array} users The users who liked a particular comment
+	 * @param{Object} $comment The jQuery object of the comment
+	 * @return{null} (Optional) Return nothing just to avoid doing anything when no comments exist
+	 */
+
+	function printLikes(users, $comment) {
+		var names = document.createDocumentFragment();
+		var user = document.createElement("span");
+		var i = 2;
+		var length = users.length;
+		var tempUser = "";
+		// if no one has liked anything, just return
+		if (length === 0) {
+			// if there is only one like by this particular user and they just
+			// removed it, then remove that element
+			if ($comment.parents(".fyre-comment-wrapper").find(".fyre-comment-like-users").length === 1) {
+				$comment.parents(".fyre-comment-wrapper").find(".fyre-comment-like-users").remove();
+			}
+			return;
+		}
+		// if there is one comment, print appropriate language
+		else if (length === 1) {
+			tempUser = getUserProfile(users[0]);
+			user.innerHTML = tempUser + " " + (/You/.test(tempUser) ? "like" : "likes") + " this.";
+		}
+		// if there are exactly two comments, print appropriate language
+		else if (length === 2) {
+			user.innerHTML = getUserProfile(users[0]) + " and " + getUserProfile(users[1]) + " like this.";
+		}
+		// if there are exactly three comments, print appropriate language
+		else if (length === 3) {
+			user.innerHTML = getUserProfile(users[0]) + ", " + getUserProfile(users[1]) + ", and " + getUserProfile(users[2]) + " like this.";
+		}
+		// else, if there are more than four comments, break into the static counts
+		else if (length > 3) {
+			// first, append the language
+			user.innerHTML = getUserProfile(users[0]) + ", " + getUserProfile(users[1]) + ", and " + ((length - 2) + (+$comment.parent().find(".fyre-comment-like-count").text() - 4)) + " others</span> like this.";
+		}
+		user.className = "fyre-comment-like-users";
+		names.appendChild(user);
+
+		// add the users who liked this comment to the comment
+		// if already done this before, just append to the span that's already there
+		if ($comment.parents(".fyre-comment-wrapper").find(".fyre-comment-like-users").length === 1) {
+			$comment.parents(".fyre-comment-wrapper").find(".fyre-comment-like-users").html(user.innerHTML);
+		}
+		// else, prepend this to right before the comment footer element
+		else {
+			$comment.parent().before(names);
+		}
+	};
+
+	/**
+	 * Checks to see if the item is already liked by the user and updates the button graphic accordingly
+	 * @param{Object} comment The comment to check against (jQuery object)
+	 */
+
+	function checkLikeStatus(comment) {
+		if (/Unlike/.test(comment.text())) {
+			comment.addClass("fyre-comment-liked-btn");
+		} else {
+			comment.removeClass("fyre-comment-liked-btn");
+		}
+	};
+
+	/**
+	 * Initially go through and determine which ones are unliked and send it to the like status updater
+	 */
+
+	function addLikedClass() {
+		$(".fyre-comment-like-btn:contains('Unlike')").addClass("fyre-comment-liked-btn");
+	};
+
+	/**
+	 * Watches for like click events and changes like/unlike button accordingly
+	 */
+
+	function watchForLikes() {
+		addLikedClass();
+		// attach an event listener for when the user likes and unlikes things
+		$("body").on("click.likeClick touchend.likeTouch", ".fyre-comment-like-btn", function(e) {
+			if (e.preventDefault) {
+				e.preventDefault();
+			}
+			var self = $(this);
+			var prevUserLikes = [];
+			var currUser = document.getElementById("user_name").innerHTML;
+			var usrAcct = "";
+			var allUsers;
+			// if the user is logged in and has a user name, then continue to like stuff
+			// but don't like stuff if this is the user's own comment (Livefyre functionality)
+			if ((currUser !== "") && (self.parents(".fyre-comment-article").eq(0).find("[itemprop='author']").eq(0).text() !== currUser)) {
+				checkLikeStatus(self);
+				// no Livefyre callback, so just set a timeout of around a second
+				setTimeout(function() {
+					displayCommentLikes(self.parent().find(".fyre-comment-like-imgs"));
+				}, 750);
+			}
+		});
+	};
+
+	/**
+	 * Loops through all the comments and displays any comment likes they might have
+	 * @param{Object} $commentIndex (Optional) The index to start searching from
+	 */
+
+	function displayCommentLikes($commentIndex) {
+		var $avatars;
+		if (!$commentIndex) {
+			$avatars = $(".fyre-comment-like-imgs");
+		} else {
+			$avatars = $commentIndex;
+		}
+		var usernames;
+		var self;
+
+		// traverse each of the comments and manipulate the user like avatars
+		$avatars.each(function() {
+			self = $(this);
+			usernames = [];
+			// get all the avatars and retrieve their individual user names
+			$(this).find("img").each(function() {
+				// get the username from the image alt tag and store it in an array
+				usernames.push($(this).prop("alt"));
+			});
+			// construct URLs from and display these user names
+			printLikes(usernames, self.parent());
+		});
+	};
+
+	/**
+	 * Adds an event listener for when a user clicks on any of our comment sorting buttons or Show More
+	 */
+
+	function activateSortingShowMore() {
+		$("#comments").on("click.sortClick touchend.sortTouch", ".fyre-stream-sort-newest, .fyre-stream-sort-oldest, .fyre-stream-sort-top-comments, .fyre-stream-more-container", function() {
+			// need some delay from when Livefyre sorts things and when they're displayed
+			// no Livefyre callback, so just set a timeout of 2 seconds
+			setTimeout(function() {
+				displayCommentLikes();
+				addLikedClass();
+			}, 2000);
+		}).one("click.sortFirstClick touchend.sortFirstTouch", ".fyre-stream-sort-newest, .fyre-stream-sort-oldest, .fyre-stream-sort-top-comments, .fyre-stream-more-container", function() {
+			// untruncate the comments on display
+			$(".fyre-stream-more-cust").trigger("click.truncatedCommentsClick");
+		});
+
+		// have this separate outside of #comments, since it doesn't work in there for some reason
+		$(".fyre-stream-sort-back").one("click", function() {
+			setTimeout(function() {
+				displayCommentLikes();
+				addLikedClass();
+			}, 2000);
+			$(".fyre-stream-more-cust").trigger("click.truncatedCommentsClick");
+		});
+	};
+
+	/**
+	 * Checks the URL to see if there is a parameter indicating a Livefyre shared comment URL
+	 */
+
+	function checkForSharedComment() {
+		if (/lf\_comment/.test(window.location.href)) {
+			setTimeout(function() {
+				displayCommentLikes($(".fyre-thread-breakout-stream").find(".fyre-comment-like-imgs"));
+			}, 7000);
+		}
+	};
+
+	return {
+		"getBase64URL": getBase64URL,
+		"watchForLikes": watchForLikes,
+		"displayCommentLikes": displayCommentLikes,
+		"activateSortingShowMore": activateSortingShowMore,
+		"checkForSharedComment": checkForSharedComment
+	};
+
+})(); /* end NYM.LivefyreLikes */
+
+//---- CHECK livefyre login and update top nav menu
+
+
+function checkLivefyreAuth(handlers, loadLoginForm, articleId) {
+	var nymag_session_user_id = NYM.readCookie("nymag_session_user_id");
+	var nymag_session_user = NYM.readCookie("nymag_session_user");
+	var nymag_session = NYM.readCookie("nymag_session");
+	var date = new Date();
+	var expires = date.getTime() + (0.5 * 24 * 60 * 60 * 1000); //set Livefyre token for 12 hours
+	var lfCookie = 'nymag_livefyre_' + NYM.loginReg.livefyreSiteId;
+	var livefyreToken = NYM.readCookie(lfCookie);
+
+	NYM.loginReg.lfCookie = lfCookie;
+	
+	//blur out all input/textarea fields, hide IOS soft keyboard
+	function hideKeyboard() {
+	    document.activeElement.blur();
+	    var inputs = document.querySelectorAll('input');
+	    var textareas = document.querySelectorAll('textarea');
+	
+	    for(var i=0; i < inputs.length; i++) {
+	        inputs[i].blur();
+	    }
+	    for(var t=0; t < textareas.length; t++) {
+	        textareas[t].blur();
+	    }
+	}
+
+	function logintoLF() {
+		if (livefyreToken && nymag_session_user_id && nymag_session_user) {
+			fyre.conv.login(livefyreToken);
+			return;
+
+		} else if (livefyreToken && !nymag_session_user_id && !nymag_session_user) {
+			NYM.eraseCookie(lfCookie);
+			fyre.conv.logout();
+			return;
+
+		} else if (!livefyreToken && nymag_session_user_id && nymag_session_user) {
+			var authObj = {
+				domain: NYM.loginReg.livefyreNetwork,
+				user_id: nymag_session_user_id,
+				expires: expires,
+				display_name: nymag_session_user
+			};
+			authObj = jQuery.stringify(authObj);
+
+			$.ajax({
+				type: 'POST',
+				url: '/livefyre/signature/sign?session_id=' + nymag_session,
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				data: authObj
+
+			}).done(function(data) {
+				var authToken = data.token;
+				fyre.conv.login(authToken);
+				NYM.setCookie(lfCookie, authToken); //livefyre cookie expired end of session
+				//ping livefyre if the user is newly registered
+				if (register) $.get('/livefyre/profile/ping');
+			}); //end ajax
+		} else if (loadLoginForm) {
+			hideKeyboard(); //Hide the iOS soft keyboard
+			
+			var options = {
+				'articleId': articleId
+			};
+			NYM.loginReg.loadLoginForm(options);
+
+			if (handlers) {
+				handlers.failure();
+			}
+		} else {
+			return;
+		}
+	} //end logintoLF
+	//ALREADY LOGIN OLD USERS, nymag_session_user_id IS THEIR USERNAME NOT USERID
+	if (nymag_session_user_id && isNaN(Number(nymag_session_user_id))) {
+		$.ajax({
+			type: 'GET',
+			url: NYM.loginReg.secureDomain + '/livefyre/profile/username/' + nymag_session_user + '/id'
+
+		}).done(function(data) {
+			nymag_session_user_id = data;
+			logintoLF();
+		}); //end ajax
+	} else {
+		logintoLF();
+	}
+
+	NYM.loginReg.updateNavInfo();
+};
+
+
+//----------------- LIVEFYRE COMMENTING CONFIGS -------------------
+$(function() {
+	var commentsEl = 'comments';
+	var title = getClickTitle();
+	var collectionMeta = '';
+	var url = getClickURL();
+	var checkfyreLoad;
+
+	// Remove # hash so that livefyre creates only one conversation per article.
+	url = url.replace(/\#.*/, "");
+
+	//for some old pagination pages. eg. http://nymag.com/news/features/adolescence-2014-1/index2.html. so that livefyre creates only one conversation per article.
+	var indexOf = url.indexOf('index');
+	if (indexOf > -1 && url.indexOf('.html') > -1) {
+		url = url.substring(0, indexOf);
+	}
+
+	//Hack - after page load make sure if document.domain is vulture.com
+	// if(document.domain == 'vulture.com'){
+	// 	NYM.loginReg.livefyreSiteId = 349269;
+	// }
+	var articleId = MD5(url);
+	var checksum = MD5(json_encode({
+		url: url,
+		title: title
+	}));
+	var collectionMetaObj = {
+		'url': url,
+		'articleId': articleId,
+		'title': title,
+		'siteId': NYM.loginReg.livefyreSiteId
+	};
+
+	if ($('#livefyre').length > 0) {
+		NYM.checkloadjscssfile(NYM.loginReg.frontEndAssetURL + "/css/screen/livefyre.css", "css", 'livefyre');
+	}
+
+	collectionMetaObj = jQuery.stringify(collectionMetaObj);
+
+	//----------------- commenting configs --------------
+
+
+	function liveComment() {
+		var authDelegate = new fyre.conv.RemoteAuthDelegate();
+
+		authDelegate.login = function(handlers) {
+			checkLivefyreAuth(handlers, 'loadLoginForm', articleId);
+		};
+
+		authDelegate.logout = function(handlers) {
+			NYM.loginReg.logout();
+			handlers.success();
+			NYM.eraseCookie(lfCookie);
+		};
+
+		authDelegate.viewProfile = function(handlers, author) {
+			window.location.href = 'http://my.nymag.com/' + author.displayName + '/account/';
+			handlers.success();
+		};
+
+		authDelegate.editProfile = function(handlers, author) {
+			window.location.href = 'http://my.nymag.com/' + author.displayName + '/account/';
+			handlers.success();
+		};
+
+		var networkConfig = {
+			"network": NYM.loginReg.livefyreNetwork,
+			"authDelegate": authDelegate,
+			"strings": {
+				"postAsButton": "Post Comment",
+				"signIn": "Sign in to comment",
+				"commentCountLabel": "%s Comment",
+				"commentCountLabelPlural": "%s Comments",
+				"featuredCommentsTag": "Editors' Pick",
+				"moderator": "Staff",
+				"follow": "+ Follow This Conversation",
+				"unfollow": "– Unfollow This Conversation"
+			}
+		};
+
+		var streamConfig = [{
+			"collectionMeta": collectionMeta,
+			"siteId": NYM.loginReg.livefyreSiteId,
+			"articleId": articleId,
+			"el": "livefyre",
+			"authPageReload": true,
+			"disableAvatars": false,
+			"checksum": checksum
+		}];
+
+		function onLoadCallback() {
+			checkLivefyreAuth();
+
+			//livefyre comment steam links to users profiles
+			$(".fyre-comment-username").live("click", function(e) {
+				e.preventDefault();
+				var href = $(this).attr('href');
+				if (href === undefined) {
+					location.href = 'http://my.nymag.com/' + $(this).find('span').text();
+				} else {
+					location.href = href;
+				}
+				return false;
+			});
+
+			// COULD BE REMOVED - looks like livefyre has its own localstorage check
+			// NYM.loginReg.getCommentsLocal(articleId);
+			//fire event tracking for livefyre share on twitter
+			$('body').on('click', 'a.fyre-modal-twitter-icon', function() {
+				G.readOmnitureOnPageView(this, '5', 'Comment Share - Twitter');
+			});
+
+			//fire event tracking for livefyre share on facebook
+			$('body').on('click', 'a.fyre-modal-facebook-icon', function() {
+				G.readOmnitureOnPageView(this, '4', 'Comment Share - Facebook');
+			});
+		
+			$('#livefyre').on('focus', '.fyre-editor-field-mobile', function(){
+				disableZoom();
+			});
+			$('#livefyre').on('blur', '.fyre-editor-field-mobile', function(){
+				enableZoom();
+			});
+		};
+
+		function LFcommentCount(data) {
+			var text = ' Comment' + (data == 1 ? '' : 's');
+			var html = $('<a href="#comments"><span class="comment-num"></span><span class="comment-text">Comment</span></a>');
+
+			if (data) {
+				html = $('<a href="#comments"><span class="comment-num">' + data + '</span><span class="comment-text">' + text + '</span></a>');
+				$('#comment-tout-top').addClass('on'); //hide and show comment text on thecut
+			}
+
+			$('#comment-tout-top').html(html);
+		};
+		//init call to print out comment text, if there has 0 comment, commentCountUpdated widget wont get called.
+		LFcommentCount(0);
+
+		function truncateComment() {
+			var $widgetEl = $('.fyre .fyre-widget');
+
+			if ($('.fyre-stream-content article').length > 1) {
+				$widgetEl.addClass('truncate');
+				$('<div class="fyre-stream-more-cust"><div class="fyre-stream-more-container-cust"><div class="fyre-text-cust">Show More Comments</div></div></div>').insertAfter($widgetEl);
+
+				$('.fyre-stream-more-cust', '#livefyre').on('click.truncatedCommentsClick', function() {
+					$(this).hide();
+					$widgetEl.removeClass('truncate');
+				}).on('click.truncatedCommentsAddCommentClick', function() {
+					// open the Add a Comment setting
+					$(".fyre-add-a-comment").trigger("click.addCommentClick");
+				});
+
+				//fire event 55 when users click load more comments
+				$('.fyre-stream-more-container-cust', '#livefyre').on('click', function() {
+					G.readOmnitureOnPageView(this, '55', 'Load More Comments');
+				});
+			}
+		};
+
+		/**
+		 * Begins searching through the list of comments and displaying like data
+		 */
+
+		function initiateUserLikes() {
+			// check the like status of comments and watch for more
+			NYM.LivefyreLikes.watchForLikes();
+			// loop through all comments and extract any likes
+			NYM.LivefyreLikes.displayCommentLikes();
+			// activate sorting and show more so that those likes appear
+			NYM.LivefyreLikes.activateSortingShowMore();
+			// check to see if this is for a user comment direct link
+			NYM.LivefyreLikes.checkForSharedComment();
+		};
+
+		/**
+		 * Creates the button and events for allowing someone to reveal the comment box
+		 */
+
+		function initializeAddCommentButton() {
+			// initially hide the form
+			$(".fyre-auth, .fyre-editor, .fyre-stream-sort, .fyre-stream-sort-options").addClass("hidden");
+
+			// create the button, append it to the comment status area, attach events to it, and store
+			// the selector for use later
+			var $addComment = $("<button class=\"fyre-add-a-comment\" title=\"Click to add a comment\"" + "type=\"button\">Add a Comment</button>").appendTo(".fyre-stream-stats").one("click.addCommentClick touchend.addCommentTouch", function(evt) {
+				if (evt.preventDefault) {
+					evt.preventDefault();
+				}
+				// hide the button, then open the commenting area
+				$(this).hide();
+				$(".fyre-auth, .fyre-editor, .fyre-stream-sort, .fyre-stream-sort-options").removeClass("hidden");
+				// untruncate the comments on display
+				$(".fyre-stream-more-cust").trigger("click.truncatedCommentsClick");
+
+				// TEMP TODO: Creates the "Problem?" button for users to take a survey and explain their comment issues
+				if ($(window).width() > 600) {
+					$(".fyre-auth + .fyre-editor").append("<a href=\"http://community.nymag.com/nymag\"" + "title=\"Problem? Tell us about it\" target=\"_blank\" " + "style=\"position:relative;top:-17px;left:10px;font-size:11px;color:#999;z-index:2;\">Report Commenting Problem</a>");
+				}
+			});
+
+			// listen for show more events, and then activate the above if a click/touch occurs
+			$(".fyre-comment-stream").one("click.moreCommentsClick", ".fyre-stream-more", function() {
+				// touch doesn't matter, in terms of the 300ms delay, because they won't see this action
+				// at the time anyway (cause it'll be at the top of the comment pile)
+				$addComment.trigger("click.addCommentClick");
+			});
+
+			// if the user hits reply or edit, also make the comments expand bigger
+			$(".fyre-comment-reply, .fyre-comment-edit").one("click.commentReplyClick", function() {
+				// untruncate the comments on display
+				$(".fyre-stream-more-cust").trigger("click.truncatedCommentsClick");
+				// unhide the fyre-editor for some reason
+				$(this).parent().find(".fyre-editor").css("display", "block");
+			});
+		};
+
+		fyre.conv.load(
+		networkConfig, streamConfig, function(widget) {
+			onLoadCallback();
+			widget.on('commentCountUpdated', function(data) {
+				LFcommentCount(data);
+			});
+			// once the widget is loaded, load up the likes and other flourishes
+			widget.on("initialRenderComplete", function(data) {
+				truncateComment(); //custom truncate comments
+				// make the user click "Leave a comment" in order to see the comment box
+				initializeAddCommentButton();
+				// start the user like modification process
+				initiateUserLikes();
+			});
+		});
+	}; //end commenting configs
+	//----- GET COLLECTIONMETA TOKEN FROM SERVER ---------------------------  
+
+
+	function metaSign() {
+		$.ajax({
+			type: 'POST',
+			url: '/livefyre/metadata/sign',
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json',
+			data: collectionMetaObj
+
+		}).done(function(data) {
+			collectionMeta = data.token;
+
+			checkfyreLoad = setInterval(function() { //keep checking if Livefyre lib has been loaded and call config function
+				if (typeof fyre === 'object') {
+					clearInterval(checkfyreLoad);
+					liveComment();
+				}
+			}, 200);
+		}); //end ajax
+	}
+
+	if ($('#livefyre').length > 0) {
+		metaSign();
+	}
+
+});

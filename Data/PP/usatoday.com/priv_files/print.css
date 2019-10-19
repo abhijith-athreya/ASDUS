@@ -1,0 +1,185 @@
+
+/* Lets Reset */
+
+* {
+  margin: 0;
+  padding: 0;
+  color: black;
+  box-shadow: none;
+}
+
+/* The following rule keeps the layout stuff out of print.  Remove at your own risk! */
+
+.video-asset,
+.story-right-rail,
+.card-container,
+.layout,
+.site-nav-list,
+.site-header,
+#nav,
+.nav-anchor,
+#cards-prev-link,
+#cards-next-link,
+.next-wrap,
+.next,
+.previous-wrap,
+.previous,
+.parent-label,
+.news,
+.weather,
+.nav-anchor,
+.full,
+.footer,
+.size-suspender,
+.headlines, 
+.more-stories-content, 
+.loadingText, 
+.cards.fixed, 
+.asset-sponsorship-skin, 
+.card-wrap.offscreen,
+.card-wrap,
+.overlay-arrows, 
+footer, 
+.ui-alert.error,
+.utility,
+.fronts,
+.show-more,
+.quick,
+p.example,
+.theatre,
+.parent-label,
+.nextPrev,
+.open-sidebar.sidebar-button,
+.partner-leavebehind,
+.partner-placeholder,
+.section_home,
+.popular,
+.videoStillPlay,
+.slide,
+.hero,
+.sidebar,
+.live-feed,
+.close-sidebar,
+.front-gallery,
+.hero-page-back.popular,
+.hero-popular-head,
+.hero-popular-page-trigger,
+.hero-popular-list,
+.hero-right-pane,
+.hero-right-pane,
+.head,
+.head.title,
+.head.time,
+.controls.toggle,
+.sp-nav-wrap,
+.sp-nav,
+.sp-nav-title,
+.sp-nav-item,
+.partner.slider.show,
+.wrapper.media-index,
+.sidenav-container,
+.search-wrapper,
+.filter-wrapper,
+#media-content,
+.galleries,
+.img_ad,
+/* remove from the article level */
+.full.topic-nav.top,
+span.share,
+div.comments,
+.comp.story-highlights,
+aside.right,
+aside.pull-quote,
+.more.more-stories-wrap,
+.utility-wrap,
+.blog-ribbon,
+.blog-tag-cloud,
+.viewport,
+.breaking,
+.stage,
+.utility-bar,
+.chart-wrapper,
+.page,
+.meta .caption,
+.results.view-grid,
+.summary.grid,
+.asset > .video,
+hr *,
+.inline-share-tools {
+	display: none !important;
+}
+
+.asset .videoObject {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+/*Stuff we can display */
+/* for IE Sucks */
+/* @page {margin: 1.0cm;} */
+
+body {
+    font-family: serif;
+ 
+    /* pt is absolute unit commonly used in print designs */
+    font-size: 12pt;
+}
+ 
+h1, h2, h3 {
+    margin: 4px 0 8px 0;
+    border: none;
+}
+ 
+h1 {
+    font-size: 18pt;
+}
+ 
+h2 {
+    font-size: 16pt;
+}
+ 
+h3 {
+    font-size: 14pt;
+}
+
+/* Following ':after' sudo selector is used to select element right after the 'a' */
+a:after {
+    /* Content is used to display (url) after every anchor (a) tag */
+    /*
+       attr(href) gets the href value of 'a' tag
+    */
+    content:  " (" attr(href) ")";
+}
+
+/* The following rule is necessary to have all slides appear in print! DO NOT REMOVE IT! */
+
+article.asset > .asset-double-wide {width: 100%; float: none;}
+article.asset > .asset-double-wide p {width: 100%; margin:20px 0 0 10px;}
+article.asset > .credits {border: none;}
+article.asset > .credits > span.author {padding-left: 0px; margin-left: 0px; border: none;}
+article.asset .single-photo.expandable .image-wrap {padding-right: 15px;}
+
+* { background: transparent !important; color: black !important; box-shadow:none !important; text-shadow: none !important; filter:none !important; -ms-filter: none !important; } /* Black prints faster: h5bp.com/s */
+a, a:visited { text-decoration: underline; }
+a[href]:after { content: " (" attr(href) ")"; }
+abbr[title]:after { content: " (" attr(title) ")"; }
+.ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }  /* Don't show links for images, or javascript/internal links */
+pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+thead { display: table-header-group; } /* h5bp.com/t */
+tr, img { page-break-inside: avoid; }
+img { max-width: 100% !important; }
+@page { margin: .75cm; } 
+p, h2, h3 { orphans: 3; widows: 3; }
+h2, h3 { page-break-after: avoid; }
+
+/* Hide links in byline */
+.asset-metabar a:after,
+.asset-metabar a[href]:after {
+    content: "";
+}
+
+/* Show Short Url */
+.article-print-url {
+    display: block !important;
+}

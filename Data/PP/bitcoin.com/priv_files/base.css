@@ -1,0 +1,249 @@
+/* Table of Content
+==================================================
+	#Reset & Basics
+	#Basic Styles
+	#Site Styles
+	#Typography
+	#Links
+	#Lists
+	#Images
+	#Buttons
+	#Forms
+	#Misc */
+
+
+/* #Reset & Basics (Inspired by E. Meyers)
+================================================== */
+	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, tt, var, b, u, i, center, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		font-size: 100%;
+		font: inherit;
+		vertical-align: baseline; }
+	article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+		display: block; }
+	body {
+		line-height: 1; }
+	ol, ul {
+		list-style: none; }
+	blockquote, q {
+		quotes: none; }
+	blockquote:before, blockquote:after,
+	q:before, q:after {
+		content: '';
+		content: none; }
+	table {
+		border-collapse: collapse;
+		border-spacing: 0; }
+
+
+/* #Basic Styles
+================================================== */
+	html {
+		height: 100%;
+	}
+	body {
+		-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
+		-webkit-text-size-adjust: 100%;
+ }
+
+/* #Typography
+================================================== */
+
+	h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { font-weight: inherit; }
+	h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { text-decoration: none; }
+	h1 { margin-bottom: 15px; }
+	h2 { margin-bottom: 15px; }
+	h3 { margin-bottom: 15px; }
+	h4 { margin-bottom: 15px; }
+	h5 { margin-bottom: 15px; }
+	h6 { margin-bottom: 15px; }
+
+	p { margin: 0 0 15px 0; }
+
+	em, i 			{ font-style: italic; }
+	b, strong 		{ font-weight: bold; }
+	big, .big 		{ font-size: 110%; line-height: 180%; }
+	
+	dt { font-weight:bold;}
+
+
+/* #Links
+================================================== */
+	a, a:visited, a:focus { text-decoration: none; outline: 0; }
+	a:hover { text-decoration: underline; }
+	p a, p a:visited { line-height: inherit; }
+
+
+/* #Images
+================================================== */
+
+	img.scale-with-grid,
+	#Content img {
+		max-width: 100%;
+		height: auto;
+	}
+	
+	.google-map img {
+		max-width:none !important;
+	}
+	
+	iframe {
+		max-width: 100%;
+	}
+
+
+/* #Buttons
+================================================== */
+
+	a.tp-button{
+		background: none;
+		font-family: inherit !important;
+		height: auto !important;
+		line-height: inherit !important;
+		border-radius: 0px;
+		-moz-border-radius: 0px;
+		-webkit-border-radius: 0px;
+		letter-spacing: 0 !important;
+		text-shadow: 0 0 0 !important;
+		box-shadow: 0 0 0 !important;
+		font-weight: normal !important;
+		border-width: 1px !important;
+	}
+
+	a.button, a.tp-button, button, input[type="submit"], input[type="reset"], input[type="button"] {
+		display: inline-block;
+		padding: 11px 20px;
+		margin-bottom: 15px;
+		cursor: pointer;
+		margin-right: 7px;
+		border: 0;
+		-webkit-border-radius: 5px;
+		border-radius: 5px;
+		position: relative;
+		overflow: hidden;
+		-webkit-box-shadow:inset 0 0 0 1px rgba(0,0,0,.03);
+		box-shadow:inset 0 0 0 1px rgba(0,0,0,.03);
+		background-image: url(../images/box_shadow_button.png);
+		background-repeat: repeat-x;
+	}
+	a.button_js {
+		padding: 0;
+	}
+	
+	a.button.button_large,
+	a.tp-button.button_large,
+	button.button_large,
+	input[type="submit"].button_large,
+	input[type="reset"].button_large,
+	input[type="button"].button_large {
+		font-size: 110%;
+		line-height: 110%;
+	}
+	
+	/* Button label & icon */
+	a.button .button_label { display: block; float: left; position: relative; z-index: 2; }	
+	a.button .button_icon { display: block; float: left; background: rgba(0,0,0,.05); }
+	
+	a.button .button_icon i { color: rgba(0,0,0,.5); }
+	
+	/* Button icon left */
+	a.button.button_left .button_icon,
+	a.tp-button.button_left .button_icon { float: left; }
+	
+	a.button.button_right .button_icon,
+	a.tp-button.button_right .button_icon { float: right; }
+	
+	/* Paddings */
+	a.button .button_label { padding: 11px 20px; }	
+	a.button .button_icon { padding: 11px 13px; }
+	
+	a.button_large .button_label { padding: 15px 30px; }
+	a.button_large .button_icon { padding: 15px 13px; }
+	
+	/* Hover */
+	@media only screen and (min-width: 768px){
+		a.button:after, a.tp-button:after, button:after, input[type="submit"]:after, input[type="reset"]:after, input[type="button"]:after {
+			content: ""; position: absolute; left: 0; top: 0; height: 100%; width: 0; z-index: 1; -webkit-transition: all 0.3s; -moz-transition: all 0.3s; transition: all 0.3s; background: rgba(0,0,0,.05);
+		}
+			
+		a:hover.button, a:hover.tp-button { text-decoration: none; }
+		a.button:hover:after, a.tp-button:hover:after, button:hover:after, input[type="submit"]:hover:after, input[type="reset"]:hover:after, input[type="button"]:hover:after {
+			width: 100%;
+		}
+	}
+	
+/* #Buttons stroke
+================================================== */
+	.button-stroke {}
+	
+	.button-stroke a.button:not(.action_button),
+	.button-stroke:not(.header-plain) a.button.action_button,
+	.button-stroke a.tp-button,
+	.button-stroke button,
+	.button-stroke input[type="submit"],
+	.button-stroke input[type="reset"],
+	.button-stroke input[type="button"] {
+		border-width: 2px;
+		border-style: solid;
+		-webkit-border-radius: 3px;
+		border-radius: 3px;
+		background-color: transparent !important;
+		-webkit-box-shadow:inset 0 0 0 0;
+		box-shadow:inset 0 0 0 0;
+		background-image: none;
+	}
+	
+	.button-stroke a.button:not(.action_button):after,
+	.button-stroke:not(.header-plain) a.button.action_button:after,
+	.button-stroke a.tp-button:after,
+	.button-stroke button:after, 
+	.button-stroke input[type="submit"]:after, 
+	.button-stroke input[type="reset"]:after, 
+	.button-stroke input[type="button"]:after {
+		display: none;
+	}
+	
+	.button-stroke a:hover.button:not(.action_button),
+	.button-stroke:not(.header-plain) a:hover.button.action_button,
+	.button-stroke a:hover.tp-button,
+	.button-stroke button:hover,
+	.button-stroke input[type="submit"]:hover,
+	.button-stroke input[type="reset"]:hover,
+	.button-stroke input[type="button"]:hover {
+		-webkit-transition: all 0.3s;
+		-moz-transition: all 0.3s;
+		transition: all 0.3s;
+		background-color: #828282;
+	}
+	
+	
+	.button-stroke a:hover.button.button_stroke_custom:not(.action_button),
+	.button-stroke:not(.header-plain) a:hover.button.button_stroke_custom.action_button,
+	.button-stroke a:hover.tp-button.button_stroke_custom {
+		background-color: rgba(0,0,0,.05) !important;
+	}
+				
+	
+	/* Button icon */
+	.button-stroke a.button .button_icon { background: none; }
+	.button-stroke a:hover.button .button_icon i,
+	.button-stroke a.button.button_theme:hover .button_icon i { color: rgba(0,0,0,.5) !important; }
+
+	/* Paddings */
+	.button-stroke a.button_left.button .button_label,	
+	.button-stroke a.button_left.button_large .button_label { padding-left: 0px; }
+	.button-stroke a.button_right.button .button_label,	
+	.button-stroke a.button_right.button_large .button_label { padding-right: 0px; }
+
+	.button-stroke a.button_left.button_large .button_icon { padding-left: 27px; }
+	.button-stroke a.button_right.button_large .button_icon { padding-right: 27px; }
+
+
+	/* Fix for odd Mozilla border & padding issues */
+	button::-moz-focus-inner, input::-moz-focus-inner {
+    	border: 0;
+    	padding: 0;
+	}
+	

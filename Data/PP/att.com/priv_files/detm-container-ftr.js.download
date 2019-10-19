@@ -1,0 +1,17 @@
+// detm-container-ftr.js 20170727 prod
+var detmExecuteFooter = function (instance) {
+    _satellite.pageBottom();
+    if (typeof ddo != "undefined" || (typeof jQuery != "undefined" && !jQuery.isEmptyObject(ddo))) { ddo.pageLastLine(); }
+
+    if (typeof document.dispatchEvent !== 'undefined') {
+        document.dispatchEvent(new CustomEvent('detmScriptsReady', { detail: { loader: instance } }));
+    }
+}
+
+if (typeof detmLoader !== 'undefined' && detmLoader.loadAsync) {
+    document.addEventListener("detmExecuteFooter", function (e) {
+        detmExecuteFooter(e.detail.loader);
+    });
+} else {
+    detmExecuteFooter(detmLoader);
+}

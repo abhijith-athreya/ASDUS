@@ -1,0 +1,171 @@
+
+<!-- saved from url=(0127)file:///C:/UsablePrivacyPolicy/Data/TOS_Corpus/TOSRandomCorpus-master/TOSRandomCorpus-master/html/www.apa.org_files/apaAuth.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<script type="text/javascript" src="./yahoo-ui-2.js.download"></script>
+<script type="text/javascript" src="./jquery.js(1).download"></script>
+
+<script type="text/javascript">
+
+	var jQ = jQuery; //.noConflict();
+	jQuery.getScript("/apa/scripts/rest.js");
+
+	function hasCookie(cookieName){
+	    return getCookie(cookieName) != null;
+	}
+	
+	function getCookie(cookie_name){
+	    var value = YAHOO.util.Cookie.get(cookie_name);
+	    return value;
+	}
+	
+	function setWelcomeMessage(name) {
+		window.parent.addHyperlink("#HeaderLoggedInLink", name);
+	}
+	         
+	function setMyApaLink() {
+		window.parent.addHyperlink("#HeaderMyApaLink", "<a href='" + baseUrlPath() + "portal' target='_parent'>MyAPA</a>  ");
+	}
+	 
+	function setLoginLink(){
+		if(showLoginLink(window.top.location.href)){
+		    var erightsReturnParam = "?ERIGHTS_TARGET=";
+		    var myApaUrl = urlPath();
+		    var httpsMyApaUrl = myApaUrl.replace("http:", "https:");
+		    var loginUrl = httpsMyApaUrl + "idm/login.seam" + erightsReturnParam + encodeURIComponent(window.parent.parent.location.href);
+		    //loginUrl = loginUrl.substring(0,loginUrl.indexOf("&"));
+		    loginUrl = loginUrl.replace("&", "\&amp;");
+		    if(jQ("#HeaderLoginLink").text().indexOf("Log in") < 0 ){
+			    window.parent.addHyperlink("#HeaderLoginLink", "<a href='" + loginUrl + "' rel='nofollow' target='_parent'>Log In</a>");
+		    }
+		    window.parent.addHyperlink("#MemberSignInToOrder", "<a href='" + loginUrl + "' rel='nofollow' target='_parent'>Member sign in to order</a>");
+		}
+	}
+
+	
+	function showLoginLink(pageName){
+		if(pageName.indexOf("register")>=0){
+			return false;
+		}
+		return true;
+		
+	}
+
+	
+
+	// If the integrating app is from same domain and has a logoutTargetLink variable in its page, after logout from idem app, user will be redirected to this link. 
+	// If no link is set, user is logged out of idem and default portal page will be destination for login page.
+	function setLogoutLink(){
+		var erightsReturnParam = "?ERIGHTS_TARGET=";
+		var logoutUrl = baseUrlPath() + "/apa/idm/logout.seam";
+
+		// This variable value will only be set for integrating apps with same domain.
+		var logoutTargetLink = parent.logoutTargetLink;
+			if((typeof logoutTargetLink != 'undefined') && logoutTargetLink != null && logoutTargetLink !='' ){
+				logoutUrl = logoutUrl + erightsReturnParam + logoutTargetLink;
+			}
+
+		window.parent.addHyperlink("#HeaderLogoutLink", "(<a href='#' rel='nofollow'  onclick='logoutApp(event); return false;' >&nbsp;Log Out&nbsp;</a>)");
+		}
+
+
+	
+	
+	function urlPath(){
+	    var urlString = location.href;
+	    var xstart = urlString.indexOf("/idm/") + 1;
+	    return urlString.substring(0, xstart);
+	}
+	
+	function baseUrlPath(){
+	    var urlString = location.href;
+	    var xstart = urlString.lastIndexOf("/apa/") + 1;
+	    return urlString.substring(0, xstart);
+	}	
+
+	function refreshSession() {
+		//var name = "ERIGHTS";
+		/*
+		var cookieValue = null;
+		var cookies = document.cookie.split(';');
+		for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].replace(/^\s+|\s+$/g,"");
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }*/
+        var cookieValue = YAHOO.util.Cookie.get("ERIGHTS");
+        if (cookieValue != null) {
+            displayOverlay = false;
+            refreshErightsSession(cookieValue, refreshCallback);
+            displayOverlay = true;
+		}
+	}
+
+	function refreshCallback(response) {
+		if (response == true || response == "true") {
+			setLogoutLink();
+			setMyApaLink();
+			setWelcomeMessage(getCookie("APA_NAME"));
+		}
+		else {
+			setLoginLink();
+		}
+	}
+
+	function checkAndCreateJSessionIdCookie() {
+		if (!hasCookie("JSESSIONID")) {
+			displayOverlay = false;
+			ajaxPostWithString("../rest/user/getJSessionIdValues", "", "text", getJSessionIdCallback);
+            //Seam.Component.getInstance("userManagementService").getJSessionIdValues(getJSessionIdCallback);
+            displayOverlay = true;
+		}
+	}
+
+	function getJSessionIdCallback(responseValue) {
+		if (responseValue != "") {
+			YAHOO.util.Cookie.set("JSESSIONID", responseValue, {
+			    path: "/",          //all pages
+			    domain: "apa.org"   //any subdomain of apa.org, including www.apa.org
+			});
+		}
+	}
+
+	function refreshErightsSession(cookieValue, callback) {
+		ajaxPostWithString("../rest/user/refreshErightsSession", cookieValue, "text", callback);
+	}
+
+	function ajaxPostWithString(url, stringValue, returnContentType, callback) {
+		try {
+			jQuery.ajax({
+				type : "POST",
+				url : url,
+				data : stringValue,
+				dataType : returnContentType,
+				contentType : "application/text; charset-utf-8",
+				success : callback
+			});
+		} catch (e) {
+			console.log("Error calling jQuery post was : " + e);
+		}
+	}
+
+</script>
+</head>
+<body>
+<script type="text/javascript">
+        document.domain = "apa.org";
+        if ( (hasCookie("ERIGHTS")) && (hasCookie("APA_NAME")) ) {
+        	refreshSession();
+        }
+        else {
+        	setLoginLink();
+        }
+
+        checkAndCreateJSessionIdCookie();
+</script>
+
+
+</body></html>

@@ -1,0 +1,8 @@
+
+<!-- saved from url=(0070)https://a8298190319.cdn.optimizely.com/client_storage/a8298190319.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><script>
+
+var allowedOrigins = [["^https\\:\\/\\/imageshack\\.com$", ""]];
+
+!function(){"use strict";function e(e){return!o||0!==e.indexOf(o.origin)}function i(i){o&&e(i.key)&&o.source.postMessage(JSON.stringify({type:"SYNC",response:{key:i.key,value:i.newValue}}),o.origin)}var r,t,n;try{r=window.localStorage}catch(s){t=s}var o,a="_",g=function(i){for(var s,g,d,f,l=!1,c=0;c<allowedOrigins.length;c++)if(new RegExp(allowedOrigins[c][0],allowedOrigins[c][1]).test(i.origin)){l=!0;break}if(l){o=i;try{s=JSON.parse(i.data)}catch(u){return}if(d=i.origin+a+s.key,r){if("GET"===s.type)g=r.getItem(d);else if("PUT"===s.type)g=r.setItem(d,s.value);else{if("GETALL"!==s.type)return;g={};for(var y in r)e(y)&&(g[y]=r.getItem(y))}if("undefined"==typeof s.id)return;f={id:s.id,response:g}}else n||(n=t?t.toString():"Localstorage is undefined",f={id:"iframeerror",type:"ERROR",response:"Error accessing localStorage: "+n});f&&i.source.postMessage(JSON.stringify(f),i.origin)}};window.addEventListener("message",g,!0),window.addEventListener("storage",i,!0)}();
+</script></head><body></body></html>

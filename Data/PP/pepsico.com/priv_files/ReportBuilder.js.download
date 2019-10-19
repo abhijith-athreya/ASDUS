@@ -1,0 +1,200 @@
+// style related controls
+$(document).ready(function(){
+	//CLICKS FOR INDIVIDUAL SECTIONS
+	$("#ReportDownload label").off().click(function(e){
+		
+		//gets the targeted checkbox
+		var targetCheck=$(e.target).parent().find("input");
+		
+		var curVal=targetCheck.prop('checked');
+		//if the box is not checked
+		if(curVal===false){
+			
+			//marks checkbox on
+			targetCheck.prop('checked',true);
+			$(e.target).attr('class','on');
+		}else{
+			//marks checkbox off
+			console.log("yes 7");
+			targetCheck.prop('checked',false);
+			console.log("yes 8");
+			$(e.target).attr('class','off');
+			console.log("yes 9");
+			//unchecks section check
+			$(e.target).parent().parent().find(".sup label").attr("class","off");
+			console.log("yes 10");
+			$(e.target).parent().parent().find(".sup input").prop('checked',false);
+			console.log("yes 11");
+		}
+	});
+
+	/*
+	* Updates the hidden back-cover fields to mirror the selected fron cover options
+	* This will allow for the selecting of multiple front covers, as the front cover selection allows
+	*
+	* @param {event} e - event passed for click action on fieldset
+	*/
+	$(".covers fieldset").click(function(){
+		console.log(".covers fieldset");
+		var _set_value = $(this).find("input").prop('checked');
+		$("#backCovers input").eq($(this).index()).attr('checked',_set_value);
+		
+	});
+
+	//CLICKS FOR SUPER SECTIONS
+	$("#ReportDownload .sup label").click(function(e){
+		console.log("#ReportDownload .sup label");
+		//gets the targeted checkbox
+		var targetCheck=$(e.target).parent().find("input");
+		var curVal=targetCheck.prop('checked');
+		// Checks or unchecks section
+		if(targetCheck.prop('checked')===true){
+			$(e.target).parent().parent().find("label").attr("class","on");
+			$(e.target).parent().parent().find("input").prop('checked',true);
+		}else{
+			$(e.target).parent().parent().find("label").attr("class","off");
+			$(e.target).parent().parent().find("input").prop('checked',false);
+		}
+	});
+
+
+
+	/* --- REPORT BUILDER --- */
+
+	$('#ReportDownload .col input:checkbox').on('change', function(){
+		console.log("#ReportDownload .col input:checkbox");
+		$('.error').fadeOut();
+		if($(this).is(':checked')){
+			console.log(".col input:checkbox2");
+			if ($(this).parent('fieldset').hasClass('sup')){
+				$(this).parent('fieldset').siblings().find('input:checkbox').prop("checked", true);
+			} else if ($(this).parent('fieldset').hasClass('sub')){
+				$(this).siblings('fieldset').find('input:checkbox').prop("checked", true);
+			}
+		} else {
+			console.log(".col input:checkbox3");
+			if ($(this).parent('fieldset').hasClass('sup')){
+				$(this).parent('fieldset').siblings().find('input:checkbox').prop("checked", false);
+			} else if ($(this).parent('fieldset').hasClass('sub')){
+				$(this).siblings('fieldset').find('input:checkbox').prop("checked", false);
+			}
+		}
+	});
+
+	$('#CreateReport').click(function(){
+		console.log('#CreateReport');
+		checkbox_test();
+	});
+
+	$('#Reset').click(function(){
+		console.log('#reset');
+		$('.after').hide();
+		$('.before').show();
+		$("label").attr("class","off");
+		$("input").prop('checked',false);
+		$("#backCovers input").attr('checked',false);
+	});
+
+
+	/* --- REPORT BUILDIER JSON --- */
+
+	function checkbox_test(){
+		console.log('checkbox_test');
+		var arr = Array();
+		var counter = 0;
+		var i = 0;
+		var input_obj = document.getElementsByTagName('input');
+		for (i=0; i < input_obj.length; i++){
+			if (
+				(input_obj[i].type == 'checkbox' || 'hidden') &&
+				(input_obj[i].checked === true) &&
+				(!$(input_obj[i]).hasClass('ignore'))
+			){
+				arr[counter]= input_obj[i].value;
+				counter++;
+			}
+		}
+		var reportname="PepsiCo_2013_Sustainability_Report";
+		if(navigator.appVersion.indexOf("MSIE") !== -1){
+			if (counter >= 0){
+				getReports(reportname,"PepsiCo_CSR_2013",arr);
+			}
+			else $('.error').fadeIn();
+		} else {
+			if (counter > 0){
+				getReports(reportname,"PepsiCo_CSR_2013",arr);
+			}
+			else $('.error').fadeIn();
+		}
+	}
+	/* assumes GA is or will be loaded elsewhere in the HTML */
+	function sendAnalytics(reportName,arrPDFs){
+		console.log('sendAnalytics');
+		_gaq = _gaq || [];
+		for (i=0; i < arrPDFs.length; i++){
+			_gaq.push(['_trackEvent',reportName,  'Component', arrPDFs[i]]);
+		}
+		_gaq.push(['_trackEvent',reportName,  'Download', ,arrPDFs.length ]);
+	}
+
+	var wsUrl="https://reportbuilder.addison.com/reportbuilder.php?callback=?";
+
+	function getReports(reportName,fldName,arrPDFs,savePDF,showMessage,defaultMessage){
+		if( typeof(savePDF) == 'undefined'){
+			savePDF = true;
+		}
+
+		if(!reportName) {
+			alert("Bad Parameter: reportName");
+			return false;
+		}
+		if(!fldName) {
+			alert("Bad Parameter: fldName");
+			return false;
+		}
+		if(!arrPDFs) {
+			alert("Bad Parameter: arrPDFs");
+			return false;
+		}
+
+		$('.before').hide();
+
+		$('.during').fadeIn('slow');
+
+		var sendData = {};
+		sendData.fldName = fldName;
+		sendData.reportName = reportName;
+		sendData.arrPDFs = arrPDFs;
+		sendData.savePDF = savePDF;
+		sendAnalytics(reportName,arrPDFs);
+
+		$.getJSON(wsUrl,sendData, function(result){
+			if (!result || result === ""){
+				alert("ERROR");
+			}else{
+				$(".during").show();
+				if (result.fileExists === true && result.fldExists === true)
+				{
+					var pdfUri = result.finalOutput;
+					//console.info(pdfUri);
+					$('.during').hide();
+					$('.error').hide();
+					$('#PDFLink').attr('href',pdfUri);
+					$('.after').fadeIn('slow');
+				}
+				else{
+					if (result.fldExists===false)
+					{
+						alert("Input Folder not present: "+fldName);
+					}
+					else if(result.fileExists===false){
+						alert("Input File not present: "+result.MissingFilename);
+					}
+					else if(result.fldNotCreated===false){
+						alert("Cannot create output folder");
+					}
+				}
+			}
+		});
+	}
+});

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html><head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+    <script type="text/javascript">
+    var bactm_guid = function() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+    var bactm_getQS = function(field, url) {
+        var href = url ? url : window.location.href;
+        var reg = new RegExp('[?&]' + field + '=([^&#]*)', 'i');
+        var string = reg.exec(href);
+        return string ? string[1] : null;
+    }
+    var bactm_getTCChatIframeSrc = function(tm_profile, tm_env) {
+        // return 'utag.local.js?v=' + bactm_guid();
+        // if (tm_profile == 'olb') return 'https://tags.tiqcdn.com/utag/bofa/olb/' + tm_env + '/utag.2.js?v=' + bactm_guid();
+        // else return '';
+        return 'https://tags.tiqcdn.com/utag/bofa/olb/' + tm_env + '/utag.2.js';
+    }
+    var bactm_insertScript = function(script_src) {
+        var srctag = document.createElement("SC" + "RIPT");
+        srctag.src = script_src;
+        srctag.type = "text/javascript";
+        srctag.charset = "utf-8";
+        srctag.language = "javascript";
+        document.body.appendChild(srctag);
+    }
+    window.bactm_chatEnv = bactm_getQS("env") || 'notprod';
+    window.bactm_profile = bactm_getQS("tmProfile");
+    var bactm_tc_iframesrc = bactm_getTCChatIframeSrc(bactm_profile, bactm_chatEnv);
+    bactm_insertScript(bactm_tc_iframesrc);
+    </script><script src="tc-chat-bac_data/utag.js" type="text/javascript" charset="utf-8"></script>
+
+
+<script src="tc-chat-bac_data/site_10004750_default.js" type="text/javascript" charset="utf-8"></script><script src="tc-chat-bac_data/tcFramework.js" type="text/javascript" charset="utf-8"></script><iframe id="post_box_1" name="_none" src="tc-chat-bac_data/tc-chat-bac.htm" style="overflow: hidden; display: none; border: medium none; top: 0px; left: 0px; width: 1px; height: 1px;"></iframe></body></html>

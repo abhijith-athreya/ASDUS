@@ -1,0 +1,1 @@
+window.hb_dmx_res.auction.reception({"result":{"cpm":0.0,"ad":""},"callback_uid":"0biV5DDrNxJf02XdRVGv8aKOtjgrJq"});

@@ -1,0 +1,3 @@
+/*! updated; 01-10-2017 01:02 PM */
+
+Modulr.define("FOX_PLUGINS:ImageResizer",["require"],function(require){var resizeImage=function(u,w,h){if(isNaN(w)||isNaN(h))return u;var url=u;if(u.indexOf("a57.foxnews.com")>-1||u.indexOf("nyc.imagesizer.foxnews.com")>-1){url=u.split("/");var idx=url.length;url[idx-3]=w,url[idx-2]=h,url=url.join("/")}else{url=u.split("/");var dim="/"+w+"/"+h+"/";(0===url[0].indexOf("http")||"//"===u.slice(0,2))&&url.splice(0,2),url.unshift("//a57.foxnews.com"),url=url.slice(0,url.length-1).join("/")+dim+url.slice(url.length-1)}return url};return resizeImage});

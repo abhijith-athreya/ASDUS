@@ -1,0 +1,83 @@
+_satellite.pushAsyncScript(function(event, target, $variables){
+  window.bk_async = function() {
+  // ALLOW MULTIPLE CALLS/SINGLE PAGE APP HANDLING
+  bk_allow_multiple_calls = true;
+  bk_use_multiple_iframes = true;
+
+
+  var pageCategory = 'browse';
+  if (twc.dataLayer.pageInfo) {
+    if (typeof twc.dataLayer.pageInfo !== 'null') {
+      pageCategory = twc.dataLayer.pageInfo.pageCategory == 'order' ? twc.dataLayer.pageInfo.pageCategory.toLowerCase() : 'browse';
+    }
+    if (/series/i.test(twc.dataLayer.pageInfo.hboDataCmsDataStructure)) {
+      var pType = 'series';
+    } else if (/series/i.test(twc.dataLayer.pageInfo.hboWebCmsDataStructure)) {
+      var pType = 'series';
+    } else if (/documentaries/i.test(twc.dataLayer.pageInfo.hboWebCmsDataStructure)) {
+      var pType = 'documentaries';
+    } else if (/movies/i.test(twc.dataLayer.pageInfo.hboWebCmsDataStructure)) {
+      var pType = 'feature';
+    } else if (/boxing/i.test(twc.dataLayer.pageInfo.hboWebCmsDataStructure)) {
+      var pType = 'boxing';
+    } else if (/specials/i.test(twc.dataLayer.pageInfo.hboWebCmsDataStructure)) {
+      var pType = 'specials';
+    }
+  }
+  var content = '';
+  if (twc.dataLayer.pageInfo != null) {
+    if (twc.dataLayer.pageInfo.seriesName == null) {
+      if (/(documentaries|specials|movies)/i.test(location.pathname) && twc.dataLayer.pageInfo.seriesName !== null) {
+        content = twc.dataLayer.pageInfo.nonSeriesTitle.toLowerCase();
+      } else if (/boxing/i.test(location.pathname) && location.pathname.length > 7) {
+        content = location.pathname.split('/')[3].replace(/-/g, ' ').toLowerCase();
+      }
+    } else if (twc.dataLayer.pageInfo.seriesName) {
+      content = twc.dataLayer.pageInfo.seriesName.toLowerCase();
+    }
+  } else {
+    content = '';
+  }
+
+  var thePage = location.pathname,
+    episodeN = _satellite.getVar('dlSeriesEpisodeNumber'),
+    category = pageCategory,
+    franchise = content,
+    seasonN = _satellite.getVar('dlSeriesSeasonNumber'),
+    episodeT = _satellite.getVar('dlSeriesEpisodeTitle'),
+    programType = pType,
+    thePageName = _satellite.getVar('dlhboWebCmsDataStructure');
+
+  if (document.title.indexOf('404') > -1) {
+    thePageName = 'hbo>404>' + location.pathname.slice(1);
+  }
+
+  bk_addPageCtx("TW_OU", "HBO");
+  bk_addPageCtx("seat", "US");
+  bk_addPageCtx("TagType", "desktopWeb");
+  bk_addPageCtx("Asset", "hbo_desktop");
+  bk_addPageCtx("Tag_Version", "1");
+  bk_addPageCtx("pageCat", category);
+  bk_addPageCtx("programType", programType);
+  bk_addPageCtx("franchise", franchise);
+  bk_addPageCtx("seasonNumber", seasonN);
+  bk_addPageCtx("episodeNumber", episodeN);
+  bk_addPageCtx("episodeTitle", episodeT);
+  bk_addPageCtx("adbPageName", thePageName);
+
+  //console.log('BK:ORDER: CATEGORY/PAGENAME  --> '+category+' / '+thePageName);
+  // Send data to BlueKai
+  BKTAG.doTag({
+    site_id: 50802,
+    pixel_limit: 6
+  })
+};
+
+(function() {
+  var scripts = document.getElementsByTagName('script')[0];
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = window.location.protocol + "//tags.bkrtx.com/js/bk-coretag.js";
+  scripts.parentNode.insertBefore(s, scripts);
+}());
+});

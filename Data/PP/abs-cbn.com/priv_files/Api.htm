@@ -1,0 +1,3894 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><title>
+
+</title>
+    <script>
+        var gigya = {};
+ gigya.gmidTicketExpiration = 3600;
+gigya.env='prod';
+gigya.gaeDomain='chat.gigya.com';
+gigya.defaultApiDomain='gigya.com';
+gigya.dataCenter='US1';
+gigya.build={version:'7.3.10',time:'Monday 2017-07-03 14:14:26'};
+if (typeof gigya.partnerSettings == 'undefined') {
+    gigya.partnerSettings={"authMode":"cookie","baseDomains":"abs-cbn.com","ssoLogoutUrl":"http://entertainment.abs-cbn.com/logout/ssologout.html","ssoKey":"3_QAn4f4aFaavi6L3P1eEfNrzONmsPOYq2F0xK6WxM1BaD81ojhZnLEL7l2k15tL9b"};
+    gigya.partnerSettings.plugins={"connectWithoutLoginBehavior":"loginExistingUser","defaultRegScreenSet":"Accounts-RegistrationLogin","defaultMobileRegScreenSet":"Accounts-RegistrationLogin","sessionExpiration":-2,"rememberSessionExpiration":-2,"apiDomain":"US1.gigya.com"};
+}
+gigya.providersConfig = {};
+gigya.abTesting = null;
+gigya.samlConfig = {"errorPageURL":null,"proxyPageURL":null};
+    </script>
+</head>
+<body>
+    <script type="text/javascript">var gigya;
+(function (gigya) {
+    var services;
+    (function (services) {
+        var proxy;
+        (function (proxy) {
+            var utils;
+            (function (utils) {
+                utils.getParentUrl = function (win, doc) {
+                    if (win === void 0) { win = window; }
+                    if (doc === void 0) { doc = document; }
+                    return (win.location != win.parent.location)
+                        ? doc.referrer
+                        : doc.location.href;
+                };
+                utils.getBodyElement = function (doc) {
+                    if (doc === void 0) { doc = document; }
+                    return new gigya.Promise(function (resolve) {
+                        if (doc.body)
+                            resolve(doc.body);
+                        else
+                            doc.addEventListener('DOMContentLoaded', function () { return resolve(doc.body); });
+                    });
+                };
+                utils.validateOrigin = function (origin, checked) { return origin.toLowerCase().indexOf(checked.toLowerCase()) === 0; };
+                utils.createIframe = function (doc) {
+                    if (doc === void 0) { doc = document; }
+                    var iframe = doc.createElement('iframe');
+                    iframe.style.position = 'absolute';
+                    iframe.style.height = '0px';
+                    iframe.style.width = '0px';
+                    iframe.style.visibility = 'hidden';
+                    return iframe;
+                };
+                var _counter = 1;
+                utils.generateId = function () {
+                    return String(_counter++);
+                };
+                // http://stackoverflow.com/questions/31054910/get-functions-methods-of-a-class
+                utils.getAllClassMethodsNames = function (type) {
+                    var props = [];
+                    var proto = type.prototype;
+                    do {
+                        try {
+                            /** initial implementation - using filter **/
+                            var l = Object.getOwnPropertyNames(proto)
+                                .map(function (s) { return s.toString(); })
+                                .sort()
+                                .filter(function (p, i, arr) {
+                                return typeof proto[p] === 'function' &&
+                                    p !== 'constructor' &&
+                                    (i == 0 || p !== arr[i - 1]) &&
+                                    props.indexOf(p) === -1;
+                            } //not overridden in a child
+                            );
+                            props = props.concat(l);
+                        }
+                        catch (e) {
+                            /** bug fix implementation - using custom our own filter logic
+                                case of Array.filter polyfill causing "can not read property '0' of undefined" **/
+                            var arr = Object.getOwnPropertyNames(proto)
+                                .map(function (s) { return s.toString(); })
+                                .sort();
+                            var l = [];
+                            for (var i = 0; i < arr.length; i++) {
+                                var p = arr[i];
+                                if (typeof proto[p] === 'function' &&
+                                    p !== 'constructor' &&
+                                    (i == 0 || p !== arr[i - 1]) &&
+                                    props.indexOf(p) === -1) {
+                                    l.push(p);
+                                }
+                            }
+                            props = props.concat(l);
+                        }
+                    } while ((proto = Object.getPrototypeOf(proto)) &&
+                        Object.getPrototypeOf(proto) //not the the Object prototype methods (hasOwnProperty, etc...)
+                    );
+                    return props;
+                };
+            })(utils = proxy.utils || (proxy.utils = {}));
+        })(proxy = services.proxy || (services.proxy = {}));
+    })(services = gigya.services || (gigya.services = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var services;
+    (function (services) {
+        var proxy;
+        (function (proxy) {
+            function isSignalRequest(req) {
+                return Boolean(req.signal);
+            }
+            proxy.isSignalRequest = isSignalRequest;
+        })(proxy = services.proxy || (services.proxy = {}));
+    })(services = gigya.services || (gigya.services = {}));
+})(gigya || (gigya = {}));
+!function (t, e) {
+    t.ES6Promise = e();
+}(this, function () {
+    "use strict";
+    function t(t) {
+        return "function" == typeof t || "object" == typeof t && null !== t;
+    }
+    function e(t) {
+        return "function" == typeof t;
+    }
+    function n(t) {
+        I = t;
+    }
+    function r(t) {
+        J = t;
+    }
+    function o() {
+        return function () {
+            return process.nextTick(a);
+        };
+    }
+    function i() {
+        return "undefined" != typeof H ? function () {
+            H(a);
+        } : c();
+    }
+    function s() {
+        var t = 0, e = new V(a), n = document.createTextNode("");
+        return e.observe(n, { characterData: !0 }), function () {
+            n.data = t = ++t % 2;
+        };
+    }
+    function u() {
+        var t = new MessageChannel;
+        return t.port1.onmessage = a, function () {
+            return t.port2.postMessage(0);
+        };
+    }
+    function c() {
+        var t = setTimeout;
+        return function () {
+            return t(a, 1);
+        };
+    }
+    function a() {
+        for (var t = 0; t < G; t += 2) {
+            var e = $[t], n = $[t + 1];
+            e(n), $[t] = void 0, $[t + 1] = void 0;
+        }
+        G = 0;
+    }
+    function f() {
+        try {
+            var t = require, e = t("vertx");
+            return H = e.runOnLoop || e.runOnContext, i();
+        }
+        catch (n) {
+            return c();
+        }
+    }
+    function l(t, e) {
+        var n = arguments, r = this, o = new this.constructor(p);
+        void 0 === o[et] && k(o);
+        var i = r._state;
+        return i ? !function () {
+            var t = n[i - 1];
+            J(function () {
+                return x(i, o, t, r._result);
+            });
+        }() : E(r, o, t, e), o;
+    }
+    function h(t) {
+        var e = this;
+        if (t && "object" == typeof t && t.constructor === e)
+            return t;
+        var n = new e(p);
+        return g(n, t), n;
+    }
+    function p() {
+    }
+    function v() {
+        return new TypeError("You cannot resolve a promise with itself");
+    }
+    function d() {
+        return new TypeError("A promises callback cannot return that same promise.");
+    }
+    function _(t) {
+        try {
+            return t.then;
+        }
+        catch (e) {
+            return it.error = e, it;
+        }
+    }
+    function y(t, e, n, r) {
+        try {
+            t.call(e, n, r);
+        }
+        catch (o) {
+            return o;
+        }
+    }
+    function m(t, e, n) {
+        J(function (t) {
+            var r = !1, o = y(n, e, function (n) {
+                r || (r = !0, e !== n ? g(t, n) : S(t, n));
+            }, function (e) {
+                r || (r = !0, j(t, e));
+            }, "Settle: " + (t._label || " unknown promise"));
+            !r && o && (r = !0, j(t, o));
+        }, t);
+    }
+    function b(t, e) {
+        e._state === rt ? S(t, e._result) : e._state === ot ? j(t, e._result) : E(e, void 0, function (e) {
+            return g(t, e);
+        }, function (e) {
+            return j(t, e);
+        });
+    }
+    function w(t, n, r) {
+        n.constructor === t.constructor && r === l && n.constructor.resolve === h ? b(t, n) : r === it ? j(t, it.error) : void 0 === r ? S(t, n) : e(r) ? m(t, n, r) : S(t, n);
+    }
+    function g(e, n) {
+        e === n ? j(e, v()) : t(n) ? w(e, n, _(n)) : S(e, n);
+    }
+    function A(t) {
+        t._onerror && t._onerror(t._result), T(t);
+    }
+    function S(t, e) {
+        t._state === nt && (t._result = e, t._state = rt, 0 !== t._subscribers.length && J(T, t));
+    }
+    function j(t, e) {
+        t._state === nt && (t._state = ot, t._result = e, J(A, t));
+    }
+    function E(t, e, n, r) {
+        var o = t._subscribers, i = o.length;
+        t._onerror = null, o[i] = e, o[i + rt] = n, o[i + ot] = r, 0 === i && t._state && J(T, t);
+    }
+    function T(t) {
+        var e = t._subscribers, n = t._state;
+        if (0 !== e.length) {
+            for (var r = void 0, o = void 0, i = t._result, s = 0; s < e.length; s += 3)
+                r = e[s], o = e[s + n], r ? x(n, r, o, i) : o(i);
+            t._subscribers.length = 0;
+        }
+    }
+    function M() {
+        this.error = null;
+    }
+    function P(t, e) {
+        try {
+            return t(e);
+        }
+        catch (n) {
+            return st.error = n, st;
+        }
+    }
+    function x(t, n, r, o) {
+        var i = e(r), s = void 0, u = void 0, c = void 0, a = void 0;
+        if (i) {
+            if (s = P(r, o), s === st ? (a = !0, u = s.error, s = null) : c = !0, n === s)
+                return void j(n, d());
+        }
+        else
+            s = o, c = !0;
+        n._state !== nt || (i && c ? g(n, s) : a ? j(n, u) : t === rt ? S(n, s) : t === ot && j(n, s));
+    }
+    function C(t, e) {
+        try {
+            e(function (e) {
+                g(t, e);
+            }, function (e) {
+                j(t, e);
+            });
+        }
+        catch (n) {
+            j(t, n);
+        }
+    }
+    function O() {
+        return ut++;
+    }
+    function k(t) {
+        t[et] = ut++, t._state = void 0, t._result = void 0, t._subscribers = [];
+    }
+    function Y(t, e) {
+        this._instanceConstructor = t, this.promise = new t(p), this.promise[et] || k(this.promise), B(e) ? (this._input = e, this.length = e.length, this._remaining = e.length, this._result = new Array(this.length), 0 === this.length ? S(this.promise, this._result) : (this.length = this.length || 0, this._enumerate(), 0 === this._remaining && S(this.promise, this._result))) : j(this.promise, q());
+    }
+    function q() {
+        return new Error("Array Methods must be provided an Array");
+    }
+    function F(t) {
+        return new Y(this, t).promise;
+    }
+    function D(t) {
+        var e = this;
+        return new e(B(t) ? function (n, r) {
+            for (var o = t.length, i = 0; i < o; i++)
+                e.resolve(t[i]).then(n, r);
+        } : function (t, e) {
+            return e(new TypeError("You must pass an array to race."));
+        });
+    }
+    function K(t) {
+        var e = this, n = new e(p);
+        return j(n, t), n;
+    }
+    function L() {
+        throw new TypeError("You must pass a resolver function as the first argument to the promise constructor");
+    }
+    function N() {
+        throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
+    }
+    function U(t) {
+        this[et] = O(), this._result = this._state = void 0, this._subscribers = [], p !== t && ("function" != typeof t && L(), this instanceof U ? C(this, t) : N());
+    }
+    function W() {
+        var t = void 0;
+        if ("undefined" != typeof global)
+            t = global;
+        else if ("undefined" != typeof self)
+            t = self;
+        else
+            try {
+                t = Function("return this")();
+            }
+            catch (e) {
+                throw new Error("polyfill failed because global object is unavailable in this environment");
+            }
+        var n = t.Promise;
+        if (n) {
+            var r = null;
+            try {
+                r = Object.prototype.toString.call(n.resolve());
+            }
+            catch (e) {
+            }
+            if ("[object Promise]" === r && !n.cast)
+                return;
+        }
+        t.Promise = U;
+    }
+    var z = void 0;
+    z = Array.isArray ? Array.isArray : function (t) {
+        return "[object Array]" === Object.prototype.toString.call(t);
+    };
+    var B = z, G = 0, H = void 0, I = void 0, J = function (t, e) {
+        $[G] = t, $[G + 1] = e, G += 2, 2 === G && (I ? I(a) : tt());
+    }, Q = "undefined" != typeof window ? window : void 0, R = Q || {}, V = R.MutationObserver || R.WebKitMutationObserver, X = "undefined" == typeof self && "undefined" != typeof process && "[object process]" === {}.toString.call(process), Z = "undefined" != typeof Uint8ClampedArray && "undefined" != typeof importScripts && "undefined" != typeof MessageChannel, $ = new Array(1e3), tt = void 0;
+    tt = X ? o() : V ? s() : Z ? u() : void 0 === Q && "function" == typeof require ? f() : c();
+    var et = Math.random().toString(36).substring(16), nt = void 0, rt = 1, ot = 2, it = new M, st = new M, ut = 0;
+    return Y.prototype._enumerate = function () {
+        for (var t = this.length, e = this._input, n = 0; this._state === nt && n < t; n++)
+            this._eachEntry(e[n], n);
+    }, Y.prototype._eachEntry = function (t, e) {
+        var n = this._instanceConstructor, r = n.resolve;
+        if (r === h) {
+            var o = _(t);
+            if (o === l && t._state !== nt)
+                this._settledAt(t._state, e, t._result);
+            else if ("function" != typeof o)
+                this._remaining--, this._result[e] = t;
+            else if (n === U) {
+                var i = new n(p);
+                w(i, t, o), this._willSettleAt(i, e);
+            }
+            else
+                this._willSettleAt(new n(function (e) {
+                    return e(t);
+                }), e);
+        }
+        else
+            this._willSettleAt(r(t), e);
+    }, Y.prototype._settledAt = function (t, e, n) {
+        var r = this.promise;
+        r._state === nt && (this._remaining--, t === ot ? j(r, n) : this._result[e] = n), 0 === this._remaining && S(r, this._result);
+    }, Y.prototype._willSettleAt = function (t, e) {
+        var n = this;
+        E(t, void 0, function (t) {
+            return n._settledAt(rt, e, t);
+        }, function (t) {
+            return n._settledAt(ot, e, t);
+        });
+    }, U.all = F, U.race = D, U.resolve = h, U.reject = K, U._setScheduler = n, U._setAsap = r, U._asap = J, U.prototype = {
+        constructor: U,
+        then: l,
+        "catch": function (t) {
+            return this.then(null, t);
+        }
+    }, U.polyfill = W, U.Promise = U, U;
+});
+/// <reference path="../libs/es6-promise.min.js" />
+var gigya;
+(function (gigya) {
+    gigya.Promise = window['ES6Promise'];
+})(gigya || (gigya = {}));
+/// <reference path="utils.ts" />
+/// <reference path="interfaces.ts" />
+/// <reference path="../Gigya.Js/app/Utils/Promise.ts" />
+var __gig_awaiter = (this && this.__gig_awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments)).next());
+    });
+};
+var __gig_generator = (this && this.__gig_generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
+    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var gigya;
+(function (gigya) {
+    var services;
+    (function (services) {
+        var proxy;
+        (function (proxy) {
+            var ProxyListener = (function () {
+                function ProxyListener(_service, origin, _target, _win) {
+                    if (origin === void 0) { origin = proxy.utils.getParentUrl(); }
+                    if (_target === void 0) { _target = window.parent; }
+                    if (_win === void 0) { _win = window; }
+                    var _this = this;
+                    this._service = _service;
+                    this.origin = origin;
+                    this._target = _target;
+                    this._win = _win;
+                    this.stopCancellers = [];
+                    this._listening = false;
+                    this.onRequest = function (e) { return __gig_awaiter(_this, void 0, gigya.Promise, function () {
+                        var req, e_1;
+                        return __gig_generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (!proxy.utils.validateOrigin(this.origin, e.origin))
+                                        return [3 /*break*/, 7];
+                                    req = JSON.parse(e.data);
+                                    _a.label = 1;
+                                case 1:
+                                    _a.trys.push([1, 6, , 7]);
+                                    if (!gigya.services.proxy.isSignalRequest(req))
+                                        return [3 /*break*/, 3];
+                                    return [4 /*yield*/, this.handleSignalRequest(req)];
+                                case 2:
+                                    _a.sent();
+                                    return [3 /*break*/, 5];
+                                case 3: return [4 /*yield*/, this.handleProxyRequest(req)];
+                                case 4:
+                                    _a.sent();
+                                    _a.label = 5;
+                                case 5: return [3 /*break*/, 7];
+                                case 6:
+                                    e_1 = _a.sent();
+                                    this.postError({ res: e_1.message || e_1, id: req.id });
+                                    return [3 /*break*/, 7];
+                                case 7: return [2 /*return*/];
+                            }
+                        });
+                    }); };
+                }
+                Object.defineProperty(ProxyListener.prototype, "isListening", {
+                    get: function () {
+                        return this._listening;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                ProxyListener.prototype.listen = function (payload) {
+                    var _this = this;
+                    if (!this.isListening) {
+                        this._win.setTimeout(function () {
+                            _this._win.addEventListener('message', _this.onRequest, true);
+                            _this.postMessage({
+                                id: undefined,
+                                signal: 'listening',
+                                res: payload
+                            });
+                            _this._listening = true;
+                        }, 1);
+                    }
+                };
+                ProxyListener.prototype.stopListen = function () {
+                    if (this.isListening) {
+                        this._win.removeEventListener('message', this.onRequest, true);
+                        this._listening = false;
+                    }
+                };
+                ProxyListener.prototype.handleSignalRequest = function (req) {
+                    return __gig_awaiter(this, void 0, gigya.Promise, function () {
+                        var _a, cancel, res, payload;
+                        return __gig_generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    _a = req.signal;
+                                    switch (_a) {
+                                        case 'stop': return [3 /*break*/, 1];
+                                    }
+                                    return [3 /*break*/, 7];
+                                case 1: return [4 /*yield*/, this.getCancelResult()];
+                                case 2:
+                                    cancel = _b.sent();
+                                    res = void 0;
+                                    if (!!cancel)
+                                        return [3 /*break*/, 5];
+                                    this.stopListen();
+                                    payload = void 0;
+                                    if (!this.onStop)
+                                        return [3 /*break*/, 4];
+                                    payload = this.onStop();
+                                    if (!payload.then)
+                                        return [3 /*break*/, 4];
+                                    return [4 /*yield*/, payload];
+                                case 3:
+                                    payload = _b.sent();
+                                    _b.label = 4;
+                                case 4:
+                                    res = {
+                                        id: req.id,
+                                        signal: 'stop',
+                                        res: payload
+                                    };
+                                    return [3 /*break*/, 6];
+                                case 5:
+                                    res = {
+                                        id: req.id,
+                                        signal: 'error',
+                                        res: cancel
+                                    };
+                                    _b.label = 6;
+                                case 6:
+                                    this.postMessage(res);
+                                    return [3 /*break*/, 8];
+                                case 7: 
+                                // ignore
+                                return [3 /*break*/, 8];
+                                case 8: return [2 /*return*/];
+                            }
+                        });
+                    });
+                };
+                ProxyListener.prototype.getCancelResult = function () {
+                    return __gig_awaiter(this, void 0, gigya.Promise, function () {
+                        var _i, _a, shouldCancelStop, res;
+                        return __gig_generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    _i = 0, _a = this.stopCancellers;
+                                    _b.label = 1;
+                                case 1:
+                                    if (!(_i < _a.length))
+                                        return [3 /*break*/, 5];
+                                    shouldCancelStop = _a[_i];
+                                    res = shouldCancelStop();
+                                    if (!res.then)
+                                        return [3 /*break*/, 3];
+                                    return [4 /*yield*/, res];
+                                case 2:
+                                    res = _b.sent();
+                                    _b.label = 3;
+                                case 3:
+                                    if (res)
+                                        return [2 /*return*/, res];
+                                    _b.label = 4;
+                                case 4:
+                                    _i++;
+                                    return [3 /*break*/, 1];
+                                case 5: return [2 /*return*/, undefined];
+                            }
+                        });
+                    });
+                };
+                ProxyListener.prototype.handleProxyRequest = function (req) {
+                    return __gig_awaiter(this, void 0, gigya.Promise, function () {
+                        var res;
+                        return __gig_generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    this.validateRequest(req);
+                                    return [4 /*yield*/, this.forwardToService(req)];
+                                case 1:
+                                    res = _a.sent();
+                                    this.postMessage({
+                                        id: req.id,
+                                        res: res
+                                    });
+                                    return [2 /*return*/];
+                            }
+                        });
+                    });
+                };
+                ProxyListener.prototype.validateRequest = function (req) {
+                    if (!req.id || !req.methodName) {
+                        throw 'proxy request in invalid format';
+                    }
+                };
+                ProxyListener.prototype.forwardToService = function (req) {
+                    return __gig_awaiter(this, void 0, gigya.Promise, function () {
+                        var method, result;
+                        return __gig_generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    method = this._service[req.methodName];
+                                    result = method.apply(this._service, req.params);
+                                    if (!(result && result.then))
+                                        return [3 /*break*/, 2];
+                                    return [4 /*yield*/, result];
+                                case 1:
+                                    result = _a.sent();
+                                    _a.label = 2;
+                                case 2: return [2 /*return*/, result];
+                            }
+                        });
+                    });
+                };
+                ProxyListener.prototype.postMessage = function (msg) {
+                    var message = typeof msg === "object" ? JSON.stringify(msg) : msg;
+                    this._target.postMessage(message, this.origin);
+                };
+                ProxyListener.prototype.postError = function (err) {
+                    err.signal = 'error';
+                    this.postMessage(err);
+                };
+                return ProxyListener;
+            }());
+            proxy.ProxyListener = ProxyListener;
+        })(proxy = services.proxy || (services.proxy = {}));
+    })(services = gigya.services || (gigya.services = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var JSON;
+        (function (JSON) {
+            function serialize(obj, includeFunctions, prettyPrint, l, maxLevel) {
+                if (includeFunctions === void 0) { includeFunctions = false; }
+                if (prettyPrint === void 0) { prettyPrint = false; }
+                if (l === void 0) { l = 0; }
+                if (maxLevel === void 0) { maxLevel = 20; }
+                if (!gigya.localInfo.isIE8) {
+                    return window['JSON'].stringify(obj);
+                }
+                else {
+                    if (!l)
+                        l = 0;
+                    if (l > maxLevel)
+                        return '[Too deep]';
+                    var prefix = '';
+                    var newline = '';
+                    var tab = '';
+                    if (prettyPrint) {
+                        tab = '\t';
+                        newline = '\n';
+                        for (var i = 0; i < l + 1; i++) {
+                            prefix += tab;
+                        }
+                    }
+                    var t = typeof (obj);
+                    if (t == 'function') {
+                        return t.toString();
+                    }
+                    if (t != "object" || obj === null) {
+                        // simple data type
+                        if (t == "string")
+                            obj = '"' + obj.replace(/(\"|\\)/g, '\\$1').replace(/\r\n|\r|\n/g, '\\n') + '"';
+                        return String(obj);
+                    }
+                    else {
+                        var n, v, json = [], arr = (obj && obj.constructor == Array);
+                        if (arr) {
+                            for (var i = 0; i < obj.length; i++) {
+                                v = obj[i];
+                                t = typeof (v);
+                                if (v == null || t == "undefined")
+                                    v = '';
+                                else if (t == "string")
+                                    v = '"' + v.replace(/(\"|\\)/g, '\\$1').replace(/\r\n|\r|\n/g, '\\n') + '"';
+                                else if (t == 'function') {
+                                    if (includeFunctions)
+                                        v = 'Function';
+                                    else
+                                        v = '';
+                                }
+                                else if (v.parentNode && v.innerHTML)
+                                    v = 'HTMLElement';
+                                else if (v.constructor == Date)
+                                    v = '';
+                                else if (t == "object" && v !== null)
+                                    v = serialize(v, includeFunctions, prettyPrint, l + 1);
+                                if (String(v) != '')
+                                    json.push(prefix + tab + String(v));
+                            }
+                        }
+                        else {
+                            for (n in obj) {
+                                v = obj[n];
+                                t = typeof (v);
+                                if (v == null || t == "undefined")
+                                    v = String(v);
+                                else if (t == "string")
+                                    v = '"' + v.replace(/(\"|\\)/g, '\\$1').replace(/\r\n|\r|\n/g, '\\n') + '"';
+                                else if (t == 'function') {
+                                    if (includeFunctions) {
+                                        v = 'Function';
+                                    }
+                                    else {
+                                        v = '';
+                                    }
+                                }
+                                else if (v.parentNode && v.innerHTML)
+                                    v = 'HTMLElement';
+                                else if (v.constructor == Date)
+                                    v = '';
+                                else if (t == "object" && v !== null)
+                                    v = newline + serialize(v, includeFunctions, prettyPrint, l + 1);
+                                if (String(v) != '')
+                                    json.push(prefix + tab + '"' + n.replace(/(\"|\\)/g, '\\$1').replace(/\r\n|\r|\n/g, '\\n') + '":' + String(v));
+                            }
+                        }
+                        return newline + prefix + (arr ? "[" : "{") + newline + json.join(',' + newline) + newline + prefix + (arr ? "]" : "}");
+                    }
+                }
+            }
+            JSON.serialize = serialize;
+            /**
+             * De-serialize JavaScript, typically used for site-provided (external) JavaScript objects (not true JSON).
+             *
+             * Objects may include unquoted keys, functions, and variable references.
+             *
+             * Will never throw an exception.
+             */
+            function deserialize(json, defaultValue, scope) {
+                // Return default value if is empty string (or similar).
+                if (!json || !json.replace(/^\s+|\s+$/g, '')) {
+                    return defaultValue || {};
+                }
+                // Attempt to parse. On error, warn in console and return default value.
+                try {
+                    var keys = [];
+                    var values = [];
+                    if (scope) {
+                        for (var key in scope) {
+                            keys.push(key);
+                            values.push(scope[key]);
+                        }
+                    }
+                    var fn = eval("(function(" + keys.join(',') + ") { return " + json.trim() + "; })");
+                    return fn.apply(undefined, values);
+                }
+                catch (e) {
+                    console.warn('Error deserializing JavaScript', e);
+                    return defaultValue || {};
+                }
+            }
+            JSON.deserialize = deserialize;
+            /**
+             * De-serialize JSON inside of a try/catch block. Return default value on failure.
+             */
+            function parse(json, defaultValue) {
+                if (gigya.localInfo.isIE8) {
+                    return deserialize(json, defaultValue);
+                }
+                else {
+                    try {
+                        return window['JSON'].parse(json);
+                    }
+                    catch (e) {
+                        return defaultValue || {};
+                    }
+                }
+            }
+            JSON.parse = parse;
+        })(JSON = utils.JSON || (utils.JSON = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+/// <reference path="JSON.ts" />
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var object;
+        (function (object) {
+            function removeUndefined(o) {
+                var o2 = {};
+                for (var p in o) {
+                    if (o[p] != null && o[p] != undefined) {
+                        o2[p] = o[p];
+                    }
+                }
+                return o2;
+            }
+            object.removeUndefined = removeUndefined;
+            function getPropertyBySerializedName(o, name, createMissingObjects) {
+                if (!name)
+                    return o;
+                var oResult = o;
+                var arNameSegments = name.split('.');
+                for (var iSegment = 0; iSegment < arNameSegments.length; iSegment++) {
+                    var sSegment = arNameSegments[iSegment];
+                    if (createMissingObjects && !oResult[sSegment]) {
+                        oResult[sSegment] = {};
+                    }
+                    if (oResult[sSegment] || oResult[sSegment] === false) {
+                        oResult = oResult[sSegment];
+                    }
+                    else {
+                        return null;
+                    }
+                }
+                return oResult;
+            }
+            object.getPropertyBySerializedName = getPropertyBySerializedName;
+            function setPropertyBySerializedName(o, name, value) {
+                var arNameSegments = name.split('.');
+                var propertyName = arNameSegments.pop();
+                getPropertyBySerializedName(o, arNameSegments.join('.'), true)[propertyName] = value;
+            }
+            object.setPropertyBySerializedName = setPropertyBySerializedName;
+            function add(oTarget, o, dontOverride) {
+                for (var p in o) {
+                    if (!dontOverride || typeof oTarget[p] === 'undefined') {
+                        oTarget[p] = o[p];
+                    }
+                }
+            }
+            object.add = add;
+            function getHash(o) {
+                var ar = [];
+                for (var p in o) {
+                    var s;
+                    if (typeof o[p] == 'object')
+                        s = gigya.utils.JSON.serialize(o[p], false);
+                    else if (o[p])
+                        s = o[p].toString();
+                    ar.push(p + '=' + s);
+                }
+                return ar.sort().join('&');
+            }
+            object.getHash = getHash;
+            function getMurmurHash(key, seed) {
+                if (!seed)
+                    seed = 0;
+                var remainder, bytes, h1, h1b, c1, c1b, c2, c2b, k1, i;
+                remainder = key.length & 3; // key.length % 4
+                bytes = key.length - remainder;
+                h1 = seed;
+                c1 = 0xcc9e2d51;
+                c2 = 0x1b873593;
+                i = 0;
+                while (i < bytes) {
+                    k1 =
+                        ((key.charCodeAt(i) & 0xff)) |
+                            ((key.charCodeAt(++i) & 0xff) << 8) |
+                            ((key.charCodeAt(++i) & 0xff) << 16) |
+                            ((key.charCodeAt(++i) & 0xff) << 24);
+                    ++i;
+                    k1 = ((((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16))) & 0xffffffff;
+                    k1 = (k1 << 15) | (k1 >>> 17);
+                    k1 = ((((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16))) & 0xffffffff;
+                    h1 ^= k1;
+                    h1 = (h1 << 13) | (h1 >>> 19);
+                    h1b = ((((h1 & 0xffff) * 5) + ((((h1 >>> 16) * 5) & 0xffff) << 16))) & 0xffffffff;
+                    h1 = (((h1b & 0xffff) + 0x6b64) + ((((h1b >>> 16) + 0xe654) & 0xffff) << 16));
+                }
+                k1 = 0;
+                switch (remainder) {
+                    case 3:
+                        k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
+                    case 2:
+                        k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
+                    case 1:
+                        k1 ^= (key.charCodeAt(i) & 0xff);
+                        k1 = (((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16)) & 0xffffffff;
+                        k1 = (k1 << 15) | (k1 >>> 17);
+                        k1 = (((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16)) & 0xffffffff;
+                        h1 ^= k1;
+                }
+                h1 ^= key.length;
+                h1 ^= h1 >>> 16;
+                h1 = (((h1 & 0xffff) * 0x85ebca6b) + ((((h1 >>> 16) * 0x85ebca6b) & 0xffff) << 16)) & 0xffffffff;
+                h1 ^= h1 >>> 13;
+                h1 = ((((h1 & 0xffff) * 0xc2b2ae35) + ((((h1 >>> 16) * 0xc2b2ae35) & 0xffff) << 16))) & 0xffffffff;
+                h1 ^= h1 >>> 16;
+                return h1 >>> 0;
+            }
+            object.getMurmurHash = getMurmurHash;
+            function clone(obj, deepCopy, ignoreFunctions, maxLevel, level, ignoreContext) {
+                if (maxLevel === void 0) { maxLevel = 20; }
+                if (level === void 0) { level = 0; }
+                if (level > maxLevel)
+                    return null; // Too deep
+                if (typeof obj == 'undefined' || obj == null) {
+                    return null;
+                }
+                else if (typeof obj == 'function' && ignoreFunctions) {
+                    return null;
+                }
+                else if (obj.constructor == Array) {
+                    var ar = [];
+                    for (var i = 0; i < obj.length; i++) {
+                        if (!ignoreFunctions || typeof obj[i] != 'function') {
+                            if (deepCopy) {
+                                ar[i] = clone(obj[i], deepCopy, ignoreFunctions, maxLevel, level + 1, ignoreContext);
+                            }
+                            else {
+                                ar[i] = obj[i];
+                            }
+                        }
+                    }
+                    return ar;
+                }
+                else if (typeof obj == 'object') {
+                    var o = {};
+                    for (var p in obj) {
+                        if (ignoreContext && p == 'context')
+                            continue;
+                        if (!ignoreFunctions || typeof obj[p] != 'function') {
+                            if (deepCopy) {
+                                o[p] = clone(obj[p], deepCopy, ignoreFunctions, maxLevel, level + 1, ignoreContext);
+                            }
+                            else {
+                                o[p] = obj[p];
+                            }
+                        }
+                    }
+                    return o;
+                }
+                else {
+                    return obj;
+                }
+            }
+            object.clone = clone;
+            function merge(args, isDeepMerge) {
+                var o = {};
+                for (var i = 0; i < args.length; i++) {
+                    if (args[i] && args[i].length) {
+                        for (var u = 0; u < args[i].length; u++) {
+                            for (var p in args[i][u]) {
+                                o[p] = args[i][u][p];
+                            }
+                        }
+                    }
+                    else {
+                        // Merge objects.
+                        if (!isDeepMerge) {
+                            // Flat merge.
+                            for (var p in args[i]) {
+                                o[p] = args[i][p];
+                            }
+                        }
+                        else {
+                            // Deep merge.
+                            for (var p in args[i]) {
+                                if (typeof o[p] !== 'object') {
+                                    o[p] = args[i][p];
+                                }
+                                else {
+                                    o[p] = merge([o[p], args[i][p]], true);
+                                }
+                            }
+                        }
+                    }
+                }
+                return o;
+            }
+            object.merge = merge;
+            // http://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects
+            function unflatten(data) {
+                if (Object(data) !== data || Array.isArray(data)) {
+                    return data;
+                }
+                var result = {};
+                for (var p in data) {
+                    var cur = result;
+                    var prop = '';
+                    var parts = p.split('.');
+                    for (var i = 0; i < parts.length; i++) {
+                        var idx = !isNaN(Number(parts[i]));
+                        cur = cur[prop] || (cur[prop] = (idx ? [] : {}));
+                        prop = parts[i];
+                    }
+                    cur[prop] = data[p];
+                }
+                return result[''] || {};
+            }
+            object.unflatten = unflatten;
+            // http://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects
+            function flatten(data) {
+                var result = {};
+                function recurse(cur, prop) {
+                    if (Object(cur) !== cur) {
+                        result[prop] = cur;
+                    }
+                    else if (Array.isArray(cur)) {
+                        var l = cur.length;
+                        for (var i = 0; i < l; i++) {
+                            recurse(cur[i], prop ? prop + "." + i : String(i));
+                        }
+                        if (l === 0) {
+                            result[prop] = [];
+                        }
+                    }
+                    else {
+                        var isEmpty = true;
+                        for (var p in cur) {
+                            isEmpty = false;
+                            recurse(cur[p], prop ? prop + "." + p : p);
+                        }
+                        if (isEmpty && prop !== '') {
+                            result[prop] = {};
+                        }
+                    }
+                }
+                recurse(data, '');
+                return result;
+            }
+            object.flatten = flatten;
+            function extractProperties(src, dest, schema) {
+                if (src == null)
+                    return;
+                if (dest == null)
+                    dest = {};
+                if (src.constructor == Array) {
+                    for (var iSrc = 0; iSrc < src.length; iSrc++) {
+                        extractProperties(src[iSrc], dest, schema);
+                    }
+                }
+                else if (schema) {
+                    var arSchema = schema.split('|');
+                    var srcLCase = {};
+                    for (var fieldName in src) {
+                        srcLCase[fieldName.toLowerCase()] = 1;
+                    }
+                    for (var i = 0; i < arSchema.length; i++) {
+                        var fieldName2 = arSchema[i];
+                        if (srcLCase[fieldName2.toLowerCase()])
+                            dest[fieldName2] = src[fieldName2];
+                    }
+                }
+                else {
+                    dest = gigya.utils.object.clone(src, false);
+                }
+                return dest;
+            }
+            object.extractProperties = extractProperties;
+            function extractProperty(src, paramName) {
+                var params;
+                return extractProperties(src, params, paramName)[paramName];
+            }
+            object.extractProperty = extractProperty;
+        })(object = utils.object || (utils.object = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+/// <reference path="object.ts" />
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var URL;
+        (function (URL) {
+            function URLEncode(value) {
+                return encodeURIComponent(value);
+            }
+            URL.URLEncode = URLEncode;
+            function URLDecode(value) {
+                return decodeURIComponent(value.replace(/\+/g, ' '));
+            }
+            URL.URLDecode = URLDecode;
+            function getParamsFromURL(url, keysToLower) {
+                if (!url || url.indexOf('?') === -1) {
+                    return {};
+                }
+                return gigya.utils.keyValue.deserialize(url.split('#')[0].split('?')[1], '&', keysToLower);
+            }
+            URL.getParamsFromURL = getParamsFromURL;
+            function getParamValueFromURL(param, url, defaultValue) {
+                if (null == url || '' == url) {
+                    return defaultValue;
+                }
+                var iqm = url.indexOf('?');
+                if (iqm === -1) {
+                    return defaultValue;
+                }
+                var qs = '&' + url.substr(iqm + 1);
+                var idx = qs.toLowerCase().indexOf('&' + param.toLowerCase() + '=');
+                if (idx === -1) {
+                    return defaultValue;
+                }
+                var valAndMore = qs.substr(idx + (1 + param.length + 1)) + '&';
+                idx = valAndMore.indexOf('&');
+                return valAndMore.substr(0, idx);
+            }
+            URL.getParamValueFromURL = getParamValueFromURL;
+            function addParamsToURL(url, oParams) {
+                var params = gigya.utils.URL.getParamsFromURL(url);
+                gigya.utils.object.add(params, oParams);
+                var urlHashSplit = url.split('#');
+                var finalUrl = urlHashSplit[0].split('?')[0] + '?' + gigya.utils.keyValue.serialize(params, '&');
+                if (urlHashSplit.length > 1) {
+                    finalUrl += '#' + urlHashSplit[1];
+                }
+                return finalUrl;
+            }
+            URL.addParamsToURL = addParamsToURL;
+        })(URL = utils.URL || (utils.URL = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+/// <reference path="URL.ts" />
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var keyValue;
+        (function (keyValue) {
+            function serialize(oKeyValue, delimiter) {
+                var a = [];
+                if (!delimiter) {
+                    delimiter = '&';
+                }
+                for (var p in oKeyValue) {
+                    switch (typeof oKeyValue[p]) {
+                        case 'function':
+                            break;
+                        case 'array':
+                        case 'object':
+                            if (oKeyValue[p] != null) {
+                                a.push(p + '=' + gigya.utils.URL.URLEncode(gigya.utils.JSON.serialize(oKeyValue[p])));
+                            }
+                            break;
+                        case 'undefined':
+                            break;
+                        default:
+                            a.push(p + '=' + gigya.utils.URL.URLEncode(oKeyValue[p]));
+                    }
+                }
+                var s = a.join(delimiter);
+                return s;
+            }
+            keyValue.serialize = serialize;
+            function deserialize(urlEncodedString, delimiter, keysToLower, useUnescape) {
+                var o = {};
+                if (!urlEncodedString) {
+                    return o;
+                }
+                if (!delimiter) {
+                    delimiter = '&';
+                }
+                var pairs = urlEncodedString.split(delimiter);
+                for (var iPair = 0; iPair < pairs.length; iPair++) {
+                    var pair = pairs[iPair];
+                    var eqPos = pair.indexOf('=');
+                    if (eqPos === -1) {
+                        var key = keysToLower ? pair.toLowerCase() : pair;
+                        o[key] = '1';
+                    }
+                    else {
+                        var key = pair.substr(0, eqPos);
+                        if (keysToLower) {
+                            key = key.toLowerCase();
+                        }
+                        var serializedValue = (pair.substr(eqPos + 1)).replace(/\+/g, ' ');
+                        try {
+                            o[key] = useUnescape ? unescape(serializedValue) : gigya.utils.URL.URLDecode(serializedValue);
+                        }
+                        catch (ex) {
+                            o[key] = unescape(serializedValue);
+                        }
+                    }
+                }
+                return o;
+            }
+            keyValue.deserialize = deserialize;
+        })(keyValue = utils.keyValue || (utils.keyValue = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var _;
+    (function (_) {
+        // class is only partially implemented just to handle domain validation
+        var Uri = (function () {
+            function Uri(url, isAbsolute) {
+                if (isAbsolute === void 0) { isAbsolute = true; }
+                this._anchor = document.createElement('a');
+                if (isAbsolute && url.indexOf('http') !== 0 && url.charAt(0) !== '/')
+                    url = gigya.localInfo.protocol + "://" + url;
+                this._anchor.href = url;
+            }
+            Object.defineProperty(Uri.prototype, "domain", {
+                get: function () {
+                    return this._anchor.hostname;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Uri.prototype, "path", {
+                get: function () {
+                    return this._anchor.pathname;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Uri.prototype, "search", {
+                get: function () {
+                    return this._anchor.search.slice(1);
+                } // dropping '?'
+                ,
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Uri.prototype, "hash", {
+                get: function () {
+                    return this._anchor.hash.slice(1);
+                } // dropping '#'
+                ,
+                enumerable: true,
+                configurable: true
+            });
+            Uri.prototype.toString = function () {
+                return this._anchor.href;
+            };
+            Uri.prototype.addToSearch = function (params) {
+                for (var name in params) {
+                    var val = params[name];
+                    if ((typeof val == 'boolean'
+                        || typeof val == 'number'
+                        || typeof val == 'string') && name != 'eventName') {
+                        var addition = this._anchor.search ? '&' : '';
+                        this._anchor.search += "" + addition + name + "=" + encodeURIComponent(params[name]);
+                    }
+                }
+            };
+            Uri.prototype.isBaseOf = function (url) {
+                return Uri.parse(url).isIn(this);
+            };
+            Uri.prototype.isIn = function (base) {
+                if (typeof base === 'string') {
+                    base = Uri.parse(base);
+                }
+                return (this.domain == base.domain // page is the base domain 
+                    || this.isSubDomainOf(base)) // or sub-domain of it
+                    && (!base.path || this.path.indexOf(base.path) == 0); // page is also in base's defined path;
+            };
+            Uri.prototype.isForSubDomains = function () {
+                return this.domain.indexOf('.') == 0;
+            };
+            Uri.prototype.isSubDomainOf = function (base) {
+                var domain = '';
+                if (!base.isForSubDomains())
+                    domain = '.';
+                domain += base.domain;
+                return gigya.utils.stringUtils.endsWith(this.domain, domain);
+            };
+            Uri.parse = function (url, isAbsolute) {
+                if (isAbsolute === void 0) { isAbsolute = true; }
+                if (!url)
+                    return undefined;
+                return new Uri(url, isAbsolute);
+            };
+            return Uri;
+        }());
+        _.Uri = Uri;
+    })(_ = gigya._ || (gigya._ = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var stringUtils;
+        (function (stringUtils) {
+            function trim(s) {
+                return s.replace(/^\s*(\S*(.*\S)?)\s*$/, '$1');
+            }
+            stringUtils.trim = trim;
+            function format(s) {
+                var rest = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    rest[_i - 1] = arguments[_i];
+                }
+                for (var i = 0; i < arguments.length - 1; i++) {
+                    if (arguments[i + 1] != null) {
+                        s = s.split('{' + i + '}').join(arguments[i + 1]);
+                    }
+                }
+                return s;
+            }
+            stringUtils.format = format;
+            function capitalize(s) {
+                return s.substring(0, 1).toUpperCase() + s.substring(1);
+            }
+            stringUtils.capitalize = capitalize;
+            function endsWith(s, suffix) {
+                return s.indexOf(suffix, s.length - suffix.length) !== -1;
+            }
+            stringUtils.endsWith = endsWith;
+            function escapeRegExp(str) {
+                return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+            }
+            stringUtils.escapeRegExp = escapeRegExp;
+            function replaceAll(str, find, replace) {
+                if (!find)
+                    return str;
+                return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+            }
+            stringUtils.replaceAll = replaceAll;
+        })(stringUtils = utils.stringUtils || (utils.stringUtils = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+/// <reference path="Uri.ts" />
+/// <reference path="stringUtils.ts" />
+var gigya;
+(function (gigya) {
+    var _;
+    (function (_) {
+        function apiDomainFactory(apiDomain, defaultApiDomain) {
+            if (apiDomain === void 0) { apiDomain = resolveApiDomain(); }
+            if (defaultApiDomain === void 0) { defaultApiDomain = gigya.defaultApiDomain; }
+            var shouldAddNamespace = _.Uri.parse(apiDomain).isIn(_.Uri.parse(defaultApiDomain));
+            return function (namespace) {
+                if (namespace && shouldAddNamespace)
+                    return namespace.split('.')[0] + "." + apiDomain;
+                else
+                    return apiDomain;
+            };
+        }
+        _.apiDomainFactory = apiDomainFactory;
+        /*
+        This function's purpose is to load internal resources, as sso.htm and SSOGateway.aspx,
+        that should always come from gigya's domain.
+         */
+        function getGigyaDomain(namespace, dataCenter, defaultDomain) {
+            if (dataCenter === void 0) { dataCenter = gigya.dataCenter; }
+            if (defaultDomain === void 0) { defaultDomain = gigya.defaultApiDomain; }
+            var domain = dataCenter + "." + defaultDomain;
+            if (namespace)
+                return namespace + "." + domain;
+            else
+                return domain;
+        }
+        _.getGigyaDomain = getGigyaDomain;
+        function getBaseDomain(baseDomains, currentDomain, defaultDomains) {
+            if (baseDomains === void 0) { baseDomains = gigya.partnerSettings.baseDomains.split(','); }
+            if (currentDomain === void 0) { currentDomain = location.hostname; }
+            if (defaultDomains === void 0) { defaultDomains = ['gigya.com', gigya.defaultApiDomain]; }
+            // #49786 - Support webview without hostname.
+            if (!currentDomain) {
+                return '';
+            }
+            var originURI = _.Uri.parse(currentDomain);
+            if (defaultDomains) {
+                baseDomains = baseDomains.concat(defaultDomains);
+            }
+            for (var i = 0; i < baseDomains.length; i++) {
+                // This does not take care of wildcards in the middle of string.
+                var baseDomain = gigya.utils.stringUtils.replaceAll(baseDomains[i], '*', '');
+                var baseUri = _.Uri.parse(baseDomain);
+                if (originURI.isIn(baseUri)) {
+                    if (baseUri.isForSubDomains()) {
+                        return originURI.domain;
+                    }
+                    else {
+                        return baseUri.domain;
+                    }
+                }
+            }
+            // fallback to the parent's window domain (for backward compatibility).
+            return originURI.domain;
+        }
+        _.getBaseDomain = getBaseDomain;
+        function resolveApiDomain(customApiDomainPrefix, baseDomain, dataCenter, defaultApiDomain) {
+            if (customApiDomainPrefix === void 0) { customApiDomainPrefix = gigya.partnerSettings && gigya.partnerSettings.customAPIDomainPrefix; }
+            if (baseDomain === void 0) { baseDomain = gigya.localInfo.baseDomain; }
+            if (dataCenter === void 0) { dataCenter = gigya.dataCenter; }
+            if (defaultApiDomain === void 0) { defaultApiDomain = gigya.defaultApiDomain; }
+            if (customApiDomainPrefix && baseDomain) {
+                return customApiDomainPrefix + "." + baseDomain;
+            }
+            else {
+                return getGigyaDomain(undefined, dataCenter, defaultApiDomain);
+            }
+        }
+        _.resolveApiDomain = resolveApiDomain;
+    })(_ = gigya._ || (gigya._ = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var cookie;
+        (function (cookie) {
+            function _getBaseDomain() {
+                return gigya.localInfo.baseDomain || '';
+            }
+            cookie._getBaseDomain = _getBaseDomain;
+            function getDefaultDomain(pageDomain, baseDomain) {
+                if (pageDomain === void 0) { pageDomain = gigya.localInfo.pageDomain; }
+                if (baseDomain === void 0) { baseDomain = _getBaseDomain(); }
+                var cookieDomain;
+                cookieDomain = ((baseDomain.length > 0) &&
+                    (pageDomain.length >= baseDomain.length) &&
+                    (pageDomain.lastIndexOf(baseDomain) === pageDomain.length - baseDomain.length)) ? baseDomain : pageDomain;
+                return cookieDomain;
+            }
+            cookie.getDefaultDomain = getDefaultDomain;
+            function get(name) {
+                name = name.replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1').replace(/^[ \t]+|[ \t]+$/g, '');
+                var regex = new RegExp('(?:^|;)\\s?' + name + '=(.*?)(?:;|$)');
+                var match = document.cookie.match(regex);
+                return match && unescape(match[1]);
+            }
+            cookie.get = get;
+            function set(name, value, expires_in, cookieDomain, dontUseRootPath) {
+                var pageDomain = gigya.localInfo.pageDomain;
+                if (cookieDomain == null) {
+                    cookieDomain = getDefaultDomain();
+                }
+                var expireMs;
+                if (expires_in == null || expires_in === '' || isNaN(expires_in)) {
+                    expireMs = 1000 * getInfiniteExpirationTimeInSeconds();
+                }
+                else if (expires_in == 0) {
+                    expireMs = null;
+                }
+                else {
+                    expireMs = expires_in * 1000;
+                }
+                var exdate = new Date();
+                exdate.setTime(exdate.getTime() + expireMs);
+                var cookieString = name + '=' + escape(value) + (dontUseRootPath ? '' : '; path=/') +
+                    ((expireMs == null) ? '' : '; expires=' + exdate.toUTCString()) + ((cookieDomain && cookieDomain != '' && cookieDomain.indexOf('.') != -1) ? '; domain=' + cookieDomain : '');
+                document.cookie = cookieString;
+                // Some browsers like IE8 don't like some domains (e.g. domains of the form xx.yy)
+                // http://stackoverflow.com/questions/1189638/internet-explorer-xx-yy-website-issue
+                if ((!expireMs || expireMs > 0) && !cookie.get(name)) {
+                    cookieString = name + '=' + escape(value) + (dontUseRootPath ? '' : '; path=/') +
+                        ((expireMs == null) ? '' : '; expires=' + exdate.toUTCString()) + ((pageDomain && pageDomain != '' && pageDomain.indexOf('.') != -1) ? '; domain=' + pageDomain : '');
+                    document.cookie = cookieString;
+                }
+            }
+            cookie.set = set;
+            function remove(name) {
+                var pageDomain = gigya.localInfo.pageDomain;
+                var baseDomain = cookie._getBaseDomain();
+                if ((baseDomain.length > 0) && (pageDomain.length >= baseDomain.length)
+                    && (pageDomain.lastIndexOf(baseDomain) === pageDomain.length - baseDomain.length)) {
+                    set(name, '', -1, baseDomain); // remove also from the subDomain.
+                    set(name, '', -1, baseDomain, true);
+                }
+                set(name, '', -1, gigya.localInfo.pageDomain);
+                set(name, '', -1, gigya.localInfo.pageDomain, true);
+                set(name, '', -1, '');
+                set(name, '', -1, '', true);
+            }
+            cookie.remove = remove;
+            function getInfiniteExpirationTimeInSeconds() {
+                // Set expiration time to 15 years
+                return 60 * 60 * 24 * 365 * 15;
+            }
+            cookie.getInfiniteExpirationTimeInSeconds = getInfiniteExpirationTimeInSeconds;
+            function canSaveCookie(doc) {
+                if (doc === void 0) { doc = document; }
+                var d = new Date((new Date().getTime()) + 1000); // 1 second expiration.
+                doc.cookie = 'gig3pctest=true;expires=' + d['toGMTString']();
+                return doc.cookie.indexOf('gig3pctest') !== -1;
+            }
+            cookie.canSaveCookie = canSaveCookie;
+        })(cookie = utils.cookie || (utils.cookie = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+/// <reference path="serverInjected.ts" />
+/// <reference path="Utils/domains.ts" />
+/// <reference path="Utils/cookie.ts" />
+// Local environment info (browser, capabilities, hosting domain)
+var gigya;
+(function (gigya) {
+    var userAgent = navigator.userAgent.toLowerCase();
+    gigya.localInfo = {
+        baseDomain: '',
+        isBrowserSupportsFilesAPI: (function () {
+            return typeof FileReader === 'function' || typeof FileReader === 'object' ? true : false;
+        })(),
+        initTime: (new Date()),
+        version: 0,
+        pageDomain: document.location.hostname,
+        protocol: document.location.protocol == 'http:' ? 'http' : 'https',
+        userAgent: userAgent,
+        isWin: (userAgent.indexOf("win") != -1),
+        isIE: (userAgent.indexOf("msie") != -1 || (userAgent.indexOf('mozilla') != -1 && userAgent.indexOf('trident') != -1)),
+        isIE6: (userAgent.indexOf("msie 6.") != -1),
+        isIE7: (userAgent.indexOf("msie 7.") != -1),
+        isIE8: (userAgent.indexOf("msie 8.") != -1),
+        isIE9: (userAgent.indexOf("msie 9.") != -1),
+        isIE10: (userAgent.indexOf("msie 10.") != -1),
+        isIE11: (userAgent.indexOf('mozilla') != -1 && userAgent.indexOf('trident/7.0') != -1),
+        isEdge: (userAgent.indexOf('edge') != -1),
+        isIOS: (userAgent.indexOf("iphone") != -1 || userAgent.indexOf("ipad") != -1 || userAgent.indexOf("ipod") != -1),
+        isSafari534: (userAgent.indexOf("safari/534") != -1),
+        iosVersion: (function () {
+            if (userAgent.indexOf('applewebkit') != -1 && userAgent.indexOf('version/') != -1) {
+                return parseInt(userAgent.split('version/')[1].split(' ')[0]);
+            }
+            else
+                return 0;
+        })(),
+        isAndroid: (userAgent.indexOf("android") != -1),
+        isAndroidBrowser: (function (userAgent) {
+            if (userAgent.indexOf('mozilla/5.0') === -1)
+                return false;
+            if (userAgent.indexOf('android 4') === -1)
+                return false;
+            if (userAgent.indexOf('applewebkit') === -1)
+                return false;
+            if (userAgent.indexOf('windows phone') !== -1)
+                return false;
+            // Special user agents found so far that violate the existance of chrome rule
+            // Bug 38367 Android Browser: Mozilla/5.0 (Linux; Android 4.2.2; en-us; SAMSUNG GT-I9500 Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Version/1.0 Chrome/18.0.1025.308 Mobile Safari/535.19
+            // Bug 40209 Chrome Browser: Mozilla/5.0 (Linux; Android 4.2.2; SAMSUNG SGT-I747 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.93 Mobile Safari/537.36
+            // Windows Phone Browser: Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 920) like iPhone OS 7_0_3 Mac OS X AppleWebKit/537 (KHTML, like Gecko) Mobile Safari/537
+            // Chrome Browser: Mozilla/5.0 (Linux; Android 4.2.2; en-gb; SAMSUNG GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/1.5 Chrome/28.0.1500.94 Mobile Safari/537.36
+            var chromeInfo = /chrome\/(\d+)/.exec(userAgent);
+            if (!chromeInfo)
+                return true;
+            var chromeVersion = parseInt(chromeInfo[1]);
+            return (chromeVersion < 20);
+        })(userAgent),
+        currentBrowser: '',
+        androidVersion: (function () {
+            if (userAgent.indexOf('android') != -1) {
+                return parseFloat(userAgent.slice(userAgent.indexOf("android") + 8));
+            }
+            else
+                return 0;
+        })(),
+        isChrome: (userAgent.indexOf("chrome") != -1 && userAgent.indexOf('edge') == -1),
+        isGoogleBot: userAgent.indexOf("googlebot") != -1,
+        isFF: (userAgent.indexOf("firefox") != -1),
+        isOpera: (userAgent.indexOf("opera") != -1),
+        isSafari: (navigator.appVersion && navigator.appVersion.toLowerCase().indexOf("safari") != -1
+            && navigator.appVersion.toLowerCase().indexOf('chrome') == -1 && userAgent.indexOf("android") == -1),
+        isIOSWebView: /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent),
+        isIOSChrome: (userAgent.indexOf("crios") != -1),
+        isMAC: (navigator.appVersion && navigator.appVersion.toLowerCase().indexOf("mac") != -1) ? true : false,
+        isWindowsPhone: userAgent.indexOf("windows phone") != -1,
+        supportsPostMessage: (window.postMessage != null && (userAgent.indexOf("msie") == -1 || userAgent.indexOf("iemobile") != -1)),
+        canSaveCookie: gigya.utils.cookie.canSaveCookie(),
+        supportsLocalStorage: false,
+        supportsSessionStorage: false,
+        supportsFlash: (function () {
+            // http://stackoverflow.com/questions/998245/how-can-i-detect-if-flash-is-installed-and-if-not-display-a-hidden-div-that-inf
+            var supportsFlash = false;
+            try {
+                if (navigator.mimeTypes
+                    && navigator.mimeTypes['application/x-shockwave-flash'] != undefined
+                    && navigator.mimeTypes['application/x-shockwave-flash'].enabledPlugin) {
+                    supportsFlash = true;
+                }
+                else {
+                    var fo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+                    if (fo) {
+                        supportsFlash = true;
+                    }
+                }
+            }
+            catch (e) { }
+            return supportsFlash;
+        })(),
+        quirksMode: (document.compatMode == 'BackCompat' && userAgent.indexOf("msie") != -1),
+        backCompat: (document.compatMode == 'BackCompat'),
+        // TODO: Add isTablet function for devices non-Mobile
+        isMobile: (function () {
+            var mobileClients = ['iphone', 'ipod', 'android', 'midp', '240x320', 'blackberry', 'netfront', 'nokia', 'panasonic', 'portalmmm', 'sharp', 'sie-', 'sonyericsson', 'symbian', 'windows ce', 'benq', 'mda', 'mot-', 'opera mini', 'philips', 'pocket pc', 'sagem', 'samsung', 'htc'];
+            for (var i in mobileClients) {
+                if (userAgent.indexOf(mobileClients[i]) != -1) {
+                    return true;
+                }
+            }
+            return false;
+        })(),
+        isMobileApp: (function () {
+            if (!document.getElementsByTagName)
+                return false;
+            var metaTags = document.getElementsByTagName('meta');
+            for (var i = 0; i < metaTags.length; i++) {
+                if (metaTags[i].getAttribute('name') == 'viewport') {
+                    var content = metaTags[i].getAttribute('content');
+                    if (content && (content.indexOf('width=device-width') !== -1))
+                        return true;
+                }
+            }
+            return false;
+        })(),
+        isNativeMobileApp: false,
+        isTouch: (function () {
+            if ('ontouchstart' in window)
+                return true;
+            if ('onmsgesturechange' in window) {
+                // Try to determine if IE is open in metro mode. Metro doesn't allow activeX, that's the best test available as of IE11.                
+                try {
+                    new ActiveXObject("htmlfile");
+                    return false;
+                }
+                catch (e) {
+                    return true;
+                }
+            }
+            return false;
+        })(),
+        messagingMethod: 0
+    };
+    var isStorageEnabled = function (storageName) {
+        try {
+            var storage = window[storageName];
+            if (!storage) {
+                return false;
+            }
+            var testName = '_gig_localStorage_test';
+            var testValue = 'just checking for localStorage';
+            storage.setItem(testName, testValue);
+            var result = storage.getItem(testName) === testValue;
+            storage.removeItem(testName);
+            return result;
+        }
+        catch (ex) {
+            // Reasons:
+            // - Inside 3rd party API proxy iFrame.
+            // - Safari in incognito mode will error with "quota exceeded".
+            // - Chrome with 3rd party cookies disabled will throw an error if you access the window.localStorage object in ANY way.
+            return false;
+        }
+    };
+    gigya.localInfo.supportsLocalStorage = isStorageEnabled('localStorage');
+    gigya.localInfo.supportsSessionStorage = isStorageEnabled('sessionStorage');
+    if (gigya.localInfo.isIE11 && !window.indexedDB)
+        gigya.localInfo.supportsPostMessage = false;
+    /// IMPORTANT: changing the messaging method should also affect the one in 
+    /// bootstrap.ts/setMessagingMethod
+    /// LocalInfo.ts
+    // iPhones also match isMAC's criteria.
+    gigya.localInfo.isMAC = gigya.localInfo.isMAC && !gigya.localInfo.isIOS;
+    var os = gigya.localInfo.isWin ? 'windows' :
+        gigya.localInfo.isWindowsPhone ? 'winphone' :
+            gigya.localInfo.isIOS ? 'ios-v' + gigya.localInfo.iosVersion :
+                gigya.localInfo.isMAC ? 'mac' :
+                    gigya.localInfo.isAndroid ? 'android' : '';
+    if (os)
+        os += ' ';
+    var browser = gigya.localInfo.isChrome ? 'chrome' :
+        gigya.localInfo.isFF ? 'firefox' :
+            gigya.localInfo.isSafari ? 'safari' :
+                gigya.localInfo.isEdge ? 'edge' :
+                    gigya.localInfo.isIE11 ? 'ie11' :
+                        gigya.localInfo.isIE10 ? 'ie10' :
+                            gigya.localInfo.isIE9 ? 'ie9' :
+                                gigya.localInfo.isIE8 ? 'ie8' : '';
+    gigya.localInfo.currentBrowser = os + browser;
+    var baseDomains;
+    if (gigya.partnerSettings && gigya.partnerSettings.baseDomains) {
+        baseDomains = gigya.partnerSettings.baseDomains.split(',');
+    }
+    else {
+        if (window.self === window.top) {
+            console.log('gigya: missing base domains for site');
+        }
+        baseDomains = [document.location.hostname];
+    }
+    gigya.localInfo.baseDomain = gigya._.getBaseDomain(baseDomains);
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var array;
+        (function (array_1) {
+            function indexOf(ar, o) {
+                for (var i = 0; i < ar.length; i++) {
+                    if (ar[i] == o)
+                        return i;
+                }
+                return -1;
+            }
+            array_1.indexOf = indexOf;
+            function clone(ar) {
+                var ar2 = [];
+                for (var i = 0; i < ar.length; i++) {
+                    ar2[i] = ar[i];
+                }
+                return ar2;
+            }
+            array_1.clone = clone;
+            function removeByValue(ar, value) {
+                if (!ar)
+                    return;
+                for (var i = ar.length - 1; i >= 0; i--) {
+                    if (ar[i] == value) {
+                        ar.splice(i, 1);
+                    }
+                }
+            }
+            array_1.removeByValue = removeByValue;
+            function removeByProperty(ar, property, value) {
+                if (!ar)
+                    return;
+                for (var i = ar.length - 1; i >= 0; i--) {
+                    if (ar[i][property] == value) {
+                        ar.splice(i, 1);
+                    }
+                }
+            }
+            array_1.removeByProperty = removeByProperty;
+            function getArrayFromString(str, delimiter, lowerCase) {
+                // check for string type in the input and not empty.
+                if (!str || typeof str != 'string')
+                    return [];
+                // lowercase if demended
+                if (lowerCase)
+                    str = str.toLowerCase();
+                // clean the string:
+                str = str.replace(/[ ]/g, '').replace(/,,/g, ',');
+                // if string empty
+                if (!str)
+                    return [];
+                // return array from string
+                return str.split(delimiter);
+            }
+            array_1.getArrayFromString = getArrayFromString;
+            // based on https://github.com/jashkenas/underscore/blob/master/underscore.js
+            function intersect(array) {
+                var args = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    args[_i - 1] = arguments[_i];
+                }
+                if (array == null)
+                    return [];
+                var result = [];
+                var argsLength = arguments.length;
+                for (var i = 0, length = array.length; i < length; i++) {
+                    var item = array[i];
+                    if (this.indexOf(result, item) != -1)
+                        continue;
+                    for (var j = 1; j < argsLength; j++) {
+                        var arr = arguments[j];
+                        if (arr == null || this.indexOf(arr, item) == -1)
+                            break;
+                    }
+                    if (j === argsLength)
+                        result.push(item);
+                }
+                return result;
+            }
+            array_1.intersect = intersect;
+            // Necessary to support IE < 9 that have no Array.lastIndexOf
+            function lastIndexOf(arr, val, fromIndex) {
+                if (fromIndex === void 0) { fromIndex = 0; }
+                for (var i = arr.length; --i >= fromIndex;) {
+                    if (arr[i] === val)
+                        return i;
+                }
+                return -1;
+            }
+            array_1.lastIndexOf = lastIndexOf;
+            // Necessary in order to support IE7 as a replacement for Array.forEach
+            function forEach(arr, action) {
+                for (var i = 0; i < arr.length; ++i)
+                    action(arr[i], i, arr);
+            }
+            array_1.forEach = forEach;
+            function forEachProp(obj, action) {
+                for (var name in obj) {
+                    if (obj.hasOwnProperty(name))
+                        action(obj[name], name, obj);
+                }
+            }
+            array_1.forEachProp = forEachProp;
+            // Necessary in order to support IE7 as a replacement for Array.some
+            function some(arr, condition) {
+                for (var i = 0; i < arr.length; ++i) {
+                    if (condition(arr[i], i, arr))
+                        return true;
+                }
+                return false;
+            }
+            array_1.some = some;
+            // Necessary in order to support IE7 as a replacement for Array.every
+            function every(arr, condition) {
+                for (var i = 0; i < arr.length; ++i) {
+                    if (!condition(arr[i], i, arr))
+                        return false;
+                }
+                return true;
+            }
+            array_1.every = every;
+            function everyProp(obj, condition) {
+                for (var name in obj) {
+                    if (obj.hasOwnProperty(name) && !condition(obj[name], name, obj))
+                        return false;
+                }
+                return true;
+            }
+            array_1.everyProp = everyProp;
+            // Necessary in order to support IE7 as a replacement for Array.map
+            function map(arr, action) {
+                var result = new Array();
+                forEach(arr, function (item, idx, arr) { return result.push(action(item, idx, arr)); });
+                return result;
+            }
+            array_1.map = map;
+            function firstIndex(arr, condition) {
+                var result = -1;
+                some(arr, function (item, index, arr) {
+                    if (condition(item, index, arr)) {
+                        result = index;
+                        return true;
+                    }
+                    return false;
+                });
+                return result;
+            }
+            array_1.firstIndex = firstIndex;
+            function first(arr, condition) {
+                return arr[firstIndex(arr, condition)];
+            }
+            array_1.first = first;
+            function getAllEnumValues(enumType) {
+                var results = [];
+                for (var i in enumType)
+                    if (typeof (enumType[i]) == 'number')
+                        results.push(enumType[i]);
+                return results;
+            }
+            array_1.getAllEnumValues = getAllEnumValues;
+            function getUniqueValues(arr) {
+                for (var i = 0; i < arr.length; ++i) {
+                    for (var j = i + 1; j < arr.length; j++)
+                        if (arr[i] === arr[j]) {
+                            arr.splice(j, 1);
+                        }
+                }
+                return arr;
+            }
+            array_1.getUniqueValues = getUniqueValues;
+        })(array = utils.array || (utils.array = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+/// <reference path="LocalInfo.ts" />
+/// <reference path="Utils/stringUtils.ts" />
+var gigya;
+(function (gigya) {
+    var _;
+    (function (_) {
+        // The CDN/CDNS round robin is to bypass old browser limitation of simultaneous connections to same host.
+        var selectedCdnHostsIndex = 0;
+        _.CDN_HOSTS = {
+            http: ['cdn.gigya.com', 'cdn1.gigya.com', 'cdn2.gigya.com', 'cdn3.gigya.com'],
+            https: ['cdns.gigya.com', 'cdns1.gigya.com', 'cdns2.gigya.com', 'cdns3.gigya.com']
+        };
+        function getCdnResource(path) {
+            // gigya.thisScript may not exist if loaded for ssoOrig.
+            var baseDomain = gigya['thisScript'] ? gigya['thisScript'].baseDomain : '';
+            var protocol = gigya['thisScript'] ? gigya['thisScript'].protocol : gigya.localInfo.protocol;
+            // If no base domain or if base domain ends with .gigya.com, use Gigya CDN.
+            // Otherwise use the base domain.
+            if (!baseDomain || /cdns?\.gigya\.com$/.test(baseDomain)) {
+                var selectedSchemaRepository = _.CDN_HOSTS[protocol];
+                if (selectedSchemaRepository.length <= selectedCdnHostsIndex) {
+                    selectedCdnHostsIndex = 0;
+                }
+                baseDomain = selectedSchemaRepository[selectedCdnHostsIndex++];
+            }
+            // Ensure the path starts with "/".
+            if (path) {
+                if (path.indexOf('/') !== 0) {
+                    path = '/' + path;
+                }
+            }
+            return protocol + '://' + baseDomain + (path || '');
+        }
+        _.getCdnResource = getCdnResource;
+        function getImgCdnResource() {
+            return getCdnResource('/gs/i/');
+        }
+        _.getImgCdnResource = getImgCdnResource;
+    })(_ = gigya._ || (gigya._ = {}));
+})(gigya || (gigya = {}));
+/// <reference path="array.ts" />
+/// <reference path="Uri.ts" />
+/// <reference path="../cdn.ts" />
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var script;
+        (function (script_1) {
+            var pending = {};
+            function formatSrcUrl(src) {
+                return src.replace(/^http(s?):\/\/cdn(s?)[0-9]*.gigya.com\//, 'http$1://cdn$2.gigya.com/');
+            }
+            function isLoaded(src) {
+                var pendingSrc = formatSrcUrl(src);
+                return Boolean(pending[pendingSrc] && pending[pendingSrc].loaded);
+            }
+            script_1.isLoaded = isLoaded;
+            function load(src, fnOnError, fnOnLoad, loadOnce, removeAfter, treatTogether) {
+                if (removeAfter === void 0) { removeAfter = 5000; }
+                var oScript;
+                if (src.indexOf('//') === 0) {
+                    src = gigya.localInfo.protocol + ':' + src;
+                }
+                // let scriptUrl = new gigya._.Uri(src);
+                // scriptUrl.addToSearch({chico: 1});
+                // src = scriptUrl.toString();
+                if (loadOnce) {
+                    var pendingSrc = formatSrcUrl(src);
+                    if (pending[pendingSrc]) {
+                        if (pending[pendingSrc].loaded) {
+                            if (fnOnLoad) {
+                                fnOnLoad();
+                            }
+                        }
+                        else {
+                            pending[pendingSrc].onLoad.push(fnOnLoad);
+                            pending[pendingSrc].onError.push(fnOnError);
+                        }
+                        return;
+                    }
+                    oScript = pending[pendingSrc] = { loaded: false, onLoad: [fnOnLoad], onError: [fnOnError] };
+                    if (treatTogether && treatTogether.length > 0) {
+                        gigya.utils.array.forEach(treatTogether, function (url) {
+                            pending[url] = oScript;
+                        });
+                    }
+                }
+                else {
+                    oScript = { loaded: false, onLoad: [fnOnLoad], onError: [fnOnError] };
+                }
+                var scriptLoader = function () {
+                    var script = document.createElement('script');
+                    script.async = true;
+                    script.type = 'text/javascript';
+                    script.charset = 'UTF-8';
+                    var done = false;
+                    var fnOnScriptLoad = function () {
+                        if (!done) {
+                            if (oScript.onLoad && oScript.onLoad.length) {
+                                for (var i = 0; i < oScript.onLoad.length; i++) {
+                                    if (typeof oScript.onLoad[i] === 'function') {
+                                        oScript.onLoad[i]();
+                                    }
+                                }
+                            }
+                            oScript.loaded = true;
+                            oScript.onError = oScript.onLoad = null; // remove memory leak
+                            done = true;
+                            if (removeAfter === true) {
+                                removeAfter = 0;
+                            }
+                            if (removeAfter !== false) {
+                                setTimeout(function () {
+                                    if (script.parentNode) {
+                                        script.parentNode.removeChild(script);
+                                    }
+                                }, removeAfter);
+                            }
+                        }
+                    };
+                    script.onload = fnOnScriptLoad;
+                    script['onreadystatechange'] = function () {
+                        if (this.readyState === 'loaded') {
+                            fnOnScriptLoad();
+                        }
+                    };
+                    script.onerror = function () {
+                        for (var i = 0; i < oScript.onError.length; i++) {
+                            if (typeof oScript.onError[i] === 'function') {
+                                oScript.onError[i]();
+                            }
+                        }
+                        delete pending[src];
+                    };
+                    var head = document.getElementsByTagName('head');
+                    if (head && head.length > 0) {
+                        head[0].appendChild(script);
+                    }
+                    var fnSetScriptSrc = function () { script.src = src; };
+                    if (gigya.localInfo.iosVersion >= 6) {
+                        fnSetScriptSrc();
+                    }
+                    else {
+                        setTimeout(fnSetScriptSrc, 1); // Doing this async gives better performance in older browsers
+                    }
+                };
+                if (gigya.localInfo.isIE) {
+                    gigya.utils.functions.invokeOnPageLoad(scriptLoader);
+                }
+                else {
+                    scriptLoader();
+                }
+            }
+            script_1.load = load;
+            var ResourceTypes;
+            (function (ResourceTypes) {
+                ResourceTypes[ResourceTypes["script"] = 0] = "script";
+                ResourceTypes[ResourceTypes["image"] = 1] = "image";
+                ResourceTypes[ResourceTypes["iframe"] = 2] = "iframe";
+            })(ResourceTypes = script_1.ResourceTypes || (script_1.ResourceTypes = {}));
+            function triggerResource(url, callback, resourceType, removeAfter) {
+                if (resourceType === void 0) { resourceType = ResourceTypes.image; }
+                if (removeAfter === void 0) { removeAfter = 5000; }
+                switch (resourceType) {
+                    case ResourceTypes.script:
+                        load(url, callback, callback, false, removeAfter);
+                        break;
+                    case ResourceTypes.image:
+                        loadImage(url, callback);
+                        break;
+                    case ResourceTypes.iframe:
+                        loadIframe(url, callback, removeAfter);
+                        break;
+                    default:
+                        throw new Error('Unsupported resource type');
+                }
+            }
+            script_1.triggerResource = triggerResource;
+            function loadImage(url, callback) {
+                var img = new Image();
+                var loaded = false;
+                var fnOnLoad = function () {
+                    if (!loaded) {
+                        loaded = true;
+                        callback();
+                    }
+                };
+                img.onload =
+                    img.onerror = fnOnLoad;
+                img.src = url;
+            }
+            function loadIframe(url, callback, removeAfter) {
+                if (removeAfter === void 0) { removeAfter = 5000; }
+                var ifr = document.createElement('iframe');
+                ifr.style.width = '30px';
+                ifr.style.height = '10px';
+                ifr.style.position = 'absolute';
+                ifr.style.top = '-1000px';
+                ifr.style.left = '-1000px';
+                if (removeAfter === true) {
+                    removeAfter = 0;
+                }
+                var fnOnLoad = function (e) {
+                    var el;
+                    if (e && e.srcElement) {
+                        el = e.srcElement;
+                    }
+                    else if (e && e.target) {
+                        el = e.target;
+                    }
+                    else {
+                        el = this;
+                    }
+                    if (!el.loaded && el.parentNode) {
+                        el.loaded = true;
+                        callback();
+                        if (removeAfter !== false) {
+                            window.setTimeout(function () {
+                                try {
+                                    document.body.removeChild(el);
+                                }
+                                catch (ex) {
+                                }
+                            }, removeAfter);
+                        }
+                    }
+                };
+                utils.DOM.addEventListener(ifr, 'load', fnOnLoad);
+                utils.DOM.addEventListener(ifr, 'error', fnOnLoad);
+                ifr.onload = function (e) {
+                    fnOnLoad(e);
+                };
+                ifr.onerror = fnOnLoad;
+                ifr.src = url;
+                gigya.utils.DOM.appendToBody(ifr);
+            }
+            function loadService(serviceName, fnOnError, fnOnLoad) {
+                var url = gigya._.getCdnResource() + '/js/gigya.services.' + serviceName + '.js';
+                load(url, function () {
+                    if (typeof console === 'object' && console.error) {
+                        console.error('error loading gigya service ' + serviceName + ' from url: ' + url);
+                        if (fnOnError) {
+                            fnOnError();
+                        }
+                    }
+                }, fnOnLoad, true);
+            }
+            script_1.loadService = loadService;
+        })(script = utils.script || (utils.script = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+/// <reference path="script.ts" />
+/// <reference path="JSON.ts" />
+/// <reference path="cookie.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var localStorage;
+        (function (localStorage) {
+            /**
+             * Base class for all local storage adapters.
+             */
+            var AbstractLocalStorageAdapter = (function () {
+                function AbstractLocalStorageAdapter() {
+                }
+                AbstractLocalStorageAdapter.getName = function () {
+                    return 'AbstractAdapter';
+                };
+                /**
+                 * Set object to storage.
+                 */
+                AbstractLocalStorageAdapter.prototype.setObject = function (key, o) {
+                    this.setItem(key, gigya.utils.JSON.serialize(o));
+                };
+                /**
+                 * Get object from local storage.
+                 */
+                AbstractLocalStorageAdapter.prototype.getObject = function (key, defaultValue) {
+                    return gigya.utils.JSON.deserialize(this.getItem(key), defaultValue);
+                };
+                /**
+                 * Is persistent storage. Returns false when data is not persisted.
+                 */
+                AbstractLocalStorageAdapter.prototype.isPersistent = function () {
+                    return true;
+                };
+                return AbstractLocalStorageAdapter;
+            }());
+            localStorage.AbstractLocalStorageAdapter = AbstractLocalStorageAdapter;
+            /**
+             * Base class for all local storage adapters that required an initialization callback.
+             */
+            var AbstractAsyncLocalStorageAdapter = (function (_super) {
+                __extends(AbstractAsyncLocalStorageAdapter, _super);
+                function AbstractAsyncLocalStorageAdapter() {
+                    var _this = _super.call(this) || this;
+                    _this.isLoaded = false;
+                    return _this;
+                }
+                AbstractAsyncLocalStorageAdapter.prototype.isReady = function () {
+                    return this.isLoaded;
+                };
+                /**
+                 * Used when there is initialization time on the local storage adapter.
+                 */
+                AbstractAsyncLocalStorageAdapter.prototype.waitForService = function (callback) {
+                    var _this = this;
+                    if (this.isReady()) {
+                        callback();
+                        return;
+                    }
+                    else {
+                        setTimeout(function () { return _this.waitForService(callback); }, 50);
+                    }
+                };
+                return AbstractAsyncLocalStorageAdapter;
+            }(AbstractLocalStorageAdapter));
+            localStorage.AbstractAsyncLocalStorageAdapter = AbstractAsyncLocalStorageAdapter;
+            /**
+             * abstract storage.
+             */
+            var StorageAdapter = (function (_super) {
+                __extends(StorageAdapter, _super);
+                function StorageAdapter() {
+                    return _super.apply(this, arguments) || this;
+                }
+                StorageAdapter.prototype.getItem = function (key) {
+                    return this.storage[key];
+                };
+                StorageAdapter.prototype.setItem = function (key, value, expiresIn) {
+                    try {
+                        this.storage[key] = value;
+                    }
+                    catch (ex) { }
+                };
+                StorageAdapter.prototype.removeItem = function (key) {
+                    this.storage.removeItem(key);
+                };
+                return StorageAdapter;
+            }(AbstractLocalStorageAdapter));
+            /**
+             * Local storage.
+             */
+            var LocalStorageAdapter = (function (_super) {
+                __extends(LocalStorageAdapter, _super);
+                function LocalStorageAdapter() {
+                    var _this = _super.call(this) || this;
+                    _this.storage = window.localStorage;
+                    return _this;
+                }
+                LocalStorageAdapter.getName = function () {
+                    return 'LocalStorageAdapter';
+                };
+                LocalStorageAdapter.isAvailable = function () {
+                    return gigya.localInfo.supportsLocalStorage;
+                };
+                return LocalStorageAdapter;
+            }(StorageAdapter));
+            /**
+             * Session storage.
+             */
+            var SessionStorageAdapter = (function (_super) {
+                __extends(SessionStorageAdapter, _super);
+                function SessionStorageAdapter() {
+                    var _this = _super.call(this) || this;
+                    _this.storage = window.sessionStorage;
+                    return _this;
+                }
+                SessionStorageAdapter.getName = function () {
+                    return 'SessionStorageAdapter';
+                };
+                SessionStorageAdapter.isAvailable = function () {
+                    return gigya.localInfo.supportsSessionStorage;
+                };
+                return SessionStorageAdapter;
+            }(StorageAdapter));
+            /**
+             * Firefox global storage.
+             */
+            var FirefoxStorageAdapter = (function (_super) {
+                __extends(FirefoxStorageAdapter, _super);
+                function FirefoxStorageAdapter() {
+                    return _super.apply(this, arguments) || this;
+                }
+                FirefoxStorageAdapter.isAvailable = function () {
+                    return gigya.localInfo.isFF && window['globalStorage'];
+                };
+                FirefoxStorageAdapter.getName = function () {
+                    return 'FirefoxStorageAdapter';
+                };
+                FirefoxStorageAdapter.prototype.getItem = function (key) {
+                    return window['globalStorage'][location.hostname][key];
+                };
+                FirefoxStorageAdapter.prototype.setItem = function (key, value, expiresIn) {
+                    try {
+                        window['globalStorage'][location.hostname][key] = value;
+                    }
+                    catch (ex) { }
+                };
+                FirefoxStorageAdapter.prototype.removeItem = function (key) {
+                    delete window['globalStorage'][location.hostname][key];
+                };
+                return FirefoxStorageAdapter;
+            }(AbstractLocalStorageAdapter));
+            /**
+             * Flash storage.
+             */
+            var FlashAsyncStorageAdapter = (function (_super) {
+                __extends(FlashAsyncStorageAdapter, _super);
+                function FlashAsyncStorageAdapter() {
+                    var _this = _super.call(this) || this;
+                    // Load SWF store library.
+                    _this.loadSwfStore(function (isSuccess) {
+                        _this.isLoaded = true;
+                    });
+                    return _this;
+                }
+                FlashAsyncStorageAdapter.isAvailable = function () {
+                    // There is no current scenario where using Flash Storage is helpful outside of IE.
+                    return gigya.localInfo.supportsFlash && (gigya.localInfo.isIE || gigya.localInfo.isEdge);
+                };
+                FlashAsyncStorageAdapter.getName = function () {
+                    return 'FlashAsyncStorageAdapter';
+                };
+                /**
+                 * First, load the JavaScript swfstore SDK.
+                 */
+                FlashAsyncStorageAdapter.prototype.loadSwfStore = function (callback) {
+                    var _this = this;
+                    // Load SwfStore if necessary.
+                    if (window['SwfStore']) {
+                        this.initializeSwfStore(function () { return _this.loadSwfStore(callback); });
+                        return;
+                    }
+                    gigya.utils.script.load('https://cdns.gigya.com/gs/js/swfstore.min.js', function () {
+                        // Error handler.
+                        console.log('Failed to load Gigya SwfStore.');
+                        callback(false);
+                    }, function () {
+                        // Success handler.
+                        _this.initializeSwfStore(callback);
+                    }, true // Load only once
+                    );
+                };
+                /**
+                 * Iniitalize the SwfStore class.
+                 */
+                FlashAsyncStorageAdapter.prototype.initializeSwfStore = function (callback) {
+                    this.swfStore = new SwfStore({
+                        namespace: 'gigSSO',
+                        swf_url: 'https://cdns.gigya.com/gs/swf/swfstore.swf',
+                        onready: function () {
+                            callback(true);
+                        },
+                        onerror: function () {
+                            console.log('Failed to initialize Gigya SwfStore.');
+                            callback(false);
+                        }
+                    });
+                };
+                FlashAsyncStorageAdapter.prototype.getItem = function (key) {
+                    return this.swfStore.get(key);
+                };
+                FlashAsyncStorageAdapter.prototype.setItem = function (key, value, expiresIn) {
+                    this.swfStore.set(key, value);
+                };
+                FlashAsyncStorageAdapter.prototype.removeItem = function (key) {
+                    this.swfStore.clear(key);
+                };
+                return FlashAsyncStorageAdapter;
+            }(AbstractAsyncLocalStorageAdapter));
+            /**
+             * Cookie-based local storage.
+             */
+            var CookieStorageAdapter = (function (_super) {
+                __extends(CookieStorageAdapter, _super);
+                function CookieStorageAdapter() {
+                    return _super.apply(this, arguments) || this;
+                }
+                CookieStorageAdapter.isAvailable = function () {
+                    return gigya.localInfo.canSaveCookie;
+                };
+                CookieStorageAdapter.getName = function () {
+                    return 'CookieStorageAdapter';
+                };
+                CookieStorageAdapter.prototype.getItem = function (key) {
+                    return gigya.utils.cookie.get(key);
+                };
+                CookieStorageAdapter.prototype.setItem = function (key, value, expiresIn) {
+                    gigya.utils.cookie.set(key, value, expiresIn);
+                };
+                CookieStorageAdapter.prototype.removeItem = function (key) {
+                    gigya.utils.cookie.remove(key);
+                };
+                return CookieStorageAdapter;
+            }(AbstractLocalStorageAdapter));
+            localStorage.CookieStorageAdapter = CookieStorageAdapter;
+            /**
+             * Memory-based non-persistant storage.
+             */
+            var MemoryStorageAdapter = (function (_super) {
+                __extends(MemoryStorageAdapter, _super);
+                function MemoryStorageAdapter() {
+                    var _this = _super.call(this) || this;
+                    _this.memory = {};
+                    return _this;
+                }
+                MemoryStorageAdapter.isAvailable = function () {
+                    return true;
+                };
+                MemoryStorageAdapter.getName = function () {
+                    return 'MemoryStorageAdapter';
+                };
+                MemoryStorageAdapter.prototype.getItem = function (key) {
+                    return this.memory[key];
+                };
+                MemoryStorageAdapter.prototype.setItem = function (key, value, expiresIn) {
+                    this.memory[key] = value;
+                };
+                MemoryStorageAdapter.prototype.removeItem = function (key) {
+                    delete this.memory[key];
+                };
+                /**
+                 * Is persistent storage. Returns false when data is not persisted.
+                 */
+                MemoryStorageAdapter.prototype.isPersistent = function () {
+                    return false;
+                };
+                return MemoryStorageAdapter;
+            }(AbstractLocalStorageAdapter));
+            /**
+             * All adapters in order of priority.
+             */
+            localStorage.adapters = [
+                LocalStorageAdapter,
+                SessionStorageAdapter,
+                FirefoxStorageAdapter,
+                FlashAsyncStorageAdapter,
+                CookieStorageAdapter,
+                MemoryStorageAdapter
+            ];
+            /**
+             * Hold instance of adapter so that only one instance is created.
+             */
+            localStorage.instances = {};
+            function initializeAdapter(adapter) {
+                var adapterName = adapter.getName() || adapter.name;
+                if (!localStorage.instances[adapterName]) {
+                    localStorage.instances[adapterName] = new adapter();
+                }
+                return localStorage.instances[adapterName];
+            }
+            localStorage.initializeAdapter = initializeAdapter;
+            function waitForService(callback) {
+                // Select compatible adapter.
+                var storage;
+                for (var _i = 0, adapters_1 = localStorage.adapters; _i < adapters_1.length; _i++) {
+                    var adapter_1 = adapters_1[_i];
+                    if (adapter_1.isAvailable()) {
+                        // Don't select adapter if it's async and a callback wasn't provided.
+                        if (adapter_1.prototype instanceof AbstractAsyncLocalStorageAdapter && !callback) {
+                            continue;
+                        }
+                        storage = initializeAdapter(adapter_1);
+                        break;
+                    }
+                }
+                // Fallback to memory-based non-persistent storage.
+                if (!storage) {
+                    storage = initializeAdapter(MemoryStorageAdapter);
+                }
+                // Trigger callback when adapter finishes loading (or instantly, if not required to wait).
+                if (callback) {
+                    if (storage instanceof AbstractAsyncLocalStorageAdapter) {
+                        storage.waitForService(function () {
+                            callback(storage);
+                        });
+                    }
+                    else {
+                        callback(storage);
+                    }
+                }
+                return storage;
+            }
+            localStorage.waitForService = waitForService;
+            // Identify compatible adapter that does not require callback.
+            var adapter = waitForService();
+            // Expose public interface for sync adapter:
+            function getItem(key) {
+                return adapter.getItem(key);
+            }
+            localStorage.getItem = getItem;
+            function setItem(key, value, expiresIn) {
+                return adapter.setItem(key, value, expiresIn);
+            }
+            localStorage.setItem = setItem;
+            function removeItem(key) {
+                return adapter.removeItem(key);
+            }
+            localStorage.removeItem = removeItem;
+            function setObject(key, o) {
+                return adapter.setObject(key, o);
+            }
+            localStorage.setObject = setObject;
+            function getObject(key, defaultValue) {
+                return adapter.getObject(key, defaultValue);
+            }
+            localStorage.getObject = getObject;
+        })(localStorage = utils.localStorage || (utils.localStorage = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var services;
+    (function (services) {
+        var GroupApiDomainKey = 'apiDomain';
+        var GroupApiDomainService = (function () {
+            function GroupApiDomainService(_ssoKey, _storage) {
+                if (_ssoKey === void 0) { _ssoKey = gigya.partnerSettings.ssoKey; }
+                if (_storage === void 0) { _storage = gigya.utils.localStorage.initializeAdapter(gigya.utils.localStorage.CookieStorageAdapter); }
+                this._ssoKey = _ssoKey;
+                this._storage = _storage;
+                this._cookieName = GroupApiDomainKey + "_" + this._ssoKey;
+            }
+            GroupApiDomainService.prototype.get = function () {
+                return this._ssoKey ? this._storage.getItem(this._cookieName) : undefined;
+            };
+            GroupApiDomainService.prototype.set = function (domain) {
+                if (this._ssoKey) {
+                    this._storage.setItem(this._cookieName, domain);
+                }
+            };
+            return GroupApiDomainService;
+        }());
+        services.GroupApiDomainService = GroupApiDomainService;
+    })(services = gigya.services || (gigya.services = {}));
+})(gigya || (gigya = {}));
+/// <reference path="../../Gigya.Js/app/LocalInfo.ts" />
+/// <reference path="../../Gigya.Js/app/serverInjected.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/stringUtils.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/domains.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/localStorage.ts" />
+/// <reference path="interfaces.ts" />
+/// <reference path="GroupApiDomainService.ts" />
+var gigya;
+(function (gigya) {
+    var services;
+    (function (services) {
+        function createDomainResolver(dataCenter, baseDomains, originDomain, defaultDomain, customApiDomainPrefix, groupApiDomainService) {
+            if (groupApiDomainService === void 0) { groupApiDomainService = new gigya.services.GroupApiDomainService(); }
+            var resolvedApiDomain = groupApiDomainService.get();
+            var isGroupApiDomain = Boolean(resolvedApiDomain);
+            if (!isGroupApiDomain) {
+                var baseDomain = gigya._.getBaseDomain(baseDomains.split(','), originDomain, ['gigya.com', defaultDomain]);
+                resolvedApiDomain = gigya._.resolveApiDomain(customApiDomainPrefix, baseDomain, dataCenter, defaultDomain);
+                groupApiDomainService.set(resolvedApiDomain);
+            }
+            return {
+                isGroupApiDomain: isGroupApiDomain,
+                getApiDomain: gigya._.apiDomainFactory(resolvedApiDomain, defaultDomain),
+                isApiDomainFirstParty: Boolean(customApiDomainPrefix) // not entirely true - group api domain may not be first party
+            };
+        }
+        services.createDomainResolver = createDomainResolver;
+    })(services = gigya.services || (gigya.services = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var viewport;
+        (function (viewport) {
+            function getScroll() {
+                var scrOfX = 0, scrOfY = 0;
+                if (typeof (window.pageYOffset) == 'number') {
+                    scrOfY = window.pageYOffset;
+                    scrOfX = window.pageXOffset;
+                }
+                else if (document.body && (document.body.scrollLeft || document.body.scrollTop)) {
+                    scrOfY = document.body.scrollTop;
+                    scrOfX = document.body.scrollLeft;
+                }
+                else if (document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
+                    scrOfY = document.documentElement.scrollTop;
+                    scrOfX = document.documentElement.scrollLeft;
+                }
+                return { left: scrOfX, top: scrOfY };
+            }
+            viewport.getScroll = getScroll;
+            function getFullSize() {
+                var de = document.documentElement;
+                var db = document.body;
+                var h = de.clientHeight;
+                if (h == 0)
+                    h = db.clientHeight;
+                var w = de.clientWidth;
+                if (w == 0)
+                    w = db.clientWidth;
+                return { w: w, h: h };
+            }
+            viewport.getFullSize = getFullSize;
+            function getOrientation() {
+                var orientation = parseInt(window['orientation'] || "0");
+                if (orientation < 0)
+                    orientation += 360;
+                return orientation;
+            }
+            viewport.getOrientation = getOrientation;
+            function getInnerSize() {
+                var h;
+                var w;
+                var de = document.documentElement;
+                var db = document.body;
+                if (window.innerHeight) {
+                    h = window.innerHeight;
+                    w = window.innerWidth;
+                }
+                else {
+                    h = de.clientHeight;
+                    if (h == 0)
+                        h = db.clientHeight;
+                    w = de.clientWidth;
+                    if (w == 0)
+                        w = db.clientWidth;
+                }
+                return { w: w, h: h };
+            }
+            viewport.getInnerSize = getInnerSize;
+            function getMiddleCenter() {
+                var scroll = getScroll();
+                var size = getInnerSize();
+                return {
+                    top: scroll.top + Math.floor(size.h / 2),
+                    left: scroll.left + Math.floor(size.w / 2)
+                };
+            }
+            viewport.getMiddleCenter = getMiddleCenter;
+            function isRectHorizontallyVisible(rect) {
+                var scroll = getScroll();
+                var size = getInnerSize();
+                return (rect.left >= scroll.left &&
+                    rect.right <= scroll.left + size.w);
+            }
+            viewport.isRectHorizontallyVisible = isRectHorizontallyVisible;
+            function isRectFullyVisible(rect) {
+                var scroll = getScroll();
+                var size = getInnerSize();
+                return (rect.top >= scroll.top &&
+                    rect.bottom <= scroll.top + size.h &&
+                    rect.left >= scroll.left &&
+                    rect.right <= scroll.left + size.w);
+            }
+            viewport.isRectFullyVisible = isRectFullyVisible;
+            function scrollIntoView(element) {
+                if (element && element.scrollIntoView) {
+                    element.scrollIntoView();
+                }
+            }
+            viewport.scrollIntoView = scrollIntoView;
+        })(viewport = utils.viewport || (utils.viewport = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+/// <reference path="DOM.ts" />
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var functions;
+        (function (functions) {
+            function callFunction(name, arParams) {
+                var fn = eval(name);
+                var arParts = name.split('.');
+                arParts.splice(arParts.length - 1, 1);
+                var scope = eval(arParts.join('.'));
+                fn.apply(scope, arParams);
+            }
+            functions.callFunction = callFunction;
+            function invokeOnPageLoad(func, completeOnly) {
+                if ((!document.readyState && document.body)
+                    || document.readyState === 'loaded'
+                    || document.readyState === 'complete'
+                    || (!completeOnly && document.readyState === 'interactive' && document.body)) {
+                    func();
+                }
+                else {
+                    var called_1 = false;
+                    var fnOnLoad = function () {
+                        if (!called_1) {
+                            called_1 = true;
+                            func();
+                        }
+                    };
+                    window.setTimeout(fnOnLoad, 20000); // fallback - sometimes readystate stays stuck on interactive
+                    gigya.utils.DOM.addEventListener(window, 'load', fnOnLoad);
+                    gigya.utils.DOM.addEventListener(document, 'DOMContentLoaded', fnOnLoad);
+                }
+            }
+            functions.invokeOnPageLoad = invokeOnPageLoad;
+            function createAlias(publicName, fnc) {
+                var arNameSegments = publicName.split('.');
+                var oCurrentSegment = window;
+                for (var iSegment = 0; iSegment < arNameSegments.length - 1; iSegment++) {
+                    var sSegment = arNameSegments[iSegment];
+                    if (!oCurrentSegment[sSegment]) {
+                        oCurrentSegment[sSegment] = {};
+                    }
+                    oCurrentSegment = oCurrentSegment[sSegment];
+                }
+                oCurrentSegment[arNameSegments[arNameSegments.length - 1]] = fnc;
+            }
+            functions.createAlias = createAlias;
+            function debounce(fn, delayMilliseconds) {
+                var timer = undefined;
+                return function () {
+                    if (timer !== undefined) {
+                        clearTimeout(timer);
+                    }
+                    timer = setTimeout(function () {
+                        timer = undefined;
+                        fn();
+                    }, delayMilliseconds);
+                };
+            }
+            functions.debounce = debounce;
+        })(functions = utils.functions || (utils.functions = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+/// <reference path="viewport.ts" />
+/// <reference path="../LocalInfo.ts" />
+/// <reference path="JSON.ts" />
+/// <reference path="functions.ts" />
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var DOM;
+        (function (DOM) {
+            DOM._nextZIndex = 999999999;
+            DOM._popupContainers = [];
+            DOM._pseudoContainers = [];
+            var backListener = null;
+            function getGigyaScriptElement(fileNames) {
+                var scripts = document.getElementsByTagName('script');
+                var scriptElement;
+                var gigyaCdnRegex = /\/\/cdn(s)?\.(ru1\.)?gigya.com/;
+                for (var i = scripts.length - 1; i >= 0; i--) {
+                    var script = scripts[i];
+                    var src = script.src.toLowerCase();
+                    if (src !== '') {
+                        if ((gigyaCdnRegex.test(src) || src.indexOf('?apikey=') > -1)) {
+                            var isFileNameExistInSrc = fileNames.length === 0 || fileNames.some(function (fileName) { return src.indexOf(fileName) > -1; });
+                            if (isFileNameExistInSrc) {
+                                scriptElement = script;
+                                break;
+                            }
+                        }
+                    }
+                }
+                return scriptElement;
+            }
+            DOM.getGigyaScriptElement = getGigyaScriptElement;
+            function dispatch(el, eventName) {
+                var event;
+                try {
+                    event = new Event(eventName);
+                }
+                catch (e) {
+                    // IE10 and below support
+                    event = document.createEvent('CustomEvent');
+                    event.initCustomEvent(eventName, true, true, {});
+                }
+                el.dispatchEvent(event);
+            }
+            DOM.dispatch = dispatch;
+            function addEventListener(el, eventName, handler) {
+                if (!el || !handler)
+                    return;
+                if (el.addEventListener) {
+                    el.addEventListener(eventName, handler, true);
+                }
+                else {
+                    el.attachEvent('on' + eventName, handler);
+                }
+            }
+            DOM.addEventListener = addEventListener;
+            function removeEventListener(el, eventName, handler) {
+                if (!handler)
+                    return;
+                if (el.removeEventListener) {
+                    el.removeEventListener(eventName, handler, true);
+                }
+                else {
+                    el.detachEvent('on' + eventName, handler);
+                }
+            }
+            DOM.removeEventListener = removeEventListener;
+            function disableDefaultEventHandling(event) {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                }
+                else if (window.event) {
+                    window.event.returnValue = false;
+                }
+            }
+            DOM.disableDefaultEventHandling = disableDefaultEventHandling;
+            function addDialogBackListener(handler) {
+                gigya.utils.DOM._removeDialogBackListener();
+                // This should fire when back is clicked
+                backListener = function (e) {
+                    if (e && e.newURL && e.newURL.indexOf('|gigyaMobileDialog') == -1) {
+                        handler(e);
+                        gigya.utils.DOM._removeDialogBackListener();
+                    }
+                };
+                // hash could change right after the call if it was initiated from a link that didn't return false
+                window.setTimeout(function () {
+                    if (window.location.hash.indexOf('|gigyaMobileDialog') == -1) {
+                        window.location.hash = window.location.hash + '|gigyaMobileDialog';
+                    }
+                    gigya.utils.DOM.addEventListener(window, 'hashchange', backListener);
+                }, 50);
+            }
+            DOM.addDialogBackListener = addDialogBackListener;
+            function _removeDialogBackListener() {
+                if (!backListener)
+                    return;
+                gigya.utils.DOM.removeEventListener(window, 'hashchange', backListener);
+                backListener = null;
+                //restore previous hash
+                window.location.hash = window.location.hash.replace('|gigyaMobileDialog', '');
+            }
+            DOM._removeDialogBackListener = _removeDialogBackListener;
+            function appendToBody(el) {
+                if (!document.body)
+                    return;
+                if (document.body.insertBefore && document.body.firstChild) {
+                    document.body.insertBefore(el, document.body.firstChild);
+                }
+                else {
+                    document.body.appendChild(el);
+                }
+            }
+            DOM.appendToBody = appendToBody;
+            function removeElement(el) {
+                if (el && el.parentElement) {
+                    el.parentElement.removeChild(el);
+                }
+            }
+            DOM.removeElement = removeElement;
+            function isChildOf(child, parent) {
+                var directParent = child.parentNode;
+                while (directParent) {
+                    if (parent == directParent) {
+                        return true;
+                    }
+                    directParent = directParent.parentNode;
+                }
+                return false;
+            }
+            DOM.isChildOf = isChildOf;
+            function isVisible(el) {
+                while (el) {
+                    var computedStyle = getComputedStyle(el);
+                    if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
+                        return false;
+                    }
+                    else {
+                        el = el.parentElement;
+                    }
+                }
+                return true;
+            }
+            DOM.isVisible = isVisible;
+            function getCenteredDivID(name) {
+                return 'gig_' + gigya.localInfo.initTime.getTime().toString() + '_' + name;
+            }
+            DOM.getCenteredDivID = getCenteredDivID;
+            function createTopLevelDiv(id) {
+                var ifrel;
+                ifrel = document.createElement('iframe');
+                ifrel.id = 'gigya_ifr_' + id;
+                ifrel['frameborder'] = '0';
+                ifrel.frameBorder = '0';
+                ifrel['allowtransparency'] = true;
+                ifrel.hidden = true;
+                ifrel.style.position = 'absolute';
+                if (gigya.localInfo.isChrome) {
+                    ifrel.style.width = '30px';
+                    ifrel.style.height = '1px';
+                }
+                else {
+                    ifrel.style.width = '1px';
+                    ifrel.style.height = '1px';
+                }
+                if (ifrel.style.zIndex != null) {
+                    ifrel.style.zIndex = String(gigya.utils.DOM._nextZIndex++);
+                }
+                var el = document.createElement('div');
+                if (el.style.zIndex != null) {
+                    el.style.zIndex = '' + gigya.utils.DOM._nextZIndex++;
+                }
+                el.innerHTML = '';
+                if (id) {
+                    el.id = id;
+                }
+                if (document.body) {
+                    if (document.body.insertBefore && document.body.firstChild) {
+                        document.body.insertBefore(ifrel, document.body.firstChild);
+                        document.body.insertBefore(el, document.body.firstChild);
+                    }
+                    else if (document.body.appendChild) {
+                        document.body.appendChild(ifrel);
+                        document.body.appendChild(el);
+                    }
+                }
+                return el;
+            }
+            DOM.createTopLevelDiv = createTopLevelDiv;
+            function hideByID(id) {
+                var el = document.getElementById(id);
+                if (el) {
+                    el.style.display = 'none';
+                }
+            }
+            DOM.hideByID = hideByID;
+            function showByID(id) {
+                var el = document.getElementById(id);
+                if (el) {
+                    el.style.display = ((gigya.localInfo.isIE6) ? (el.tagName == 'TD' ? 'table-cell' : (el.tagName == 'TR' ? '' : (el.tagName == 'TABLE' ? '' : ('block')))) : '');
+                }
+            }
+            DOM.showByID = showByID;
+            function clearByID(id) {
+                try {
+                    var c = document.getElementById(id);
+                    if (c != null) {
+                        c.innerHTML = '';
+                    }
+                }
+                catch (e) { }
+            }
+            DOM.clearByID = clearByID;
+            function getHTMLSize(html, container) {
+                var divMeasure = document.createElement('div');
+                divMeasure.style.position = 'absolute';
+                divMeasure.style.left = '-1000px';
+                divMeasure.innerHTML = html;
+                container.appendChild(divMeasure);
+                var w = divMeasure.offsetWidth;
+                var h = divMeasure.offsetHeight;
+                divMeasure.parentNode.removeChild(divMeasure);
+                return { w: w, h: h };
+            }
+            DOM.getHTMLSize = getHTMLSize;
+            function getElementsByClass(parentElement, className, includeParent) {
+                if (!parentElement) {
+                    return [];
+                }
+                var arEls = [];
+                if (includeParent && isElementClass(parentElement, className)) {
+                    arEls.push(parentElement);
+                }
+                var els = parentElement.getElementsByTagName('*');
+                for (var i = 0; i < els.length; i++) {
+                    if (isElementClass(els[i], className)) {
+                        arEls.push(els[i]);
+                    }
+                }
+                return arEls || [];
+            }
+            DOM.getElementsByClass = getElementsByClass;
+            function getElementsByAttribute(parentElement, tagName, attributeName, attributeValue) {
+                var arEls = [];
+                var els = parentElement.getElementsByTagName(tagName);
+                for (var i = 0; i < els.length; i++) {
+                    if (els[i].getAttribute(attributeName) == attributeValue) {
+                        arEls.push(els[i]);
+                    }
+                }
+                return arEls;
+            }
+            DOM.getElementsByAttribute = getElementsByAttribute;
+            function getElementPosition(el) {
+                if (!el) {
+                    return { left: 0, top: 0, bottom: 0, right: 0 };
+                }
+                var rect = el.getBoundingClientRect();
+                var scroll = gigya.utils.viewport.getScroll();
+                var left = rect.left + scroll.left;
+                var top = rect.top + scroll.top;
+                return {
+                    left: left,
+                    top: top,
+                    right: left + rect.width,
+                    bottom: top + rect.height
+                };
+            }
+            DOM.getElementPosition = getElementPosition;
+            function addClassToElement(el, className) {
+                if (!el) {
+                    return;
+                }
+                var existingClasses = el.className ? getClassNames(el) : [];
+                var existingOriginalLength = existingClasses.length;
+                var newClasses = className.split(' ');
+                for (var j in newClasses) {
+                    var exists = false;
+                    if (!newClasses[j]) {
+                        break;
+                    }
+                    for (var i in existingClasses) {
+                        if (existingClasses[i] === newClasses[j]) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        existingClasses.push(newClasses[j]);
+                    }
+                }
+                if (existingClasses.length !== existingOriginalLength) {
+                    el.className = existingClasses.join(' ');
+                }
+            }
+            DOM.addClassToElement = addClassToElement;
+            function removeClassFromElement(el, className, substring) {
+                if (substring === void 0) { substring = false; }
+                if (!el) {
+                    return;
+                }
+                var arClass = getClassNames(el);
+                for (var i = arClass.length - 1; i >= 0; i--) {
+                    if (arClass[i] === className || (substring && arClass[i].indexOf(className) !== -1)) {
+                        arClass.splice(i, 1);
+                    }
+                }
+                el.className = arClass.join(' ');
+            }
+            DOM.removeClassFromElement = removeClassFromElement;
+            function getClassNames(el) {
+                var classes = [];
+                if (typeof el.className === 'string') {
+                    classes = el.className.split(' ');
+                }
+                return classes;
+            }
+            DOM.getClassNames = getClassNames;
+            function isElementClass(el, className) {
+                if (!el)
+                    return false;
+                else if (!className)
+                    return true;
+                else if (!el.className)
+                    return false;
+                var exists = false;
+                var arClass = getClassNames(el);
+                for (var i = 0; i < arClass.length; i++) {
+                    if (arClass[i] === className) {
+                        exists = true;
+                        break;
+                    }
+                }
+                return exists;
+            }
+            DOM.isElementClass = isElementClass;
+            function cancelEvent(event) {
+                if (!event)
+                    return;
+                if ('cancelable' in event)
+                    // All browsers except <IE9
+                    event.preventDefault();
+                else
+                    event.returnValue = false;
+            }
+            DOM.cancelEvent = cancelEvent;
+            function createElement(type, name) {
+                var divContainer = document.createElement('div');
+                name = name || '';
+                divContainer.innerHTML = '<' + type + ' name="' + name + '" id="' + name + '"></' + type + '>';
+                return divContainer.firstChild;
+            }
+            DOM.createElement = createElement;
+            function setSize(container, w, h, center) {
+                if (container == null || container.style == null) {
+                    return;
+                }
+                if (w) {
+                    w = '' + w;
+                    var isWidthPrecentage = w.indexOf('%') > 0;
+                    if (!isNaN(w) || isWidthPrecentage) {
+                        var widthValue = '' + (isWidthPrecentage ? w : (w + 'px'));
+                        if (container.style.width != widthValue) {
+                            container.style.width = widthValue;
+                        }
+                    }
+                }
+                if (h) {
+                    h = '' + h;
+                    var isHeightPrecentage = h.indexOf('%') > 0;
+                    if (!isNaN(w) || isHeightPrecentage) {
+                        var heightValue = '' + (isHeightPrecentage ? h : (h + 'px'));
+                        if (container.style.height !== heightValue) {
+                            container.style.height = heightValue;
+                        }
+                    }
+                }
+                if (center && w && h) {
+                    if (container.style.zIndex == null || center) {
+                        container.style.zIndex = (this._nextZIndex++).toString();
+                    }
+                    var vp = utils.viewport.getInnerSize();
+                    var scrl = gigya.utils.viewport.getScroll();
+                    var vpt = scrl.top;
+                    var vpl = scrl.left;
+                    container.style.top = '' + (Math.max(0, vpt + Math.floor((vp.h - h) / 2))) + 'px';
+                    container.style.left = '' + (Math.max(0, vpl + Math.floor((vp.w - w) / 2))) + 'px';
+                    container.style.visibility = '';
+                }
+            }
+            DOM.setSize = setSize;
+            function createHiddenIframe(src) {
+                var ifr = document.createElement('iframe');
+                ifr.src = src;
+                ifr.style.width = '30px';
+                ifr.style.height = '10px';
+                ifr.style.position = 'absolute';
+                ifr.style.top = '-1000px';
+                ifr.style.left = '-1000px';
+                if (document.body) {
+                    gigya.utils.DOM.appendToBody(ifr);
+                }
+                else {
+                    gigya.utils.functions.invokeOnPageLoad(function () { gigya.utils.DOM.appendToBody(ifr); });
+                }
+                return ifr;
+            }
+            DOM.createHiddenIframe = createHiddenIframe;
+            function attributeEncode(value) {
+                return value.
+                    replace(/</g, '&lt;').
+                    replace(/>/g, '&gt;').
+                    replace(/\"/g, '&quot;').
+                    replace(/\'/g, '&#39;'); // IE8 doesn't support &apos;
+            }
+            DOM.attributeEncode = attributeEncode;
+        })(DOM = utils.DOM || (utils.DOM = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var validation;
+        (function (validation) {
+            function isExplicitTrue(val) {
+                var lc = ('' + val).toLowerCase();
+                return (lc == 'true' || lc == '1');
+            }
+            validation.isExplicitTrue = isExplicitTrue;
+            function isExplicitFalse(val) {
+                var lc = ('' + val).toLowerCase();
+                return (lc == 'false' || lc == '0');
+            }
+            validation.isExplicitFalse = isExplicitFalse;
+            function isLaterThanNow(expirationTime) {
+                return expirationTime > new Date().getTime();
+            }
+            validation.isLaterThanNow = isLaterThanNow;
+        })(validation = utils.validation || (utils.validation = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var _;
+    (function (_) {
+        var apiAdapters;
+        (function (apiAdapters) {
+            apiAdapters.isSessionFromSso = false;
+        })(apiAdapters = _.apiAdapters || (_.apiAdapters = {}));
+    })(_ = gigya._ || (gigya._ = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var queue;
+        (function (queue) {
+            var _q = {};
+            function _servicesStatus() {
+                var services = {};
+                for (var service in _q) {
+                    var active = isActive(service);
+                    if (active) {
+                        services[service] = {
+                            active: true,
+                            waitingFor: _q[service].ids,
+                            queuedCount: _q[service].q.length
+                        };
+                    }
+                    else {
+                        services[service] = {
+                            active: false
+                        };
+                    }
+                }
+                return services;
+            }
+            queue._servicesStatus = _servicesStatus;
+            function isActive(service) {
+                if (!_q[service])
+                    return false;
+                for (var id in _q[service].ids)
+                    return true;
+                return false;
+            }
+            queue.isActive = isActive;
+            function release(id, service) {
+                if (!_q[service])
+                    return;
+                delete _q[service].ids[id];
+                if (!isActive(service)) {
+                    var q = _q[service].q;
+                    _q[service].q = [];
+                    while (q.length > 0) {
+                        var o = q.splice(0, 1)[0];
+                        try {
+                            o.func.apply(this, o.args);
+                        }
+                        catch (ex) {
+                            if (typeof console == 'object' && console.log) {
+                                console.log("Gigya: Exception while invoking queued method (" + service + ": " + id + ")");
+                            }
+                        }
+                        if (isActive(service)) {
+                            _q[service].q = q;
+                            break;
+                        }
+                    }
+                }
+            }
+            queue.release = release;
+            function hold(id, service) {
+                if (!_q[service])
+                    _q[service] = { q: [], ids: {} };
+                _q[service].ids[id] = true;
+            }
+            queue.hold = hold;
+            function waitFor(service, fnc, args) {
+                if (!_q[service])
+                    _q[service] = { q: [], ids: {} };
+                _q[service].q.push({ func: fnc, args: args });
+            }
+            queue.waitFor = waitFor;
+            function queueForExecution(service, func, args) {
+                args = args || [];
+                if (gigya.utils.queue.isActive(service)) {
+                    gigya.utils.queue.waitFor(service, func, args);
+                }
+                else {
+                    func.apply(this, args);
+                }
+            }
+            queue.queueForExecution = queueForExecution;
+        })(queue = utils.queue || (utils.queue = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+/// <reference path="queue.ts" />
+var gigya;
+(function (gigya) {
+    var utils;
+    (function (utils) {
+        var sessionCache;
+        (function (sessionCache) {
+            var sessionStorageEnabled;
+            try {
+                sessionStorageEnabled = Boolean(window.sessionStorage); // when 3pc blocked, chrome throws when trying to access session storage.
+            }
+            catch (ex) {
+                sessionStorageEnabled = false;
+            }
+            function set(key, response) {
+                if (!sessionStorageEnabled)
+                    return;
+                var oGigya;
+                try {
+                    oGigya = gigya.utils.JSON.deserialize(window.sessionStorage.getItem('gigyaCache'));
+                    if (response == null && oGigya[key]) {
+                        delete oGigya[key];
+                    }
+                    else {
+                        oGigya[key] = { response: response, time: (new Date()).getTime() };
+                    }
+                    window.sessionStorage.setItem('gigyaCache', gigya.utils.JSON.serialize(oGigya));
+                }
+                catch (ex) {
+                }
+                gigya.utils.queue.release('cache', 'cache_' + key);
+            }
+            sessionCache.set = set;
+            function get(key, cacheTimeout, callback) {
+                if (!sessionStorageEnabled) {
+                    if (typeof callback == 'function')
+                        callback(null);
+                    return;
+                }
+                var ret;
+                try {
+                    if (!gigya.utils.queue.isActive('cache_' + key)) {
+                        var sGigyaCache = window.sessionStorage.getItem('gigyaCache');
+                        var oGigya = gigya.utils.JSON.deserialize(sGigyaCache);
+                        var cached = oGigya[key];
+                        if (cached) {
+                            if (cacheTimeout && cacheTimeout + cached.time > (new Date()).getTime()) {
+                                callback(cached.response);
+                                return;
+                            }
+                            else {
+                                gigya.utils.sessionCache.remove(key);
+                                cached = null;
+                            }
+                        }
+                        if (!cached) {
+                            gigya.utils.queue.hold('cache', 'cache_' + key); //so that future requests will wait for the first one's response.
+                            callback(null);
+                            return;
+                        }
+                    }
+                    if (gigya.utils.queue.isActive('cache_' + key)) {
+                        gigya.utils.queue.waitFor('cache_' + key, gigya.utils.sessionCache.get, arguments);
+                        return;
+                    }
+                }
+                catch (ex) {
+                    callback(null);
+                }
+                ;
+            }
+            sessionCache.get = get;
+            function remove(key) {
+                gigya.utils.sessionCache.set(key, null);
+            }
+            sessionCache.remove = remove;
+        })(sessionCache = utils.sessionCache || (utils.sessionCache = {}));
+    })(utils = gigya.utils || (gigya.utils = {}));
+})(gigya || (gigya = {}));
+var gigya;
+(function (gigya) {
+    function callback(response, requestId) {
+        if (!requestId && response) {
+            requestId = response['context'];
+        }
+        if (!requestId) {
+            return;
+        }
+        var req = pendingRequests[requestId];
+        if (req) {
+            req.handleResponse(response);
+        }
+    }
+    gigya.callback = callback;
+    function getRequestId(method, params, settings) {
+        var id = settings.jsSdkRequestId;
+        if (id) {
+            return id;
+        }
+        if (settings.disableCache
+            || gigya.localInfo.isSafari
+            || (gigya.localInfo.isIE10 && method.indexOf('accounts.getAccountInfo') > -1)) {
+            return 'R' + (new Date()).getTime() + '_' + Math.random();
+        }
+        var paramsCopy = gigya.utils.object.clone(params);
+        for (var param in paramsCopy) {
+            if (paramsCopy.hasOwnProperty(param)) {
+                if (param.indexOf('fb_') === 0 || param === 'source' || param === 'sourceData') {
+                    // remove fb session params for caching key
+                    delete paramsCopy[param];
+                }
+            }
+        }
+        return 'R' + gigya.utils.object.getMurmurHash(Math.random().toString() + method + gigya.utils.object.getHash(paramsCopy));
+    }
+    var pendingRequests = {};
+    var JsonpRequest = (function () {
+        function JsonpRequest(baseDomain, method, params, callback, settings, id) {
+            if (settings === void 0) { settings = {}; }
+            if (id === void 0) { id = getRequestId(method, params, settings); }
+            var _this = this;
+            this.baseDomain = baseDomain;
+            this.method = method;
+            this.params = params;
+            this.callback = callback;
+            this.settings = settings;
+            this.id = id;
+            this.getUrl = function () { return _this.baseDomain + "/" + _this.method; };
+            this.ifrName = 'gigyaPostIframe_' + (new Date()).getTime();
+            this.retry = 0;
+        }
+        JsonpRequest.prototype.send = function (ignoreCacheTimeout) {
+            var _this = this;
+            if (this.inProgress) {
+                return;
+            }
+            pendingRequests[this.id] = this;
+            this.inProgress = true;
+            this.addDefaultParams();
+            var paramsString = gigya.utils.keyValue.serialize(this.params);
+            if (!ignoreCacheTimeout && this.settings.cacheTimeout) {
+                var cacheKey = this.getCacheKey();
+                gigya.utils.sessionCache.get(cacheKey, this.settings.cacheTimeout, function (cachedResponse) {
+                    if (cachedResponse) {
+                        delete _this.settings.cacheTimeout; // Avoid caching it again.
+                        gigya.callback(cachedResponse, _this.id);
+                    }
+                    else {
+                        _this.inProgress = false;
+                        _this.send(true);
+                    }
+                });
+                return;
+            }
+            var extraLength = 0; //8000;
+            var maxLength = 4 * 1024;
+            if (gigya.localInfo.isIE) {
+                extraLength = 2 * 1024;
+            }
+            var reqUrl = this.getUrl() + "?" + paramsString;
+            if ((reqUrl.length + extraLength) <= maxLength && !this.settings.forcePost) {
+                // The result of this script load would be to call Request.className
+                gigya.utils.script.load(reqUrl, function () {
+                    gigya.callback({
+                        context: _this.id,
+                        errorCode: 500026 /* NETWORK_ERROR */,
+                        errorMessage: 'Network_error'
+                    });
+                });
+            }
+            else {
+                gigya.utils.functions.invokeOnPageLoad(function () {
+                    var formsContainer = document.getElementById('gigyaRequestForms');
+                    if (formsContainer == null) {
+                        formsContainer = document.createElement('span');
+                        formsContainer.id = 'gigyaRequestForms';
+                        formsContainer.style.display = 'none';
+                        gigya.utils.DOM.appendToBody(formsContainer);
+                    }
+                    var formDiv = _this.getPostContainer();
+                    formsContainer.appendChild(formDiv);
+                    // process will continue on the onLoadEvent of the form created by this.getFormElement()
+                });
+            }
+        };
+        JsonpRequest.prototype.handleResponse = function (response) {
+            var _this = this;
+            if (this.settings.cacheTimeout) {
+                gigya.utils.sessionCache.set(this.getCacheKey(), response['errorCode'] == 0 /* OK */ ? response : null);
+            }
+            if (this.retryTimerID != null) {
+                window.clearTimeout(this.retryTimerID);
+            }
+            this.inProgress = false;
+            if (response['errorCode'] == 100001 /* Data_Pending */) {
+                var t = this.getDataPendingTimeout(this.retry++);
+                if (t > 0) {
+                    window.setTimeout(function () {
+                        _this.send();
+                    }, t);
+                    return;
+                }
+            }
+            else {
+                this.dispose();
+                this.callback(response);
+            }
+        };
+        JsonpRequest.prototype.addDefaultParams = function () {
+            this.params['format'] = 'jsonp';
+            this.params['callback'] = 'gigya.callback'; // for jsonp callbacks
+            this.params['context'] = this.id;
+        };
+        JsonpRequest.prototype.getCacheKey = function () {
+            return this.method + "_" + gigya.utils.keyValue.serialize(this.params);
+        };
+        JsonpRequest.prototype.createParamFormElements = function () {
+            var ps = [];
+            for (var p in this.params) {
+                ps = ps.concat(['<textarea name="', p, '">']);
+                if (typeof this.params[p] === 'object') {
+                    ps.push(gigya.utils.URL.URLEncode(gigya.utils.JSON.serialize(this.params[p]))); // extra encoding to prevent IE XSS warning
+                }
+                else {
+                    ps.push(this.params[p]);
+                }
+                ps.push('</textarea>');
+            }
+            return ps.join('');
+        };
+        JsonpRequest.prototype.getPostContainer = function () {
+            var _this = this;
+            var postContainerElem;
+            if (!this.postContainerElem) {
+                postContainerElem = document.createElement('span');
+                var formId_1 = this.ifrName + 'form';
+                var getSavedResponseId_1 = this.id;
+                // Form
+                postContainerElem.innerHTML = [
+                    '<form accept-charset="UTF-8" id="', formId_1, '" method="post"',
+                    ' action="', this.getUrl(), '?context=' + this.id + '&saveResponseID=' + this.id + '" target="', this.ifrName, '">',
+                    this.createParamFormElements(),
+                    '<input name="utf8" type="hidden" value="&#x2713;" />',
+                    '<input type="submit" value="" /></form>'
+                ].join('');
+                // iframe
+                var didSubmitForm_1;
+                var elIFrame = gigya.utils.DOM.createElement('iframe', this.ifrName);
+                elIFrame.setAttribute('id', this.ifrName);
+                gigya.utils.DOM.addEventListener(elIFrame, 'load', function () {
+                    // 1. iframe was loaded for the first time, submit the form
+                    if (!didSubmitForm_1) {
+                        window.setTimeout(function () {
+                            var form = document.getElementById(formId_1);
+                            if (form) {
+                                form.submit();
+                            }
+                        }, 10);
+                        didSubmitForm_1 = true;
+                    }
+                    else {
+                        // 2. form was submitted to the iframe, get saved response
+                        _this.getSavedFormResponse(getSavedResponseId_1);
+                    }
+                });
+                postContainerElem.appendChild(elIFrame);
+                this.postContainerElem = postContainerElem;
+            }
+            return postContainerElem;
+        };
+        JsonpRequest.prototype.getSavedFormResponse = function (getSavedResponseId) {
+            var _this = this;
+            new JsonpRequest(this.baseDomain, 'socialize.getSavedResponse', {
+                APIKey: this.params['APIKey'],
+                saveResponseID: this.id,
+                ucid: this.params['ucid'],
+                noAuth: true,
+                sdk: 'js_' + gigya.build.version
+            }, function (response) {
+                _this.handleResponse(response);
+            }, undefined, getSavedResponseId).send();
+        };
+        JsonpRequest.prototype.getDataPendingTimeout = function (retry) {
+            if (retry <= 4)
+                return 500;
+            if (retry <= 4 + 4)
+                return 1000;
+            if (retry <= 4 + 4 + 13)
+                return 2000;
+            if (retry <= 4 + 4 + 13 + 18)
+                return 5000;
+            return -1;
+        };
+        JsonpRequest.prototype.dispose = function () {
+            delete pendingRequests[this.id];
+            if (this.postContainerElem) {
+                gigya.utils.DOM.removeElement(this.postContainerElem);
+            }
+            delete this.postContainerElem;
+        };
+        return JsonpRequest;
+    }());
+    gigya.JsonpRequest = JsonpRequest;
+})(gigya || (gigya = {}));
+/// <reference path="interfaces.ts" />
+/// <reference path="JsonpRequest.ts" />
+/// <reference path="GroupApiDomainService.ts" />
+var gigya;
+(function (gigya) {
+    var services;
+    (function (services) {
+        var GMID_TICKET_EXPIRATION_INTERVAL = 1;
+        services.TokenKeys = {
+            GMID: 'gig_gmid',
+            UCID: 'gig_ucid',
+            GMID_TICKET: 'gmidTicket',
+            GMID_TICKET_EXPIRATION_TIME: 'gmidTicketExpiration'
+        };
+        var ApiService = (function () {
+            function ApiService(_apiKey, _hasGmid, _domainResolver, _groupApiDomainService, _requestClass, _storage) {
+                if (_groupApiDomainService === void 0) { _groupApiDomainService = new gigya.services.GroupApiDomainService(); }
+                if (_requestClass === void 0) { _requestClass = gigya.JsonpRequest; }
+                this._apiKey = _apiKey;
+                this._hasGmid = _hasGmid;
+                this._domainResolver = _domainResolver;
+                this._groupApiDomainService = _groupApiDomainService;
+                this._requestClass = _requestClass;
+                if (_storage) {
+                    this._storage = _storage;
+                }
+            }
+            ApiService.prototype.getApiDomain = function (methodName) {
+                return __gig_awaiter(this, void 0, gigya.Promise, function () {
+                    return __gig_generator(this, function (_a) {
+                        return [2 /*return*/, this._domainResolver.getApiDomain(methodName)];
+                    });
+                });
+            };
+            ApiService.prototype.bootstrap = function () {
+                return __gig_awaiter(this, void 0, gigya.Promise, function () {
+                    var _a, res, ticketInfo;
+                    return __gig_generator(this, function (_b) {
+                        switch (_b.label) {
+                            case 0:
+                                if (!!this._storage)
+                                    return [3 /*break*/, 2];
+                                _a = this;
+                                return [4 /*yield*/, new gigya.Promise(function (resolve) {
+                                        gigya.utils.localStorage.waitForService(function (adapter) {
+                                            resolve(adapter);
+                                        });
+                                    })];
+                            case 1:
+                                _a._storage = _b.sent();
+                                _b.label = 2;
+                            case 2:
+                                if (!!this._hasGmid)
+                                    return [3 /*break*/, 6];
+                                if (!this.canSaveGmidAsCookie())
+                                    return [3 /*break*/, 4];
+                                return [4 /*yield*/, this.sendRequest({
+                                        methodName: 'accounts.webSdkBootstrap',
+                                        params: { apiKey: this._apiKey },
+                                        settings: { forceHttps: true } //because this end-point is setting HTTP only AND secure cookie, we must call it with HTTPS
+                                    })];
+                            case 3:
+                                res = _b.sent();
+                                if (res.errorCode != 0)
+                                    throw 'error bootstrapping sdk\n' + JSON.stringify(res, null, 4);
+                                return [3 /*break*/, 6];
+                            case 4: return [4 /*yield*/, this.setupWithStorage()];
+                            case 5:
+                                _b.sent();
+                                this._useStorage = true;
+                                _b.label = 6;
+                            case 6:
+                                if (!this._useStorage)
+                                    return [3 /*break*/, 8];
+                                return [4 /*yield*/, this.getGmidTicket()];
+                            case 7:
+                                ticketInfo = _b.sent();
+                                return [3 /*break*/, 9];
+                            case 8:
+                                this.cleanStorage();
+                                _b.label = 9;
+                            case 9: return [2 /*return*/, {
+                                    ticketInfo: ticketInfo
+                                }];
+                        }
+                    });
+                });
+            };
+            ApiService.prototype.setGroupApiDomain = function (apiDomain) {
+                return __gig_awaiter(this, void 0, gigya.Promise, function () {
+                    return __gig_generator(this, function (_a) {
+                        this._groupApiDomainService.set(apiDomain);
+                        return [2 /*return*/];
+                    });
+                });
+            };
+            ApiService.prototype.canSaveGmidAsCookie = function () {
+                // api domain will be first party when site has a custom api domain prefix.
+                return this._domainResolver.isApiDomainFirstParty || gigya.localInfo.canSaveCookie;
+            };
+            ApiService.prototype.sendRequest = function (data) {
+                var _this = this;
+                return new gigya.Promise(function (resolve, reject) {
+                    if (!data) {
+                        return reject('ApiService: request data must has methodName and params');
+                    }
+                    var methodName = data.methodName;
+                    var params = gigya.utils.object.clone(data.params, true, true);
+                    if (_this._useStorage) {
+                        params.gmid = _this._storage.getItem(services.TokenKeys.GMID);
+                        params.ucid = _this._storage.getItem(services.TokenKeys.UCID);
+                    }
+                    _this.getApiDomain(methodName).then(function (apiDomain) {
+                        var request = new _this._requestClass("https://" + apiDomain, methodName, params, function (res) {
+                            var json = gigya.utils.JSON.serialize(res);
+                            if (!gigya.utils.JSON.deserialize(json, undefined)) {
+                                res = {
+                                    errorCode: 400004 /* INVALID_PARAMETER_FORMAT */,
+                                    errorMessage: "Invalid parameter format." + '\n' + "One of the parameters of this request has been set with a value which is not in the expected format."
+                                };
+                            }
+                            resolve(res);
+                        }, data.settings);
+                        request.send();
+                    });
+                });
+            };
+            ApiService.prototype.setupWithStorage = function () {
+                return __gig_awaiter(this, void 0, gigya.Promise, function () {
+                    var isGmidExistsInStorage, expirationTime, tokens, ticketRes;
+                    return __gig_generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                isGmidExistsInStorage = Boolean(this._storage.getItem(services.TokenKeys.GMID));
+                                expirationTime = parseInt(this._storage.getItem(services.TokenKeys.GMID_TICKET_EXPIRATION_TIME));
+                                if (!!isGmidExistsInStorage)
+                                    return [3 /*break*/, 2];
+                                return [4 /*yield*/, this.getIds()];
+                            case 1:
+                                tokens = _a.sent();
+                                if (!tokens.gcid || !tokens.ucid) {
+                                    throw 'ApiService getIDs: the request to the endpoint failed';
+                                }
+                                else {
+                                    this._storage.setItem(services.TokenKeys.GMID, tokens.gcid);
+                                    this._storage.setItem(services.TokenKeys.UCID, tokens.ucid);
+                                    ticketRes = this.createTicketResponse(tokens.gmidTicket);
+                                    this.updateGmidTicket(ticketRes);
+                                }
+                                return [3 /*break*/, 3];
+                            case 2:
+                                if (!gigya.utils.validation.isLaterThanNow(expirationTime)) {
+                                    this.refreshGmidTicketFromServer();
+                                }
+                                _a.label = 3;
+                            case 3: return [2 /*return*/];
+                        }
+                    });
+                });
+            };
+            /*
+            createNew - if no gmidTicket exists, then create a new one instead of returning undefined
+             */
+            ApiService.prototype.getGmidTicket = function (createNew) {
+                if (createNew === void 0) { createNew = false; }
+                return __gig_awaiter(this, void 0, gigya.Promise, function () {
+                    var gmidTicket, expirationTime;
+                    return __gig_generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                gmidTicket = this._storage.getItem(services.TokenKeys.GMID_TICKET);
+                                if (!(!gmidTicket && !createNew))
+                                    return [3 /*break*/, 1];
+                                return [2 /*return*/, undefined];
+                            case 1:
+                                expirationTime = parseInt(this._storage.getItem(services.TokenKeys.GMID_TICKET_EXPIRATION_TIME));
+                                if (!(gmidTicket && gigya.utils.validation.isLaterThanNow(expirationTime)))
+                                    return [3 /*break*/, 2];
+                                return [2 /*return*/, {
+                                        gmidTicket: gmidTicket,
+                                        expirationTime: parseInt(this._storage.getItem(services.TokenKeys.GMID_TICKET_EXPIRATION_TIME))
+                                    }];
+                            case 2:
+                                this.deleteGmidTicket();
+                                return [4 /*yield*/, this.refreshGmidTicketFromServer()];
+                            case 3: return [2 /*return*/, _a.sent()];
+                        }
+                    });
+                });
+            };
+            ApiService.prototype.refreshGmidTicketFromServer = function () {
+                return __gig_awaiter(this, void 0, gigya.Promise, function () {
+                    var res;
+                    return __gig_generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, this.createGmidTicket(this._storage.getItem(services.TokenKeys.GMID))];
+                            case 1:
+                                res = _a.sent();
+                                this.updateGmidTicket(res);
+                                return [2 /*return*/, res];
+                        }
+                    });
+                });
+            };
+            ApiService.prototype.updateGmidTicket = function (ticket) {
+                this._storage.setItem(services.TokenKeys.GMID_TICKET, ticket.gmidTicket);
+                this._storage.setItem(services.TokenKeys.GMID_TICKET_EXPIRATION_TIME, String(ticket.expirationTime));
+            };
+            ApiService.prototype.deleteGmidTicket = function () {
+                this._storage.removeItem(services.TokenKeys.GMID_TICKET);
+                this._storage.removeItem(services.TokenKeys.GMID_TICKET_EXPIRATION_TIME);
+            };
+            ApiService.prototype.cleanStorage = function () {
+                this._storage.removeItem(services.TokenKeys.GMID);
+                this._storage.removeItem(services.TokenKeys.UCID);
+                this.deleteGmidTicket();
+            };
+            ApiService.prototype.getIds = function () {
+                return this.sendRequest({
+                    methodName: 'socialize.getIDs',
+                    params: {
+                        APIKey: this._apiKey,
+                        includeTicket: true
+                    },
+                    settings: { forceHttps: true }
+                });
+            };
+            ApiService.prototype.createGmidTicket = function (gmid, expires) {
+                var _this = this;
+                if (expires === void 0) { expires = gigya.gmidTicketExpiration; }
+                var params = {
+                    apiKey: this._apiKey,
+                    expires: expires
+                };
+                if (gmid)
+                    params.gmid = gmid;
+                return this.sendRequest({
+                    methodName: 'socialize.getGmidTicket',
+                    params: params,
+                    settings: { forceHttps: true }
+                }).then(function (res) { return _this.createTicketResponse(res.gmidTicket); });
+            };
+            ApiService.prototype.createTicketResponse = function (gmidTicket) {
+                var currentGmidTicketDate = new Date();
+                currentGmidTicketDate.setHours(currentGmidTicketDate.getHours() + GMID_TICKET_EXPIRATION_INTERVAL);
+                var expirationTime = currentGmidTicketDate.getTime();
+                return {
+                    gmidTicket: gmidTicket,
+                    expirationTime: expirationTime
+                };
+            };
+            return ApiService;
+        }());
+        services.ApiService = ApiService;
+    })(services = gigya.services || (gigya.services = {}));
+})(gigya || (gigya = {}));
+/// <reference path="../../Gigya.Js/app/Utils/Promise.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/object.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/DOM.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/URL.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/validation.ts" />
+/// <reference path="../../Gigya.Js/app/GSErrors.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/localStorage.ts" />
+/// <reference path="../../Gigya.Js/interfaces/IApiAdapter.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/keyValue.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/sessionCache.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/script.ts" />
+/// <reference path="../../Gigya.Js/interfaces/IApiAdapter.ts" />
+/// <reference path="ApiService.ts" /> 
+/// <reference path="../../ServiceProxy/ProxyListener.ts" />
+/// <reference path="../../Gigya.Js/app/Utils/keyValue.ts" />
+/// <reference path="interfaces.ts" />
+/// <reference path="DomainResolver.ts" />
+/// <reference path="ApiServiceWithDep.ts" />
+// this will be inject into api.aspx
+var gigya;
+(function (gigya) {
+    function getParamValue(str, key, del) {
+        if (del === void 0) { del = '&'; }
+        // http://stackoverflow.com/questions/11920697/how-to-get-hash-value-in-a-url-in-js
+        var matches = str.match(new RegExp(key + "=([^" + del + "]*)"));
+        var val = matches ? matches[1] : null;
+        return val;
+    }
+    function getReqParamValue(str, key) {
+        var val = getParamValue(str, key);
+        if (val)
+            return val;
+        else
+            throw "gigya: no " + key + " for api-service frame";
+    }
+    var baseDomains = gigya.partnerSettings.baseDomains;
+    var defaultApiDomain = gigya.defaultApiDomain;
+    var dataCenter = gigya.dataCenter;
+    var customApiDomainPrefix = gigya.partnerSettings.customAPIDomainPrefix;
+    var originDomain = (window.location != window.parent.location)
+        ? (window.document.referrer || decodeURIComponent(getReqParamValue(location.hash, 'origin')))
+        : window.document.location.href;
+    var apiKey = getReqParamValue(location.search, 'apiKey');
+    var hasGmid = getParamValue(document.cookie, 'hasGmid', ';') === 'ver2';
+    (function main() {
+        return __gig_awaiter(this, void 0, gigya.Promise, function () {
+            var groupApiDomainService, domainResolver, apiService, listener;
+            return __gig_generator(this, function (_a) {
+                groupApiDomainService = new gigya.services.GroupApiDomainService();
+                domainResolver = gigya.services.createDomainResolver(dataCenter, baseDomains, originDomain, defaultApiDomain, customApiDomainPrefix, groupApiDomainService);
+                apiService = new gigya.services.ApiService(apiKey, hasGmid, domainResolver, groupApiDomainService);
+                listener = new gigya.services.proxy.ProxyListener(apiService, originDomain);
+                try {
+                    if (!apiKey) {
+                        throw 'ApiKey not supplied';
+                    }
+                    else {
+                        listener.listen({
+                            apiDomain: domainResolver.getApiDomain(),
+                            isGroupApiDomain: domainResolver.isGroupApiDomain
+                        });
+                    }
+                }
+                catch (ex) {
+                    console.error(ex);
+                }
+                return [2 /*return*/];
+            });
+        });
+    })();
+})(gigya || (gigya = {}));
+</script>
+
+
+</body></html>

@@ -1,0 +1,60 @@
+//Renders the logo onload
+$(function() {
+	renderLogos();
+	//renderLogosOnceLoaded();
+});
+
+//Solution for related_content not yet existing if necessary
+/*var renderLogosOnceLoaded = function() {
+	if (document.getElementById("related_content")) {
+		renderLogos();
+	} else {
+		setTimeout(renderLogosOnceLoaded, 10);
+	}
+};*/
+
+var renderLogos = function() {
+	var teamUrl = "/shared/properties/style/" + club + ".json";
+	$.get(teamUrl).done(function(teamData) {
+		var parsedData = JSON.parse(teamData);
+
+		//This imposes a limit of 10 legal logos - change length to change it
+		//This also assumes a Homebase setup of legal_logo1, legal_logo2, etc.
+		for (var i = 0, length = 10; i < length; i ++) {
+			if (parsedData["legal_logo" + (i + 1)]) {
+				appendLogo(parsedData["legal_logo" + (i + 1)]);
+			//If no more legal logos are found, end the loop a little sooner
+			} else {
+				break;
+			}
+		}
+	});
+};
+
+var appendLogo = function(logo) {
+	var pagesForLogo = logo.headline.split(",");
+	var trimmedPagesForLogo = [];
+	
+	//Makes sure spacing is consistent in case of varying entries in Homebase
+	for (var i = 0, length = pagesForLogo.length; i < length; i ++) {
+		trimmedPagesForLogo.push(pagesForLogo[i].trim());
+	}  
+	
+	//Renders the logo only if the page has been designated in Homebase 
+	if (trimmedPagesForLogo.indexOf(page_id) !== -1) { 
+		
+		//Creates div wrapper with id 
+		//TODO: Find a place to put the div ID - for now in url-text
+		var logoElement = document.createElement("div");
+		logoElement.id = logo["url-text"];
+
+		//Creates img tag (space in alt is HTML decimal entity for rendering)
+		var elementAlt = logo["url-text"].replace("_", "&#32");
+		var elementHtml = "<img src=" + logo.image + " alt= " + elementAlt + " />";
+		
+		//Sets innerHTML of wrapper div as the img and appends it to related_content div
+		//NB: related_content div may not exist when this function fires
+		logoElement.innerHTML = elementHtml;
+		document.getElementById("related_content").appendChild(logoElement);
+	}
+};

@@ -1,0 +1,632 @@
+//~~tv:12034.20160928
+//~~tc: sdes array fix for first event
+//      Correction of data property name for purchase event, data.cart.product > data.product
+
+window.lpTag = window.lpTag || {}; // REQUIRED to ensure lpTag {} exists prior to SDE push
+lpTag.sdes = lpTag.sdes||[];
+window.lpTag.autoStart = false; // REQUIRED ! disable autostart behaviour
+
+if (typeof(Storage) === "undefined") {
+  var _lpchatting = false;
+  var _lpchatended = false;
+  var _lpchatinter = false;
+}
+else { sessionStorage._lpstorage = true; }
+
+function tealium_liveperson_lib(_site, _section) {
+  if (({}).toString.call(_section).match(/\s([a-zA-Z]+)/)[1].toLowerCase() !== "array") {
+    _section = _section ? _section.toString() : "";
+    _section = _section.split(/\s*,\s*/g);
+  }
+  
+  // LivePerson Monitor Tag v1.6.0
+  window.lpTag=window.lpTag||{};if(typeof window.lpTag._tagCount==='undefined'){window.lpTag={site:_site||'',section:_section,autoStart:lpTag.autoStart===false?false:true,ovr:lpTag.ovr||{},_v:'1.6.0',_tagCount:1,protocol:'https:',events:{bind:function(app,ev,fn){lpTag.defer(function(){lpTag.events.bind(app,ev,fn);},0);},trigger:function(app,ev,json){lpTag.defer(function(){lpTag.events.trigger(app,ev,json);},1);}},defer:function(fn,fnType){if(fnType==0){this._defB=this._defB||[];this._defB.push(fn);}else if(fnType==1){this._defT=this._defT||[];this._defT.push(fn);}else{this._defL=this._defL||[];this._defL.push(fn);}},load:function(src,chr,id){var t=this;setTimeout(function(){t._load(src,chr,id);},0);},_load:function(src,chr,id){var url=src;if(!src){url=this.protocol+'//'+((this.ovr&&this.ovr.domain)?this.ovr.domain:'lptag.liveperson.net')+'/tag/tag.js?site='+this.site;}var s=document.createElement('script');s.setAttribute('charset',chr?chr:'UTF-8');if(id){s.setAttribute('id',id);}s.setAttribute('src',url);document.getElementsByTagName('head').item(0).appendChild(s);},init:function(){this._timing=this._timing||{};this._timing.start=(new Date()).getTime();var that=this;if(window.attachEvent){window.attachEvent('onload',function(){that._domReady('domReady');});}else{window.addEventListener('DOMContentLoaded',function(){that._domReady('contReady');},false);window.addEventListener('load',function(){that._domReady('domReady');},false);}if(typeof(window._lptStop)=='undefined'){this.load();}},start:function(){this.autoStart=true;},_domReady:function(n){if(!this.isDom){this.isDom=true;this.events.trigger('LPT','DOM_READY',{t:n});}this._timing[n]=(new Date()).getTime();},vars:lpTag.vars||[],dbs:lpTag.dbs||[],ctn:lpTag.ctn||[],sdes:lpTag.sdes||[],ev:lpTag.ev||[]};lpTag.init();}else{window.lpTag._tagCount+=1;}
+  
+  // custom for Cox. This will attach the event handlers only once after the library code has run. 
+  if (typeof utag.runonce == 'undefined') utag.runonce = {};
+  if (typeof utag.runonce['lp_events'] == 'undefined') {
+    lpTag.tagletSection = window.lpTag.tagletSection || ""; // we need to figure out what the sections are
+    utag.runonce['lp_events'] = 1;
+       
+    // beginning of LP analytics code
+    lpTag.events.bind("lpUnifiedWindow", "state", function (eventData, appName) {
+      if (eventData.state == "offline") {
+        window.onbeforeunload = function (e) {
+          var closeBtn = document.querySelector('.lp_close');
+          if (closeBtn) { closeBtn.click(); }
+        };
+      }
+    });
+        
+    lpTag.events.bind('LP_OFFERS', 'OFFER_CLICK', function(data) {
+      if (data.engagementType > 4) {
+        if (data.engagementName === "Voice Sales Button") { _lpCallAnalytics("voiceButtonClicked","liveperson_voice"); } 
+        else { _lpCallAnalytics("chatButtonClicked","liveperson_chat"); }
+      } 
+      else { _lpCallAnalytics("chatInviteAccepted","liveperson_chat"); }
+    });
+
+    lpTag.events.bind('LP_OFFERS', 'OFFER_DECLINED', function(data) {
+      _lpCallAnalytics("chatInviteDeclined","liveperson_chat");
+    });
+        
+    lpTag.events.bind('LP_OFFERS', 'OFFER_IMPRESSION', function(data) {
+      if (data.engagementType > 4) { // button
+        if (data.engagementName === "Voice Sales Button") { // voice button
+          if (data.state == 1) { _lpCallAnalytics("voiceButtonActive","liveperson_voice"); } // online 
+          else if (data.state == 2) { _lpCallAnalytics("voiceButtonPassive","liveperson_voice"); } // offline  
+        } 
+        else { // chat button
+          if (data.state == 1) { _lpCallAnalytics("chatButtonActive","liveperson_chat"); } // online
+          else if (data.state == 2) { _lpCallAnalytics("chatButtonPassive","liveperson_chat"); } // offline
+        }
+      } else { _lpCallAnalytics("chatInviteDisplayed","liveperson_chat"); }
+    });
+        
+    function _lpCallAnalytics(name,type) {
+      utag.link({"eventNames": name, eventType: type});
+      console.log("LP_DEBUG -> LP Analytics Event: " + name + " Type: " + type);
+    }
+    
+    function _lpCallAnalyticsForChat(event,id,name,type) {
+      utag.link({"eventNames": event, "chatSessionID": id, "chatEngagementName": name, eventType: type});
+      console.log("LP_DEBUG -> LP Analytics Event: " + event + " Type: " + type + " Name: " + name + " ID: " + id);
+    }
+          
+    function _lpCheckSession(id) {
+      if (sessionStorage._lpstorage === "true") {
+        if (sessionStorage._lpchatting !== id) { sessionStorage._lpchatting = id; }
+        _lpsessionstorage = true;
+      }
+      else { _lpsessionstorage = false; }
+      return _lpsessionstorage;
+    }
+    
+    function _lpClearSession() {
+      if (sessionStorage._lpstorage === "true") {
+        sessionStorage._lpchatting = "";
+        sessionStorage._lpchatted = "";
+        sessionStorage._lpchatinter = "";
+        sessionStorage._lpchatended = "";
+        console.log("LP_DEBUG -> LP chat session cleared.");
+      }
+      else {
+        _lpchatting = false;
+        _lpchatended = false;
+        _lpchatinter = false;
+      }
+    }
+
+    function _lpSendAnalytics(data) {
+      if (data.state == "chatting" || data.state == "interactive" || data.state == "ended") {
+        var _lpsessionmatch = _lpCheckSession(data.conversationId);
+        console.log("LP_DEBUG -> LP Match: " + _lpsessionmatch + " | LP ID: " + sessionStorage._lpchatting + " | LP State: " + data.state);
+        console.log("LP_DEBUG -> SS Chat: " + sessionStorage._lpchatted + " | SS Inter: " + sessionStorage._lpchatinter + " | SS End: " + sessionStorage._lpchatended);
+        console.log("LP_DEBUG -> SID: " + data.conversationId + " | NAME: " + data.engagementName + " | EID: " + data.engagementId);
+        if (data.state == "chatting" && typeof(data.engagementId) !== "undefined") {
+          if (_lpsessionmatch && sessionStorage._lpchatted !== "true") {
+            setTimeout(_lpCallAnalyticsForChat("chatStarted",data.conversationId,data.engagementName,"liveperson_chat"),250);
+            sessionStorage._lpchatted = true;
+          }
+          else {
+            if (_lpchatting === false) {
+              setTimeout(_lpCallAnalyticsForChat("chatStarted",data.conversationId,data.engagementName,"liveperson_chat"),250);
+              _lpchatting = true;
+            }
+          }
+        }
+        if (data.state == "interactive") {
+          if (_lpsessionmatch && sessionStorage._lpchatinter !== "true") {
+            setTimeout(_lpCallAnalytics("chatInteractive","liveperson_chat"),250);
+            sessionStorage._lpchatinter = true;
+          }
+          else {
+            if (_lpchatinter === false) {
+              setTimeout(_lpCallAnalytics("chatInteractive","liveperson_chat"),250);
+              _lpchatinter = true;
+            }
+          }
+        }
+        if (data.state == "ended") {
+          if (_lpsessionmatch && sessionStorage._lpchatended !== "true") {
+            setTimeout(_lpCallAnalytics("chatClosed","liveperson_chat"),250);
+            sessionStorage._lpchatended = true;
+            setTimeout(_lpClearSession(),250);
+          }
+          else {
+            if (_lpchatended === false) {
+              setTimeout(_lpCallAnalytics("chatClosed","liveperson_chat"),250);
+              _lpchatended = true;
+              setTimeout(_lpClearSession(),250);
+            }
+          }
+        }
+      }
+    }
+    lpTag.events.bind({eventName: "state", appName: "lpUnifiedWindow", func: _lpSendAnalytics,});
+    lpTag.events.bind({eventName: "conversationInfo", appName: "lpUnifiedWindow", func: _lpSendAnalytics,});
+    // end of LP analytics code
+  }
+}
+
+if ("true" === "false") {
+  tealium_liveperson_lib("31922287", "cox:res");
+}
+
+//tealium universal tag - utag.sender.template ut4.0.201805041451, Copyright 2018 Tealium.com Inc. All Rights Reserved.
+try {
+  (function (id, loader) {
+    var u = {};
+    utag.o[loader].sender[id] = u;
+
+    // Please do not modify
+    if (utag.ut === undefined) { utag.ut = {}; }
+    // Start Tealium loader 4.35
+    if (utag.ut.loader === undefined) { u.loader = function (o) { var b, c, l, a = document; if (o.type === "iframe") { b = a.createElement("iframe"); o.attrs = o.attrs || { "height" : "1", "width" : "1", "style" : "display:none" }; for( l in utag.loader.GV(o.attrs) ){ b.setAttribute( l, o.attrs[l] ); } b.setAttribute("src", o.src); }else if (o.type=="img"){ utag.DB("Attach img: "+o.src); b=new Image();b.src=o.src; return; }else{ b = a.createElement("script");b.language="javascript";b.type="text/javascript";b.async=1;b.charset="utf-8"; for( l in utag.loader.GV(o.attrs) ){ b[l] = o.attrs[l]; } b.src = o.src; } if(o.id){b.id=o.id}; if (typeof o.cb=="function") { if(b.addEventListener) { b.addEventListener("load",function(){o.cb()},false); }else { /* old IE support */ b.onreadystatechange=function(){if(this.readyState=='complete'||this.readyState=='loaded'){this.onreadystatechange=null;o.cb()}}; } } l = o.loc || "head"; c = a.getElementsByTagName(l)[0]; if (c) { utag.DB("Attach to "+l+": "+o.src); if (l == "script") { c.parentNode.insertBefore(b, c); } else { c.appendChild(b) } } } } else { u.loader = utag.ut.loader; }
+    // End Tealium loader
+    // Start Tealium typeOf 4.35
+    if (utag.ut.typeOf === undefined) { u.typeOf = function(e) {return ({}).toString.call(e).match(/\s([a-zA-Z]+)/)[1].toLowerCase();};} else { u.typeOf = utag.ut.typeOf; }
+    // End Tealium typeOf
+    // Start Tealium isEmptyObject
+    if (utag.ut.isEmptyObject === undefined) {u.isEmptyObject = function(o, a) { for (a in o) { if (utag.ut.hasOwn(o,a)){return false;}}return true;};} else { u.isEmptyObject = utag.ut.isEmptyObject; }
+    // Start Tealium hasOwn - used in the above function
+    if (utag.ut.hasOwn === undefined) {utag.ut.hasOwn = function(o, a) {return o != null  && Object.prototype.hasOwnProperty.call(o, a);};}
+    // End Tealium hasOwn
+    // End Tealium isEmptyObject
+    // Start Tealium isEmptyObject
+    if (utag.ut.merge === undefined) {u.merge = function(a, b, c, d) {if(c){for(d in utag.loader.GV(b)){a[d] = b[d];}}else{for(d in utag.loader.GV(b)){if(typeof a[d]=="undefined"){a[d] = b[d];}}}};} else { u.merge = utag.ut.merge; }
+    // End Tealium isEmptyObject
+
+    u.ev = {"view" : 1, "link" : 1};
+    u.initialized = false;
+    u.view_count = 0;
+    
+    //INTERNAL FUNCTIONS
+    u.calc_items = function(quan) {
+      var q, i = 0;
+      for (q = 0; q < quan.length; q++) {
+        i += parseInt(quan[q]);
+      }
+      return i;
+    };
+    u.remove_empty = function(a) {
+      var b, t;
+      for (b in utag.loader.GV(a)) {
+        t = u.typeOf(a[b]);
+        if (t === "object") {
+          u.remove_empty(a[b]);
+          if (u.isEmptyObject(a[b])) {
+            try {delete a[b];} catch(e) {a[b]=undefined;}
+          }
+        } else if (!((a[b] === 0 || a[b] === false) ? !0 : (t === "array" && a[b].length === 0) ? !1 : !!a[b])){
+          try {delete a[b];} catch(e) {a[b]=undefined;}
+        }
+      }
+      return a;
+    };
+    u.map_func = function(arr, obj, item) {
+      var i = arr.shift();
+      obj[i] = obj[i] || {};
+      if (arr.length > 0) {
+        u.map_func(arr,obj[i], item);
+      } else {
+        obj[i] = item;
+      }
+    };
+    u.add_prod = function(ecom,f) {
+      return {
+        "name": ecom.product_name[f],
+        "category": ecom.product_category[f],
+        "sku": ecom.product_sku[f],
+        "price": parseFloat(ecom.product_unit_price[f])
+      }
+    };
+    u.contains_data = function(data) {
+      var c, count = 0;
+      for (c in data) {
+        if (utag.ut.hasOwn(data,c)) {
+          // if (++count > 1) {
+      if (++count > 0) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+    //END INTERNAL FUNCTIONS
+      u.map={"lp_siteID":"site","_lpType":"type","pageName":"section","productID":"product_name,purchase.product_name,cart.product_name","productPSU":"product_sku,purchase.product_sku,cart.product_sku","productMRCSavings":"product_category,cart.product_category,purchase.product_category","productOneTimeCharge":"product_unit_price,cart.product_unit_price,purchase.product_unit_price","productOfferName":"prodView.product_name","productOfferMonths":"prodView.product_sku","productOfferMRC":"prodView.product_unit_price","_visitorType_tmp":"vi.ctype","_lpProductSubscribed":"vi.imei","lpPSUCount":"vi.companySize","visitorServiceability":"vi.accountName","localeName":"vi.role","visitCount":"per.age","lpQualifiedOrder":"per.day","address":"per.company","promoCode":"lead.id","_lpPromoCodeText":"lead.topic","_lpBusinessAgentInfo":"serv.topic","cbHasActiveICOMS":"serv.category","cbVisitorGEMSServiceability":"serv.id","_productOffersShown":"ms.affiliate","_productOfferSelected":"ms.campaignId","siteID":"vi.storeNumber","zip":"vi.storeZipCode","productTotalDueNow":"vi.balance","productInstallCharge":"cart.product_quantity,product_quantity,purchase.product_quantity","productTotalOfferMRC":"cart.order_total","purchaseID":"order_id","productOfferSavings":"prodView.product_category","accountNumber9":"customer_id","cidm":"vi.socialId","_lpInterface":"per.gender"};
+  u.extend=[function(a,b){
+if((b.purchaseStep == "shop" || b.pageType == "mktg" || b.pageType == "myaccount") &&
+   b.productOfferID && b.productOfferMonths && b.productOfferMRC && b.productOfferName && b.productOfferSavings) {
+  b._productOffersShown = [];
+  for(var c=0; c < b.productOfferID.length; c++) {
+    var tmp = [];
+    tmp.push(b.productOfferID[c]);
+    tmp.push(b.productOfferName[c]);
+    tmp.push(b.productOfferMRC[c]);
+    tmp.push(b.productOfferMonths[c]);
+    tmp.push(b.productOfferSavings[c]);
+    b._productOffersShown.push(tmp.join(':'));
+  } 
+  b._productOffersShown = b._productOffersShown.join(',');
+} 
+},
+function(a,b){
+if((b.purchaseStep == "checkout" || b.purchaseStep == "order" || b.eventNames.indexOf("cartAdd") >= 0) &&
+   b.productOfferID && b.productOfferMonths && b.productOfferMRC && b.productOfferName && b.productOfferSavings) {
+  b._productOfferSelected = [];
+  for(var c=0; c < b.productOfferID.length; c++) {
+    var tmp = [];
+    tmp.push(b.productOfferID[c]);
+    tmp.push(b.productOfferName[c]);
+    tmp.push(b.productOfferMRC[c]);
+    tmp.push(b.productOfferMonths[c]);
+    tmp.push(b.productOfferSavings[c]);
+    b._productOfferSelected.push(tmp.join(':'));
+  } 
+  b._productOfferSelected = b._productOfferSelected.join(',');
+} 
+},
+function(a,b){ try{ if(typeof b['promoCode']!='undefined'&&b['promoCode']!=''){b['_lpPromoCodeText']='promo code'} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d){ try{ if(typeof b['lpInternetSubscribed']!='undefined'&&b['lpInternetSubscribed']!=''||typeof b['lpTVSubscribed']!='undefined'&&b['lpTVSubscribed']!=''||typeof b['lpPhoneSubscribed']!='undefined'&&b['lpPhoneSubscribed']!=''||typeof b['lpHomeSecuritySubscribed']!='undefined'&&b['lpHomeSecuritySubscribed']!=''){c=[b['lpInternetSubscribed'],b['lpTVSubscribed'],b['lpPhoneSubscribed'],b['lpHomeSecuritySubscribed']];for(d=0;d<c.length;d++){if(typeof c[d]=='undefined'||c[d]=='')c[d]='unknown'};b['_lpProductSubscribed']=c.join(',')} } catch(e){ utag.DB(e) }  },
+function(a,b,c,d,e,f,g){d=b['pageType'];if(typeof d=='undefined')return;c=[{'shop':'cart,prodView,ctmrinfo,mrktInfo,personal,lead,service,error,mrktInfo'},{'mktg':'cart,prodView,ctmrinfo,mrktInfo,personal,lead,service,error'},{'order':'cart,purchase,prodView,ctmrinfo,mrktInfo,personal,lead,service,error,mrktInfo'}];var m=false;for(e=0;e<c.length;e++){for(f in c[e]){if(d==f){b['_lpType']=c[e][f];m=true};};if(m)break};if(!m)b['_lpType']='cart,prodView,ctmrinfo,mrktInfo,personal,lead,service,error';},
+function(a,b,c,d,e,f,g){d=b['qp.lpenv'];if(typeof d=='undefined')return;c=[{'clone':'75357516'},{'watson':'48214966'}];var m=false;for(e=0;e<c.length;e++){for(f in c[e]){if(d.toString().indexOf(f)>-1){b['lp_siteID']=c[e][f];m=true};};if(m)break};if(!m)b['lp_siteID']='31922287';},
+function(a,b){
+function addLoadEvent(func) {
+    var oldonload = window.onload;
+    if (typeof window.onload != 'function') {
+        window.onload = func;
+    } else {
+        window.onload = function() {
+            if (oldonload) {
+                oldonload();
+            }
+            func();
+        };
+    }
+}
+
+utag.onload_flag = utag.onload_flag || {};
+if (!utag.onload_flag[id]) {
+    if (document.readyState != "complete") {
+        addLoadEvent(function() {
+            utag.view(utag_data, null, [id]);
+        });
+        return false;
+    }
+    utag.onload_flag[id] = 1;
+}
+},
+function(a,b){ try{ if(typeof b['_lpInterface']=='undefined'){b['_lpInterface']='1'} } catch(e){ utag.DB(e) }  },
+function(a,b){ try{ if(b['interface']=='mobile-app'){b['_lpInterface']='0'} } catch(e){ utag.DB(e) }  }];
+
+
+    u.send = function (a, b) {
+      if (u.ev[a] || u.ev.all !== undefined) {
+        //##UTENABLEDEBUG##utag.DB("send:##UTID##");
+
+        var c, d, e, f, g, data, type, ecom, sdes_array = [], _event = [];
+  
+        u.data = {
+          "site"              : "31922287",
+          "section"           : "cox:res",
+          "type"              : "",
+          "merge_ecom"        : "true",
+          // E-Commerce Vars
+          "product_name"      : [],
+          "product_sku"       : [],
+          "product_category"  : [],
+          "product_quantity"  : [],
+          "product_unit_price": [],
+          "vi"                : {},
+          "ms"                : {},
+          "per"               : {},
+          "lead"              : {},
+          "serv"              : {},
+          "err"               : {},
+          "ecom"              : {},
+          "ecom_blank"        : {
+            "order_id"          : "",
+            "order_total"       : "",
+            "product_name"      : [],
+            "product_sku"       : [],
+            "product_category"  : [],
+            "product_quantity"  : [],
+            "product_unit_price": []
+          }
+        };
+
+        // Start tag-scoped extensions
+      for(c=0;c<u.extend.length;c++){try{d=u.extend[c](a,b);if(d==false)return}catch(e){}};
+        // End tag-scoped extensions
+
+        c = [];
+
+        // Start Mapping
+        for (d in utag.loader.GV(u.map)) {
+          if (b[d] !== undefined && b[d] !== "") {
+            e = u.map[d].split(",");
+            for (f = 0; f < e.length; f++) {
+              u.map_func(e[f].split("."), u.data, b[d]);
+            }
+          } else {
+            h = d.split(":");
+            if (h.length == 2 && b[h[0]]) {
+              e = b[h[0]].split(/\s*,\s*/);
+              for (f = 0; f < e.length; f++) {
+                if (e[f] === h[1] && u.map[d]) {
+                  _event = _event.concat(u.map[d].split(","));
+                }
+              }
+            }
+          }
+        }
+        // End Mapping
+
+        if (u.view_count == 0 && "true" === "true") {
+          tealium_liveperson_lib(u.data.site, u.data.section);
+        }
+
+        // Pull E-Commerce extension values
+        // Mappings override E-Commerce extension values
+        u.data.customer_id = u.data.customer_id || b._ccustid || "";
+
+        ecom = u.data.ecom;
+        ecom.order_id = u.data.order_id || b._corder || "";
+        ecom.order_total = u.data.order_total || b._ctotal || "";
+        // Oleg's fix - need to use a differen ecom extension variable since _cprodname is not being used
+        // if (u.data.product_name.length === 0 && b._cprodname !== undefined) { ecom.product_name = b._cprodname.slice(0); } else {ecom.product_name = u.data.product_name.slice(0);}
+        if (u.data.product_name.length === 0 && b._cprod !== undefined) { ecom.product_name = b._cprod.slice(0); } else {ecom.product_name = u.data.product_name.slice(0);}        
+        if (u.data.product_sku.length === 0 && b._csku !== undefined) { ecom.product_sku = b._csku.slice(0); } else {ecom.product_sku = u.data.product_sku.slice(0);}
+        if (u.data.product_category.length === 0 && b._ccat !== undefined) { ecom.product_category = b._ccat.slice(0); } else {ecom.product_category = u.data.product_category.slice(0);}
+        if (u.data.product_quantity.length === 0 && b._cquan !== undefined) { ecom.product_quantity = b._cquan.slice(0); } else {ecom.product_quantity = u.data.product_quantity.slice(0);}
+        if (u.data.product_unit_price.length === 0 && b._cprice !== undefined) { ecom.product_unit_price = b._cprice.slice(0); } else {ecom.product_unit_price = u.data.product_unit_price.slice(0);}
+        
+        c = u.typeOf(u.data.type);
+        if(c !== "array" && u.data.type) {
+          u.data.type = u.data.type.toString().split(/\s*,\s*/);
+        } else if (c === "undefined") {
+          u.data.type = [];
+        }
+        // if (u.data.type.length > 1) {
+    if (u.data.type.length > 0) {
+          _event = _event.concat(u.data.type);
+        }
+
+        if ('view' === a){ u.view_count++; }
+  
+        for (g = 0; g < _event.length; g++) {
+          data = undefined;
+          type = _event[g];
+          //Commerce
+          u.data[type] = u.data[type] || {};
+          if (u.data.merge_ecom === "true") {
+            u.merge(u.data[type], utag.handler.C(u.data.ecom));
+          } else {
+            u.merge(u.data[type], utag.handler.C(u.data.ecom_blank));
+          }
+          if (type === "cart") {
+            ecom = u.data.cart;
+            data = {
+              "type": type,  //MANDATORY
+              "total": parseFloat(ecom.order_total),  //TOTAL VALUE OF THE TRANSACTION AFTER DISCOUNT
+              "numItems": u.calc_items(ecom.product_quantity),
+              "products": []
+            };
+            for (f = 0; f < ecom.product_name.length; f++) {
+              data.products.push({
+                "product": u.add_prod(ecom,f),
+                "quantity": parseInt(ecom.product_quantity[f])
+              });
+            }
+            if (data.products.length === 0) {
+              try {delete data["numItems"];} catch(e) {data["numItems"]=undefined;}
+            }
+          } else if (type === "purchase") {
+            ecom = u.data.purchase;
+            data = {
+                "type": type, //MANDATORY
+                "total": parseFloat(ecom.order_total), //TOTAL VALUE OF THE TRANSACTION AFTER DISCOUNT
+                "numItems": u.calc_items(ecom.product_quantity),
+	               "cart": {"products": []}
+                 /* "products": [] */
+            };
+            for (f = 0; f < ecom.product_name.length; f++) {
+	               data.cart.products.push({
+                    "product": u.add_prod(ecom, f),
+                    "quantity": parseInt(ecom.product_quantity[f])
+                });
+            }
+	          if (data.cart.products.length === 0) {
+                try {
+                    delete data["numItems"];
+                } catch (e) {
+                    data["numItems"] = undefined;
+                }
+            }
+            data.cart.products.push({
+              "product": {
+                "name": "PSUCount",  //PSU Count special for Cox
+                "category": "",  
+                "sku": (parseInt((u.data.vi.companySize || 0)) + ""),  
+                "price": 0  
+              },
+              "quantity": 1  
+            });
+            if (ecom.order_total) {
+                data.total = parseFloat(ecom.order_total);
+            }
+            //UNIQUE ORDER ID OR RECEIPT ID
+            if (ecom.order_id) {
+                data.orderId = ecom.order_id;
+            }
+          } else if (type === "prodView") {
+            ecom = u.data.prodView;
+            data = {
+              "type": type,
+              "products": []
+            };
+            for (f = 0; f < ecom.product_name.length; f++) {
+              data.products.push({
+                "product": u.add_prod(ecom,f)
+              });
+            }
+          }
+          //Visitor Info
+          else if (type === "ctmrinfo") {
+            data = {
+              "type": type,
+              "info": {
+                "cstatus": u.data.vi.cstatus,
+                "customerId" : u.data.customer_id,
+                "ctype": u.data.vi.ctype,
+                "balance": parseFloat(u.data.vi.balance),
+                "socialId": u.data.vi.socialId,
+                "imei": u.data.vi.imei,
+                "userName": u.data.vi.userName,
+                "companySize": parseInt(u.data.vi.companySize),
+                "accountName": u.data.vi.accountName,
+                "role": u.data.vi.role,
+                "lastPaymentDate": {
+                  "day": parseInt(u.data.vi.lpd_day),
+                  "month": parseInt(u.data.vi.lpd_month),
+                  "year": parseInt(u.data.vi.lpd_year)
+                },
+                "registrationDate": {
+                  "day": parseInt(u.data.vi.rd_day),
+                  "month": parseInt(u.data.vi.rd_month),
+                  "year": parseInt(u.data.vi.rd_year)
+                },
+                "storeNumber": u.data.vi.storeNumber,
+                "storeZipCode": u.data.vi.storeZipCode
+              }
+            };
+          } else if (type === "mrktInfo") {
+            data = {
+              "type": type,
+              "info": {
+                "channel": u.data.ms.channel, // 0-Direct, 1-Search, 2-Social, 3-Email, 4-Referral, 5-Paid Search, 6-Display
+                "affiliate": u.data.ms.affiliate,
+                "campaignId": u.data.ms.campaignId
+              }
+            };
+		  } else if (type === "personal") {
+            var gendertemp = u.data.per.gender;
+            if (gendertemp == "0") { gendertemp = "MALE";}
+            if (gendertemp == "1") { gendertemp = "FEMALE";}                                   
+                              
+            data = {
+              "type": type,
+              "personal": {
+                "firstname": u.data.per.firstname,
+                "lastname": u.data.per.lastname,
+                "age": {
+                  "age": parseInt(u.data.per.age),
+                  "year": parseInt(u.data.per.year),
+                  "month": parseInt(u.data.per.month),
+                  "day": parseInt(u.data.per.day)
+                },
+                "contacts": [],
+                "gender": gendertemp,
+                "company": u.data.per.company
+              }
+            };
+
+
+            if (u.typeOf(u.data.per.email) !== "array") {
+              u.data.per.email = [u.data.per.email];
+            }
+            if (u.typeOf(u.data.per.phone) !== "array") {
+              u.data.per.phone = [u.data.per.phone];
+            }
+            if(u.typeOf(u.data.per.email[0]) !== 'undefined'){
+              for (f = 0; f < u.data.per.email.length; f++) {
+                data.personal.contacts.push({
+                  "email": u.data.per.email[f],
+                  "phone": u.data.per.phone[f]
+                });
+              }
+            }
+          } else if (type === "lead") {
+            data = {
+              "type": type,
+              "lead": {
+                "topic": u.data.lead.topic
+              }
+            };
+            if (u.data.lead.value) {data.lead.value = parseFloat(u.data.lead.value);}
+            if (u.data.lead.id) {data.lead.leadId = u.data.lead.id;}
+          } else if (type === "service") {
+            data = {
+              "type": type,
+              "service": {
+                "topic": u.data.serv.topic,
+                "status": parseInt(u.data.serv.status),
+                "category": u.data.serv.category,
+                "serviceId": u.data.serv.id
+              }
+            }
+          } else if (type === "error") {
+            data = {
+              "type": type,
+              "error": {
+                "message": u.data.err.msg,
+                "code": u.data.err.code
+              }
+            };
+          }
+
+          if (data) {
+            u.remove_empty(data);
+            u.temp_data = data.type;
+            try {delete data.type;} catch(e) {data.type=undefined;}
+            if (u.contains_data(data)) {
+              data.type = u.temp_data;
+              sdes_array.push(data);
+            }
+            try {delete u.temp_data;} catch(e) {u.temp_data=undefined;}
+          }
+        }
+  
+        if('view' === a && u.view_count > 1) {
+          c = u.typeOf(u.data.section);
+  
+          if (c !== "array" && u.data.section){
+            u.data.section = u.data.section.toString().split(/\s*,\s*/);
+          } else {
+            u.data.section = [];
+          }
+  
+          f = {
+            sdes   : sdes_array
+          };
+          if (u.data.taglets) { f.taglets = u.data.taglets; }
+          if (c !== "undefined" && u.data.section.length > 0) { f.section = u.data.section; }
+          lpTag.newPage(u.data.page_url || b['dom.url'], f);
+          
+        } else {
+          if (u.contains_data(sdes_array)) {
+            lpTag.sdes.push(sdes_array);
+            // lpTag.tagletSection = b.businessUnit || "unknown";
+          }
+        }
+
+        if (!u.initialized) {
+          u.initialized=!0;
+          (function(){
+            var firstTry = true,tryAgain;
+            var _lpStopTrying = function () {clearInterval(tryAgain);};
+            var startLETag = function() {if (lpTag.start){lpTag.isDom = true;lpTag.start(); _lpStopTrying(); } else if (firstTry) {firstTry = false;tryAgain = setInterval(startLETag,100);}};
+            startLETag();
+          })();
+        }
+
+        //##UTENABLEDEBUG##utag.DB("send:##UTID##:COMPLETE");
+      }
+    };
+    utag.o[loader].loader.LOAD(id);
+  }("357", "cox.main"));
+} catch (error) {
+  utag.DB(error);
+}
+//end tealium universal tag

@@ -1,0 +1,166 @@
+
+<!-- saved from url=(0129)file:///C:/UsablePrivacyPolicy/Data/TOS_Corpus/TOSRandomCorpus-master/TOSRandomCorpus-master/html/www.apa.org_files/cartFrame.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+         <script type="text/javascript" src="./jquery.js(1).download"></script>
+		 <script type="text/javascript" src="./jquery_002.js.download"></script>
+		 <script type="text/javascript" src="./rest.js.download"></script>
+		 <script type="text/javascript" src="./json2.js.download"></script>
+        <script type="text/javascript">
+        var displayOverlay = true;
+        var cesasCallbackFn = null;
+
+        function addItemToCart(itemId, quantity){
+      		addToCart(itemId, quantity, displayCartCallback);
+        }
+
+        //commented so can be used fromr rest.js
+       // function addApaItemToCart(itemId, quantity , applicationId , paramKeyValues,callBackFunction){
+        //	addApaItemToCart(itemId, quantity, applicationId , paramKeyValues , callBackFunction);
+        //}
+        
+        function addApaItemToCart2(itemId, quantity , applicationId , paramKeyValues){
+        	addApaItemToCart(itemId, quantity, applicationId , paramKeyValues , displayCartCallback2);
+        }
+        
+        function addItemAndConstidToCart(itemId, quantity, constitId, applicationTransactionNumber, callbackFn) {
+            cesasCallbackFn = callbackFn;
+        	displayOverlay = false;
+        	addToCart2(itemId, quantity, constitId, applicationTransactionNumber, displayCartCallback);
+        	displayOverlay = true;
+        }
+
+        function addPsycnetProductToCart(sessionId, itemId, uid, name, description, imageUrl, productUrl, documentCode, onlineFirstPublications, callbackFn) {
+        	displayOverlay = false;
+        	addPsycnetProduct(sessionId, itemId, uid, name, description, imageUrl, productUrl, documentCode, onlineFirstPublications, callbackFn);
+        	displayOverlay = true;
+        }
+        
+        function displayCartCallback(cartSummary) {
+        	var response = cartSummary.addToCartResponse;
+        	if (response == 0) {
+        			// update cart in iframe
+        			window.parent.updateShoppingCart(cartSummary.quantity, cartSummary.totalPrice);
+	        		if (cesasCallbackFn != null) cesasCallbackFn.call();
+        	}
+        	else if (response == 1) { // Not logged in
+        		window.parent.showLogInOverlay(cartSummary.apaItemId , cartSummary.itemQuantity);
+        	}
+        	else if (response == 2) { // Not authorized
+        		window.parent.showNotMemberOverlay();
+        	}
+        	else if (response == 3) { // Invalid Product, not found in DB
+        	}
+        	else if (response == 4) { // User has active license.
+        		window.parent.showActiveLicenseOverlay();
+        	}
+        	else if (response == 5) { // Not enough quantity setting to max
+        		window.parent.showOutOfQuantityOverlay();
+        	}
+        	else if (response == 6) { // User not allowed to buy more than one at a time
+        		window.parent.showNoMoreQuantityAllowedInCart();
+        	}
+        	else if (response == 7) { // APA Item in cart and trying to add CESAS
+        		window.parent.showCartHasAPAItem();
+        	}
+        	else if (response == 8) { // Already CESAS in cart and trying to add APA Item
+        		window.parent.showCartHasCESASItem();
+        	}
+        	window.parent.checkHelpCenterBrochure();
+        }
+
+        function displayCartCallback2(cartSummary) {
+        	// Response from the add to cart
+        	var response = cartSummary.addToCartResponse;
+
+        	if (response == 0) {
+        		window.parent.location.href = myApaUrl + "/apa/shop/shoppingCart.jsf";
+         	}
+        	else if (response == 1) { // Not logged in
+        		window.parent.showLogInOverlay(cartSummary.apaItemId , cartSummary.itemQuantity);
+        	}
+        	else if (response == 2) { // Not authorized
+        		window.parent.showNotMemberOverlay();
+        	}
+        	else if (response == 3) { // Invalid Product, not found in DB
+        	}
+        	else if (response == 4) { // User has active license.
+        		window.parent.showActiveLicenseOverlay();
+        	}
+        	else if (response == 5) { // Not enough quantity setting to max
+        		window.parent.showOutOfQuantityOverlay();
+        	}
+        	else if (response == 6) { // User not allowed to buy more than one at a time
+        		window.parent.showNoMoreQuantityAllowedInCart();
+        	}
+        	else if (response == 7) { // APA Item in cart and trying to add CESAS
+        		window.parent.showCartHasAPAItem();
+        	}
+        	else if (response == 8) { // Already CESAS in cart and trying to add APA Item
+        		window.parent.showCartHasCESASItem();
+        	}
+        }
+
+        function getErightsSessioinId() {
+       // 	Seam.Component.getInstance("identity").getApaUser(setErightsCookie);
+		}
+
+		function setErightsCookie(user) {
+			alert("Setting erights Cookie:" + user.sessionId);
+			window.parent.setCookie("ERIGHTS", user.sessionId);
+		}
+        
+		function refreshCart() {
+			displayOverlay = false;
+			getCartSummary(displayCartCallback);
+            displayOverlay = true;
+		}
+
+		function getCartItems(callbackFunction) {
+			displayOverlay = false;
+			var jsonValue = {};
+			ajaxPostWithJson("/apa/rest/commerce/cartItems", jsonValue, "json", callbackFunction);
+            displayOverlay = true;
+		}
+
+		function removeProduct(itemId, callbackFn) {
+			displayOverlay = false;
+			removeProductFromCart(itemId, callbackFn);
+            displayOverlay = true;
+		}
+
+
+		function getQueryParameter ( parameterName ) {
+			  var queryString = window.top.location.search.substring(1);
+			  var parameterName = parameterName + "=";
+			  if ( queryString.length > 0 ) {
+			    begin = queryString.indexOf ( parameterName );
+			    if ( begin != -1 ) {
+			      begin += parameterName.length;
+			      end = queryString.indexOf ( "&" , begin );
+			        if ( end == -1 ) {
+			        end = queryString.length
+			      }
+			      return unescape ( queryString.substring ( begin, end ) );
+			    }
+			  }
+			  return '';
+			} 
+
+		
+		
+        </script>
+    </head>
+ <body>
+       <script type="text/javascript">
+        	document.domain="apa.org";
+        	apaItemId = getQueryParameter('apaItem')
+        	itemQuantity = getQueryParameter('quantity')
+        	if(apaItemId != undefined && apaItemId  != '' ){
+        		addItemToCart(apaItemId,itemQuantity);
+        	}else{
+				refreshCart();
+        	}
+        </script>
+
+</body></html>

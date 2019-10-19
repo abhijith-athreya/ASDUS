@@ -1,0 +1,567 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0037)http://www.nltk.org/howto/chat80.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/">
+<title>Chat-80</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7614 2013-02-21 15:55:51Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+<style type="text/css">:root a[href^="http://ad-apac.doubleclick.net/"], :root .GKJYXHBF2 > .GKJYXHBE2 > .GKJYXHBH5, :root a[href^="http://www.amazon.co.uk/exec/obidos/external-search?"], :root #\5f _mom_ad_2, :root #rhs_block .mod > .luhb-div > div[data-async-type="updateHotelBookingModule"], :root #\5f _admvnlb_modal_container, :root #MAIN.ShowTopic > .ad, :root a[href^="http://pubads.g.doubleclick.net/"], :root .GB3L-QEDGY .GB3L-QEDF- > .GB3L-QEDE-, :root #main_col > #center_col div[style="font-size:14px;margin:0 4px;padding:1px 5px;background:#fff7ed"], :root div[class*="-storyBodyAd-"], :root #center_col > #main > .dfrd > .mnr-c > .c._oc._zs, :root a[href^="http://ul.to/ref/"], :root #\5f _nq__hh[style="display:block!important"], :root a[href^="http://cdn.adstract.com/"], :root a[href^="//tracking.content-recommendation.net/"][href*="/sponsored/click.html?"], :root div[class^="ads-partner-"], :root #\5f _mom_ad_12, :root a[href^="http://lp.ncdownloader.com/"], :root .inlineNewsletterSubscription + .inlineNewsletterSubscription div[class$="_item"], :root a[href^="https://intrev.co/"], :root div[id^="google_ads_iframe_"], :root #ads > .dose > .dosesingle, :root a[href^="http://3wr110.net/"], :root a[href^="http://bestorican.com/"], :root div[id^="ad_script_"], :root a[href^="http://get.slickvpn.com/"], :root .gbfwa > div[class$="_item"], :root #assetsListings[style="display: block;"], :root #center_col > #\5f Emc, :root a[href^="http://marketgid.com"], :root #rhs_block > ol > .rhsvw > .kp-blk > .xpdopen > ._OKe > ol > ._DJe > .luhb-div, :root a[href^="http://go.mobisla.com/"], :root #center_col > #res > #topstuff + #search > div > #ires > #rso > #flun, :root a[href^="http://www.webtrackerplus.com/"], :root a[href^="http://www.affbuzzads.com/affiliate/"], :root #center_col > #resultStats + #tads, :root #main-content > [style="padding:10px 0 0 0 !important;"], :root #center_col > #resultStats + #tads + #res + #tads, :root #cnt #center_col > #taw > #tvcap > .c._oc._Lp, :root a[href^="http://www.paddypower.com/?AFF_ID="], :root a[onmousedown^="this.href='http://staffpicks.outbrain.com/network/redir?"][target="_blank"], :root #center_col > #resultStats + div + #res + #tads, :root div[id^="crt-"][style], :root div[class^="Ad__container"], :root a[href^="http://centertrust.xyz/"], :root a[href^="http://g1.v.fwmrm.net/ad/"], :root a[href^="http://www.fbooksluts.com/"], :root #center_col > #resultStats + div[style="border:1px solid #dedede;margin-bottom:11px;padding:5px 7px 5px 6px"], :root a[href^="http://ads.integral-marketing.com/"], :root div[id^="advads_"], :root a[data-obtrack^="http://paid.outbrain.com/network/redir?"], :root .__y_inner > .__y_item, :root div[id^="ads300_100-widget"], :root #center_col > #taw > #tvcap > .rscontainer, :root #center_col > div[style="font-size:14px;margin-right:0;min-height:5px"] > div[style="font-size:14px;margin:0 4px;padding:1px 5px;background:#fff8e7"], :root div[id^="MarketGid"], :root #cnt #center_col > #res > #topstuff > .ts, :root #content > #center > .dose > .dosesingle, :root a[href^="http://www.text-link-ads.com/"], :root #content > #right > .dose > .dosesingle, :root #flowplayer > div[style="position: absolute; width: 300px; height: 275px; left: 222.5px; top: 85px; z-index: 999;"], :root a[href^="http://ads.betfair.com/redirect.aspx?"], :root #flowplayer > div[style="z-index: 208; position: absolute; width: 300px; height: 275px; left: 222.5px; top: 85px;"], :root a[href*="emprestimo.eu"], :root #header + #content > #left > #rlblock_left, :root .__zinit .__y_item, :root a[href^="//40ceexln7929.com/"], :root #mbEnd[cellspacing="0"][cellpadding="0"], :root a[href^="http://banners.victor.com/processing/"], :root #mn #center_col > div > h2.spon:first-child, :root .ch[onclick="ga(this,event)"], :root #mn #center_col > div > h2.spon:first-child + ol:last-child, :root a[href^="http://affiliate.coral.co.uk/processing/"], :root #mn div[style="position:relative"] > #center_col > ._Ak, :root a[href*=".clksite.com/"], :root #mn div[style="position:relative"] > #center_col > div > ._dPg, :root .__yinit .__y_item, :root a[href^="http://finaljuyu.com/"], :root div[id^="mainads"], :root #rhs_block > .ts[cellspacing="0"][cellpadding="0"][style="padding:0"], :root #resultspanel > #topads, :root #rhs_block > #mbEnd, :root #rhs_block .mod > .gws-local-hotels__booking-module, :root #rhs_block .xpdopen > ._OKe > div > .mod > ._yYf, :root a[href^="http://data.ad.yieldmanager.net/"], :root .mw > #rcnt > #center_col > #taw > #tvcap > .c, :root #rhs_block > script + .c._oc._Ve.rhsvw, :root a[data-redirect^="https://paid.outbrain.com/network/redir?"], :root a[href^="http://track.adform.net/"], :root #tads + div + .c, :root #rhswrapper > #rhssection[border="0"][bgcolor="#ffffff"], :root a[href^="http://admingame.info/"], :root #ssmiwdiv[jsdisplay], :root a[href^="http://www.dealcent.com/register.php?affid="], :root #topstuff > #tads, :root .GFYY1SVD2 > .GFYY1SVC2 > .GFYY1SVF5, :root a[href^="http://www.linkbucks.com/referral/"], :root .GHOFUQ5BG2 > .GHOFUQ5BF2 > .GHOFUQ5BG5, :root .GFYY1SVE2 > .GFYY1SVD2 > .GFYY1SVG5, :root .jobs-information-call-to-action + .jobs-information-call-to-action div[class$="_item"], :root a[href^="https://ad.atdmt.com/"], :root .__ywvr .__y_item, :root a[href*=".qertewrt.com/"], :root a[href^="http://www.terraclicks.com/"], :root .GJJKPX2N1 > .GJJKPX2M1 > .GJJKPX2P4, :root .GPMV2XEDA2 > .GPMV2XEDP1 > .GPMV2XEDJBB, :root a[href^="http://aff.ironsocket.com/"], :root .Mpopup + #Mad > #MadZone, :root aside[itemtype="https://schema.org/WPAdBlock"], :root .__y_elastic .__y_item, :root a[href^="http://www.adxpansion.com"], :root .__ywl .__y_item, :root .l-container > #fishtank, :root .icons-rss-feed + .icons-rss-feed div[class$="_item"], :root a[href^="http://dethao.com/"], :root .lads[width="100%"][style="background:#FFF8DD"], :root iframe[src^="http://cdn2.adexprt.com/"], :root .mod > ._jH + .rscontainer, :root a[href^="http://clicks.binarypromos.com/"], :root .mw > #rcnt > #center_col > #taw > .c, :root .nrelate .nr_partner, :root a[href^="http://tezfiles.com/pr/"], :root .ob_container .item-container-obpd, :root a[href^="http://partner.sbaffiliates.com/"], :root a[href^="http://www.firstload.com/affiliate/"], :root a[href^="http://www.myfreepaysite.com/sfw_int.php?aid"], :root a[href^="//srv.buysellads.com/"], :root a[href^="http://pwrads.net/"], :root .ob_dual_right > .ob_ads_header ~ .odb_div, :root .plistaList > .itemLinkPET, :root a[href^="http://www.download-provider.org/"], :root .plistaList > .plista_widget_underArticle_item[data-type="pet"], :root .plista_widget_belowArticleRelaunch_item[data-type="pet"], :root a[href^="http://www.pinkvisualgames.com/?revid="], :root .ra[align="left"][width="30%"], :root a[href^="http://ads.affbuzzads.com/"], :root a[href^="http://promos.bwin.com/"], :root .ra[align="right"][width="30%"], :root a[href^="http://bs.serving-sys.com/"], :root .ra[width="30%"][align="right"] + table[width="70%"][cellpadding="0"], :root a[href^="https://www.googleadservices.com/pagead/aclk?"], :root a[href^="http://api.content.ad/"], :root a[href^="http://n217adserv.com/"], :root .rc-cta[data-target], :root .rhsvw[style="background-color:#fff;margin:0 0 14px;padding-bottom:1px;padding-top:1px;"], :root .widget-pane-section-result[data-result-ad-type], :root a[href^="http://adserver.adtechus.com/"], :root .rscontainer > .ellip, :root .section-result[data-result-ad-type], :root .trc_rbox .syndicatedItem, :root .trc_rbox_border_elm .syndicatedItem, :root a[href^="http://taboola-"][href*="/redirect.php?app.type="], :root .trc_rbox_div .syndicatedItem, :root .trc_rbox_div .syndicatedItemUB, :root div[id^="div_openx_ad_"], :root .trc_rbox_div a[target="_blank"][href^="http://tab"], :root a[href^="//porngames.adult/?SID="], :root a[href^="http://engine.newsmaxfeednetwork.com/"], :root a[href^="http://ddownload39.club/"], :root .trc_related_container div[data-item-syndicated="true"], :root ADS-RIGHT, :root a[href^="http://campaign.bharatmatrimony.com/track/"], :root a[href*="/adServe/banners?"], :root AFS-AD, :root a[href^="https://www.secureupload.eu/suprerefid="], :root a[href^="http://www.myvpn.pro/"], :root a[onmousedown^="this.href='http://paid.outbrain.com/network/redir?"][target="_blank"], :root AMP-AD, :root A[href^="https://www.friendlyduck.com/AF_"], :root a[href^="http://server.cpmstar.com/click.aspx?poolid="], :root a[href^="http://dwn.pushtraffic.net/"], :root a[href^="http://sharesuper.info/"], :root [ad-id^="googlead"], :root a[href^="http://www.ringtonematcher.com/"], :root [id*="MGWrap"], :root a[href^="//ads.ad-center.com/"], :root a[href^="http://websitedhoome.com/"], :root [id*="MarketGid"], :root [id*="ScriptRoot"], :root a[href="http://track.freemmo2017.com/"], :root a[onmousedown^="this.href='http://staffpicks.outbrain.com/network/redir?"][target="_blank"] + .ob_source, :root a[href^="http://games.ucoz.ru/"][target="_blank"], :root [lazy-ad="lefttop_banner"], :root [onclick*="content.ad/"], :root a[href^="http://see-work.info/"], :root a[href^="http://www.graboid.com/affiliates/"], :root a[href^="http://papi.mynativeplatform.com:80/pub2/"], :root [onclick^="window.open('http://adultfriendfinder.com/search/"], :root a[href^="http://www.ducksnetwork.com/"], :root a[data-oburl^="http://paid.outbrain.com/network/redir?"], :root a[href^="https://atomidownload.com/"], :root a[data-oburl^="https://paid.outbrain.com/network/redir?"], :root a[data-redirect^="http://click.plista.com/pets"], :root a[data-redirect^="http://paid.outbrain.com/network/redir?"], :root a[href^="http://go.ad2up.com/"], :root a[href^="http://adtransfer.net/"], :root a[href^="http://adclick.g.doubleclick.net/"], :root a[data-redirect^="this.href='http://paid.outbrain.com/network/redir?"], :root div[class*="_AdInArticle_"], :root a[data-url^="http://paid.outbrain.com/network/redir?"], :root a[data-url^="http://paid.outbrain.com/network/redir?"] + .author, :root a[href^="http://ad.yieldmanager.com/"], :root a[href^="http://www.myfreepaysite.com/sfw.php?aid"], :root a[href^="http://lp.ezdownloadpro.info/"], :root a[data-widget-outbrain-redirect^="http://paid.outbrain.com/network/redir?"], :root a[href$="/vghd.shtml"], :root a[href^="http://amzn.to/"] > img[src^="data"], :root a[href*=".adk2x.com/"], :root a[href^="//z6naousb.com/"], :root a[href*=".adsrv.eacdn.com/"] > img, :root a[href^="//www.mgid.com/"], :root a[href^="http://www.clkads.com/adServe/"], :root a[href^="http://ad.doubleclick.net/"], :root div[id^="ad-position-"], :root a[href*=".bang.com/"][href*="&aff="], :root a[href*=".clkcln.com/"], :root a[href^="http://guideways.info/"], :root a[href*=".ichlnk.com/"], :root a[href*=".revimedia.com/"], :root a[href*=".trust.zone"], :root a[href^="http://www.1clickmoviedownloader.info/"], :root div[id^="dfp-ad-"], :root a[href*="/adrotate-out.php?"], :root a[href*="/cmd.php?ad="], :root a[href^="https://servedbyadbutler.com/"], :root a[href^="http://xtgem.com/click?"], :root a[href*="=Adtracker"], :root a[href^="http://www.downloadweb.org/"], :root a[href*="ad2upapp.com/"], :root a[href^="https://members.linkifier.com/public/affiliateLanding?refCode="], :root a[href*="googleme.eu"], :root a[href*="letsadvertisetogether.com"], :root a[href*="onclkds."], :root a[href^="http://www.streamtunerhd.com/signup?"], :root a[href^="http://bonusfapturbo.nmvsite.com/"], :root a[href*="pussl3.com"], :root a[href^=" http://ads.ad-center.com/"], :root a[href^=" http://n47adshostnet.com/"], :root a[href^="//adbit.co/?a=Advertise&"], :root a[href^="http://secure.signup-way.com/"], :root a[href^="http://landingpagegenius.com/"], :root a[href^="//api.ad-goi.com/"], :root a[href^="//bwnjijl7w.com/"], :root a[href^="//db52cc91beabf7e8.com/"], :root a[href^="http://tracking.deltamediallc.com/"], :root a[href^="//go.onclasrv.com/"], :root a[href^="//jsmptjmp.com/"], :root a[href^="http://www.revenuehits.com/"], :root a[href^="http://click.plista.com/pets"], :root a[href^="http://www.streamate.com/exports/"], :root a[href^="//t.MtagMonetizationA.com/"], :root a[href^="http://1phads.com/"], :root div[id^="ads250_250-widget"], :root a[href^="http://2pxg8bcf.top/"], :root a[href^="http://www.clickansave.net/"], :root a[href^="http://360ads.go2cloud.org/"], :root a[href^="http://NowDownloadAll.com"], :root a[href^="http://www.mysuperpharm.com/"], :root a[href^="http://www.sex.com/videos/?utm_"], :root a[href^="http://a.adquantix.com/"], :root a[href^="http://abc2.mobile-10.com/"], :root a[href^="http://ad-emea.doubleclick.net/"], :root a[href^="http://ad.au.doubleclick.net/"], :root a[href^="http://adexprt.me/"], :root a[href^="http://adf.ly/?id="], :root a[href^="http://api.ringtonematcher.com/"], :root a[href^="http://adfarm.mediaplex.com/"], :root a[href^="http://www.babylon.com/welcome/index?affID"], :root a[href^="http://adserving.unibet.com/"], :root a[href^="http://adlev.neodatagroup.com/"], :root a[href^="http://adprovider.adlure.net/"], :root a[href^="http://pan.adraccoon.com?"], :root div[id^="lazyad-"], :root a[href^="http://bcp.crwdcntrl.net/"], :root a[href^="http://adrunnr.com/"], :root a[href^="http://www.fpcTraffic2.com/blind/in.cgi?"], :root a[href^="http://ads.activtrades.com/"], :root a[href^="http://mmo123.co/"], :root a[href^="http://ads.ad-center.com/"], :root a[href^="http://ads.expekt.com/affiliates/"], :root a[href^="http://zevera.com/afi.html"], :root a[href^="http://ads.sprintrade.com/"], :root a[href^="http://ads.pheedo.com/"], :root a[href^="http://ads2.williamhill.com/redirect.aspx?"], :root a[href^="http://adserver.adtech.de/"], :root a[href^="http://www.1clickdownloader.com/"], :root a[href^="http://cdn3.adbrau.com/"], :root a[href^="http://adserver.itsfogo.com/"], :root a[href^="http://adserving.liveuniversenetwork.com/"], :root a[href^="http://adsrv.keycaptcha.com"], :root a[href^="http://adtrack123.pl/"], :root a[href^="http://green.trafficinvest.com/"], :root a[href^="http://clickserv.sitescout.com/"], :root a[href^="http://www.adshost2.com/"], :root a[href^="http://adtrackone.eu/"], :root a[href^="http://adultfriendfinder.com/p/register.cgi?pid="], :root a[href^="http://linksnappy.com/?ref="], :root a[href^="http://affiliate.glbtracker.com/"], :root a[href^="http://affiliate.godaddy.com/"], :root a[href^="http://www.accuserveadsystem.com/accuserve-go.php?"], :root a[href^="http://lp.ilivid.com/"], :root a[href^="http://searchtabnew.com/"], :root a[href^="http://affiliates.pinnaclesports.com/processing/"], :root a[href^="http://affiliates.score-affiliates.com/"], :root div[id^="block-views-topheader-ad-block-"], :root a[href^="http://www.gamebookers.com/cgi-bin/intro.cgi?"], :root a[href^="http://aflrm.com/"], :root a[href^="http://anonymous-net.com/"], :root a[href^="http://mojofun.info/"], :root a[href^="http://findersocket.com/"], :root iframe[src^="http://ad.yieldmanager.com/"], :root a[href^="http://at.atwola.com/"], :root a[href^="http://record.sportsbetaffiliates.com.au/"], :root a[href^="http://b.bestcompleteusa.info/"], :root a[href^="http://bc.vc/?r="], :root a[onmousedown^="this.href='https://paid.outbrain.com/network/redir?"][target="_blank"] + .ob_source, :root a[href^="http://betahit.click/"], :root a[href^="http://hyperies.info/"], :root a[href^="http://bluehost.com/track/"], :root div[id^="advads-"], :root a[href^="http://buysellads.com/"], :root a[href^="http://databass.info/"], :root a[href^="http://c.actiondesk.com/"], :root a[href^="http://c.ketads.com/"], :root a[href^="http://www.bet365.com/"][href*="&affiliate="], :root a[href^="http://callville.xyz/"], :root a[href^="http://media.paddypower.com/redirect.aspx?"], :root a[href^="http://campaign.bharatmatrimony.com/cbstrack/"], :root a[href^="http://casino-x.com/?partner"], :root a[href^="http://cdn.adsrvmedia.net/"], :root a[href^="http://web.adblade.com/"], :root a[href^="http://cdn3.adexprts.com/"], :root a[href^="http://go.oclaserver.com/"], :root a[href^="http://chaturbate.com/affiliates/"], :root script[src^="http://free-shoutbox.net/app/webroot/shoutbox/sb.php?shoutbox="] + #freeshoutbox_content, :root div[itemtype="http://schema.org/WPAdBlock"], :root a[href^="http://cinema.friendscout24.de?"], :root a[href^="http://click.guamwnvgashbkashawhgkhahshmashcas.pw/"], :root a[href^="http://www.down1oads.com/"], :root a[href^="http://clickandjoinyourgirl.com/"], :root a[href^="http://clicks.guamwnvgashbkashawhgkhahshmashcas.pw/"], :root a[href^="http://www.pheedo.com/"], :root a[href^="http://clk.directrev.com/"], :root a[href^="http://galleries.pinballpublishernetwork.com/"], :root a[target="_blank"][href^="http://api.taboola.com/"], :root a[href^="http://clkmon.com/adServe/"], :root a[href^="http://hdplugin.flashplayer-updates.com/"], :root a[href^="http://track.incognitovpn.com/"], :root div[id^="acm-ad-tag-"], :root a[href^="http://codec.codecm.com/"], :root a[href^="http://n.admagnet.net/"], :root a[href^="http://prochina.space/"], :root a[href^="http://connectlinking6.com/"], :root a[href^="http://contractallsticker.net/"], :root a[href^="http://wgpartner.com/"], :root a[href^="http://cpaway.afftrack.com/"], :root a[href^="http://cwcams.com/landing/click/"], :root a[href^="http://d2.zedo.com/"], :root a[href^="http://data.committeemenencyclopedicrepertory.info/"], :root a[href^="https://affiliates.bet-at-home.com/processing/"], :root div[class^="Ad__bigBox"], :root a[href^="http://data.linoleictanzaniatitanic.com/"], :root div[itemtype="http://www.schema.org/WPAdBlock"], :root a[href^="http://dftrck.com/"], :root a[href^="https://syndication.exoclick.com/splash.php?"], :root a[href^="http://down1oads.com/"], :root a[href^="http://download-performance.com/"], :root a[href^="http://duckcash.eu/"], :root a[href^="https://bs.serving-sys.com"], :root a[href^="http://www.myfreecams.com/?co_id="][href*="&track="], :root a[href^="http://easydownload4you.com/"], :root a[href^="http://www.moneyducks.com/"], :root a[href^="http://eclkmpsa.com/"], :root a[href^="http://elite-sex-finder.com/?"], :root a[href^="http://elitefuckbook.com/"], :root a[href^="http://extra.bet365.com/"][href*="?affiliate="], :root a[href^="http://farm.plista.com/pets"], :root a[href^="http://freesoftwarelive.com/"], :root a[href^="http://ryushare.com/affiliate.python"], :root a[href^="http://feedads.g.doubleclick.net/"], :root a[href^="http://webgirlz.online/landing/"], :root a[href^="http://fileloadr.com/"], :root a[href^="http://fileupnow.rocks/"], :root a[href^="http://prousa.work/"], :root a[href^="https://secure.eveonline.com/ft/?aid="], :root a[href^="http://fsoft4down.com/"], :root a[href^="http://track.trkvluum.com/"], :root a[href^="http://fusionads.net"], :root a[href^="https://mk-ads.com/"], :root a[href^="http://galleries.securewebsiteaccess.com/"], :root a[href^="https://farm.plista.com/pets"], :root a[href^="http://gca.sh/user/register?ref="], :root a[href^="http://www.on2url.com/app/adtrack.asp"], :root a[href^="http://getlinksinaseconds.com/"], :root a[href^="http://go.seomojo.com/tracking202/"], :root a[href^="http://www.getyourguide.com/?partner_id="], :root a[href^="http://goldmoney.com/?gmrefcode="], :root a[href^="http://greensmoke.com/"], :root a[href^="http://hd-plugins.com/download/"], :root a[href^="http://hpn.houzz.com/"], :root a[href^="http://tracking.crazylead.com/"], :root a[href^="http://hyperlinksecure.com/go/"], :root a[href^="http://imads.integral-marketing.com/"], :root a[href^="http://www.tirerack.com/affiliates/"], :root a[href^="http://install.securewebsiteaccess.com/"], :root a[href^="http://secure.signup-page.com/"], :root a[href^="http://www.brightwheel.info/"], :root a[href^="http://internalredirect.site/"], :root a[href^="http://istri.it/?"], :root a[href^="http://jobitem.org/"], :root a[href^="http://liversely.com/"], :root a[href^="http://join3.bannedsextapes.com/track/"], :root a[href^="http://k2s.cc/code/"], :root a[href^="http://tracking.toroadvertising.com/"], :root a[href^="http://k2s.cc/pr/"], :root a[href^="http://keep2share.cc/pr/"], :root a[href^="http://latestdownloads.net/download.php?"], :root a[href^="https://ad.doubleclick.net/"], :root div[id^="ADV-SLOT-"], :root a[href^="http://liversely.net/"], :root a[href^="http://t.mdn2015x2.com/"], :root a[href^="http://mgid.com/"], :root a[href^="http://www.freefilesdownloader.com/"], :root a[href^="http://www.quick-torrent.com/download.html?aff"], :root a[href^="http://mo8mwxi1.com/"], :root a[href^="http://onclickads.net/"], :root div[class^="gemini-ad"], :root a[href^="http://online.ladbrokes.com/promoRedirect?"], :root a[href^="http://paid.outbrain.com/network/redir?"], :root a[href^="http://track.affiliatenetwork.co.za/"], :root a[href^="http://pokershibes.com/index.php?ref="], :root a[href^="http://www.friendlyadvertisements.com/"], :root a[href^="https://www.dsct1.com/"], :root a[href^="https://www.spyoff.com/"], :root a[href^="http://prochina.link/"], :root a[href^="http://record.betsafe.com/"], :root a[href^="http://record.commissionking.com/"], :root a[href^="http://refer.webhostingbuzz.com/"], :root a[href^="https://dcs.adgear.com/clicks/"], :root a[href^="http://rekoverr.com/"], :root a[href^="http://secure.hostgator.com/~affiliat/"], :root a[href^="http://serve.williamhill.com/promoRedirect?"], :root a[href^="http://servicegetbook.net/"], :root a[href^="http://srvpub.com/"], :root a[href^="http://stateresolver.link/"], :root a[href^="http://www.drowle.com/"], :root a[href^="http://steel.starflavor.bid/"], :root a[href^="https://keep2share.cc/pr/"], :root a[href^="http://syndication.exoclick.com/"], :root a[href^="https://www.adskeeper.co.uk/"], :root a[href^="http://t.mdn2015x1.com/"], :root a[href^="https://www.firstload.com/affiliate/"], :root a[href^="http://t.mdn2015x3.com/"], :root a[href^="http://t.wowtrk.com/"], :root a[href^="http://tour.affbuzzads.com/"], :root div[id^="ad-div-"], :root a[href^="http://uploaded.net/ref/"], :root a[href^="http://us.marketgid.com"], :root a[href^="http://webtrackerplus.com/"], :root a[href^="http://www.123-reg.co.uk/affiliate2.cgi"], :root div[id^="cns_ads_"], :root a[href^="http://www.TwinPlan.com/AF_"], :root a[href^="http://www.twinplan.com/AF_"], :root a[href^="http://www.adbrite.com/mb/commerce/purchase_form.php?"], :root a[href^="http://www.adskeeper.co.uk/"], :root a[href^="http://www.affiliates1128.com/processing/"], :root a[href^="http://www.downloadplayer1.com/"], :root a[href^="https://understandsolar.com/signup/?lead_source="][href*="&tracking_code="], :root a[href^="http://www.wantstraffic.com/"], :root a[href^="http://www.badoink.com/go.php?"], :root a[href^="http://www.bet365.com/"][href*="?affiliate="], :root a[href^="http://www.bitlord.me/share/"], :root bottomadblock, :root a[href^="http://www.cash-duck.com/"], :root a[href^="http://www.coinducks.com/"], :root a[href^="http://www.dl-provider.com/search/"], :root a[href^="http://www.downloadthesefiles.com/"], :root a[href^="http://www.duckcash.eu/"], :root a[href^="http://www.duckssolutions.com/"], :root a[href^="http://www.easydownloadnow.com/"], :root a[href^="http://www.epicgameads.com/"], :root a[href^="http://www.faceporn.net/free?"], :root a[href^="http://www.fducks.com/"], :root a[href^="http://www.firstclass-download.com/"], :root a[href^="https://torguard.net/aff.php"], :root a[href^="http://www.firstload.de/affiliate/"], :root a[href^="http://www.fonts.com/BannerScript/"], :root a[href^="https://trust.zone/go/r.php?RID="], :root a[href^="http://www.flashx.tv/downloadthis"], :root a[href^="http://www.fleshlight.com/"], :root a[href^="http://www.friendlyquacks.com/"], :root a[href^="http://www.greenmangaming.com/?tap_a="], :root a[href^="http://www.hitcpm.com/"], :root a[href^="http://www.idownloadplay.com/"], :root a[href^="https://pubads.g.doubleclick.net/"], :root a[href^="http://www.incredimail.com/?id="], :root a[href^="http://www.installads.net/"], :root a[href^="https://tracking.truthfinder.com/?a="], :root a[href^="https://dediseedbox.com/clients/aff.php?"], :root a[href^="http://www.ireel.com/signup?ref"], :root a[href^="http://www.liutilities.com/"], :root a[href^="http://www.pinkvisualpad.com/?revid="], :root a[href^="http://www.liversely.net/"], :root a[href^="http://www.menaon.com/installs/"], :root a[href^="http://www.mobileandinternetadvertising.com/"], :root a[href^="http://www.my-dirty-hobby.com/?sub="], :root a[href^="http://www.plus500.com/?id="], :root a[href^="http://www.ragazzeinvendita.com/?rcid="], :root a[href^="http://www.richducks.com/"], :root a[href^="http://www.roboform.com/php/land.php"], :root a[href^="http://www.securegfm.com/"], :root a[href^="http://www.seekbang.com/cs/"], :root a[href^="http://www.sex.com/?utm_"], :root a[href^="http://www.sex.com/pics/?utm_"], :root a[href^="http://www.urmediazone.com/signup"], :root div[class^="Ad__adContainer"], :root a[href^="http://www.sexgangsters.com/?pid="], :root a[href^="http://www.sfippa.com/"], :root a[href^="http://www.socialsex.com/"], :root a[href^="http://www.torntv-downloader.com/"], :root a[href^="http://www.torntvdl.com/"], :root a[href^="http://www.uniblue.com/cm/"], :root a[href^="http://www.usearchmedia.com/signup?"], :root a[href^="http://www.xmediaserve.com/"], :root a[href^="http://www.yourfuckbook.com/?"], :root a[href^="http://www.zergnet.com/i/"], :root a[href^="http://www1.clickdownloader.com/"], :root a[href^="http://www5.smartadserver.com/call/pubjumpi/"], :root a[href^="http://wxdownloadmanager.com/dl/"], :root a[href^="http://xads.zedo.com/"], :root a[href^="http://yads.zedo.com/"], :root a[href^="https://windscribe.com/promo/"], :root div[id^="div_ad_stack_"], :root a[href^="http://z1.zedo.com/"], :root a[href^="https://adhealers.com/"], :root a[href^="https://awentw.com/"], :root a[href^="https://betway.com/"][href*="&a="], :root a[href^="https://www.share-online.biz/affiliate/"], :root a[href^="https://chaturbate.com/affiliates/"], :root a[href^="https://click.plista.com/pets"], :root a[href^="https://dltags.com/"], :root a[href^="https://evaporate.pw/"], :root a[href^="https://go.ad2up.com/"], :root a[href^="https://go.onclasrv.com/"], :root a[href^="https://paid.outbrain.com/network/redir?"], :root a[href^="https://t.mobtya.com/"], :root div[id^="ad-server-"], :root a[href^="https://trackjs.com/?utm_source"], :root a[href^="https://trklvs.com/"], :root a[href^="https://www.camyou.com/?cam="][href*="&track="], :root a[href^="https://www.oboom.com/ad/"], :root a[href^="https://www.popads.net/users/"], :root a[onmousedown^="this.href='/wp-content/embed-ad-content/"], :root a[onmousedown^="this.href='http://paid.outbrain.com/network/redir?"][target="_blank"] + .ob_source, :root a[onmousedown^="this.href='https://paid.outbrain.com/network/redir?"][target="_blank"], :root div[id^="div-gpt-ad"], :root a[style="display:block;width:300px;min-height:250px"][href^="http://li.cnet.com/click?"], :root a[target="_blank"][onmousedown="this.href^='http://paid.outbrain.com/network/redir?"], :root aside[id^="div-gpt-ad"], :root div > [class][onclick*=".updateAnalyticsEvents"], :root div[class$="dealnews"] > .dealnews, :root div[class^="BlockAdvert-"], :root div[class^="ResponsiveAd-"], :root div[class^="ad_border_"], :root div[class^="ad_position_"], :root div[class^="block-openx-"], :root div[class^="local-feed-banner-ads"], :root div[class^="proadszone-"], :root div[data-spotim-slot], :root div[id^="YFBMSN"], :root div[id^="ad-cid-"], :root div[id^="adrotate_widgets-"], :root div[id^="ads120_600-widget"], :root div[id^="ads300_250-widget"], :root div[id^="ads300_600-widget"], :root div[id^="dfp-slot-"], :root div[id^="div-adtech-ad-"], :root div[id^="dmRosAdWrapper"], :root div[id^="google_dfp_"], :root div[id^="proadszone-"], :root div[id^="q1-adset-"], :root div[id^="zergnet-widget"], :root iframe[id^="google_ads_frame"], :root iframe[id^="google_ads_iframe"], :root iframe[src^="http://cdn1.adexprt.com/"], :root iframe[src^="http://static.mozo.com.au/strips/"], :root img[alt^="Fuckbook"], :root input[onclick^="window.open('http://www.friendlyduck.com/"], :root input[onclick^="window.open('http://www.FriendlyDuck.com/"], :root p[id^="div-gpt-ad-"], :root td[valign="top"] > .mainmenu[style="padding:10px 0 0 0 !important;"], :root topadblock { display: none !important; }</style></head>
+<body>
+<div class="document" id="chat-80">
+<h1 class="title">Chat-80</h1>
+
+<!-- Copyright (C) 2001-2015 NLTK Project -->
+<!-- For license information, see LICENSE.TXT -->
+<p>Chat-80 was a natural language system which allowed the user to
+interrogate a Prolog knowledge base in the domain of world
+geography. It was developed in the early '80s by Warren and Pereira; see
+<a class="reference external" href="http://acl.ldc.upenn.edu/J/J82/J82-3002.pdf">http://acl.ldc.upenn.edu/J/J82/J82-3002.pdf</a> for a description and
+<a class="reference external" href="http://www.cis.upenn.edu/~pereira/oldies.html">http://www.cis.upenn.edu/~pereira/oldies.html</a> for the source
+files.</p>
+<p>The <tt class="docutils literal">chat80</tt> module contains functions to extract data from the Chat-80
+relation files ('the world database'), and convert then into a format
+that can be incorporated in the FOL models of
+<tt class="docutils literal">nltk.sem.evaluate</tt>. The code assumes that the Prolog
+input files are available in the NLTK corpora directory.</p>
+<p>The Chat-80 World Database consists of the following files:</p>
+<pre class="literal-block">world0.pl
+rivers.pl
+cities.pl
+countries.pl
+contain.pl
+borders.pl
+</pre>
+<p>This module uses a slightly modified version of <tt class="docutils literal">world0.pl</tt>, in which
+a set of Prolog rules have been omitted. The modified file is named
+<tt class="docutils literal">world1.pl</tt>. Currently, the file <tt class="docutils literal">rivers.pl</tt> is not read in, since
+it uses a list rather than a string in the second field.</p>
+<div class="section" id="reading-chat-80-files">
+<h1>Reading Chat-80 Files</h1>
+<p>Chat-80 relations are like tables in a relational database. The
+relation acts as the name of the table; the first argument acts as the
+'primary key'; and subsequent arguments are further fields in the
+table. In general, the name of the table provides a label for a unary
+predicate whose extension is all the primary keys. For example,
+relations in <tt class="docutils literal">cities.pl</tt> are of the following form:</p>
+<pre class="literal-block">'city(athens,greece,1368).'
+</pre>
+<p>Here, <tt class="docutils literal">'athens'</tt> is the key, and will be mapped to a member of the
+unary predicate <em>city</em>.</p>
+<p>By analogy with NLTK corpora, <tt class="docutils literal">chat80</tt> defines a number of 'items'
+which correspond to the relations.</p>
+<blockquote>
+<pre class="doctest-block">&gt;&gt;&gt; from nltk.sem import chat80
+&gt;&gt;&gt; print(chat80.items) # doctest: +ELLIPSIS
+('borders', 'circle_of_lat', 'circle_of_long', 'city', ...)
+</pre>
+</blockquote>
+<p>The fields in the table are mapped to binary predicates. The first
+argument of the predicate is the primary key, while the second
+argument is the data in the relevant field. Thus, in the above
+example, the third field is mapped to the binary predicate
+<em>population_of</em>, whose extension is a set of pairs such as
+<tt class="docutils literal">'(athens, 1368)'</tt>.</p>
+<p>An exception to this general framework is required by the relations in
+the files <tt class="docutils literal">borders.pl</tt> and <tt class="docutils literal">contains.pl</tt>. These contain facts of the
+following form:</p>
+<pre class="literal-block">'borders(albania,greece).'
+
+'contains0(africa,central_africa).'
+</pre>
+<p>We do not want to form a unary concept out the element in
+the first field of these records, and we want the label of the binary
+relation just to be <tt class="docutils literal">'border'</tt>/<tt class="docutils literal">'contain'</tt> respectively.</p>
+<p>In order to drive the extraction process, we use 'relation metadata bundles'
+which are Python dictionaries such as the following:</p>
+<pre class="literal-block">city = {'label': 'city',
+        'closures': [],
+        'schema': ['city', 'country', 'population'],
+        'filename': 'cities.pl'}
+</pre>
+<p>According to this, the file <tt class="docutils literal"><span class="pre">city['filename']</span></tt> contains a list of
+relational tuples (or more accurately, the corresponding strings in
+Prolog form) whose predicate symbol is <tt class="docutils literal"><span class="pre">city['label']</span></tt> and whose
+relational schema is <tt class="docutils literal"><span class="pre">city['schema']</span></tt>. The notion of a <tt class="docutils literal">closure</tt> is
+discussed in the next section.</p>
+</div>
+<div class="section" id="concepts">
+<h1>Concepts</h1>
+<p>In order to encapsulate the results of the extraction, a class of
+<tt class="docutils literal">Concept</tt>s is introduced.  A <tt class="docutils literal">Concept</tt> object has a number of
+attributes, in particular a <tt class="docutils literal">prefLabel</tt>, an arity and <tt class="docutils literal">extension</tt>.</p>
+<blockquote>
+<pre class="doctest-block">&gt;&gt;&gt; c1 = chat80.Concept('dog', arity=1, extension=set(['d1', 'd2']))
+&gt;&gt;&gt; print(c1)
+Label = 'dog'
+Arity = 1
+Extension = ['d1', 'd2']
+</pre>
+</blockquote>
+<p>The <tt class="docutils literal">extension</tt> attribute makes it easier to inspect the output of
+the extraction.</p>
+<blockquote>
+<pre class="doctest-block">&gt;&gt;&gt; schema = ['city', 'country', 'population']
+&gt;&gt;&gt; concepts = chat80.clause2concepts('cities.pl', 'city', schema)
+&gt;&gt;&gt; concepts
+[Concept('city'), Concept('country_of'), Concept('population_of')]
+&gt;&gt;&gt; for c in concepts: # doctest: +NORMALIZE_WHITESPACE
+...     print("%s:\n\t%s" % (c.prefLabel, c.extension[:4]))
+city:
+    ['athens', 'bangkok', 'barcelona', 'berlin']
+country_of:
+    [('athens', 'greece'), ('bangkok', 'thailand'), ('barcelona', 'spain'), ('berlin', 'east_germany')]
+population_of:
+    [('athens', '1368'), ('bangkok', '1178'), ('barcelona', '1280'), ('berlin', '3481')]
+</pre>
+</blockquote>
+<p>In addition, the <tt class="docutils literal">extension</tt> can be further
+processed: in the case of the <tt class="docutils literal">'border'</tt> relation, we check that the
+relation is <strong>symmetric</strong>, and in the case of the <tt class="docutils literal">'contain'</tt>
+relation, we carry out the <strong>transitive closure</strong>. The closure
+properties associated with a concept is indicated in the relation
+metadata, as indicated earlier.</p>
+<blockquote>
+<pre class="doctest-block">&gt;&gt;&gt; borders = set([('a1', 'a2'), ('a2', 'a3')])
+&gt;&gt;&gt; c2 = chat80.Concept('borders', arity=2, extension=borders)
+&gt;&gt;&gt; print(c2)
+Label = 'borders'
+Arity = 2
+Extension = [('a1', 'a2'), ('a2', 'a3')]
+&gt;&gt;&gt; c3 = chat80.Concept('borders', arity=2, closures=['symmetric'], extension=borders)
+&gt;&gt;&gt; c3.close()
+&gt;&gt;&gt; print(c3)
+Label = 'borders'
+Arity = 2
+Extension = [('a1', 'a2'), ('a2', 'a1'), ('a2', 'a3'), ('a3', 'a2')]
+</pre>
+</blockquote>
+<p>The <tt class="docutils literal">extension</tt> of a <tt class="docutils literal">Concept</tt> object is then incorporated into a
+<tt class="docutils literal">Valuation</tt> object.</p>
+</div>
+<div class="section" id="persistence">
+<h1>Persistence</h1>
+<p>The functions <tt class="docutils literal">val_dump</tt> and <tt class="docutils literal">val_load</tt> are provided to allow a
+valuation to be stored in a persistent database and re-loaded, rather
+than having to be re-computed each time.</p>
+</div>
+<div class="section" id="individuals-and-lexical-items">
+<h1>Individuals and Lexical Items</h1>
+<p>As well as deriving relations from the Chat-80 data, we also create a
+set of individual constants, one for each entity in the domain. The
+individual constants are string-identical to the entities. For
+example, given a data item such as <tt class="docutils literal">'zloty'</tt>, we add to the valuation
+a pair <tt class="docutils literal">('zloty', 'zloty')</tt>. In order to parse English sentences that
+refer to these entities, we also create a lexical item such as the
+following for each individual constant:</p>
+<pre class="literal-block">PropN[num=sg, sem=&lt;\P.(P zloty)&gt;] -&gt; 'Zloty'
+</pre>
+<p>The set of rules is written to the file <tt class="docutils literal">chat_pnames.fcfg</tt> in the
+current directory.</p>
+</div>
+<div class="section" id="sql-query">
+<h1>SQL Query</h1>
+<p>The <tt class="docutils literal">city</tt> relation is also available in RDB form and can be queried
+using SQL statements.</p>
+<blockquote>
+<pre class="doctest-block">&gt;&gt;&gt; import nltk
+&gt;&gt;&gt; q = "SELECT City, Population FROM city_table WHERE Country = 'china' and Population &gt; 1000"
+&gt;&gt;&gt; for answer in chat80.sql_query('corpora/city_database/city.db', q):
+...     print("%-10s %4s" % answer)
+canton     1496
+chungking  1100
+mukden     1551
+peking     2031
+shanghai   5407
+tientsin   1795
+</pre>
+</blockquote>
+<p>The (deliberately naive) grammar <tt class="docutils literal">sql.fcfg</tt> translates from English
+to SQL:</p>
+<blockquote>
+<pre class="doctest-block">&gt;&gt;&gt; nltk.data.show_cfg('grammars/book_grammars/sql0.fcfg')
+% start S
+S[SEM=(?np + WHERE + ?vp)] -&gt; NP[SEM=?np] VP[SEM=?vp]
+VP[SEM=(?v + ?pp)] -&gt; IV[SEM=?v] PP[SEM=?pp]
+VP[SEM=(?v + ?ap)] -&gt; IV[SEM=?v] AP[SEM=?ap]
+NP[SEM=(?det + ?n)] -&gt; Det[SEM=?det] N[SEM=?n]
+PP[SEM=(?p + ?np)] -&gt; P[SEM=?p] NP[SEM=?np]
+AP[SEM=?pp] -&gt; A[SEM=?a] PP[SEM=?pp]
+NP[SEM='Country="greece"'] -&gt; 'Greece'
+NP[SEM='Country="china"'] -&gt; 'China'
+Det[SEM='SELECT'] -&gt; 'Which' | 'What'
+N[SEM='City FROM city_table'] -&gt; 'cities'
+IV[SEM=''] -&gt; 'are'
+A[SEM=''] -&gt; 'located'
+P[SEM=''] -&gt; 'in'
+</pre>
+</blockquote>
+<p>Given this grammar, we can express, and then execute, queries in English.</p>
+<blockquote>
+<pre class="doctest-block">&gt;&gt;&gt; cp = nltk.parse.load_parser('grammars/book_grammars/sql0.fcfg')
+&gt;&gt;&gt; query = 'What cities are in China'
+&gt;&gt;&gt; for tree in cp.parse(query.split()):
+...     answer = tree.label()['SEM']
+...     q = " ".join(answer)
+...     print(q)
+...
+SELECT City FROM city_table WHERE   Country="china"
+</pre>
+<pre class="doctest-block">&gt;&gt;&gt; rows = chat80.sql_query('corpora/city_database/city.db', q)
+&gt;&gt;&gt; for r in rows: print("%s" % r, end=' ')
+canton chungking dairen harbin kowloon mukden peking shanghai sian tientsin
+</pre>
+</blockquote>
+<div class="section" id="using-valuations">
+<h2>Using Valuations</h2>
+<p>In order to convert such an extension into a valuation, we use the
+<tt class="docutils literal">make_valuation()</tt> method; setting <tt class="docutils literal">read=True</tt> creates and returns
+a new <tt class="docutils literal">Valuation</tt> object which contains the results.</p>
+<blockquote>
+<pre class="doctest-block">&gt;&gt;&gt; val = chat80.make_valuation(concepts, read=True)
+&gt;&gt;&gt; 'calcutta' in val['city']
+True
+&gt;&gt;&gt; [town for (town, country) in val['country_of'] if country == 'india']
+['bombay', 'calcutta', 'delhi', 'hyderabad', 'madras']
+&gt;&gt;&gt; dom = val.domain
+&gt;&gt;&gt; g = nltk.sem.Assignment(dom)
+&gt;&gt;&gt; m = nltk.sem.Model(dom, val)
+&gt;&gt;&gt; m.evaluate(r'population_of(jakarta, 533)', g)
+True
+</pre>
+</blockquote>
+</div>
+</div>
+</div>
+
+
+</body></html>

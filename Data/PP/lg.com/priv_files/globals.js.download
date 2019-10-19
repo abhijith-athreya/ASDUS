@@ -1,0 +1,11 @@
+var Velaro = new Object();Velaro.Globals = 
+{   
+	UrlMain: 'https://api-main-us-east.velaro.com/',   
+	UrlReporting: 'https://api-reporting-us-east.velaro.com/',   
+	UrlVisitor: 'https://api-visitor-us-east.velaro.com/',   
+	UrlEngagement: 'https://api-engagement-us-east.velaro.com/',   
+	UrlEngagementSignalR: 'https://signalr-engagement-us-east.velaro.com/',   
+	UrlRouting: 'https://api-routing-us-east.velaro.com/',   
+	UrlContentDelivery: 'https://cdn-us-east.velaro.com/', 
+	UrlStorage: 'https://galleryuseastprod.blob.core.windows.net/', 
+	ActiveSite: 0,   Sites: new Array(),   ActiveGroup: 0,   GetMainUrl: function (controller, action) {       return Velaro.Globals.UrlMain + 'v1/' + Velaro.Globals.ActiveSite + '/' + controller + '/' + (action != undefined ? action + '/' : '');   },   GetRoutingUrl: function (controller, action) {       return Velaro.Globals.UrlRouting + 'v1/' + Velaro.Globals.ActiveSite + '/' + controller + '/' + (action != undefined ? action + '/' : '');   },   GetReportingUrl:  function (controller, action) {       return Velaro.Globals.UrlReporting + 'v1/' + Velaro.Globals.ActiveSite + '/' + controller + '/' + (action != undefined ? action + '/' : '');   },   GetEngagementUrl: function (controller, action) {       return Velaro.Globals.UrlEngagement + 'v1/' + Velaro.Globals.ActiveSite + '/' + controller + '/' + (action != undefined ? action + '/' : '');   },   GetVisitorUrl: function (controller, action) {       return Velaro.Globals.UrlVisitor + 'v1/' +  Velaro.Globals.ActiveSite + '/' + controller + '/' + (action != undefined ? action + '/' : '');   }}

@@ -1,0 +1,336 @@
+function geocode(addr, cb) {
+    // wrapper for third party specifics
+    // TODO: backup for google here
+    geocoder.geocode( {'address': addr} , cb );
+}
+
+function geocodeChooser(addr, go_p) {
+    geocode(addr, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            var point = results[0].geometry.location;
+            if (point) {
+                if (go_p) {
+                    // submit lat lng to find closest fleet
+                    window.location = '/save-city?lat=' + point.lat() + '&lng=' + point.lng() + extra_url_vars;
+                } else {
+                    // find closest fleet
+                    var fleet_idx = closestFleet(point.lat(), point.lng());
+                    if (fleet_idx >= 0) {
+                        document.getElementById('ch_results').innerHTML = linkify('<strong>' + addr + '</strong> - ' + cities[fleet_idx], null, null, point.lat(), point.lng());
+                        matches.push(cities[fleet_idx]);
+                        match_indices.push(fleet_idx);
+                    } else {
+                        document.getElementById('ch_results').innerHTML = addr + ' (no zipcars nearby)';
+                    }
+
+                    geocodeExtras = '&lat=' + point.lat() + '&lng=' + point.lng();
+                }
+            }
+        } else {
+            document.getElementById('ch_results').innerHTML = addr + ' (unknown)';
+        }
+    });
+    return false;
+}
+
+function clearGeocodeTimer() {
+    clearTimeout(geotimer);
+}
+
+function geocodeTimer() {
+    geotimer = setTimeout(function () {
+        geocodeChooser(document.getElementById('location-search').value, 0);
+    }, 1000);
+}
+
+function closestFleet(lat, lng) {
+    var min = 10000000;
+    var idx = -1;
+    var re = 6367000;
+    var rad_conv = 0.0174532925;
+    for(var i = 0; i < coords.length; i++) {
+        var pair = coords[i].split(" ");
+        var d = re * (rad_conv * Math.abs(lat - pair[0]) + (rad_conv * Math.abs(lng - pair[1]) * Math.cos(rad_conv * pair[0])));
+
+        if (d < min) {
+            min = d;
+            idx = i;
+        }
+    }
+
+    if (idx >= 0 && min <= 50000) {
+        return idx;
+    }
+    return -1;
+}
+
+function uniqueElements(a, sortfunc) {
+    var b = new Array();
+    var last = -1;
+    if (sortfunc == null) {
+        a.sort();
+        last = a[0];
+    } else {
+        a.sort(sortfunc);
+    }
+    b.push(a[0]);
+    for (var i = 1; i < a.length; i++) {
+        if (a[i] > last) {
+            last = a[i];
+            b.push(last);
+        }
+    }
+    return b;
+}
+
+function embolden(terms, regexp, termidx) {
+    var s = "";
+    for (var i = 0; i < terms.length; i++) {
+        if (i == termidx) {
+            s += terms[i].replace(regexp, "<strong>$&</strong>") + " ";
+        } else {
+            s += terms[i] + ' ';
+        }
+    }
+    return s;
+}
+
+function linkify(str, id, selected, lat, lng, landing_url) {
+    if (!id) {
+        return '<li><a class="selected" href="/save-city?lat=' + lat + '&lng=' + lng + extra_url_vars + '">' + str + '<img class="hide" src="/images/template/css/icon_sm_arrow.gif" /></a></li>';
+    } else {
+        if (selected)
+            return '<li><a class="selected" href="/save-city?zipfleet_id=' + id + '&landing_url=' + landing_url + extra_url_vars + '">' + str + '<img class="hide" src="/images/template/css/icon_sm_arrow.gif" /></a></li>';
+        else
+            return '<li><a href="/save-city?zipfleet_id=' + id + extra_url_vars + '">' + str + '<img class="hide" src="/images/template/css/icon_sm_arrow.gif" /></a></li>';
+    }
+}
+
+function initchooser() {
+    var c = document.getElementById('location-search');
+
+    if (!c) {
+        return;
+    }
+
+    if (typeof initgeocoder == 'function') {
+        initgeocoder();
+    }
+
+    c.onkeyup = function(event) {
+        clearGeocodeTimer();
+
+        var e = event || window.event;
+        var code = e.charCode || e.keyCode;
+        var str = c.value;
+
+        //if (code < 32) return;
+
+        if (code == 13) {
+            // any matches?  if so, take the first one.
+            if (matches && matches.length) {
+                window.location = '/save-city?zipfleet_id=' + city_ids[match_indices[0]] + extra_url_vars + geocodeExtras;
+            } else {
+                if (geocoder) {
+                    geocodeChooser(str, 1);
+                }
+            }
+
+            return;
+        } else if (code >= 37 && code <= 40) {
+            // arrow key!
+            return;
+        } else if (code < 32 && code != 8) return;
+
+        geocodeExtras = '';
+
+        var leading_only_p = 0;
+        var geocode_p = 0;
+
+        if (str.length == 0) {
+            matched();
+            return;
+        }
+
+        // what indicates an address?  a number, a comma, road abbreviations.
+        if (str.search(/\d|,|\.]/) >= 0) {
+            geocode_p = 1;
+        }
+
+        if (str.length < 3) {
+            leading_only_p = 1;
+        }
+
+        match_indices = new Array();
+        matches = new Array();
+
+        var r;
+        var rhybrid;
+        str = str.toLowerCase();
+
+        // just the regexps to use later on
+        if (leading_only_p) {
+            r = new RegExp("^" + str, "i");
+            rhybrid = new RegExp("^" + str + "| " + str, "i");
+        } else {
+            r = new RegExp(str, "i");
+            rhybrid = r;
+        }
+
+        for (var i = 0; i < cities.length; i++) {
+            var m = city_matches[i];
+            var one_city = cities[i];
+
+            var hits = m.toLowerCase().match(rhybrid);
+            if (hits && hits.length) {
+                var idx = i;
+                var one_match = one_city.replace(rhybrid, "<strong>$&</strong>");
+                // match_indices.push(i);
+                // matches.push(linkify(one_city.replace(r, "<strong>$&</strong>"), city_ids[i], 1));
+
+                // if we've matched just the city name, stop right there.
+                if (one_match.search(/<strong>/) < 0) {
+                    // check the hybrid terms - we might want to
+                    // tack on extra info the results
+                    var hybrid_terms = hybrid_matches[i].split("|");
+                    for (var k = 0; k < hybrid_terms.length; k++) {
+                        hits = hybrid_terms[k].toLowerCase().match(rhybrid);
+                        if (hits && hits.length) {
+                            idx += (k+1) / 10.0;
+                            // one_match += ' - ' + hybrid_terms[k].replace(r, "<strong>$&</strong>");
+                            one_match = hybrid_terms[k].replace(rhybrid, "<strong>$&</strong>") + ' - ' + one_match;
+                            break;
+                        }
+                    }
+                }
+
+                match_indices.push(i);
+                matches.push(linkify(one_match, city_ids[i], 1, null, null, landing_urls[i]));
+                if (match_indices.length > 4) {
+                    matched(matches, str, 0);
+                    return;
+                }
+            }
+        }
+
+        matched(matches, str, geocode_p);
+    }
+
+    $('#where_are_cars_wrapper').jqm({
+        toTop: true,
+        overlay: 0,
+        onShow: function(h) {
+            if (h.o) h.o.fadeTo(400, overlay/100);
+            var l = $('#wrapper').offset().left;
+            var wac = $('#where_are_cars');
+            var f = $('#where_are_cars_trigger');
+            f.css('left', l+7);
+            wac.css('left', l+3);
+            f.css('z-index', 10000);
+            wac.css('z-index', 10002);
+            updateChooserLinks();
+            wac.slideDown(300, function() {
+                // hack to prevent firefox from rendering background image as
+                // smeared during slide down. repositioning seems to make it
+                // repaint properly. -jwolfe
+                // wac.css('left', l+4); //removed 12/10 fixed via css -wmoore
+            });
+        },
+        onHide: function(h) {
+            var wac = $('#where_are_cars');
+            var f = $('#where_are_cars_trigger');
+            wac.css('left', 5);
+            f.css('left', 6);
+            wac.slideUp(300, function() { resetChooserLinks(); });
+            if (h.o) h.o.fadeOut(400, function() { if (h.o) h.o.remove(); });
+            overlay = opacity;
+        }
+    });
+}
+
+function updateChooserLinks() {
+    //$('#where_are_cars').find('.cities a').attr('href', $(this).attr('href').substr(0, $(this).attr('href').indexOf('&return_url')));
+    $('#where_are_cars').find('.cities a, #location_results a, .cars-footer a').each(function() {
+        $(this).attr('href', $(this).attr('href').substr(0, $(this).attr('href').indexOf('&return_url')) + extra_url_vars);
+    });
+}
+
+function resetChooserLinks() {
+    $('#location_instructions').find('h3').remove();
+    $('#location_instructions').find('span.inst').remove();
+    extra_url_vars = initial_url_vars;
+}
+
+function matched(matches, str, geocode_p) {
+    var c = document.getElementById("location_results_container");
+    var m = document.getElementById("location_results");
+    var nr = document.getElementById("location_no_results");
+    var inst = document.getElementById("location_instructions");
+    var ql = document.getElementById("location_quick_links");
+
+    // in case our flyout isn't currently being shown, show it
+    overlay = 0;
+    $('#where_are_cars_wrapper').jqmShow();
+
+    if (!str) {
+        c.style.display = 'none';
+        ql.style.display = '';
+        m.innerHTML = '';
+        nr.style.display = 'none';
+        inst.style.display = '';
+        return;
+    }
+
+    if (matches && matches.length) {
+        var s = '';
+        //var to_add = uniqueElements(matches, null);
+
+        s = matches.join("\n");
+
+//        var to_add = uniqueElements(matches, function(a, b) { return a - b; });
+//        var r = new RegExp(str, "i");
+//        for (var k = 0; k < to_add.length; k++) {
+//            var city_index = Math.floor(to_add[k]);
+//            var hybrid_index = Math.floor(to_add[k] * 10) % 10;
+//            var city = cities[city_index];
+//            if (hybrid_index  > 0) {
+//                var hm = hybrid_matches[city_index].split("|");
+//                city += ' - ' + hm[hybrid_index-1];
+//            }
+//            city = city.replace(r, "<strong>$&</strong>");
+//            s += '<li><a href="">' + city + '</a></li>';
+//        }
+
+        m.innerHTML = '<ul id="ch_results">' + s + '</ul>';
+
+        c.style.display = '';
+        ql.style.display = 'none';
+        nr.style.display = 'none';
+        inst.style.display = 'none';
+    } else {
+        if (geocode_p && geocoder) {
+            c.style.display = '';
+            m.innerHTML = '<ul id="ch_results"><li>' + str + ' (searching..)</li></ul>';
+            ql.style.display = 'none';
+            nr.style.display = 'none';
+            inst.style.display = 'none';
+            if (str.length > 4) geocodeTimer();
+        } else {
+            c.style.display = 'none';
+            ql.style.display = '';
+            m.innerHTML = '';
+            nr.style.display = '';
+            inst.style.display = 'none';
+
+            if (typeof loadMapsScript === 'function' && !async_load_p) {
+                // don't kick this off more than once!
+                async_load_p = 1;
+                loadMapsScript("initgeocoder");
+            }
+        }
+    }
+}
+
+// this change still inits the chooser; but even without this change the results seem to be empty..
+require.ready(initchooser);
+

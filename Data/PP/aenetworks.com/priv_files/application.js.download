@@ -1,0 +1,543 @@
+
+
+var j = jQuery.noConflict(); 
+
+
+j(function(){
+
+	
+
+	/* AETN NAMESPACE */
+    AETN = {};
+
+    
+/**
+ * Fires when user click the video playing link
+ * 
+ * */
+
+AETN.playThePlatformScreener = function (id) {
+	
+	
+//	document.getElementById("aetn_theplatform_player").innerHTML = ' <script id="thePlatformPlayerSource" type="text/javascript" src="http://player.theplatform.com/p/rEfYQC/O1Zp9phVk8bz/embed/select/'+id+'?form=javascript"></script>';
+	 
+	
+		j('#thePlatformPlayerSource').attr('src','http://player.theplatform.com/p/rEfYQC/O1Zp9phVk8bz/embed/select/'+id+'?&autoPlay=true');
+
+		j('#player_wrapper').css('z-index','7000');
+	    j('#aetn_theplatform_player .close').css('z-index','7030');
+	    j('#player_wrapper').css('visibility','visible');
+	    j('#invisible_area').css('display','block');
+	  //  j('.region-hero').css('display','none');
+	    j('.region-hero > .block-views').css('visibility','hidden');
+	    j('.region-hero > .block-views').css('opacity','0');
+
+	
+
+	/*
+	$pdk.ready(function(eid) {
+	    if (console && console.log) console.log("The remote player is loaded and ready.");
+	    baseReleaseUrl = 'https://link.theplatform.com/s/rEfYQC/' + id;  
+	      $pdk.controller.clearCurrentRelease();
+	      $pdk.controller.resetPlayer();
+	      $pdk.controller.loadReleaseURL(baseReleaseUrl, true); 
+	      j('#player_wrapper').css('z-index','7000');
+	      j('#aetn_theplatform_player .close').css('z-index','7030');
+	      j('#player_wrapper').css('visibility','visible');
+	      j('#invisible_area').css('display','block');
+	    //  j('.region-hero').css('display','none');
+	      j('.region-hero').css('visibility','hidden');
+	      j('.region-hero').css('opacity','0');
+
+	      
+	     // $pdk.controller.pause(false,null,true);
+	   //   $pdk.controller.clickPlayButton();
+	    //  $pdk.controller.clickPlayButton();
+	   
+	  });
+	
+	
+   */
+
+}
+
+/**
+ * Fires when user click the close button
+ * 
+ * */
+
+/*
+AETN.closePlayer = function(){
+	
+//	 $pdk.controller.resetPlayer();
+	
+
+	j('#thePlatformPlayerSource').attr('src','');
+
+	  j('#player_wrapper').css('z-index','-7000');
+	  j('#aetn_theplatform_player .close').css('z-index','-7000');
+	  j('#player_wrapper').css('visibility','hidden');
+	  j('#invisible_area').css('display','none');
+//	   j('.region-hero').css('display','block');
+	  j('.region-hero').css('visibility','visible');
+	   j('.region-hero').css('opacity','1');
+}
+*/
+
+AETN.closePlayer = function(){
+	
+//	 $pdk.controller.resetPlayer();
+	
+
+	j('#thePlatformPlayerSource').attr('src','');
+
+	  j('#player_wrapper').css('z-index','-7000');
+	  j('#aetn_theplatform_player .close').css('z-index','-7000');
+	  j('#player_wrapper').css('visibility','hidden');
+	  j('#invisible_area').css('display','none');
+//	   j('.region-hero').css('display','block');
+	  j('.region-hero > .block-views ').css('visibility','visible');
+	   j('.region-hero  > .block-views').css('opacity','1');
+}
+/*
+
+AETN.startPlay = function(event){
+	
+	    console.log("Captured the " + event.type + " event");
+	   $pdk.controller.addEventListener("OnMediaPause",AETN.hidePlayer );
+	    $pdk.controller.addEventListener("OnMediaUnpause",AETN.showPlayer );
+		 $pdk.controller.removeEventListener("OnMediaPlaying",AETN.startPlay );
+}
+
+
+AETN.showPlayer=function(event)
+{
+  console.log("Captured the " + event.type + " event");
+  start = new Date().getTime();
+  reset = true;
+  console.log("reset start time--"+start+" reset --"+reset);
+
+}
+
+AETN.hidePlayer=function(event)
+{ 	
+	console.log("Captured the " + event.type + " event");
+	console.log("Captured the " + event.data.userInitiated + " event");
+	console.log("Captured the " + event.data.clip.hasPlayed + " event");
+	reset = false;
+	start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+		 if(reset== true)
+		    	return;
+	    if ((new Date().getTime() - start) > 7000 ){
+	               break;
+	           sleep(1000);
+	    }	    
+	 
+	  }
+	  console.log("reset start time--"+start+" reset --"+reset);
+	  j('#aetn_theplatform_player').css('display','none');
+	  j('#hero').css('display','block');
+	 $pdk.controller.removeEventListener("OnMediaPause",AETN.hidePlayer );
+	 $pdk.controller.removeEventListener("OnMediaUnpause",AETN.showPlayer );
+	     location.reload();
+
+}
+*/
+AETN.getDivHeight = function(id){
+   var  height;
+    height = j(id).height();
+    return height;
+}
+
+AETN.setDivHeight =  function(id, height){
+    j(id).height(height);
+    return true;
+}
+
+AETN.getTallestElement = function(selector){
+
+   j(selector).each(function() {
+     maxHeight = AETN.maxHeight > j(this).height() ? AETN.maxHeight: j(this).height();
+   });
+
+ return maxHeight;
+}
+//THIS FUNCTION WILL CHECK TO SEE WHEATHER A NETWORK DETAIL LINK SHOULD BE BOLDED 
+AETN.boldCurrentPage = function(selector){
+
+    j(selector).each( function() 
+    {
+        if( window.location.href.split('/')[4] == j(this).text() )
+        {
+            j(this).find('a').attr("style","color: #666666; font-weight:bold;");
+        }
+    });
+
+return true;
+}
+
+
+AETN.getNavBackGroundColor = function(){
+var color = "";
+
+    //SET BACKGROUND COLOR BASED ON FOREGROUND COLOR
+    switch(j('#nav_color').text())
+    {
+        case '#00B6DE': //blue
+             color = "#1599b8";
+        break;
+        case '#ec098d': //pink
+             color = "#ba207f";
+        break;
+        default: //defaults to orange
+             color = "#F88E1E";
+        break;
+    }
+return color;
+}
+
+AETN.boldCurrentPage = function(selector){
+
+var section = window.location.pathname.split('/')[1];
+var sub_nav_li = "#sub_nav ul.inline li";
+var main_nav = "";
+var li_element = "#main-menu.links li";
+var node = "";
+var bg_color =  AETN.getNavBackGroundColor();
+
+//fix about us active state
+if(section == 'about'){
+    var color = '#c17d32';//orange
+    var navBg = j('#main-wrapper').css('background-color');
+    if(navBg == 'rgb(236, 9, 141)') color = '#ba207f';//pink
+    if(navBg == 'rgb(0, 182, 222)') color = '#1599b8';//blue
+    j('#main-menu .menu-515 a').css('background-color', '#6A6A6A');
+	
+}
+
+//CHECK TO SEE IF THERE IS A NODE DETAIL PAGE
+if( window.location.href.split('/')[4]   )
+{
+
+    var temp = window.location.href.split('/')[4];
+    
+    // Fix for aliased network sub nav links
+    // This object stores the subnav link aliases
+    var subnav = {
+        "uri": 
+        [
+            { "key": "ae",  "val": "a&e" },
+            { "key": "lifetime-movie-network", "val": "lmn" },
+            { "key": "lifetime-real-women", "val": "lifetime real women" },
+            { "key": "ci", "val": "c&i" },
+			{ "key": "fyi", "val": "fyi," },
+			{ "key": "history-en-espanol", "val": "history en español" }
+
+        ]
+    };
+
+    for(var i in subnav.uri){
+        var uri = subnav.uri[i].key;
+        var newUri = subnav.uri[i].val;
+        if(temp == uri) temp = newUri;
+    }
+    // End of quick fix
+
+    var node = ( temp.indexOf('-') ) ? temp.replace("-","").replace("-","") : temp;
+}
+
+    //SUB NAV LOGIC
+    switch(section)
+	
+    {
+        // Commented out as per color change
+        //case 'about': 
+        //case 'contact':
+        //case 'news':
+        //case 'outreach':
+        //case 'careers':
+        //case 'networks':
+        case 'network':
+            
+            ///CHECK LI ELEMENTS FOR THE ONE THAT MATCHES CASE STATMENT
+            j(sub_nav_li).each( function() 
+            {
+
+                if( node == j(this).text().toLowerCase() || 
+                    node == j(this).text().toLowerCase().replace(" ","").replace(" ","").replace(" ","")
+                    )
+                {
+                   // j(this).find('a').attr("style","color: #323232;");
+                    j(this).find('a').attr("style","color: #EB9974; font-weight: bold;");
+					
+                }
+            });
+
+
+
+        break;
+        default:
+            return false;
+        break;
+    }
+
+
+return true;
+}
+
+//SET ONE ELEMENT'S HEIGHT TO ANOTHER ELEMENT's HEIGHT
+AETN.matchHeight = function(element_1, element_2){
+
+    var element_1_h  = AETN.getDivHeight(element_1);
+    var element_2_h  = AETN.getDivHeight(element_2);
+
+     (element_1_h > element_2_h )?AETN.setDivHeight(element_2, element_1_h):AETN.setDivHeight(element_1, element_2_h);
+
+return true;
+}
+
+//DEEP LINKING FOR CORPORATE EXECUTIVES PAGE
+AETN.execDeepLinking = function(){
+    
+    if(j('#executives').length > 0){
+        
+        var hash = window.location.hash;
+
+        if(hash !== ''){
+            var name = hash.replace(/\-/g, ' ').replace('#', '');
+            name = name.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+                        return letter.toUpperCase();
+                    });
+            
+            //find where the name is located
+            var activeContent = 0;
+            var contentHolder = j('#executives .slider-inner');
+            var execHolder = j('#executives .scrollable-pager-inner');
+            j(execHolder).children('div').each(function(ind, obj){
+                
+                //make the executive active
+                var execName = j(obj).children('.pager-link').find('.executive_name').text();
+                execName = j.trim(execName);
+                if(execName == name){
+                    activeContent = ind;
+                    var selector = '.scrollable-pager-item-'+activeContent+' .pager-link';
+                    j(selector).trigger('click');
+                }
+
+            });
+        }
+
+        //update hash
+        j('.pager-link').click(function(){ 
+            var activeExec = j(this).children('.executive_name').text();
+            //format for hash
+            name = j.trim(activeExec);
+            name = name.replace(/\s/g, '-');
+            window.location.hash = '#'+name.toLowerCase(); 
+        });
+
+        //disable content click event for executives
+        j('#executives .slide').unbind('click');
+        j('#executives .ddblock-processed').unbind('click');
+
+
+    }
+return true;
+}
+AETN.execDeepLinking();
+//END OF DEEPLINKING IMPLEMENTATION
+
+
+//SET CAREERS & RECENT NEWS DIV TO MATCH THE HEIGHT OF HP PROMO DIV
+AETN.setDivHeight("#hp_careers", AETN.getDivHeight('#hp_promo_banner'));
+AETN.setDivHeight("#hp_recent_news", AETN.getDivHeight('#hp_promo_banner'));
+
+//DEFAULT VALUE FOR MAX HEIGHT
+AETN.maxHeight= -1;
+
+//REMOVE THE TOP BORDER FROM THE FOOTER ON THE HOME PAGE
+j("#home_clear + #footer > #aetn_container:first-child").removeClass('top_border');
+
+//BOLD THE APPROPIRIATE LINK BASED  ON CURRENT PAGE
+AETN.boldCurrentPage();
+
+// dear Lord please forgive our Javascript hacks
+if (j("#news_box").height() < j("#careers_data_container").height()) {j("#news_box").height(j("#careers_data_container").height()+25);}
+
+//AETN.matchHeight("#careers_data_container", "#news_box");
+AETN.matchHeight("#article_landing > #article_area", "#article_landing > #side_promos");
+
+//Set external footer links to open in a new tab/window hack
+//Loops through the entire footer looking for external links
+j('#footer li').each(function(ind, obj){
+    var host = j(obj).find('a').attr('href');
+    if (!host.match(/aetn\./)){
+        if(host.match(/http:\/\//)){
+            j(obj).find('a').attr('target', '_blank');
+        }
+    }
+});
+
+if(j('.jcarousel').length > 0){
+    j(window).resize(function(){
+        var elem = j('.jcarousel'),
+            width = elem.width(),
+            leftPos = Math.abs(parseInt(elem.css('left').substring(0, elem.css('left').length-2))),
+            imgW = elem.find('img').width(),
+            newLPos = imgW - width;
+
+            if(leftPos === width){
+                var str = "j('.jcarousel').css('left', '"+newLPos+"px');clearTimeout()";
+                setTimeout(str, 300);
+            }
+    });
+}
+
+//Set network detail external link to open in new tab/window
+if(j('.section-network').length > 0){
+    j('#node_details_body #view_link a').attr('target', '_blank');
+    j('.menu-471').addClass('active_page');
+}
+
+//Set promo banners to open in new tab/window
+if(j('.rb-link').length > 0) j('.rb-link').attr('target', '_blank');
+
+//Fix promo alignment on firefox
+if(j.browser.mozilla && j('.rb-link').length > 0){
+    j('#our_networks .row-last .col-last').css('height', '375px');
+}
+
+//Fix main nav on firefox windows 
+if (navigator.appVersion.indexOf("Win")!=-1 && (j.browser.mozilla || j.browser.webkit)){
+   
+	// j('#main-wrapper .menu-525 a').css('width', '87px');
+}
+
+if(navigator.userAgent.toLowerCase().indexOf("mac os x")!=-1 && navigator.userAgent.toLowerCase().indexOf("safari")!=-1){
+	console.log("MAC OS X Safari"+navigator.appVersion);
+	j('#main-menu a').css('padding','15px 43px');
+}
+
+console.log(navigator.appVersion+" user agent "+navigator.userAgent.toLowerCase());
+/**
+ * IE CSS FIX
+ */
+if(j.browser.msie) { 
+	console.log('Detect IE!');
+//	j('.twitter-fullname').css('padding-right','97px');
+//	j('.twitter-fullname').css('padding-left','10px');
+//	j('.twitter-text').css('text-indent','-2em');
+}
+
+//open a new tab when click twitter links
+
+j('.view-latest-tweets a').attr('target','_blank');
+
+//add mouse over drop down for networks suv nav in font page
+//j('#main-menu li.first a').attr('href','javascript:void(0)');
+    j('#main-menu li.first a').attr('href','http://aenetworks.com/networks');
+//j('#main-menu li.first').addClass('div_out');
+var timer = 100;
+
+//don't know why I cannot use AETN.showMenu
+j('#main-menu li.first').bind("click",function(event){
+	console.log('ssdddd');
+	console.log('captured '+event.type+'!');
+	j('#sub_nav').css('display','block');
+	j('#sub_nav').addClass('div_in');
+	
+	
+	
+	//j('.shadow_content').bind('mouseleave',function(){
+		
+		 //setTimeout(function(){
+				//j('#sub_nav').css('display','none');
+				//j('#sub_nav').removeClass('div_in');
+		 	//},100);
+		 //j('.div_in').unbind("click");
+	// });
+	// j('#header').bind('mouseover',function(){
+		
+		 // setTimeout(function(){
+			//	j('#sub_nav').css('display','none');
+			//	j('#sub_nav').removeClass('div_in');
+		 	// },100);
+		 // j('.div_in').unbind("click");
+	// });
+		//Added below menu id's to hide the Submenu of Our Networks.
+	j('.menu-515').bind('mouseover',function(){
+		
+		 setTimeout(function(){
+				j('#sub_nav').css('display','none');
+				j('#sub_nav').removeClass('div_in');
+		 	},100);
+		 j('.div_in').unbind("click");
+	});
+	j('.menu-524').bind('mouseover',function(){
+		
+		 setTimeout(function(){
+				j('#sub_nav').css('display','none');
+				j('#sub_nav').removeClass('div_in');
+		 	},100);
+		 j('.div_in').unbind("click");
+	});
+	j('.menu-539').bind('mouseover',function(){
+		
+		 setTimeout(function(){
+				j('#sub_nav').css('display','none');
+				j('#sub_nav').removeClass('div_in');
+		 	},100);
+		 j('.div_in').unbind("click");
+	});
+	j('.menu-537').bind('mouseover',function(){
+		
+		 setTimeout(function(){
+				j('#sub_nav').css('display','none');
+				j('#sub_nav').removeClass('div_in');
+		 	},100);
+		 j('.div_in').unbind("click");
+	});
+	j('.menu-525').bind('mouseover',function(){
+		
+		 setTimeout(function(){
+				j('#sub_nav').css('display','none');
+				j('#sub_nav').removeClass('div_in');
+		 	},100);
+		 j('.div_in').unbind("click");
+	});
+	
+});
+AETN.showMenu = function(event){
+	console.log('ss');
+	console.log('captured '+event.type+'!');
+	j('#sub_nav').css('display','block');
+	j('#sub_nav').addClass('div_in');
+	
+	j('#main-menu li.first').bind('click',function(){
+		j('.div_in').unbind("mouseleave");
+		j('#main-menu li.first').unbind('mouseover');
+		j('#main-menu li.first').unbind('click');
+		j('#main-menu li.first').bind('click',AETN.hideMenu);
+		
+	});
+	
+	j('.div_in').bind('mouseleave',function(){
+		
+		 setTimeout(function(){
+				j('#sub_nav').css('display','none');
+				j('#sub_nav').removeClass('div_in');
+		 	},100);
+		 j('.div_in').unbind("click");
+	});
+}
+AETN.hideMenu = function(){
+	j('#sub_nav').css('display','none');
+	j('#sub_nav').removeClass('div_in');
+	j('#main-menu li.first').unbind('click');
+	setTimeout(function(){
+		j('#main-menu li.first').bind("mouseover",AETN.showMenu);
+ 	},100);
+}
+
+});

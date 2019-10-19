@@ -1,0 +1,1328 @@
+/*--------- TABLE OF CONTENTS -------
+
+			01. COLOR
+			02. GLOBAL
+			03. TYPOGRAPHY
+			04. BUTTON
+			05. BREADCRUMB
+			06. LEFT NAV
+			07. FORM
+			08. NORMAL SPRITE IMAGES
+			09. RETINA SPRITE IMAGES
+			10. MEDIA QUERIES
+
+------------------------------------
+
+ 01 BEGIN COLOR ------- */
+
+.text-blue {
+  color: #0075c9;
+}
+
+.text-orange {
+  color: #c74e10;
+}
+
+.text-black {
+  color: #333333;
+}
+
+.text-dark {
+  color: #4d4d4d;
+}
+
+.bg-blue {
+  background-color: #0075c9;
+}
+
+.bg-orange {
+  background-color: #c74e10;
+}
+
+.bg-grey {
+  background-color: #e9e9e9;
+}
+
+.bg-light-grey {
+  background-color: #f8f8f8;
+}
+
+/* --------- 02 BEGIN GLOBAL ------- */
+
+@font-face {
+  font-family: 'Glyphicons Halflings';
+
+  src: url('https://resources.allstate.com/fonts/glyphicons-halflings-regular.eot');
+  src: url('https://resources.allstate.com/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('https://resources.allstate.com/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('https://resources.allstate.com/fonts/glyphicons-halflings-regular.woff') format('woff'), url('https://resources.allstate.com/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('https://resources.allstate.com/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
+@font-face {
+    font-family:'FontAwesome';
+    src:url('https://resources.allstate.com/fonts/fontawesome-webfont.eot?v=4.7.0');
+    src:url('https://resources.allstate.com/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'),url('https://resources.allstate.com/fonts/fontawesome-webfont.woff2?v=4.7.0') format('woff2'),url('https://resources.allstate.com/fonts/fontawesome-webfont.woff?v=4.7.0') format('woff'),url('https://resources.allstate.com/fonts/fontawesome-webfont.ttf?v=4.7.0') format('truetype'), url('https://resources.allstate.com/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Arial', sans-serif;
+  letter-spacing: 0.01em;
+  color: #333333;
+}
+
+a,
+a:visited {
+  color: #0075c9;
+  font-weight: bold;
+}
+
+a:hover {
+  color: #001C71;
+}
+/*
+.row {
+  margin-bottom: 40px;
+}
+*/
+.map-marker {
+  padding-right: 10px;
+}
+
+.map-marker:before {
+  content: "\e062";
+  font-family: 'Glyphicons Halflings';
+  font-size: 12px;
+  margin: 0 5px 0 0;
+  color: #333333;
+}
+
+/* --------- 03 BEGIN TYPOGRAPHY ------- */
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 30px;
+  text-transform: capitalize;
+}
+
+h2 {
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+h3 {
+  font-size: 16px;
+}
+
+h4 {
+  font-size: 14px;
+}
+
+h5 {
+  font-size: 12px;
+}
+
+p {
+  font-size: 14px;
+}
+
+.legal {
+  font-weight: lighter;
+  font-size: 12px;
+}
+
+/* --------- 04 BEGIN BUTTON STYLES ------- */
+
+.btn {
+  font-family: 'Arial', sans-serif;
+  border-radius: 6px;
+  padding: 3px 20px;
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1.429em;
+  color: #fff;
+}
+
+.btn:focus {
+  outline: 0 none;
+}
+
+.btn:hover,
+.btn:visited {
+  color: #fff;
+}
+
+.btn-primary {
+  background-color: #0073cc;
+}
+
+.btn-primary:visited {
+  background-color: #0073cc;
+}
+
+.btn-primary:hover,
+.btn-primary:active {
+  background-color: #001c71;
+}
+
+.btn-quote {
+  background-color: #c74e10;
+}
+
+.btn-quote:visited {
+  background-color: #c74e10;
+}
+
+.btn-quote:hover,
+.btn-quote:active {
+  background-color: #b63a25;
+}
+
+.btn-dropdown,
+.btn-dropdown:visited {
+  font-weight: bold;
+}
+
+.btn-dropdown .glyphicon,
+.btn-dropdown:visited .glyphicon {
+  right: -12px;
+}
+
+.btn-dropdown button.btn-default,
+.btn-dropdown:visited button.btn-default {
+  color: #333333;
+}
+
+.btn-group {
+  text-align: left;
+}
+
+.btn-group button {
+  text-align: left;
+}
+
+.btn-group .btn-default {
+  color: #333333;
+  font-size: 14px;
+}
+
+.btn-group .btn-primary {
+  color: #fff;
+  font-size: 14px;
+}
+
+.btn-group .btn-quote {
+  border-radius: 0 0px 6px 6px;
+}
+
+.btn-dropdown:hover,
+.btn-dropdown:active {
+  color: #0073cc;
+}
+
+.btn-group .btn + .btn,
+.btn-group .btn + .btn-group,
+.btn-group .btn-group + .btn,
+.btn-group .btn-group + .btn-group {
+  margin-left: 1px;
+}
+
+.btn-group > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-right: 3px;
+}
+
+.btn-group-vertical {
+  display: block;
+}
+
+.btn-group-vertical > .btn,
+.btn-group-vertical > .btn-group,
+.btn-group-vertical > .btn-group > .btn {
+  position: relative;
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  width: 99.9% !important;
+  margin-bottom: 1px;
+}
+
+.btn-group-vertical > .btn .glyphicon,
+.btn-group-vertical > .btn-group .glyphicon,
+.btn-group-vertical > .btn-group > .btn .glyphicon {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+a[class*="icon-"] {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+div[class*="icon-"] {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+i[class*="icon-"] {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+span[class*="icon-"] {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+a[class*="glyphicon"] {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+div[class*="glyphicon"] {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+i[class*="glyphicon"] {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+span[class*="glyphicon"] {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+/* --------- 05 BEGIN BREADCRUMB ---------- */
+
+ol.breadcrumb {
+  font-size: 0.875em;
+  margin-bottom: 25px;
+  background-color: transparent;
+}
+
+/* --------- 06 BEGIN LEFT NAV ----------- */
+
+.bs-docs-sidebar .nav > .active:focus > a,
+.bs-docs-sidebar .nav > .active:hover > a,
+.bs-docs-sidebar .nav > .active > a {
+  font-weight: 700;
+  color: #333333;
+  background-color: #f8f8f8;
+}
+
+.bs-docs-sidebar .nav > li > a {
+  display: block;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0075c9;
+  border-top: 1px solid #eee;
+}
+
+.bs-docs-sidebar .nav > li > a:hover {
+  background-color: transparent;
+  color: #001C71;
+  text-decoration: underline;
+}
+
+.bs-docs-sidebar .nav > li > a:focus {
+  background-color: transparent;
+}
+
+.bs-docs-sidebar .nav > li > a .glyphicon {
+  top: 0;
+  float: right;
+}
+
+.bs-docs-sidebar .nav .nav > li > a {
+  padding: 10px 20px 10px 30px;
+  font-size: 12px;
+  font-weight: 700;
+  border-bottom: none;
+  border-top: none;
+}
+
+.dropdown-menu.dropdown-menu-wide {
+  min-width: 100%;
+  text-align: left;
+}
+
+.dropdown-menu {
+  min-width: auto;
+  border-radius: 4px;
+  box-shadow: 0 6px 12px transparent;
+}
+
+.dropdown-menu > li > a {
+  display: block;
+  clear: both;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0075c9;
+}
+
+.dropdown-menu > li > a:focus,
+.dropdown-menu > li > a:hover {
+  color: #001C71;
+  text-decoration: underline;
+  background-color: transparent;
+}
+
+.vertical-select .btn {
+  border-radius: 6px 6px 0 0px;
+  margin-bottom: 1px;
+}
+
+/* --------- 07 FORM ----------- */
+
+.quoteSelect {
+  margin: 10px 0;
+  position: relative;
+  display: block;
+  width: 246px;
+  background: url("/resources/images/themes/icon-downarrow.png") no-repeat 97% 4px #fff;
+  border-top-right-radius: 6px !important;
+  border-top-left-radius: 6px !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.quoteSelect select {
+  position: relative;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 36px;
+  padding: 5px 10px;
+  margin-bottom: 2px;
+  background-color: transparent;
+  color: #4d4d4d;
+  font-weight: 700;
+  border-color: #e1e1e1;
+  border-width: 1px;
+  border-top-right-radius: 6px !important;
+  border-top-left-radius: 6px !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 0;
+  -moz-appearance: none;
+}
+
+.quoteSelect .btn {
+  position: relative;
+  display: inline-block;
+  padding: 5px 12px;
+  height: 36px;
+  width: 100%;
+  vertical-align: top;
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-right-radius: 6px !important;
+  border-bottom-left-radius: 6px !important;
+}
+
+.stateSelect {
+  margin: 10px 0;
+  position: relative;
+  display: inline-block;
+  background: url("/resources/images/themes/icon-downarrow.png") no-repeat 73% 4px #fff;
+  border-top-right-radius: 6px !important;
+  border-top-left-radius: 6px !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.stateSelect select {
+  position: relative;
+  -webkit-appearance: none;
+  width: 194px;
+  height: 36px;
+  padding: 5px 10px;
+  vertical-align: top;
+  color: #4d4d4d;
+  font-weight: 700;
+  border-color: #e1e1e1;
+  border-width: 1px;
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 6px !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 6px !important;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 1px;
+  background-color: transparent;
+  z-index: 1;
+}
+
+.stateSelect .btn {
+  position: relative;
+  display: inline-block;
+  padding: 5px 12px;
+  height: 36px;
+  top: 1px;
+  vertical-align: top;
+  border-top-right-radius: 6px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-right-radius: 6px !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+/* --------- 08 BEGIN NORMAL SPRITE IMAGES ------- */
+
+.icon-a {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -564px -320px;
+  width: 13px;
+  height: 13px;
+}
+
+.icon-agent {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -536px -448px;
+  width: 36px;
+  height: 36px;
+}
+
+.icon-alert {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -192px -500px;
+  width: 60px;
+  height: 60px;
+}
+
+.icon-atv {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -85px -170px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-auto {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: 0px -85px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-boat {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -85px -85px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-business {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -170px 0px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-condo {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -170px -85px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-document-blue {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -414px -500px;
+  width: 24px;
+  height: 24px;
+}
+
+.icon-downarrow {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -288px -500px;
+  width: 30px;
+  height: 30px;
+}
+
+.icon-drivewise {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -420px -240px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-driving-discounts-selected {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -500px 0px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-driving-discounts {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -500px -80px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-email-grey {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -366px -500px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-email {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -462px -500px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-evaluate-damages-selected {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -250px -255px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-evaluate-damages {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -340px 0px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-facebook-grey {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -318px -500px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-facebook {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -252px -536px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-file-claim-selected {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -340px -240px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-file-claim {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: 0px -340px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-find-agent {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -80px -340px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-flat-tire {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -160px -340px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-flood {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -240px -340px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-get-a-quote {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -320px -340px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-googleplus-grey {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -534px -500px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-googleplus {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -510px -500px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-home {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -420px -160px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-info {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -564px -333px;
+  width: 10px;
+  height: 10px;
+}
+
+.icon-investigate-claim-selected {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -420px -320px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-investigate-claim {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: 0px -420px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-landlord {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -80px -420px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-life {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -160px -420px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-lifestyle-discounts-selected {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -170px -255px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-lifestyle-discounts {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -320px -420px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-linkedin-grey {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -438px -500px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-linkedin {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -342px -500px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-list-arrow-right {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -420px -400px;
+  width: 20px;
+  height: 20px;
+}
+
+.icon-list-check {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -440px -400px;
+  width: 20px;
+  height: 20px;
+}
+
+.icon-medical {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -85px 0px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-motorcycle {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -85px -255px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-motorhome {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: 0px -255px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-pet {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -255px -170px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-pinterest-grey {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -486px -500px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-pinterest {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -390px -500px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-policy-discounts-selected {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -400px -420px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-policy-discounts {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -240px -420px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-present {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -255px -85px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-renters {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -255px 0px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-retirement {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -170px -170px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-review-estimate-selected {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -340px -160px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-review-estimate {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -340px -80px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-roadside {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -500px -448px;
+  width: 36px;
+  height: 36px;
+}
+
+.icon-rv {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: 0px 0px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-search-active {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -500px -160px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-search {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -420px -80px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-snowmobile {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: 0px -170px;
+  width: 85px;
+  height: 85px;
+}
+
+.icon-tab-file-claim {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -500px -320px;
+  width: 64px;
+  height: 64px;
+}
+
+.icon-tab-investigate-damages {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -500px -384px;
+  width: 64px;
+  height: 64px;
+}
+
+.icon-tab-repair-car {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: 0px -500px;
+  width: 64px;
+  height: 64px;
+}
+
+.icon-tab-review-estimate {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -64px -500px;
+  width: 64px;
+  height: 64px;
+}
+
+.icon-tab-settle-claim {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -128px -500px;
+  width: 64px;
+  height: 64px;
+}
+
+.icon-tools {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -252px -500px;
+  width: 36px;
+  height: 36px;
+}
+
+.icon-twitter-grey {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -276px -536px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-twitter {
+  background-image: url(/resources/images/themes/sprite.png) !important;
+  background-position: -300px -536px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.icon-wrap-up-claim-selected {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -420px 0px;
+  width: 80px;
+  height: 80px;
+}
+
+.icon-wrap-up-claim {
+  background-image: url(/resources/images/themes/sprite.png);
+  background-position: -500px -240px;
+  width: 80px;
+  height: 80px;
+}
+
+/* --------- 09 BEGIN RETINA SPRITE IMAGES ------- */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .icon-a {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-agent {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-alert {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-atv {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-auto {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-boat {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-business {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-condo {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-document-blue {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-downarrow {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-drivewise {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-driving-discounts-selected {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-driving-discounts {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-email-grey {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-email {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-evaluate-damages-selected {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-evaluate-damages {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-facebook-grey {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-facebook {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-file-claim-selected {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-file-claim {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-find-agent {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-flat-tire {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-flood {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-get-a-quote {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-googleplus-grey {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-googleplus {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-home {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-info {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-investigate-claim-selected {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-investigate-claim {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-landlord {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-life {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-lifestyle-discounts-selected {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-lifestyle-discounts {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-linkedin-grey {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-linkedin {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-list-arrow-right {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-list-check {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-medical {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-motorcycle {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-motorhome {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-pet {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-pinterest-grey {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-pinterest {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-policy-discounts-selected {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-policy-discounts {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-present {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-renters {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-retirement {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-review-estimate-selected {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-review-estimate {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-roadside {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-rv {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-search-active {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-search {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-snowmobile {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-tab-file-claim {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-tab-investigate-damages {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-tab-repair-car {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-tab-review-estimate {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-tab-settle-claim {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-tools {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-twitter-grey {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-twitter {
+    background-image: url(/resources/images/themes/sprite2x.png) !important;
+    background-size: 580px 564px !important;
+  }
+
+  .icon-wrap-up-claim-selected {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+
+  .icon-wrap-up-claim {
+    background-image: url(/resources/images/themes/sprite2x.png);
+    background-size: 580px 564px;
+  }
+}
+
+/* --------- 09 BEGIN MEDIA QUERIES ------- */
+
+@media (min-width: 992px) {
+  /*  .row { */
+    /* OVERRIDE Bootstraps global row class */
+    /* margin-bottom: 60px; */
+  /* } */
+
+  ol.breadcrumb {
+    font-size: 0.875em;
+    margin-bottom: 25px;
+  }
+
+  .bs-docs-sidebar .nav > .active:focus > a,
+  .bs-docs-sidebar .nav > .active:hover > a,
+  .bs-docs-sidebar .nav > .active > a {
+    background-color: transparent;
+  }
+
+  /* END OF min-width: 992px */
+}

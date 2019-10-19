@@ -1,0 +1,976 @@
+this["PGM"] = this["PGM"] || {};
+this["PGM"]["JST"] = this["PGM"]["JST"] || {};
+
+this["PGM"]["JST"]["ads/slot"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<div class="ad_desktop dfp-ad dfp-ad-' +
+__e( slot.slotName ) +
+' ' +
+__e( typeof extraClass !== 'undefined' ? extraClass : '' ) +
+'"\n    data-position=\'' +
+__e( slot.targetingParameters.pos ) +
+'\'\n    data-sizes=\'' +
+((__t = ( JSON.stringify(slot.defaultSizes) )) == null ? '' : __t) +
+'\'\n    data-size-mapping=\'' +
+((__t = ( JSON.stringify(slot.sizeMapping) )) == null ? '' : __t) +
+'\'\n    data-targeting=\'' +
+((__t = ( JSON.stringify(slot.targetingParameters) )) == null ? '' : __t) +
+'\'\n    data-ad-unit=\'' +
+__e( slot.adUnit ) +
+'\'\n    data-tracklabel="Ad Click"\n    ';
+ if ('undefined' !== typeof prepend) { ;
+__p += ' data-prepend="' +
+((__t = ( prepend )) == null ? '' : __t) +
+'"';
+ } ;
+__p += '>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["embeds/gallery"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<figure class="embedded-content--gallery__media embedded-content--gallery__media--' +
+((__t = ( media.orientation )) == null ? '' : __t) +
+'" data-lightbox-content-path="' +
+((__t = ( path )) == null ? '' : __t) +
+'" data-lightbox-tracking-label="Inline">\n    <img class="embedded-image__image embedded-content--gallery__image--' +
+((__t = ( media.orientation )) == null ? '' : __t) +
+' media__image" src="' +
+((__t = ( media.src )) == null ? '' : __t) +
+'">\n\n    <div class="lightbox-cta__wrapper">\n        <div class="lightbox-cta__wrapper__inner">\n            <div class="lightbox-cta__wrapper__text">' +
+((__t = ( title )) == null ? '' : __t) +
+'</div>\n            <div class="lightbox-cta__wrapper__cta"><i class="fa fa-camera"></i> View Slideshow</div>\n        </div>\n    </div>\n</figure>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["embeds/image"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<figure>\n    <img class="embedded-image__image" ';
+ if (caption) { ;
+__p += 'alt="' +
+__e( caption ) +
+'"';
+ };
+__p += 'src="' +
+((__t = ( path )) == null ? '' : __t) +
+'">\n    ';
+ if (caption || credit) { ;
+__p += '\n    <figcaption class="embedded-image__details-text">\n        ';
+ if (credit) { ;
+__p += '\n            <div class="media__credit">' +
+((__t = ( credit )) == null ? '' : __t) +
+'</div>\n        ';
+ } ;
+__p += '\n        ';
+ if (caption) { ;
+__p += '\n            <div class="media__caption">' +
+((__t = ( caption )) == null ? '' : __t) +
+'</div>\n        ';
+ } ;
+__p += '\n    </figcaption>\n    ';
+ } ;
+__p += '\n</figure>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["embeds/readmore"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<a class="readmore" title="' +
+__e( title ) +
+'" href="' +
+((__t = ( path )) == null ? '' : __t) +
+'">\n    ';
+ if (
+        'undefined' !== typeof media &&
+        'undefined' !== typeof media.url
+    ) { ;
+__p += '\n        <figure class="readmore__media readmore__media--' +
+((__t = ( media.orientation )) == null ? '' : __t) +
+'">\n            <img class="readmore__image readmore__image--' +
+((__t = ( media.orientation )) == null ? '' : __t) +
+'" src="' +
+((__t = (  media.url )) == null ? '' : __t) +
+'" alt="' +
+__e( media.caption ) +
+'">\n        </figure>\n    ';
+ } ;
+__p += '\n    <div class="readmore__text">\n        <h4 class="readmore__cta">' +
+((__t = ( verb )) == null ? '' : __t) +
+' More</h4>\n        <h2 class="readmore__title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h2>\n    </div>\n</a>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["embeds/video"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<div class="video-embed video-embed--brightcove">\n    <div class="header">\n        <div class="header__verb">\n            Watch\n        </div>\n        <div class="header__title">\n            ' +
+((__t = ( title )) == null ? '' : __t) +
+'\n        </div>\n    </div>\n    <div style="position: relative; display: block; max-width: 100%;">\n        <div style="padding-top: 56.25%;">\n            <video controls\n                data-account="' +
+((__t = ( account_id )) == null ? '' : __t) +
+'"\n                data-player="' +
+((__t = ( player_id )) == null ? '' : __t) +
+'"\n                data-embed="default"\n                data-video-id="' +
+((__t = ( id )) == null ? '' : __t) +
+'"\n                class="video-js"\n                style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px; width: 100%; height: 100%;">\n            </video>\n        </div>\n    </div>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["example-one"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += 'PGM Example One<br/>\n' +
+((__t = ( foo )) == null ? '' : __t) +
+'\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["header/breaking_news"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<a class="breaking-news-bar__contents" href="' +
+((__t = ( url )) == null ? '' : __t) +
+'">\n    <button class="breaking-news-bar__close">\n        <i class="fa fa-times" aria-hidden="true"></i>\n    </button>\n\n    <h4 class="breaking-news-bar__label">Breaking News</h4>\n    <h3>' +
+((__t = ( title )) == null ? '' : __t) +
+'</h3>\n</a>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["hybrid_player/mainView"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<div class="hybrid-player__header">\n    <h2>' +
+((__t = ( title )) == null ? '' : __t) +
+'</h2>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["hybrid_player/player-youtube"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<div class="hybrid-player-video__container">\n    <div class="hybrid-player-video__player-instance">\n    </div>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["hybrid_player/player"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<div\n    class="hybrid-player-video__container"\n    style="background-image:url(' +
+((__t = ( media.image.fullPath )) == null ? '' : __t) +
+')"\n></div>\n<h3 class="hybrid-player-video__title">\n    ' +
+((__t = ( title )) == null ? '' : __t) +
+'\n</h3>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["hybrid_player/playlist"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<div class="hybrid-player-playlist__container">\n    <ol class="hybrid-player-playlist__items">\n    ';
+ _.each(items, function(item) { ;
+__p += '\n        <li class="hybrid-player-playlist__item">\n            <div\n                class="hybrid-player-playlist__item-thumbnail-image"\n                style="background-image: url(' +
+((__t = ( item.media.image.fullPath )) == null ? '' : __t) +
+')"\n            ></div>\n            ' +
+((__t = ( item.title )) == null ? '' : __t) +
+'\n        </li>\n    ';
+ }); ;
+__p += '\n    </ol>\n</div>\n<button disabled class="hybrid-player-playlist__nav hybrid-player-playlist__nav--previous">Previous</button>\n<button class="hybrid-player-playlist__nav hybrid-player-playlist__nav--next">Next</button>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["left_rail/left_rail"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<div class="left-rail__title">\n    ' +
+((__t = ( title )) == null ? '' : __t) +
+'\n</div>\n<div class="js-rail-items"></div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["left_rail/rail_item"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<progress class="rail-item__progress" value max></progress>\n<a class="rail-item__link ';
+ if( mediaType === 'video') {;
+__p += 'rail-item__link--play-button';
+};
+__p += '" href="' +
+((__t = (path)) == null ? '' : __t) +
+'">\n    <img class="rail-item__image" src="' +
+((__t = (media)) == null ? '' : __t) +
+'" alt="' +
+__e(title) +
+'" />\n</a>\n';
+ if( categoryName || publishDate ) { ;
+__p += '\n    <p class="rail-item__meta">\n        <a href="' +
+((__t = (categoryPath)) == null ? '' : __t) +
+'" class="rail-item__category category-link">' +
+((__t = ( categoryName )) == null ? '' : __t) +
+'</a>\n        <span class="rail-item__date date">' +
+((__t = ( publishDate )) == null ? '' : __t) +
+'</span>\n    </p>\n';
+ } ;
+__p += '\n<p class="rail-item__title">\n    <a class="rail-item__link" href="' +
+((__t = (path)) == null ? '' : __t) +
+'">' +
+((__t = (title)) == null ? '' : __t) +
+'</a>\n</p>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["left_rail/topic_block"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<header class="rail-topic-block__header">\n    <h3 class="rail-topic-block__title">' +
+((__t = (title)) == null ? '' : __t) +
+'</h3>\n</header>\n<ul class="rail-topic-block__items">\n    ';
+_.each(items.slice(0, 3), function(item, i) { ;
+__p += '\n        <li class="rail-topic-block__item">\n            <a href="' +
+((__t = ( item.path )) == null ? '' : __t) +
+'" class="rail-topic-block__link">\n                ';
+ if (i === 0) { ;
+__p += '\n                    <img class="rail-topic-block__image" src="' +
+((__t = ( item.media )) == null ? '' : __t) +
+'" alt="' +
+__e( item.title ) +
+'">\n                ';
+ } ;
+__p += '\n                <p class="rail-topic-block__item-title">' +
+((__t = ( item.title )) == null ? '' : __t) +
+'</p>\n            </a>\n        </li>\n    ';
+ }); ;
+__p += '\n</ul>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["longform/promo"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ var single = items.length === 1 ;
+__p += '\n<h3 class="longform-rail-promo__headline flap-headline">' +
+((__t = ( title ? title : 'Editor&rsquo;s Recommendation' )) == null ? '' : __t) +
+'</h3>\n\n<div class="longform-rail-promo__items' +
+((__t = ( single ? '' : ' longform-rail-promo__items--multiple' )) == null ? '' : __t) +
+'">\n\n';
+ _.each(items, function(item, i) { ;
+__p += '\n    <article class="longform-rail-promo__item longform-rail-promo__item--' +
+((__t = ( single ? 'single' : 'multiple' )) == null ? '' : __t) +
+'' +
+((__t = ( i === 0 ? ' longform-rail-promo__item--first' : '' )) == null ? '' : __t) +
+'">\n\n        <a class="longform-rail-promo__item-title-link" href="' +
+((__t = ( item.path )) == null ? '' : __t) +
+'">\n            ';
+ if (item.media) { ;
+__p += '\n            <figure class="longform-rail-promo__item-media">\n                <img class="longform-rail-promo__item-image" src="' +
+((__t = ( item.media.path )) == null ? '' : __t) +
+'" alt>\n            </figure>\n            ';
+ } ;
+__p += '\n\n            <h2 class="longform-rail-promo__item-title' +
+((__t = ( single ? ' longform-rail-promo__item-title--single' : '' )) == null ? '' : __t) +
+'">' +
+((__t = ( item.title )) == null ? '' : __t) +
+'</h2>\n        </a>\n\n        ';
+ if (single) { ;
+__p += '\n        <p class="longform-rail-promo__item-deck">' +
+((__t = ( item.deck )) == null ? '' : __t) +
+'</p>\n        <a class="longform-rail-promo__link" href="' +
+((__t = ( item.path )) == null ? '' : __t) +
+'">Read More</a>\n        ';
+ } ;
+__p += '\n    </article>\n';
+ }) ;
+__p += '\n\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["topic_index/capsule-chart"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h4 class="capsule__title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h4>\n<h5 class="capsule__deck">' +
+((__t = ( deck )) == null ? '' : __t) +
+'</h5>\n<div class="capsule__body capsule--chart__body">\n    <ol>\n    ';
+ _.each(items, function(item, index) { ;
+__p += '\n        <li class="capsule__item capsule__item--' +
+((__t = ( index )) == null ? '' : __t) +
+' capsule--chart__item">\n            <h3 class="capsule__item-title capsule--chart__item-title">' +
+((__t = ( item.title )) == null ? '' : __t) +
+'</h3>\n            <div class="capsule--chart__item-data">' +
+((__t = ( item.data )) == null ? '' : __t) +
+'</div>\n        </li>\n    ';
+ }); ;
+__p += '\n    </ol>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["topic_index/capsule-list"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h4 class="capsule__title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h4>\n<div class="capsule__body">\n    ';
+ _.each(currentPageItems, function(item, index) { ;
+__p += '\n        <article class="capsule__item capsule__item--' +
+((__t = ( index )) == null ? '' : __t) +
+' capsule--list__item">\n            <a href="' +
+((__t = ( item.url )) == null ? '' : __t) +
+'">\n                <figure class="capsule__item-figure capsule__item-figure--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+' capsule__item-figure--' +
+((__t = ( type )) == null ? '' : __t) +
+' capsule--list__item-figure">\n                    <img class="capsule__item-image capsule__item-image--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+'" src="' +
+((__t = ( index === 0 ? item.media.src : item.media.thumbnail )) == null ? '' : __t) +
+'">\n                </figure>\n                <h3 class="capsule__item-title capsule--list__item-title">' +
+((__t = ( item.title )) == null ? '' : __t) +
+'</h3>\n            </a>\n        </article>\n    ';
+ }); ;
+__p += '\n    ';
+ if (totalPages > 1) { ;
+__p += '\n    <nav class="capsule__nav">\n        <span class="capsule__current-page">\n            ' +
+((__t = ( currentPage )) == null ? '' : __t) +
+'/' +
+((__t = ( totalPages )) == null ? '' : __t) +
+'\n        </span>\n        <span class="capsule__nav-button capsule__nav-button--prev"></span>\n        <span class="capsule__nav-button capsule__nav-button--next"></span>\n    </nav>\n    ';
+ } ;
+__p += '\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["topic_index/capsule-media"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h4 class="capsule__title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h4>\n<div class="capsule__body capsule--media__body">\n    ';
+ _.each(currentPageItems, function(item) { ;
+__p += '\n        <article class="capsule__item">\n            <a href="' +
+((__t = ( item.url )) == null ? '' : __t) +
+'">\n                <figure class="capsule__item-figure capsule__item-figure--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+' capsule__item-figure--' +
+((__t = ( type )) == null ? '' : __t) +
+'">\n                    <img class="capsule__item-image capsule__item-image--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+'" src="' +
+((__t = ( item.media.src )) == null ? '' : __t) +
+'" />\n                </figure>\n                <h3 class="capsule__item-title capsule--media__item-title">' +
+((__t = ( item.title )) == null ? '' : __t) +
+'</h3>\n            </a>\n        </article>\n    ';
+ }); ;
+__p += '\n    ';
+ if (totalPages > 1) { ;
+__p += '\n    <nav class="capsule__nav">\n        <span class="capsule__current-page">\n            ' +
+((__t = ( currentPage )) == null ? '' : __t) +
+'/' +
+((__t = ( totalPages )) == null ? '' : __t) +
+'\n        </span>\n        <span class="capsule__nav-button capsule__nav-button--prev"></span>\n        <span class="capsule__nav-button capsule__nav-button--next"></span>\n    </nav>\n    ';
+ } ;
+__p += '\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["topic_index/capsule-multiple"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h4 class="capsule__title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h4>\n<div class="capsule__body">\n    ';
+ _.each(items, function(item, index) { ;
+__p += '\n        <article class="capsule__item capsule__item--' +
+((__t = ( index )) == null ? '' : __t) +
+' capsule--multiple__item">\n            <a href="' +
+((__t = ( item.url )) == null ? '' : __t) +
+'">\n                <figure class="capsule__item-figure capsule__item-figure--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+' capsule__item-figure--' +
+((__t = ( type )) == null ? '' : __t) +
+' capsule--multiple__item-figure">\n                    <img class="capsule__item-image capsule__item-image--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+'" src="' +
+((__t = ( index === 0 ? item.media.src : item.media.thumbnail )) == null ? '' : __t) +
+'">\n                </figure>\n                <h3 class="capsule__item-title capsule--multiple__item-title">' +
+((__t = ( item.title )) == null ? '' : __t) +
+'</h3>\n            </a>\n        </article>\n    ';
+ }); ;
+__p += '\n    ';
+ if (linkUrl && linkText) { ;
+__p += '\n        <article class="capsule__item"><a href="' +
+((__t = ( linkUrl )) == null ? '' : __t) +
+'" class="capsule__more">' +
+((__t = ( linkText )) == null ? '' : __t) +
+'</a></article>\n    ';
+ } ;
+__p += '\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["topic_index/capsule-pushdown"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h4 class="capsule__title capsule--horizontal__title">\n    ' +
+((__t = ( title )) == null ? '' : __t) +
+'\n    ';
+ if (linkUrl && linkText) { ;
+__p += '\n        <a href="' +
+((__t = ( linkUrl )) == null ? '' : __t) +
+'" class="capsule--horizontal__cta">' +
+((__t = ( linkText )) == null ? '' : __t) +
+'</a></span>\n    ';
+ } ;
+__p += '\n</h4>\n<div class="capsule__body  capsule--horizontal__body">\n    ';
+ _.each(items, function(item, index) { ;
+__p += '\n        <article class="capsule__item capsule__item--' +
+((__t = ( index )) == null ? '' : __t) +
+' capsule--multiple__item  capsule--horizontal__item">\n            <a href="' +
+((__t = ( item.url )) == null ? '' : __t) +
+'">\n                <figure class="capsule__item-figure capsule__item-figure--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+' capsule__item-figure--' +
+((__t = ( type )) == null ? '' : __t) +
+' capsule--multiple__item-figure">\n                    <img class="capsule__item-image capsule__item-image--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+'" src="' +
+((__t = (item.media.src)) == null ? '' : __t) +
+'">\n                </figure>\n                <h3 class="capsule__item-title capsule--horizontal__item-title">' +
+((__t = ( item.title )) == null ? '' : __t) +
+'</h3>\n            </a>\n        </article>\n    ';
+ }); ;
+__p += '\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["topic_index/capsule-swipe-chart"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h4 class="capsule__title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h4>\n<h5 class="capsule__deck">' +
+((__t = ( deck )) == null ? '' : __t) +
+'</h5>\n<div class="capsule__body capsule--chart__body">\n    <ol class="capsule--swipe__body-container">\n        ';
+ _.each(items.slice(0,10), function(item) { ;
+__p += '\n            <li class="capsule__item capsule--chart__item capsule--swipe__item">\n                <h3 class="capsule__item-title capsule--chart__item-title">' +
+((__t = ( item.title )) == null ? '' : __t) +
+'</h3>\n                <div class="capsule--chart__item-data">' +
+((__t = ( item.data )) == null ? '' : __t) +
+'</div>\n            </li>\n        ';
+ }); ;
+__p += '\n        ';
+ if (linkUrl && linkText) { ;
+__p += '\n            <li class="capsule__item capsule--swipe__item capsule--swipe__item--more"><a href="' +
+((__t = ( linkUrl )) == null ? '' : __t) +
+'" class="capsule__more capsule--swipe__more">' +
+((__t = ( linkText )) == null ? '' : __t) +
+'</a></li>\n        ';
+ } ;
+__p += '\n    </ol>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["topic_index/capsule-swipe-pushdown"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h4 class="capsule__title  capsule--horizontal__title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h4>\n<div class="capsule__body  capsule--horizontal__body">\n    <div class="capsule--swipe__body-container">\n        ';
+ _.each(items.slice(0,10), function(item) { ;
+__p += '\n            <article class="capsule__item capsule--horizontal__item capsule--swipe__item">\n                <a href="' +
+((__t = ( item.url )) == null ? '' : __t) +
+'">\n                    <figure class="capsule__item-figure capsule__item-figure--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+' capsule__item-figure--' +
+((__t = ( type )) == null ? '' : __t) +
+'">\n                        <img class="capsule__item-image capsule__item-image--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+' capsule--swipe__item-image" src="' +
+((__t = ( item.media.src )) == null ? '' : __t) +
+'" />\n                    </figure>\n                    <h3 class="capsule__item-title capsule--swipe__item-title capsule--horizontal__item-title">' +
+((__t = ( item.title )) == null ? '' : __t) +
+'</h3>\n                </a>\n            </article>\n        ';
+ }); ;
+__p += '\n        ';
+ if (linkUrl && linkText) { ;
+__p += '\n            <article class="capsule__item capsule--swipe__item capsule__item--more"><a href="' +
+((__t = ( linkUrl )) == null ? '' : __t) +
+'" class="capsule--horizontal__cta">' +
+((__t = ( linkText )) == null ? '' : __t) +
+'</a></article>\n        ';
+ } ;
+__p += '\n    </div>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["topic_index/capsule-swipe"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h4 class="capsule__title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h4>\n<div class="capsule__body">\n    <div class="capsule--swipe__body-container">\n        ';
+ _.each(items.slice(0,10), function(item) { ;
+__p += '\n            <article class="capsule__item capsule--swipe__item">\n                <a href="' +
+((__t = ( item.url )) == null ? '' : __t) +
+'">\n                    <figure class="capsule__item-figure capsule__item-figure--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+' capsule__item-figure--' +
+((__t = ( type )) == null ? '' : __t) +
+'">\n                        <img class="capsule__item-image capsule__item-image--' +
+((__t = ( item.media.orientation )) == null ? '' : __t) +
+' capsule--swipe__item-image" src="' +
+((__t = ( item.media.src )) == null ? '' : __t) +
+'" />\n                    </figure>\n                    <h3 class="capsule__item-title capsule--swipe__item-title">' +
+((__t = ( item.title )) == null ? '' : __t) +
+'</h3>\n                </a>\n            </article>\n        ';
+ }); ;
+__p += '\n        ';
+ if (linkUrl && linkText) { ;
+__p += '\n            <article class="capsule__item capsule--swipe__item capsule--swipe__item--more"><a href="' +
+((__t = ( linkUrl )) == null ? '' : __t) +
+'" class="capsule__more capsule--swipe__more">' +
+((__t = ( linkText )) == null ? '' : __t) +
+'</a></article>\n        ';
+ } ;
+__p += '\n    </div>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["artist/song-share"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<div class="artist-song__overlay-bg"></div>\n<div class="artist-song__share-overlay">\n    <div class="artist-song__share-header">\n        <span class="artist-song__share-header-title">Share this song</span> <span class="fa fa-times artist-song__share-close"></span>\n    </div>\n    <div class="artist-song__share-button-holder">\n        <div class="artist-song__share-button artist-song__share-button--fb" data-share-type="facebook">\n            <span class="fa fa-facebook"></span> Facebook\n        </div>\n        <div class="artist-song__share-button artist-song__share-button--tw"  data-share-type="twitter">\n            <span class="fa fa-twitter"></span> Twitter\n        </div>\n    </div>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["artist/song"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<div class="artist-song">\n    <h3 class="artist-song__title">\n        ' +
+((__t = ( title )) == null ? '' : __t) +
+'\n    </h3>\n    <h4 class="artist-song__artist">\n        ' +
+((__t = ( artist_name )) == null ? '' : __t) +
+'\n    </h4>\n    <div class="artist-song__info-holder">\n        <table width="100%">\n            <tr>\n                <td>\n                    <div class="fa fa-calendar artist-song__info-icon"></div>\n                </td>\n                <td class="artist-song__peak" rowspan=2>\n                    <span class="artist-song__peak-bg ';
+ if(peak_rank == 1) {;
+__p += 'artist-song__peak-bg--1';
+ } ;
+__p += '"></span>\n                    <span class="artist-song__peak-rank">\n                        ' +
+((__t = ( peak_rank )) == null ? '' : __t) +
+'\n                    </span>\n                </td>\n                <td>\n                    <div class="fa fa-clock-o artist-song__info-icon"></div>\n                </td>\n            </tr>\n            <tr>\n                <td class="artist-song__peak-date">\n                    <span class="artist-song__peak-date-month">\n                        ' +
+((__t = ( peak_date_formatted.month )) == null ? '' : __t) +
+'\n                    </span>\n                    <span class="artist-song__peak-date-day">\n                        ' +
+((__t = ( peak_date_formatted.day )) == null ? '' : __t) +
+'\n                    </span>\n                    <span class="artist-song__peak-date-year">\n                        ' +
+((__t = ( peak_date_formatted.year )) == null ? '' : __t) +
+'\n                    </span>\n                </td>\n                <td class="artist-song__time-on-chart">\n                    ' +
+((__t = ( weeks_on_chart )) == null ? '' : __t) +
+'\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <div class="artist-song__info-title">\n                        <a href="' +
+((__t = ( peak_date_link )) == null ? '' : __t) +
+'" class="peak-date-link">Peak Date</a>\n                    </div>\n                </td>\n                <td>\n                    <div class="artist-song__info-title">\n                        Peak Position\n                    </div>\n                </td>\n                <td>\n                    <div class="artist-song__info-title">\n                        Weeks on Chart\n                    </div>\n                </td>\n            </tr>\n        </table>\n    </div>\n    <div class="artist-song__tools">\n        <ul>\n            <li class="artist-song__tools-li artist-song__tools-share">\n                Share <span class="fa fa-share"></span>\n            </li>\n            <!-- <li class="artist-song__tools-li artist-song__tools-video">\n                Watch <span class="fa fa-video-camera"></span>\n            </li> -->\n            <!--<li class="artist-song__tools-li artist-song__tools-audio js-spotify-preview disabled">-->\n                <!--Preview <span class="fa fa-play"></span>-->\n                <!--<div class="artist-song__preview">-->\n                    <!--<div class="artist-song__preview-branding js-spotify-spotifyUrl">-->\n                        <!--<span>Full Track</span> on <span class="fa fa-spotify"></span> Spotify-->\n                    <!--</div>-->\n                    <!--<div class="artist-song__preview-control js-spotify-preview">-->\n                        <!--Preview <span class="fa fa-pause"></span>-->\n                    <!--</div>-->\n                <!--</div>-->\n            <!--</li>-->\n        </ul>\n    </div>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["chart/search_result_message"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<p class="search-results__message">' +
+((__t = ( message )) == null ? '' : __t) +
+'</p>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["chart/search_results"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ for (var ix = 0; ix < rows.length; ix++) { ;
+__p += '\n    ';
+ if (ix === 0) { ;
+__p += '\n        <article class="search-result search-result-1 chart-row" data-hovertracklabel="Song Hover-' +
+((__t = ( rows[ix].title )) == null ? '' : __t) +
+'">\n            <div class="search-result__rank chart-row__rank">' +
+((__t = ( (ix + 1) )) == null ? '' : __t) +
+'</div>\n            <div class="search-result__image chart-row__image"';
+ if (rows[ix].title_images && rows[ix].title_images != null) { ;
+__p += ' style="background-image:url(' +
+((__t = ( imageBaseURL )) == null ? '' : __t) +
+'' +
+((__t = ( rows[ix].title_images.sizes.original.Name )) == null ? '' : __t) +
+');"';
+ } ;
+__p += '></div>\n            <div class="search-result__details chart-row__title">\n                <time class="search-result__date">' +
+((__t = ( convertedDate )) == null ? '' : __t) +
+'</time>\n                <h2 class="search-result__song chart-row__song">' +
+((__t = ( rows[ix].title )) == null ? '' : __t) +
+'</h2>\n                <h3 class="search-result__artist-name chart-row__artist">\n                <a class="search-result-artist-link chart-row__link" href="' +
+((__t = ( rows[ix].artist_url )) == null ? '' : __t) +
+'" data-tracklabel="artist ' +
+__e( (ix + 1) ) +
+' ' +
+__e( rows[ix].artist_name ) +
+'">' +
+((__t = ( rows[ix].artist_name )) == null ? '' : __t) +
+'</a>\n                </h3>\n            </div>\n            <div class="search-result__social-share social-shares">\n                <a class="social-share social-share`-twitter" rel="popup" data-width="400" data-height="450" data-tracklabel="twitter share archive search ' +
+__e( rows[ix].artist_name ) +
+'" href="https://twitter.com/intent/tweet?url=' +
+((__t = ( archiveURL )) == null ? '' : __t) +
+'/' +
+((__t = ( date )) == null ? '' : __t) +
+'&text=' +
+((__t = ( rows[ix].artist_name )) == null ? '' : __t) +
+'+was+No.1+on+' +
+((__t = ( convertedDate )) == null ? '' : __t) +
+'&via=Billboard">\n                    <i class="fa fa-twitter"></i>\n                </a>\n            </div>\n        </article>\n    ';
+ } else if (ix === 1) { ;
+__p += '\n        <div class="search-result-wrap">\n            <article class="search-result search-result-2 chart-row" data-hovertracklabel="Song Hover-' +
+((__t = ( rows[ix].title )) == null ? '' : __t) +
+'">\n                <div class="search-result__rank chart-row__rank">' +
+((__t = ( (ix + 1) )) == null ? '' : __t) +
+'</div>\n                <div class="search-result__image chart-row__image"';
+ if (rows[ix].title_images && rows[ix].title_images != null) { ;
+__p += ' style="background-image:url(' +
+((__t = ( imageBaseURL )) == null ? '' : __t) +
+'' +
+((__t = ( rows[ix].title_images.sizes.original.Name )) == null ? '' : __t) +
+');"';
+ } ;
+__p += '></div>\n                <div class="search-result__details chart-row__title">\n                    <h2 class="search-result__song chart-row__song">' +
+((__t = ( rows[ix].title )) == null ? '' : __t) +
+'</h2>\n                    <h3 class="search-result__artist-name chart-row__artist">\n                    <a class="search-result-artist-link chart-row__link" href="' +
+((__t = ( rows[ix].artist_url )) == null ? '' : __t) +
+'" data-tracklabel="artist ' +
+((__t = ( (ix + 1) )) == null ? '' : __t) +
+' ' +
+((__t = ( rows[ix].artist_name )) == null ? '' : __t) +
+'">' +
+((__t = ( rows[ix].artist_name )) == null ? '' : __t) +
+'</a>\n                    </h3>\n                </div>\n            </article>\n    ';
+ } else if (ix === 2) { ;
+__p += '\n            <article class="search-result search-result-3 chart-row" data-hovertracklabel="Song Hover-' +
+((__t = ( rows[ix].title )) == null ? '' : __t) +
+'">\n                <div class="search-result__rank chart-row__rank">' +
+((__t = ( (ix + 1) )) == null ? '' : __t) +
+'</div>\n                <div class="search-result__image chart-row__image"';
+ if (rows[ix].title_images && rows[ix].title_images != null) { ;
+__p += ' style="background-image:url(' +
+((__t = ( imageBaseURL )) == null ? '' : __t) +
+'' +
+((__t = ( rows[ix].title_images.sizes.original.Name )) == null ? '' : __t) +
+');"';
+ } ;
+__p += '></div>\n                <div class="search-result__details chart-row__title">\n                    <h2 class="search-result__song chart-row__song">' +
+((__t = ( rows[ix].title )) == null ? '' : __t) +
+'</h2>\n                    <h3 class="search-result__artist-name chart-row__artist">\n                    <a class="search-result-artist-link chart-row__link" href="' +
+((__t = ( rows[ix].artist_url )) == null ? '' : __t) +
+'" data-tracklabel="artist ' +
+__e( (ix + 1) ) +
+' ' +
+__e( rows[ix].artist_name ) +
+'">' +
+((__t = ( rows[ix].artist_name )) == null ? '' : __t) +
+'</a>\n                    </h3>\n                </div>\n            </article>\n        </div>\n    ';
+ } else { ;
+__p += '\n        <article class="search-result search-result-' +
+((__t = ( (ix + 1) )) == null ? '' : __t) +
+' search-results-4up chart-row" data-hovertracklabel="Song Hover-' +
+((__t = ( rows[ix].title )) == null ? '' : __t) +
+'">\n            <div class="search-result__rank chart-row__rank">' +
+((__t = ( (ix + 1) )) == null ? '' : __t) +
+'</div>\n            <div class="search-result__image chart-row__image"';
+ if (rows[ix].title_images && rows[ix].title_images != null) { ;
+__p += ' style="background-image:url(' +
+((__t = ( imageBaseURL )) == null ? '' : __t) +
+'' +
+((__t = ( rows[ix].title_images.sizes.original.Name )) == null ? '' : __t) +
+');"';
+ } ;
+__p += '></div>\n            <div class="search-result__details chart-row__title">\n                <h2 class="search-result__song chart-row__song">' +
+((__t = ( rows[ix].title )) == null ? '' : __t) +
+'</h2>\n                <h3 class="search-result__artist-name chart-row__artist">\n                    <a class="search-result-artist-link chart-row__link" href="' +
+((__t = ( rows[ix].artist_url )) == null ? '' : __t) +
+'" data-tracklabel="artist ' +
+__e( (ix + 1) ) +
+' ' +
+__e( rows[ix].artist_name ) +
+'">' +
+((__t = ( rows[ix].artist_name )) == null ? '' : __t) +
+'</a>\n                </h3>\n            </div>\n        </article>\n    ';
+ } ;
+__p += '\n';
+ } ;
+__p += '\n<a class="search-result__page-link" href="' +
+((__t = ( archiveURL )) == null ? '' : __t) +
+'/' +
+((__t = ( date )) == null ? '' : __t) +
+'" data-tracklabel="view the full chart">View the Full Chart</a>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["chart/twi_birthday"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ for (var ix = 0; ix < rows.length; ix++) { ;
+__p += '\n<div class="twi-result info-module__section">\n    <div class="twi-result__rank info-module__rank">' +
+((__t = ( (ix + 1) )) == null ? '' : __t) +
+'</div>\n    <div class="info-module__image"';
+
+    if (typeof rows[ix].title_images != undefined
+    && rows[ix].title_images != null
+    && typeof rows[ix].title_images.sizes.original != undefined
+    && typeof rows[ix].title_images.sizes.original.Name != undefined) {
+        ;
+__p += ' style="background-image:url(' +
+((__t = ( rows[ix].title_images.sizes.original.Name )) == null ? '' : __t) +
+');"';
+
+    } ;
+__p += '></div>\n    <div class="info-module__details">\n        <h2 class="info-module__song">' +
+((__t = ( rows[ix].title )) == null ? '' : __t) +
+'</h2>\n        <h3 class="info-module__artist">' +
+((__t = ( rows[ix].artist_name )) == null ? '' : __t) +
+'</h3>\n    </div>\n</div>\n';
+ } ;
+__p += '\n<h2 class="twi-result__chart-link"><a href="' +
+((__t = ( canonical )) == null ? '' : __t) +
+'">View the Chart <i class="twi-result__icon fa fa-angle-right"></i></a></h2>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["chart/twi"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<div class="twi-result';
+ if (featured_content) { ;
+__p += ' has-related-content';
+ } ;
+__p += '">\n    <div class="info-module__rank">1</div>\n    <div class="info-module__image"';
+ if (row1.image) { ;
+__p += ' style="background-image:url(' +
+((__t = ( row1.image )) == null ? '' : __t) +
+')"';
+ } ;
+__p += '></div>\n    <div class="info-module__details">\n        <h2 class="info-module__song">' +
+((__t = ( row1.title )) == null ? '' : __t) +
+'</h2>\n        <h3 class="info-module__artist">' +
+((__t = ( row1.artist_name )) == null ? '' : __t) +
+'</h3>\n    </div>\n</div>\n';
+ if (featured_content) { ;
+__p += '\n<div class="related-content-item" >\n    <div class="related-content-item-inner">\n        <a href="/' +
+((__t = ( featured_content.path_alias )) == null ? '' : __t) +
+'" data-tracklabel="Media Click">\n            <img src="' +
+((__t = ( featured_content.ss_bb_image_uri )) == null ? '' : __t) +
+'">\n            <div class="related-content-item-info">\n                <h4>' +
+((__t = ( featured_content.bundle_name )) == null ? '' : __t) +
+'</h4>\n                <h2>' +
+((__t = ( featured_content.label )) == null ? '' : __t) +
+'</h2>\n            </div>\n        </a>\n    </div>\n</div>\n';
+ } ;
+__p += '\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["homepage/videoPlayer"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ if( PGM.debug.getData('player') ) { brightcovePlayer = PGM.debug.getData('player') } ;
+__p += '\n<div class="large-video__main">\n    <div class="large-video__player" data-videoID="' +
+((__t = ( currentVideo.videoId )) == null ? '' : __t) +
+'">\n        <video\n            data-account="' +
+((__t = ( brightcoveAccount )) == null ? '' : __t) +
+'"\n            data-player="' +
+((__t = ( brightcovePlayer )) == null ? '' : __t) +
+'"\n            data-embed="default"\n            data-video-id="' +
+((__t = ( currentVideo.videoId )) == null ? '' : __t) +
+'"\n            poster="' +
+((__t = ( currentVideo.image_path )) == null ? '' : __t) +
+'"\n            class="video-js" controls>\n        </video>\n        <script src="//players.brightcove.net/' +
+((__t = ( brightcoveAccount )) == null ? '' : __t) +
+'/' +
+((__t = ( brightcovePlayer )) == null ? '' : __t) +
+'_default/index.min.js"></script>\n    </div>\n    <div class="large-video__next" data-videoID="' +
+((__t = ( nextVideo.videoId )) == null ? '' : __t) +
+'">\n        <div class="large-video__next-background" style="background-image: url(' +
+((__t = ( nextVideo.image_path )) == null ? '' : __t) +
+')"></div>\n        <div class="large-video__next-body">\n            <div class="large-video__next-label">NEXT VIDEO</div>\n            <h3 class="large-video__next-title">' +
+((__t = ( nextVideo.title )) == null ? '' : __t) +
+'</h3>\n            <div class="large-video__buttons">\n                <button class="large-video__button--previous"></button>\n                <button class="large-video__button--next"></button>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class="large-video__body">\n    <h3 class="large-video__title">' +
+((__t = ( currentVideo.title )) == null ? '' : __t) +
+'</h3>\n    <p class="large-video__deck">' +
+((__t = ( currentVideo.deck )) == null ? '' : __t) +
+'</p>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["hybrid_player/mainView"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<div class="hybrid-player__header">\n    <h2 class="flap-headline">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h2>\n</div>\n';
+
+}
+return __p
+};
+
+this["PGM"]["JST"]["voting/voteView"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+
+var options = [
+    { value: 'one', label: '1', count: one },
+    { value: 'down', label: '<i class="fa fa-arrow-down"></i>', count: down },
+    { value: 'up', label: '<i class="fa fa-arrow-up"></i>', count: up }
+];
+;
+__p += '\n<form class="ye-chart__vote">\n    ';
+ options.forEach(function(option) { ;
+__p += '\n        <div class="ye-chart__vote-group">\n            <input id="chart-vote-' +
+((__t = ( index )) == null ? '' : __t) +
+'-' +
+((__t = ( option.value )) == null ? '' : __t) +
+'" class="ye-chart__vote-input" name="chart-vote-' +
+((__t = ( index )) == null ? '' : __t) +
+'-selection" type="radio" value="' +
+((__t = ( option.value )) == null ? '' : __t) +
+'">\n            <label class="ye-chart__vote-button ye-chart__vote-button--' +
+((__t = ( option.value )) == null ? '' : __t) +
+'" for="chart-vote-' +
+((__t = ( index )) == null ? '' : __t) +
+'-' +
+((__t = ( option.value )) == null ? '' : __t) +
+'">' +
+((__t = ( option.label )) == null ? '' : __t) +
+'</label>\n            <span class="ye-chart__vote-label ye-chart__vote-label--' +
+((__t = ( option.value )) == null ? '' : __t) +
+'">' +
+((__t = ( option.count )) == null ? '' : __t) +
+'</span>\n        </div>\n    ';
+ }); ;
+__p += '\n    <div class="ye-chart__vote-group">\n        <div class="ye-chart__vote-tooltip-wrapper">\n            About\n            <div class="ye-chart__vote-info-tooltip">\n                Vote on this ' +
+((__t = ( rowType.toLowerCase() )) == null ? '' : __t) +
+'&rsquo;s rank. Should it be higher, lower, or #1?\n            </div>\n        </div>\n    </div>\n</form>\n';
+
+}
+return __p
+};

@@ -1,0 +1,35 @@
+SWA.mediaGallery={};
+SWA.mediaGallery.gotoYoutubePlayer="To load video, press enter and navigate to Youtube video player.";
+SWA.mediaGallery.returnYoutubeId=function(a){var d=a.lastIndexOf("v=")+2;
+var c=a.length;
+if(a.indexOf("&")!=-1){c=a.indexOf("&")
+}var b=a.substring(d,c);
+return b
+};
+SWA.mediaGallery.videoObject=function(b){var a="//www.youtube.com/embed/"+b+"?hl=en&rel=0";
+return a
+};
+$(document).ready(function(){if($("#gallery_tabs").size()){$("#gallery_tabs").tabs()
+}if($("#media_gallery_photos").size()){$("#media_gallery_photos .gallery_thumbs_container .gallery_thumb_item a").click(function(){$("#media_gallery_photos .main_gallery_container img").attr("src",$(this).attr("href")).hide();
+$("#media_gallery_photos .main_gallery_container").addClass("imageLoading");
+$(this).parent().css("display","none");
+$("#media_gallery_photos .gallery_thumbs_container .gallery_thumb_item").not($(this).parent()).css("display","block")
+});
+$("#media_gallery_photos .main_gallery_container img").load(function(){$("#media_gallery_photos .main_gallery_container").removeClass("imageLoading");
+$("#media_gallery_photos .main_gallery_container img").show()
+})
+}if($("#media_gallery_videos").size()&&$("#media_gallery_videos .gallery_thumbs_container .gallery_thumb_item").size()){var b=$("#media_gallery_videos .gallery_thumbs_container .gallery_thumb_item:first");
+var c=$("#media_gallery_videos li a");
+var a=$("#js-gallery-video-iframe");
+$.each(c,function(d,g){var f;
+var e;
+e=d+1;
+f="Video "+e+" of "+c.length+". "+SWA.mediaGallery.gotoYoutubePlayer;
+$(g).attr("aria-describedby","gallery-image-"+e).parent("li").append('<div class="screenreader-only" aria-hidden="true" id="gallery-image-'+e+'">'+f+"</div>")
+});
+$("#swa_module_media_gallery .js-legend").html($("div.artists-on-the-fly h2").html()+" Video Gallery");
+a.attr("src",SWA.mediaGallery.videoObject(SWA.mediaGallery.returnYoutubeId(b.find("a").attr("href"))));
+$("#media_gallery_videos .gallery_thumbs_container .gallery_thumb_item a").click(function(){a.attr("src",SWA.mediaGallery.videoObject(SWA.mediaGallery.returnYoutubeId($(this).attr("href"))));
+return false
+})
+}});

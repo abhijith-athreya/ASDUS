@@ -1,0 +1,35 @@
+/** this extends the autocomplete plugin of the UI autocomplete widget
+    to add more capabilities with searching */
+// this shouldn't need to be in a .ready i don't think, but it seems like the order! in 
+// main.js isn't being observed?
+require.ready(function() {
+    (function($) {
+        var extensionMethods = {
+            /* flyout performs a search with no argument
+                and then jumps to the element in the list that matches
+                the value in the autocompleted element. */
+            flyout: function() {
+                // perform a search
+                var self = this;
+                self.search("");
+    
+                var search_val = $(self.element).attr("value");
+
+                if (search_val) {
+                    // adjust scrolltop so that our value is at the top of the displayed search results.
+                    // is it safe to assume that there is only one autocomplete list visible at a time?
+                    self.widget().find("li > a").each(function() {
+                        if ($(this).text() == search_val) {
+                            // this extra scrolltop(0) is here because IE7 was giving us the wrong answer for top otherwise...
+                            $(".ui-autocomplete:visible").scrollTop(0).scrollTop($(this).position().top);
+                        }
+                    });
+                }
+    
+            }
+        };
+    
+        $.extend(true, $.ui.autocomplete.prototype, extensionMethods);
+    })(jQuery);
+});
+

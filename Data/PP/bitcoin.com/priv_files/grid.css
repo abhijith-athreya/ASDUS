@@ -1,0 +1,118 @@
+/* #Base 1200 Grid
+================================================== */
+body							{ min-width: 960px;}
+body.admin-bar					{ position:relative;}
+
+#Wrapper 						{ max-width: 1240px; margin: 0px auto; overflow:hidden;}
+
+.layout-boxed					{ padding: 0px 0;}
+.layout-full-width 				{ padding: 0; }
+.layout-full-width #Wrapper 	{ max-width: 100% !important; width: 100% !important; margin: 0 !important; }
+
+/* #Content
+=============================== */
+
+#Content 						{ width: 100%; }
+body:not(.template-slider) #Content { padding-top: 30px; }
+
+.section						{ position: relative; }
+
+.section_wrapper,
+.container						{ max-width: 1200px; margin:0 auto; position:relative;}
+
+.section.full-width .section_wrapper { max-width: 100% !important;}
+
+.section_wrapper:after,
+.container:after				{ clear: both; content: " "; display: block; height: 0; visibility: hidden;}
+
+.column, .columns				{ float: left; margin:0 1% 40px;}
+.column.column_divider,
+.column-margin-0px .column		{ margin-bottom: 0;}
+.column-margin-10px .column		{ margin-bottom: 10px;}
+.column-margin-20px .column		{ margin-bottom: 20px;}
+.column-margin-30px .column		{ margin-bottom: 30px;}
+.column-margin-40px .column		{ margin-bottom: 40px;}
+.column-margin-50px .column		{ margin-bottom: 50px;}
+
+.equal-height .column .column_attr { height:100%;}
+
+.the_content_wrapper			{ margin: 0 1%;}
+.column_content .the_content_wrapper { margin: 0;}
+
+.column_attr.align_left			{ text-align: left;}
+.column_attr.align_right		{ text-align: right;}
+.column_attr.align_center		{ text-align: center;}
+.column_attr.align_justify		{ text-align: justify;}
+
+.extra_content .the_content_wrapper { margin: 0 1%;}
+.extra_content .has_content .the_content_wrapper,
+.extra_content .category_description .the_content_wrapper { margin-bottom: 40px;}
+
+
+/* .with_aside */
+.with_aside .content_wrapper	{ max-width: 1200px; margin: 0 auto;}
+
+.with_aside .sections_group		{ width: 75%; float:left;}
+
+.with_aside .section_wrapper	{ width: 100%;}
+
+.with_aside .four.columns		{ float: right;}
+
+.aside_left .sections_group		{ float: right;}
+.aside_left .four.columns		{ float: left;}
+
+/* both sidebars | .aside_both */
+.aside_both .sections_group		{ width: 60%; margin-left:20%;}
+.aside_both .sidebar.columns	{ width: 18%; }
+.aside_both .sidebar-1			{ float: left !important; margin-left:-79%; }
+
+
+/* sidebars for sections */
+.right-sidebar .items_group		{ width: 75%; float:left;}
+.right-sidebar .four.columns	{ float: right;}
+
+.left-sidebar .items_group		{ width: 75%; float:right;}
+.left-sidebar .four.columns		{ float: left;}
+
+
+/* #Base Grid
+=============================== */
+
+.one-sixth.column				{ width: 14.666%; }		/* 1/6 */
+.one-fifth.column				{ width: 18%; }			/* 1/5 */
+.four.columns,
+.one-fourth.column				{ width: 23%; }			/* 1/4 */
+.one-third.column				{ width: 31.333%; }		/* 1/3 */
+.one-second.column				{ width: 48%; }			/* 1/2 */
+.two-third.column				{ width: 64.666%; }		/* 2/3 */
+.three-fourth.column			{ width: 73%; }			/* 3/4 */
+.one.column						{ width: 98%; }			/* 1/1 */
+
+.section.full-width .one.column { width:100%; margin: 0 !important; }
+
+
+/* without horizontal margin */
+.no-margin-h .column				{ margin-left:0; margin-right:0; }
+.no-margin-h .one-sixth.column		{ width: 16.666%; }		/* 1/6 */
+.no-margin-h .one-fifth.column		{ width: 20%; }			/* 1/5 */
+.no-margin-h .one-fourth.column		{ width: 25%; }			/* 1/4 */
+.no-margin-h .one-third.column		{ width: 33.333%; }		/* 1/3 */
+.no-margin-h .one-second.column		{ width: 50%; }			/* 1/2 */
+.no-margin-h .two-third.column		{ width: 66.666%; }		/* 2/3 */
+.no-margin-h .three-fourth.column	{ width: 75%; }			/* 3/4 */
+.no-margin-h .one.column			{ width: 100%; }		/* 1/1 */
+
+
+/* #Clearing
+================================================== */
+
+/* Self Clearing Goodness */
+.container:after { content: "\0020"; display: block; height: 0; clear: both; visibility: hidden; }
+
+/* Use clearfix class on parent to clear nested columns, or wrap each row of columns in a <div class="row"> */
+.clearfix:before, .clearfix:after, .row:before, .row:after { content: '\0020'; display: block; overflow: hidden; visibility: hidden; width: 0; height: 0; }
+.row:after, .clearfix:after { clear: both; }
+.row, .clearfix { zoom: 1; }
+
+/* You can also use a <br class="clear" /> to clear columns */
+.clear { clear: both; display: block; overflow: hidden; visibility: hidden; width: 0; height: 0;}

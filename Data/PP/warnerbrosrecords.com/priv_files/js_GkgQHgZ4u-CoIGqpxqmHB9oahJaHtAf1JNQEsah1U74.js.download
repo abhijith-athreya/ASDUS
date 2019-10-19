@@ -1,0 +1,4464 @@
+/*
+*   JavaScript interface for the SoundCloud Player widget
+*   Author: Matas Petrikas, matas@soundcloud.com
+*   Copyright (c) 2009  SoundCloud Ltd.
+*   Licensed under the MIT license:
+*   http://www.opensource.org/licenses/mit-license.php
+*/
+(function(){
+  var isIE = (/msie/i).test(navigator.userAgent) && !(/opera/i).test(navigator.userAgent);
+  
+  var soundcloud = window.soundcloud = {
+    version: "0.1",
+    debug: false,
+    _listeners: [],
+    // re-dispatches widget events in the DOM, using JS library support, the events also should bubble up the DOM
+    _redispatch: function(eventType, flashId, data) {
+      var playerNode,
+          lsnrs  = this._listeners[eventType] || [],
+          // construct the custom eventType  e.g. 'soundcloud:onPlayerReady'
+          customEventType = 'soundcloud:' + eventType;
+
+      try{
+        // find the flash player, might throw an exception
+        playerNode = this.getPlayer(flashId);
+      }catch(e){
+        if(this.debug && window.console){
+          console.error('unable to dispatch widget event ' + eventType + ' for the widget id ' + flashId, data, e);
+        }
+        return;
+      }
+      // re-dispatch SoundCloud events up in the DOM
+      if(window.jQuery){
+        // if jQuery is available, trigger the custom event
+        jQuery(playerNode).trigger(customEventType, [data]);
+      }else if(window.Prototype){
+        // if Prototype.js is available, fire the custom event
+        $(playerNode).fire(customEventType, data);
+      }else{
+        // TODO add more JS libraries that support custom DOM events
+      }
+      // if there are any listeners registered to this event, trigger them all
+      for(var i = 0, l = lsnrs.length; i < l; i += 1) {
+        lsnrs[i].apply(playerNode, [playerNode, data]);
+      }
+      // log the events in debug mode
+      if(this.debug && window.console){
+        console.log(customEventType, eventType, flashId, data);
+      }
+
+    },
+    // you can add multiple listeners to a certain event
+    // e.g. soundcloud.addEventListener('onPlayerReady', myFunctionOne);
+    //      soundcloud.addEventListener('onPlayerReady', myFunctionTwo);
+    addEventListener: function(eventType, callback) {
+      if(!this._listeners[eventType]){
+        this._listeners[eventType] = [];
+      }
+      this._listeners[eventType].push(callback);
+    },
+    // you can also remove the function listener if e.g you want to trigger it only once
+    // soundcloud.removeEventListener('onMediaPlay', myFunctionOne);
+    removeEventListener: function(eventType, callback) {
+      var lsnrs = this._listeners[eventType] || [];
+      for(var i = 0, l = lsnrs.length; i < l; i += 1) {
+        if(lsnrs[i] === callback){
+          lsnrs.splice(i, 1);
+        }
+      }
+    },
+    // get widget node based on its id (if object tag) or name (if embed tag)
+    // if you're using SWFObject or other dynamic Flash generators, please make sure that you set the id parameter
+    //  only if the DOM has an id/name it's possible to call player's methods.
+    // Important!: because of the bug in Opera browser, the Flash can't get its own id
+    // so the generator should set it additionally through flashvars parameter 'object_id'
+    getPlayer: function(id){
+      var flash;
+      try{
+        if(!id){
+          throw "The SoundCloud Widget DOM object needs an id atribute, please refer to SoundCloud Widget API documentation.";
+        }
+        flash = isIE ? window[id] : document[id];
+        if(flash){
+          if(flash.api_getFlashId){
+            return flash;
+          }else{
+            throw "The SoundCloud Widget External Interface is not accessible. Check that allowscriptaccess is set to 'always' in embed code";
+          }
+        }else{
+          throw "The SoundCloud Widget with an id " + id + " couldn't be found";
+        }
+      }catch(e){
+        if (console && console.error) {
+         console.error(e);
+        }
+        throw e;
+      }
+    },
+    // fired when widget has loaded its data and is ready to accept calls from outside
+    // the widget will call these functions only if in it's flashvars there's a parameter enable_api=true
+    // @flashId: the widget id, basically the Flash node should be accessible to JS with soundcloud.getPlayer(flashId)
+    // @data: an object containing .mediaUri (eg. 'http://api.soundcloud.com/tracks/49931') .mediaId (e.g. '4532')
+    // in buffering events data contains also .percent = (e.g. '99')
+    onPlayerReady: function(flashId, data) {
+      this._redispatch('onPlayerReady', flashId, data);
+    },
+    // fired when widget starts playing current track (fired only once per track)
+    onMediaStart : function(flashId, data) {
+      this._redispatch('onMediaStart', flashId, data);
+    },
+    // fired when the track/playlist has finished playing
+    onMediaEnd : function(flashId, data) {
+      this._redispatch('onMediaEnd', flashId, data);
+    },
+    // fired when widget starts playing current track (fired on every play, seek)
+    onMediaPlay : function(flashId, data) {
+      this._redispatch('onMediaPlay', flashId, data);
+    },
+    // fired when track was paused
+    onMediaPause : function(flashId, data) {
+      this._redispatch('onMediaPause', flashId, data);
+    },
+    // fired when the widget is still buffering, means you can't seek in the track fully yet
+    onMediaBuffering : function(flashId, data) {
+      this._redispatch('onMediaBuffering', flashId, data);
+    },
+    // fired when the user seeks in the track
+    onMediaSeek : function(flashId, data) {
+      this._redispatch('onMediaSeek', flashId, data);
+    },
+    // fired when the widget is done buffering and the whole track length is seekable
+    onMediaDoneBuffering : function(flashId, data) {
+      this._redispatch('onMediaDoneBuffering', flashId, data);
+    },
+    // fired when the widget can't get the requested data from the server (the resource is removed, hidden, etc.)
+    onPlayerError : function(flashId, data) {
+      this._redispatch('onPlayerError', flashId, data);
+    }
+  };
+  
+})();
+;
+/*
+ *   SoundCloud Custom Player jQuery Plugin
+ *   Author: Matas Petrikas, matas@soundcloud.com
+ *   Copyright (c) 2009  SoundCloud Ltd.
+ *   Licensed under the MIT license:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *
+ *   Usage:
+ *   <a href="http://soundcloud.com/matas/hobnotropic" class="sc-player">My new dub track</a>
+ *   The link will be automatically replaced by the HTML based player
+ */
+(function($) {
+	// Convert milliseconds into Hours (h), Minutes (m), and Seconds (s)
+	var timecode = function(ms) {
+		var hms = function(ms) {
+			return {
+				h : Math.floor(ms / (60 * 60 * 1000)),
+				m : Math.floor((ms / 60000) % 60),
+				s : Math.floor((ms / 1000) % 60)
+			};
+		}(ms), tc = [];
+		// Timecode array to be joined with '.'
+
+		if (hms.h > 0) {
+			tc.push(hms.h);
+		}
+
+		tc.push((hms.m < 10 && hms.h > 0 ? "0" + hms.m : hms.m));
+		tc.push((hms.s < 10 ? "0" + hms.s : hms.s));
+
+		return tc.join('.');
+	};
+	// shuffle the array
+	var shuffle = function(arr) {
+		arr.sort(function() {
+			return 1 - Math.floor(Math.random() * 3);
+		});
+		return arr;
+	};
+
+	var debug = true, useSandBox = false, $doc = $(document), log = function(args) {
+		try {
+			if (debug && window.console && window.console.log) {
+				window.console.log.apply(window.console, arguments);
+			}
+		} catch (e) {
+			// no console available
+		}
+	}, domain = useSandBox ? 'sandbox-soundcloud.com' : 'soundcloud.com', secureDocument = (document.location.protocol === 'https:'),
+	// convert a SoundCloud resource URL to an API URL
+	scApiUrl = function(url, apiKey) {
+		var resolver = (secureDocument || (/^https/i).test(url) ? 'https' : 'http') + '://api.' + domain + '/resolve?url=', params = 'format=json&consumer_key=' + apiKey + '&callback=?';
+
+		// force the secure url in the secure environment
+		if (secureDocument) {
+			url = url.replace(/^http:/, 'https:');
+		}
+
+		// check if it's already a resolved api url
+		if ((/api\./).test(url)) {
+			return url + '?' + params;
+		} else {
+			return resolver + url + '&' + params;
+		}
+	};
+
+	// TODO Expose the audio engine, so it can be unit-tested
+	var audioEngine = function() {
+		var html5AudioAvailable = function() {
+			var state = false;
+			try {
+				var a = new Audio();
+				state = a.canPlayType && (/maybe|probably/).test(a.canPlayType('audio/mpeg'));
+				// let's enable the html5 audio on selected mobile devices first, unlikely to support Flash
+				// the desktop browsers are still better with Flash, e.g. see the Safari 10.6 bug
+				// comment the following line out, if you want to force the html5 mode
+				//state = state && (/iPad|iphone|mobile|pre\//i).test(navigator.userAgent);
+			} catch(e) {
+				// there's no audio support here sadly
+			}
+			return state;
+		}(), callbacks = {
+			onReady : function() {
+				$doc.trigger('scPlayer:onAudioReady');
+			},
+			onPlay : function() {
+				$doc.trigger('scPlayer:onMediaPlay');
+			},
+			onPause : function() {
+				$doc.trigger('scPlayer:onMediaPause');
+			},
+			onEnd : function() {
+				$doc.trigger('scPlayer:onMediaEnd');
+			},
+			onBuffer : function(percent) {
+				$doc.trigger({
+					type : 'scPlayer:onMediaBuffering',
+					percent : percent
+				});
+			}
+		};
+
+		var html5Driver = function() {
+			var player = new Audio(), onTimeUpdate = function(event) {
+				var obj = event.target, buffer = ((obj.buffered.length && obj.buffered.end(0)) / obj.duration) * 100;
+				// ipad has no progress events implemented yet
+				callbacks.onBuffer(buffer);
+				// anounce if it's finished for the clients without 'ended' events implementation
+				if (obj.currentTime === obj.duration) {
+					callbacks.onEnd();
+				}
+			}, onProgress = function(event) {
+				var obj = event.target, buffer = ((obj.buffered.length && obj.buffered.end(0)) / obj.duration) * 100;
+				callbacks.onBuffer(buffer);
+			};
+
+			$('<div class="sc-player-engine-container"></div>').appendTo(document.body).append(player);
+
+			// prepare the listeners
+			player.addEventListener('play', callbacks.onPlay, false);
+			player.addEventListener('pause', callbacks.onPause, false);
+			//player.addEventListener('ended', callbacks.onEnd, false);
+			player.addEventListener('timeupdate', onTimeUpdate, false);
+			player.addEventListener('progress', onProgress, false);
+
+			return {
+				load : function(track, apiKey) {
+					player.pause();
+					player.src = track.stream_url + (/\?/.test(track.stream_url) ? '&' : '?') + 'consumer_key=' + apiKey;
+					player.load();
+					player.play();
+				},
+				play : function() {
+					player.play();
+				},
+				pause : function() {
+					player.pause();
+				},
+				stop : function() {
+				  if (player.currentTime) {
+					player.currentTime = 0;
+					player.pause();
+				  }
+				},
+				seek : function(relative) {
+					player.currentTime = player.duration * relative;
+					player.play();
+				},
+				getDuration : function() {
+					return player.duration * 1000;
+				},
+				getPosition : function() {
+					return player.currentTime * 1000;
+				},
+				setVolume : function(val) {
+					player.volume = val / 100;
+				}
+			};
+
+		};
+
+		var flashDriver = function() {
+			var engineId = 'scPlayerEngine', player, flashHtml = function(url) {
+				var swf = ( secureDocument ? 'https' : 'http') + '://player.' + domain + '/player.swf?url=' + url + '&amp;enable_api=true&amp;player_type=engine&amp;object_id=' + engineId;
+				if ($.browser.msie) {
+					return '<object height="100%" width="100%" id="' + engineId + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" data="' + swf + '">' + '<param name="movie" value="' + swf + '" />' + '<param name="allowscriptaccess" value="always" />' + '</object>';
+				} else {
+					return '<object height="100%" width="100%" id="' + engineId + '">' + '<embed allowscriptaccess="always" height="100%" width="100%" src="' + swf + '" type="application/x-shockwave-flash" name="' + engineId + '" />' + '</object>';
+				}
+			};
+
+			// listen to audio engine events
+			// when the loaded track is ready to play
+			soundcloud.addEventListener('onPlayerReady', function(flashId, data) {
+				player = soundcloud.getPlayer(engineId);
+				callbacks.onReady();
+			});
+
+			// when the loaded track finished playing
+			soundcloud.addEventListener('onMediaEnd', callbacks.onEnd);
+
+			// when the loaded track is still buffering
+			soundcloud.addEventListener('onMediaBuffering', function(flashId, data) {
+				callbacks.onBuffer(data.percent);
+			});
+
+			// when the loaded track started to play
+			soundcloud.addEventListener('onMediaPlay', callbacks.onPlay);
+
+			// when the loaded track is was paused
+			soundcloud.addEventListener('onMediaPause', callbacks.onPause);
+
+			return {
+				load : function(track) {
+					var url = track.uri;
+					if (player) {
+						player.api_load(url);
+						//$('.sc-player-engine-container').html(flashHtml(url));
+					} else {
+						// create a container for the flash engine (IE needs this to operate properly)
+						$('<div class="sc-player-engine-container"></div>').appendTo(document.body).html(flashHtml(url));
+					}
+				},
+				play : function() {
+					player && player.api_play();
+				},
+				pause : function() {
+					player && player.api_pause();
+				},
+				stop : function() {
+					player && player.api_stop();
+				},
+				seek : function(relative) {
+					player && player.api_seekTo((player.api_getTrackDuration() * relative));
+				},
+				getDuration : function() {
+					return player && player.api_getTrackDuration && player.api_getTrackDuration() * 1000;
+				},
+				getPosition : function() {
+					return player && player.api_getTrackPosition && player.api_getTrackPosition() * 1000;
+				},
+				setVolume : function(val) {
+					if (player && player.api_setVolume) {
+						player.api_setVolume(val);
+					}
+				}
+			};
+		};
+
+		return html5AudioAvailable ? html5Driver() : flashDriver();
+
+	}();
+
+	var apiKey, didAutoPlay = false, players = [], updates = {}, currentUrl, loadTracksData = function($player, links, key) {
+		var index = 0, playerObj = {
+			node : $player,
+			tracks : []
+		}, loadUrl = function(link) {
+			var apiUrl = scApiUrl(link.url, apiKey);
+			$.getJSON(apiUrl, function(data) {
+				// log('data loaded', link.url, data);
+				index += 1;
+				if (data.tracks) {
+					// log('data.tracks', data.tracks);
+					playerObj.tracks = playerObj.tracks.concat(data.tracks);
+				} else if (data.duration) {
+					// a secret link fix, till the SC API returns permalink with secret on secret response
+					data.permalink_url = link.url;
+					// if track, add to player
+					playerObj.tracks.push(data);
+				} else if (data.creator) {
+					// it's a group!
+					links.push({
+						url : data.uri + '/tracks'
+					});
+				} else if (data.username) {
+					// if user, get his tracks or favorites
+					if (/favorites/.test(link.url)) {
+						links.push({
+							url : data.uri + '/favorites'
+						});
+					} else {
+						links.push({
+							url : data.uri + '/tracks'
+						});
+					}
+				} else if ($.isArray(data)) {
+					playerObj.tracks = playerObj.tracks.concat(data);
+				}
+				if (links[index]) {
+					// if there are more track to load, get them from the api
+					loadUrl(links[index]);
+				} else {
+					// if loading finishes, anounce it to the GUI
+					playerObj.node.trigger({
+						type : 'onTrackDataLoaded',
+						playerObj : playerObj,
+						url : apiUrl
+					});
+				}
+			});
+		};
+		// update current API key
+		apiKey = key;
+		// update the players queue
+		players.push(playerObj);
+		// load first tracks
+		loadUrl(links[index]);
+	}, artworkImage = function(track, usePlaceholder) {
+		if (usePlaceholder) {
+			return '<div class="sc-loading-artwork">Loading Artwork</div>';
+		} else if (track.artwork_url) {
+			return '<img src="' + track.artwork_url.replace('-large', '-t300x300') + '"/>';
+		} else {
+			return '<img src="http://warnerbrosrecords.wmg-gardens.com/sites/g/files/g2000003386/f/201311/wbr%20avatar.jpg"/>';
+		}
+	}, updateArtistImage = function(artistImageUrl) {
+		$artistImageContainer = $('#block-views-music-block-3 .view-header .now-playing');
+		var artistImage = '<img src="' + artistImageUrl + '"/>';
+		$artistImageContainer.html(artistImage);
+
+	}, updateBuyLinks = function($buyLinks) {
+		$buyLinksContainer = $('.buy-album');
+		var buyLinks = '<a target="_blank" href="' + $buyLinks + '">BUY</a>';
+		$buyLinksContainer.html(buyLinks);
+	}, updateTrackInfo = function($player, track) {
+		// update the current track info in the player
+		// log('updateTrackInfo', track);
+		$('.sc-info', $player).each(function(index) {
+			$('h3', this).html('<a href="' + track.permalink_url + '">' + track.title + '</a>');
+			$('h4', this).html('by <a href="' + track.user.permalink_url + '">' + track.user.username + '</a>');
+			$('p', this).html(track.description || 'no Description');
+		});
+		// update the artwork
+		$('.sc-artwork-list li', $player).each(function(index) {
+			var $item = $(this), itemTrack = $item.data('sc-track');
+
+			if (itemTrack === track) {
+				// show track artwork
+				$item.addClass('active').find('.sc-loading-artwork').each(function(index) {
+					// if the image isn't loaded yet, do it now
+					$(this).removeClass('sc-loading-artwork').html(artworkImage(track, false));
+				});
+
+			} else {
+				// reset other artworks
+				$item.removeClass('active');
+			}
+		});
+		// update the track duration in the progress bar
+		$('.sc-duration', $player).html(timecode(track.duration));
+		// put the waveform into the progress bar
+		$('.sc-waveform-container', $player).html('<img src="' + track.waveform_url + '" />');
+
+		$player.trigger('onPlayerTrackSwitch.scPlayer', [track]);
+	}, play = function(track) {
+		var url = track.permalink_url;
+		if (currentUrl === url) {
+			// log('will play');
+			audioEngine.play();
+		} else {
+			currentUrl = url;
+			// log('will load', url);
+			audioEngine.load(track, apiKey);
+		}
+	}, getPlayerData = function(node) {
+		return players[$(node).data('sc-player').id];
+	}, updatePlayStatus = function(player, status) {
+		if (status) {
+			// reset all other players playing status
+			$('div.sc-player.playing').removeClass('playing');
+		}
+		$(player).toggleClass('playing', status).trigger(( status ? 'onPlayerPlay' : 'onPlayerPause'));
+	}, onPlay = function(player, id) {
+		var track = getPlayerData(player).tracks[id || 0];
+		updateTrackInfo(player, track);
+		// cache the references to most updated DOM nodes in the progress bar
+		updates = {
+			$buffer : $('.sc-buffer', player),
+			$played : $('.sc-played', player),
+			position : $('.sc-position', player)[0]
+		};
+		updatePlayStatus(player, true);
+		play(track);
+		$('a.sc-play').hide();
+		$('a.sc-pause').show();
+	}, onPause = function(player) {
+		updatePlayStatus(player, false);
+		audioEngine.pause();
+		$('a.sc-play').show();
+		$('a.sc-pause').hide();
+	}, onFinish = function() {
+		var $player = updates.$played.closest('.sc-player'), $nextItem;
+		// update the scrubber width
+		updates.$played.css('width', '0%');
+		// show the position in the track position counter
+		updates.position.innerHTML = timecode(0);
+		// reset the player state
+		updatePlayStatus($player, false);
+		// stop the audio
+		audioEngine.stop();
+		$player.trigger('onPlayerTrackFinish');
+	}, onSeek = function(player, relative) {
+		audioEngine.seek(relative);
+	}, onSkip = function(player) {
+		var $player = $(player);
+		// continue playing through all players
+		log('track finished get the next one');
+		$nextItem = $('.sc-trackslist li.active', $player).next('li');
+		// try to find the next track in other player
+		if (!$nextItem.length) {
+			$nextItem = $player.nextAll('div.sc-player:first').find('.sc-trackslist li.active');
+		}
+		$nextItem.click();
+	}, soundVolume = function() {
+		var vol = 80, cooks = document.cookie.split(';'), volRx = new RegExp('scPlayer_volume=(\\d+)');
+		for (var i in cooks) {
+			if (volRx.test(cooks[i])) {
+				vol = parseInt(cooks[i].match(volRx)[1], 10);
+				break;
+			}
+		}
+		return vol;
+	}(), onVolume = function(volume) {
+		var vol = Math.floor(volume);
+		// save the volume in the cookie
+		var date = new Date();
+		date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
+		soundVolume = vol;
+		document.cookie = ['scPlayer_volume=', vol, '; expires=', date.toUTCString(), '; path="/"'].join('');
+		// update the volume in the engine
+		audioEngine.setVolume(soundVolume);
+	}, positionPoll;
+
+	// listen to audio engine events
+	$doc.bind('scPlayer:onAudioReady', function(event) {
+		log('onPlayerReady: audio engine is ready');
+		audioEngine.play();
+		// set initial volume
+		onVolume(soundVolume);
+	})
+	// when the loaded track started to play
+	.bind('scPlayer:onMediaPlay', function(event) {
+		clearInterval(positionPoll);
+		positionPoll = setInterval(function() {
+			var duration = audioEngine.getDuration(), position = audioEngine.getPosition(), relative = (position / duration);
+
+			// update the scrubber width
+			updates.$played.css('width', (100 * relative) + '%');
+			// show the position in the track position counter
+			updates.position.innerHTML = timecode(position);
+			// announce the track position to the DOM
+			$doc.trigger({
+				type : 'onMediaTimeUpdate.scPlayer',
+				duration : duration,
+				position : position,
+				relative : relative
+			});
+		}, 500);
+	})
+	// when the loaded track is was paused
+	.bind('scPlayer:onMediaPause', function(event) {
+		clearInterval(positionPoll);
+		positionPoll = null;
+	})
+	// change the volume
+	.bind('scPlayer:onVolumeChange', function(event) {
+		onVolume(event.volume);
+	}).bind('scPlayer:onMediaEnd', function(event) {
+		onFinish();
+	}).bind('scPlayer:onMediaBuffering', function(event) {
+		updates.$buffer.css('width', event.percent + '%');
+	});
+
+	var imageIndex = 0;
+	var artistImageSourceArray = [];
+	var buyLinksArray = [];
+	var trackTitleArray = [];
+	$('.sc-player li.track-list').each(function() {
+		var artistImageSource = $(this).find('span.artist-image img').attr('src');
+		var $buyLinks = $(this).find('.track-buy-link').attr('data-href');
+		var trackTitles = $(this).find('.sc-player-custom').text();
+		artistImageSourceArray.push(artistImageSource);
+		buyLinksArray.push($buyLinks);
+		trackTitleArray.push(trackTitles);
+	});
+
+	// Generate custom skinnable HTML/CSS/JavaScript based SoundCloud players from links to SoundCloud resources
+	$.scPlayer = function(options, node) {
+		var opts = $.extend({}, $.scPlayer.defaults, options), playerId = players.length, $source = node && $(node), sourceClasses = $source[0].className.replace('sc-player', ''), links = opts.links || $.map($('a.sc-player-custom', $source).add($source.filter('a.sc-player-custom')), function(val) {
+			return {
+				url : val.href,
+				title : val.innerHTML
+			};
+		}), $player = $('<div class="sc-player loading"></div>').data('sc-player', {
+			id : playerId
+		}), $artworks = $('<ol class="sc-artwork-list"></ol>').appendTo($player), $buyAlbum = $('<div class="buy-album"></div>').appendTo($player), $controls = $('<div class="sc-controls"></div>').appendTo($player), $list = $('<ol class="sc-trackslist"></ol>').appendTo($player);
+
+		// add the classes of the source node to the player itself
+		// the players can be indvidually styled this way
+		if (sourceClasses || opts.customClass) {
+			$player.addClass(sourceClasses).addClass(opts.customClass);
+		}
+
+		// adding controls to the player
+		$player.find('.sc-controls').append('<a href="#prev" class="sc-prev">Prev</a>').append('<a href="#play" class="sc-play">Play</a> <a href="#pause" class="sc-pause hidden">Pause</a>').append('<a href="#next" class="sc-next">Next</a>').end().append('<div class="sc-scrubber"></div>').find('.sc-scrubber').append('<div class="sc-volume-slider"><span class="sc-volume-status" style="width:' + soundVolume + '%"></span></div>').append('<div class="sc-time-span"><div class="sc-waveform-container"></div><div class="sc-buffer"></div><div class="sc-played"></div></div>').append('<div class="sc-time-indicators"><span class="sc-position"></span> | <span class="sc-duration"></span></div>');
+
+		// load and parse the track data from SoundCloud API
+		loadTracksData($player, links, opts.apiKey);
+		// init the player GUI, when the tracks data was laoded
+		$player.bind('onTrackDataLoaded.scPlayer', function(event) {
+			// log('onTrackDataLoaded.scPlayer', event.playerObj, playerId, event.target);
+			var tracks = event.playerObj.tracks;
+			// create the playlist
+			$.each(tracks, function(index, track) {
+				var active = index === 0;
+				var trackTitle = trackTitleArray[index];
+				if (trackTitle.length > 40) {
+					trackTitle = trackTitle.substr(0, 40) + ' ...';
+				}
+				// create an item in the playlist
+				$('<li><a href="' + track.permalink_url + '">' + trackTitle + '</a><span class="sc-track-duration">' + timecode(track.duration) + '</span></li>').data('sc-track', {
+					id : index
+				}).toggleClass('active', active).appendTo($list);
+				// create an item in the artwork list
+				$('<li></li>').append(artworkImage(track, index >= opts.loadArtworks)).appendTo($artworks).toggleClass('active', active).data('sc-track', track);
+			});
+			// update the element before rendering it in the DOM
+			$player.each(function() {
+				if ($.isFunction(opts.beforeRender)) {
+					opts.beforeRender.call(this, tracks);
+				}
+			});
+			// set the first track's duration
+			updateArtistImage(artistImageSourceArray[0]);
+			updateBuyLinks(buyLinksArray[0]);
+			$('.sc-duration', $player)[0].innerHTML = timecode(tracks[0].duration);
+			$('.sc-position', $player)[0].innerHTML = timecode(0);
+			// set up the first track info
+			updateTrackInfo($player, tracks[0]);
+
+			// if continous play enabled always skip to the next track after one finishes
+			if (opts.continuePlayback) {
+				$player.bind('onPlayerTrackFinish', function(event) {
+					onSkip($player);
+				});
+			}
+
+			// announce the succesful initialization
+			$player.removeClass('loading').trigger('onPlayerInit');
+
+			// if auto play is enabled and it's the first player, start playing
+			if (opts.autoPlay && !didAutoPlay) {
+				onPlay($player);
+				didAutoPlay = true;
+			}
+		});
+
+		// replace the DOM source (if there's one)
+		$source.each(function(index) {
+			$(this).replaceWith($player);
+		});
+
+		return $player;
+	};
+
+	// stop all players, might be useful, before replacing the player dynamically
+	$.scPlayer.stopAll = function() {
+		$('.sc-player.playing a.sc-pause').click();
+	};
+
+	// destroy all the players and audio engine, useful when reloading part of the page and audio has to stop
+	$.scPlayer.destroy = function() {
+		$('.sc-player, .sc-player-engine-container').remove();
+	};
+
+	// plugin wrapper
+	$.fn.scPlayer = function(options) {
+		// reset the auto play
+		didAutoPlay = false;
+		// create the players
+		this.each(function() {
+			$.scPlayer(options, this);
+		});
+		return this;
+	};
+
+	// default plugin options
+	$.scPlayer.defaults = $.fn.scPlayer.defaults = {
+		customClass : null,
+		// do something with the dom object before you render it, add nodes, get more data from the services etc.
+		beforeRender : function(tracksData) {
+			var $player = $(this);
+		},
+		// initialization, when dom is ready
+		onDomReady : function() {
+			$('a.sc-player-custom, div.sc-player').scPlayer();
+		},
+		autoPlay : false,
+		continuePlayback : true,
+		randomize : false,
+		loadArtworks : 5,
+		// the default Api key should be replaced by your own one
+		// get it here http://soundcloud.com/you/apps/new
+		apiKey : 'd828d7acc8e1f2974ce952708d509db4'
+	};
+
+	// the GUI event bindings
+	//--------------------------------------------------------
+
+	// toggling play/pause
+	$('a.sc-play').live('click', function(event) {
+		$(this).toggleClass('hidden');
+		$('a.sc-pause').toggleClass('hidden');
+		var $list = $(this).closest('.sc-player').find('ol.sc-trackslist');
+		// simulate the click in the tracklist
+		$list.find('li.active').click();
+		return false;
+	});
+
+	// toggling play/pause
+	$('a.sc-pause').live('click', function(event) {
+		$(this).toggleClass('hidden');
+		$('a.sc-play').toggleClass('hidden');
+		var $list = $(this).closest('.sc-player').find('ol.sc-trackslist');
+		// simulate the click in the tracklist
+		$list.find('li.active').click();
+		return false;
+	});
+
+	$('a.sc-prev').live('click', function(event) {
+		//event.preventDefault();
+		l_nCount = $('.sc-trackslist li').length;
+
+		var l_nIndex = 0;
+		$('.sc-trackslist li').each(function() {
+			if ($(this).hasClass('active') && l_nIndex == 0) {
+				$('.sc-trackslist').find('li').eq(l_nCount - 1).find('a').click();
+				return false;
+			} else if ($(this).hasClass('active')) {
+				$('.sc-trackslist').find('li').eq(l_nIndex - 1).find('a').click();
+				return false;
+			}
+			l_nIndex++;
+		});
+		event.preventDefault();
+	});
+
+	$('a.sc-next').live('click', function(event) {
+		//event.preventDefault();
+		l_nCount = $('.sc-trackslist li').length;
+		var l_nIndex = 0;
+		$('.sc-trackslist li').each(function() {
+			if ($(this).hasClass('active') && l_nIndex == l_nCount - 1) {
+				$('.sc-trackslist').find('li').eq(0).find('a').click();
+				return false;
+			} else if ($(this).hasClass('active')) {
+				$('.sc-trackslist').find('li').eq(l_nIndex + 1).find('a').click();
+				return false;
+			}
+			l_nIndex++;
+		});
+		event.preventDefault();
+	});
+
+	// displaying the info panel in the player
+	//$('a.sc-info-toggle, a.sc-info-close').live('click', function(event) {
+	//  var $link = $(this);
+	//  $link.closest('.sc-player')
+	//    .find('.sc-info').toggleClass('active').end()
+	//    .find('a.sc-info-toggle').toggleClass('active');
+	//  return false;
+	//});
+
+	// selecting tracks in the playlist
+	$('.sc-trackslist li').live('click', function(event) {
+		var $track = $(this), $player = $track.closest('.sc-player'), trackId = $track.data('sc-track').id, play = $player.is(':not(.playing)') || $track.is(':not(.active)');
+		updateArtistImage(artistImageSourceArray[trackId]);
+		updateBuyLinks(buyLinksArray[trackId]);
+		if (play) {
+			onPlay($player, trackId);
+		} else {
+			onPause($player);
+		}
+		$track.addClass('active').siblings('li').removeClass('active');
+		$('.artworks li', $player).each(function(index) {
+			$(this).toggleClass('active', index === trackId);
+		});
+		return false;
+		event.preventDefault();
+	});
+
+	var scrub = function(node, xPos) {
+		var $scrubber = $(node).closest('.sc-time-span'), $buffer = $scrubber.find('.sc-buffer'), $available = $scrubber.find('.sc-waveform-container img'), $player = $scrubber.closest('.sc-player'), relative = Math.min($buffer.width(), (xPos - $available.offset().left)) / $available.width();
+		onSeek($player, relative);
+	};
+
+	var onTouchMove = function(ev) {
+		if (ev.targetTouches.length === 1) {
+			scrub(ev.target, ev.targetTouches && ev.targetTouches.length && ev.targetTouches[0].clientX);
+			ev.preventDefault();
+		}
+	};
+
+	// seeking in the loaded track buffer
+	$('.sc-time-span').live('click', function(event) {
+		scrub(this, event.pageX);
+		return false;
+	}).live('touchstart', function(event) {
+		this.addEventListener('touchmove', onTouchMove, false);
+		event.originalEvent.preventDefault();
+	}).live('touchend', function(event) {
+		this.removeEventListener('touchmove', onTouchMove, false);
+		event.originalEvent.preventDefault();
+	});
+
+	// changing volume in the player
+	var startVolumeTracking = function(node, startEvent) {
+		var $node = $(node), originX = $node.offset().left, originWidth = $node.width(), getVolume = function(x) {
+			return Math.floor(((x - originX) / originWidth) * 100);
+		}, update = function(event) {
+			$doc.trigger({
+				type : 'scPlayer:onVolumeChange',
+				volume : getVolume(event.pageX)
+			});
+		};
+		$node.bind('mousemove.sc-player', update);
+		update(startEvent);
+	};
+
+	var stopVolumeTracking = function(node, event) {
+		$(node).unbind('mousemove.sc-player');
+	};
+
+	$('.sc-volume-slider').live('mousedown', function(event) {
+		startVolumeTracking(this, event);
+	}).live('mouseup', function(event) {
+		stopVolumeTracking(this, event);
+	});
+
+	$doc.bind('scPlayer:onVolumeChange', function(event) {
+		$('span.sc-volume-status').css({
+			width : event.volume + '%'
+		});
+	});
+	// -------------------------------------------------------------------
+
+	// the default Auto-Initialization
+	$(function() {
+		if ($.isFunction($.scPlayer.defaults.onDomReady)) {
+			$.scPlayer.defaults.onDomReady();
+			$('.buy-album').hover(function() {
+				$(this).find('ul').toggle();
+			});
+		}
+	});
+
+	$(window).load(function() {
+		var scHeight = $('iframe.video-conatiner').height();
+		$('#block-views-music-block-3 .view-content .sc-player').css('height', scHeight);
+	});
+
+	$(window).resize(function() {
+		var scHeight = $('iframe.video-conatiner').height();
+		$('#block-views-music-block-3 .view-content .sc-player').css('height', scHeight);
+	});
+
+})(jQuery);
+;
+/*
+ *
+ * Global, Helper and Utility functions
+ * version 1
+ */
+/* Miscellaneous Javascript functions */
+jQuery(document).ready(function() {
+	// set active menu links
+	set_active_parent_link();
+	// set section title
+	set_section_title();
+
+	// Comments counter
+	var comments_count = jQuery('.node-comment-counter').text() || 0;
+	var comment_header = jQuery('body .comment-wrapper > h2');
+
+	if ( comment_header.length ) {
+		var $commentWrap = jQuery("<span/>").addClass('comment-icon').append('<span class="point"></span><em>' + comments_count + '</em>');
+		comment_header.html("<span>Comments</span>").prepend($commentWrap);
+		comment_header.addClass("commentcountwrap");
+	} else {
+		var $commentWrap = jQuery("<span/>").addClass('comment-icon').append('<span class="point"></span><em>' + comments_count + '</em> comments');
+		jQuery('body .comment-wrapper').prepend($commentWrap).addClass("commentcountwrap");
+	}
+
+	if ( jQuery('#block-views-albums-block-1').length ) {
+		jQuery('.comment-wrapper').before(jQuery('#block-views-albums-block-1'));
+	}
+
+	if ( jQuery('#block-views-node-block-block-1').length ) {
+		jQuery('.node div.float-overflow').after(jQuery('#block-views-node-block-block-1'));
+	}
+
+	if ( jQuery('#block-views-node-block-block').length ) {
+		jQuery('.node div.float-overflow').after(jQuery('#block-views-node-block-block'));
+	}
+
+	jQuery('.views-field-field-merch-photo, .views-field-nothing-1').hover(function(e) {
+		jQuery(this).parent().find('.views-field-nothing-1 .product-popup').fadeIn();
+	}, function(e) {
+		if ( jQuery(this).parent().find('.views-field-nothing-1 .product-popup').css('opacity') == 1 ) {
+			jQuery(this).parent().find('.views-field-nothing-1 .product-popup').fadeOut();
+		}
+	});
+
+	if ( jQuery('.comment-form input#edit-name').length ) {
+		jQuery('.comment-form input#edit-name').addClass('grey-text');
+		var authorName = jQuery('.comment-form input#edit-name').val();
+		jQuery('.comment-form input#edit-name').bind('focus', function() {
+			if ( jQuery(this).val() == authorName ) {
+				jQuery(this).removeClass('grey-text');
+				jQuery(this).val('');
+			}
+		});
+
+		jQuery('.comment-form input#edit-name').bind('blur', function() {
+			if ( jQuery(this).val() == '' ) {
+				jQuery(this).addClass('grey-text');
+				jQuery(this).val(authorName);
+			}
+		});
+	}
+	/*validate comment submit, blur text , comment count*/
+	commentValidate();
+
+	// DEPRECATED - ?????
+	jQuery('div.fb_like').each(function() {
+		jQuery(this).html('<iframe src="http://www.facebook.com/plugins/like.php?href=' + 'http://' + WMG.basePath + '/' + jQuery(this).attr('id') + '&amp;send=false&amp;layout=button_count&amp;width=70&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=verdana&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe>');
+	});
+
+	jQuery('#block-webform-client-block-1116').css('display', 'none');
+	jQuery('a.link-mail-list, div.button-close').bind('click', function() {
+		jQuery('#block-webform-client-block-1116').slideToggle();
+		return false;
+	});
+
+	jQuery('dt.hoverme').mouseenter(function() {
+		jQuery(this).addClass('hover');
+	}).mouseleave(function() {
+		jQuery(this).removeClass('hover');
+	});
+
+	//add omniture tag to join link on login page
+	if ( jQuery('.not-logged-in.page-user #main .tabs ul.primary li:first-child a') ) {
+		var joinlink_href = jQuery('.not-logged-in.page-user #main .tabs ul.primary li:first-child a').attr('href');
+		jQuery('.not-logged-in.page-user #main .tabs ul.primary li:first-child a').attr('href', joinlink_href + '?intcmp=join_signin');
+	}
+	if ( jQuery('.not-logged-in.page-user #main #user-login #edit-actions a') ) {
+		var joinlink_href = jQuery('.not-logged-in.page-user #main #user-login #edit-actions a').attr('href');
+		jQuery('.not-logged-in.page-user #main #user-login #edit-actions a').attr('href', joinlink_href + '?intcmp=join_signin');
+	}
+	//open external links: privacy policy, terms of service into a new tab
+	jQuery('#block-menu-menu-footer-links li:nth-child(3) a').attr('target', '_blank');
+	jQuery('#block-menu-menu-footer-links li:nth-child(4) a').attr('target', '_blank');
+
+	// Set active class
+	jQuery("a[href='/" + url_q + "']").addClass('active');
+
+	// Set also for vide/pro on video page
+	if ( url_q == 'video' || url_q == 'photo' ) {
+		jQuery("a[href='/" + url_q + "/pro']").addClass('active');
+	}
+
+	// launch player
+	jQuery("a.launchPlayerLink").click(function() {
+		window.open("/music-player", "Window2", "width=322,height=265,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=no");
+		return false;
+	});
+
+	jQuery("#merchContainer").css('display', 'block');
+
+	if ( Drupal.settings.server_variables.user_id > 0 ) {
+		jQuery("#content a[href='/user'], #content a[href*='/user/register']").each(function() {
+			jQuery(this).remove();
+		});
+	}
+
+	jQuery('.not-logged-in.page-node .fivestar-widget-static .star').bind('click', function() {
+		jQuery('a[href*="/user/login/nojs"]:first').click();
+	});
+
+	googleCSEWatermark('cse-search-box');
+	jQuery('#cse-search-box .cse_txtinput').val(jQuery.urlParam('query'))
+
+	jQuery('#edit-picture-upload').attr('size', 40);
+
+	jQuery('#copyright li:nth-child(3) a').attr('target', '_blank');
+	jQuery('#copyright li:nth-child(4) a').attr('target', '_blank');
+
+	jQuery('.ui-dialog.user-login-dialog .form-navigation-wrapper a').attr('href', '/user/register/nojs?intcmp=join_signin');
+	jQuery('.page-user.not-logged-in .tabs li:first-child a').attr('href', '/user/register/nojs?intcmp=join_signin');
+	jQuery('.page-user.not-logged-in .tabs li:nth-child(2) a').attr('href', '/user/login/nojs');
+	jQuery('.page-user.not-logged-in .tabs li:nth-child(3) a').attr('href', '/user/password/nojs');
+
+	jQuery('.page-user.not-logged-in .tabs li a').unbind('click');
+});
+
+// replace /node/add/photo|video with /upload for authenticated users, otherwise attach a login overlay
+if ( !Drupal.settings.server_variables.user_id ) {
+	jQuery("#content a[href*='/node/add/photo'], #content a[href*='/node/add/video']").each(function() {
+		jQuery(this).attr('href', '/user/login/nojs?destination=upload');
+		jQuery(this).addClass('use-ajax use-dialog');
+	});
+	jQuery("#content a[href*='/node/add/forum']").each(function() {
+		jQuery(this).attr('href', '/user/login/nojs?destination=node/add/forum');
+		jQuery(this).addClass('use-ajax use-dialog');
+	});
+} else {
+	jQuery("#content a[href*='/node/add/photo'], #content a[href*='/node/add/video']").each(function() {
+		jQuery(this).attr('href', '/upload');
+	});
+}
+
+//add omniture tag to join link on login overlay
+Drupal.behaviors.wmgGlobal = {
+	attach : function() {
+		var is_admin = Drupal.settings.server_variables.user_roles && ( ( typeof Drupal.settings.server_variables.user_roles == 'object' && ( Drupal.settings.server_variables.user_roles[11] || Drupal.settings.server_variables.user_roles[21] ) ) || ( ( typeof Drupal.settings.server_variables.user_roles == 'array' || Drupal.settings.server_variables.user_roles[0] ) && ( jQuery.inArray('administrator', Drupal.settings.server_variables.user_roles) != -1 || jQuery.inArray('professional member', Drupal.settings.server_variables.user_roles) != -1 ) ) );
+
+		if ( is_admin ) {
+			jQuery("#content a[href='/node/add/blog']").each(function() {
+				jQuery(this).removeClass('element-invisible');
+			});
+		}
+	}
+};
+
+//add omniture tag to join link on login overlay
+Drupal.behaviors.omnitureTagFunction = {
+	attach : function() {
+		if ( jQuery('.ui-dialog.user-login-dialog .submit-button-wrapper a') ) {
+			jQuery('.ui-dialog.user-login-dialog .submit-button-wrapper a').attr('href', '/user/register/nojs?intcmp=join_signin');
+		};
+	}
+};
+
+Drupal.behaviors.commentProfile = {
+	attach : function() {
+		if ( jQuery('body.page-user .view-user-profile').length > 0 ) {
+			commentValidate();
+		}
+	}
+};
+
+function commentValidate() {
+
+	/* Temporary Fix for profile page - to display comment count*/
+	var comments_count = jQuery('.node-comment-counter').text() || 0;
+	if ( jQuery('body.page-user .comment-wrapper > h2').length > 0 ) {
+		jQuery('body.page-user .comment-wrapper > h2').text('Comments (' + comments_count + ')');
+		jQuery('body.page-user .comment-wrapper > h2').addClass("commentcountwrap");
+	} else {
+		jQuery('body.page-user .comment-wrapper').prepend('<h2 class="commentcountwrap">Comments (' + comments_count + ')</h2>');
+	}
+
+	/*  to rearrange comment textarea */
+	if ( jQuery('.comment-wrapper').length > 0 ) {
+		if ( !(     jQuery('.comment-wrapper').first().hasClass("comment-new-form") ) ) {
+			jQuery('.comment-wrapper').prepend(jQuery('#comment-new'));
+		}
+	}
+
+	if ( !( jQuery('.comment-wrapper #charNum').length > 0 ) ) {
+		jQuery('<div id="charNum">Characters remaining: <span>' + comment_char_limit + '</span></div>').insertAfter(jQuery('.comment-wrapper .form-textarea-wrapper'));
+	}
+	if ( !( jQuery('.view-user-profile .comment-wrapper #charNum').length > 0 ) ) {
+		jQuery('<div id="charNum">Characters remaining: <span>' + comment_char_limit + '</span></div>').insertAfter(jQuery('.view-user-profile .comment-wrapper .form-textarea-wrapper'));
+	}
+
+	/* Global fix for char count */
+	jQuery('.comment-wrapper .form-textarea-wrapper textarea, #edit-comment-body .form-textarea-wrapper textarea').bind('keyup', function() {
+		countChar(this);
+	});
+	jQuery('.comment-wrapper .form-textarea-wrapper textarea').bind('mouseleave', function() {
+		countChar(this);
+	});
+
+	//Dont let user post empty comments
+	/* Temporary Fix for profile page -  changed from '.comment-form input#edit-submit]' to make it work in profile page -29/6*/
+	jQuery('.comment-form input[id^=edit-submit]').attr('disabled', 'disabled')
+	jQuery('.comment-form input[id^=edit-submit]').css('visibility', 'visible');
+	jQuery('.comment-form input[id^=edit-submit]').css('opacity', '0.5');
+	jQuery('.comment-form input[id^=edit-submit]').attr('title', comment_submit_hint_text);
+	jQuery('.comment-form').bind('submit', function() {
+		return can_post_comment;
+	});
+
+	if ( jQuery('body.page-comment-edit').length === 0 ) {
+		if ( jQuery('.comment-form textarea').length ) {
+			if ( jQuery('.comment-form textarea').val().length === 0 ) {
+				jQuery('.comment-form textarea').addClass('grey-text');
+				jQuery('.comment-form textarea').val(comment_blur_text);
+			}
+			jQuery('.comment-form textarea').bind('focus', function() {
+				if ( jQuery(this).val() == comment_blur_text ) {
+					jQuery(this).removeClass('grey-text');
+					jQuery(this).val('');
+				}
+			});
+
+			jQuery('.comment-form textarea').bind('blur', function() {
+				if ( jQuery(this).val() == '' ) {
+					jQuery(this).addClass('grey-text');
+					jQuery(this).val(comment_blur_text);
+				}
+			});
+
+			/* changed from 'form#comment-form' to make it work in profile page -29/6*/
+			jQuery('form[id^=comment-form]').bind('submit', function() {
+				if ( jQuery(this).find('textarea').val() == comment_blur_text ) {
+					jQuery(this).find('textarea').val('');
+				}
+				return true;
+			});
+		}
+	}
+};
+jQuery(document).ready(function() {
+	var artistTermid = jQuery(".view-home-one-page-news-detail .termid").text();
+
+	if (artistTermid.length >= 1) {
+		jQuery(".page-news-category-detail #edit-related-artists-tid-raw").val(artistTermid);
+		jQuery(".page-news-category-detail #edit-submit-home-one-page-news-detail").click();
+	} else {
+		jQuery(".page-news-category-detail #edit-submit-home-one-page-news-detail").click();
+	}
+});
+
+Drupal.behaviors.testing = {
+	attach : function(context, settings) {
+		/*console.log(context);
+		 console.log(settings);*/
+	}
+};
+jQuery(document).ready(function() {
+	var boxSelector = '.inset-4 .box';
+	jQuery(boxSelector).removeClass('box');
+	jQuery(boxSelector).find('.col').attr('style', '');
+
+	/* Home page Artist carousel script Start */
+	totalItems = 16;
+	rowItems = 8;
+	jQuery('#block-views-artist-block-1 .views-row').each(function(i, e) {
+		var rm = i % totalItems;
+		if (rm >= rowItems) {
+			jQuery(e).addClass('second-row');
+		}
+	});
+	/* Home page Artist carousel script \End */
+
+	/* Header Mailing List Starts */
+	if (jQuery('#block-block-536').length) {
+		jQuery('#block-block-536').insertBefore('#preheader');
+	}
+
+	jQuery(".mlist-sidebar1").hide();
+	jQuery("#mContainer .mlist-join").click(function() {
+		jQuery(".mlist-sidebar1").toggleClass('isDown').slideToggle();
+		jQuery(".mlistClose").hide();
+		jQuery(".mwrapper").hide();
+	});
+	jQuery(".mlistClose").click(function(event) {
+		jQuery("#block-block-536").animate({
+			top : '-650px',
+			height : '1px'
+		}, 1000, function() {
+			jQuery('#preheader').css('margin-top', '0');
+		});
+
+	});
+	/* if (jQuery("body").hasClass("front")) {
+	 jQuery(".site-name-wrapper").addClass("wrapper_down");
+	 jQuery("#block-menu-menu-home-one-page-linked").addClass("wrapper_down");
+	 jQuery("#block-block-207").addClass("wrapper_down");
+	 /*}*/
+	jQuery(".mlist-sidebar1 .mlist-close-btn").click(function(event) {
+		jQuery("#block-block-536").animate({
+			top : '-650px',
+			height : '1px'
+		}, 1000, function() {
+			jQuery('#preheader').css('margin-top', '0');
+		});
+		/*jQuery("#block-menu-menu-home-one-page-linked .content ul.menu").animate({
+		 top : '68px'
+		 }, 1000, function() {
+		 jQuery(' #page .wrapper_down').css('margin-top', '0');
+		 });*/
+
+		jQuery(".mlist-sidebar1").toggleClass('isDown').slideToggle();
+		jQuery("#block-block-536").css({
+			'top' : '0',
+			height : 'auto'
+		});
+		jQuery(".mwrapper").show();
+		jQuery(".mlistClose").show();
+	});
+
+	/* Header Mailing List End */
+
+	/* Add the class for above IE6 */
+	var isIE = /*@cc_on!@*/false || !!document.documentMode;
+	// At least IE6
+	if (isIE) {
+		jQuery('body').addClass('iecss');
+	}
+
+	/* For adding a class in ios5 */
+
+	ver = iOSversion();
+	if ( typeof (ver) != 'undefined') {
+		if (ver[0] == 5) {
+			// alert('This is running iOS 5 or later.');
+			jQuery('body').addClass("ios5");
+		}
+	}
+
+	/* Move the footer spotify to content area*/
+	if (jQuery("body").hasClass("node-type-artists")) {
+		var $mail = jQuery('.view-carousel-slides-field-collections .view-content .views-row .custom-mlist-button');
+		var $newsletterID = jQuery('.view-carousel-slides-field-collections .view-content .views-row .artist-mlist-button').html();
+		var $spotify = jQuery('.view-carousel-slides-field-collections .view-footer .custom-spotify-button');
+		var $WrapperML = jQuery('.view-carousel-slides-field-collections .view-content .views-row .Wrapper_ML')
+		jQuery('.view-carousel-slides-field-collections .view-content .views-row').append($spotify);
+		var $spot = jQuery('.view-carousel-slides-field-collections .view-content .views-row .custom-spotify-button');
+		var $artistML = jQuery('#mailinglist-artist');
+		/** check if mailinlist is present
+		 yes =? insert Before
+		 no = ? append
+		 */
+		if ($newsletterID.length > 0) {
+			$spotify.insertBefore($WrapperML);
+			$artistML.insertAfter($mail);
+		} else {
+			jQuery('.view-carousel-slides-field-collections .view-content .views-row').append($spot);
+			jQuery('.view-carousel-slides-field-collections .view-content .views-row .Wrapper_ML').remove();
+		}
+	}
+	/*Add the CSS Class for border Start*/
+	var $getMerch = jQuery('#block-views-artist-block-2 .artistImageLinksWrapper .artistLinks .artistOtherLinks span.artistGetMerch a');
+	var $getTickets = jQuery('#block-views-artist-block-2 .artistImageLinksWrapper .artistLinks .artistOtherLinks span.artistGetTickets a');
+	/** check if artistGetMerch is present
+	 yes =? no need to add CSSclass
+	 no = ? add CSS Class to artistGetTickets */
+	if ($getMerch.length > 0) {
+
+	} else if ($getTickets.length > 0) {
+		jQuery('#block-views-artist-block-2 .artistImageLinksWrapper .artistLinks .artistOtherLinks span.artistGetTickets').addClass("drawLeftBorder");
+	}
+	/*Add the CSS Class for border End*/
+
+	/* This script will remove the unused genres from the artist page drop down */
+	jQuery("select#edit-field-artist-genre-tid option").each(function() {
+		if ((jQuery(this).text().toLowerCase().indexOf("filter by") == -1) && (jQuery("#block-views-filter-by-artist-widget-block .view-content").text().indexOf(jQuery(this).text()) == -1)) {
+			jQuery(this).remove();
+		}
+	});
+
+	jQuery("body").ajaxComplete(function() {
+		jQuery("select#edit-field-artist-genre-tid option").each(function() {
+			if ((jQuery(this).text().toLowerCase().indexOf("filter by") == -1) && (jQuery("#block-views-filter-by-artist-widget-block .view-content").text().indexOf(jQuery(this).text()) == -1)) {
+				jQuery(this).remove();
+			}
+		});
+	});
+
+});
+
+/* For adding a class in ios5 */
+function iOSversion() {
+	if (/iP(hone|od|ad)/.test(navigator.platform)) {
+		// supports iOS 2.0 and later: <http://bit.ly/TJjs1V>
+		var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
+		return [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)];
+	}
+}
+
+//function to open mailing list in fancybox
+function mlistFancy() {
+	//open mailing list on click of footer menu item
+	jQuery('a.artist-mlist-button').click(function() {
+		jQuery('#block-views-artist-block-2 .artistDetail').toggleClass('mlistOpen');
+		jQuery('.mlist-artist').slideToggle();
+	});
+}
+
+jQuery(document).ready( function() {
+	/* Hide the iframe title Start */
+	if(jQuery('#block-views-home-one-page-carousel-block-2').length>0){
+		var ysr = jQuery('#block-views-home-one-page-carousel-block-2 iframe').attr('src');
+		var nysr = ysr + "&showinfo=0";
+		jQuery('#block-views-home-one-page-carousel-block-2 iframe').attr('src', nysr);
+	}
+	/* Hide the iframe title End */
+});
+
+jQuery(document).ready(function(){
+	if(jQuery('#block-views-artist-block-1').length>0){
+jQuery('#block-views-artist-block-1 li.views-row').each(function(){
+var charLength = jQuery(this).find('.views-field-nothing .hoverLinks span:first-child').text().length;
+if( charLength > 11){
+jQuery(this).find('.views-field-nothing span').addClass('bigger');
+}
+/* to be removed */
+//jQuery(this).find('.views-field-field-artist-home-page-thumbnail.).addClass('views-field-field-artist-image');
+});
+}
+});
+
+
+function inlineSpotifyVideo() {
+	if (Modernizr.mq('only screen and (min-width: 768px)')) {
+		if ((jQuery("#block-views-home-one-page-video-block-1").height() - 80) < 210) {
+			jQuery("#block-block-636 .middle .content").css({
+				"padding-top" : (jQuery("#block-block-636").width() + 80) + "px",
+				"width" : jQuery("#block-block-636").width() + "px"
+			});
+			jQuery("#block-views-home-one-page-video-block-1 .video-conatiner .media-embed-wrapper").css("cssText", "padding-bottom: " + (jQuery("#block-block-636 .middle .content").width() + 80) + "px !important");
+
+		} else {
+			jQuery("#block-block-636 .middle .content").css({
+				"padding-top" : jQuery("#block-views-home-one-page-video-block-1").height() + "px",
+				"width" : (jQuery("#block-views-home-one-page-video-block-1").height() - 80) + "px"
+			});
+			jQuery("#block-views-home-one-page-video-block-1 .video-conatiner .media-embed-wrapper").removeAttr("style");
+		}
+	} else {
+		jQuery("#block-block-636 .middle .content").css({
+			"padding-top" : (jQuery("#block-block-636").width() + 80) + "px",
+			"width" : jQuery("#block-block-636").width() + "px"
+		});
+		jQuery("#block-views-home-one-page-video-block-1 .video-conatiner .media-embed-wrapper").removeAttr("style");
+	}
+}
+
+
+jQuery(window).load(function() {
+	if(jQuery("#block-views-home-one-page-video-block-1").length>0){
+		inlineSpotifyVideo();
+	}
+	
+});
+jQuery(window).resize(function() {
+	if(jQuery("#block-views-home-one-page-video-block-1").length>0){
+		inlineSpotifyVideo();
+	}
+});;
+(function($){$.browserTest=function(a,z){var u='unknown',x='X',m=function(r,h){for(var i=0;i<h.length;i=i+1){r=r.replace(h[i][0],h[i][1]);}return r;},c=function(i,a,b,c){var r={name:m((a.exec(i)||[u,u])[1],b)};r[r.name]=true;r.version=(c.exec(i)||[x,x,x,x])[3];if(r.name.match(/safari/)&&r.version>400){r.version='2.0';}if(r.name==='presto'){r.version=($.browser.version>9.27)?'futhark':'linear_b';}r.versionNumber=parseFloat(r.version,10)||0;r.versionX=(r.version!==x)?(r.version+'').substr(0,1):x;r.className=r.name+r.versionX;return r;};a=(a.match(/Opera|Navigator|Minefield|KHTML|Chrome/)?m(a,[[/(Firefox|MSIE|KHTML,\slike\sGecko|Konqueror)/,''],['Chrome Safari','Chrome'],['KHTML','Konqueror'],['Minefield','Firefox'],['Navigator','Netscape']]):a).toLowerCase();$.browser=$.extend((!z)?$.browser:{},c(a,/(camino|chrome|firefox|netscape|konqueror|lynx|msie|opera|safari)/,[],/(camino|chrome|firefox|netscape|netscape6|opera|version|konqueror|lynx|msie|safari)(\/|\s)([a-z0-9\.\+]*?)(\;|dev|rel|\s|$)/));$.layout=c(a,/(gecko|konqueror|msie|opera|webkit)/,[['konqueror','khtml'],['msie','trident'],['opera','presto']],/(applewebkit|rv|konqueror|msie)(\:|\/|\s)([a-z0-9\.]*?)(\;|\)|\s)/);$.os={name:(/(win|mac|linux|sunos|solaris|iphone)/.exec(navigator.platform.toLowerCase())||[u])[0].replace('sunos','solaris')};if(!z){$('html').addClass([$.os.name,$.browser.name,$.browser.className,$.layout.name,$.layout.className].join(' '));}};$.browserTest(navigator.userAgent);})(jQuery);;
+;
+jQuery(document).ready(function() {
+
+if (location.href.indexOf('?pass-reset-token') != -1) {
+            jQuery('.form-type-password-confirm').addClass('pwdHighlight');
+            jQuery('#edit-pass-pass1').focus();
+            location.href = '#messages-region';
+            jQuery('#edit-picture').hide();
+            jQuery('#edit-comment-notify-settings').hide();
+            jQuery('#edit-timezone').hide();
+        }
+ });;
+/*
+* Cell Stream Widget
+* version 1
+*
+*/
+var viewscellstream = {
+	items_qty: (typeof(WMG.CellStream.states.init.left) != 'string' ? WMG.CellStream.states.init.left : WMG.CellStream.states.init.top).length,
+	states: WMG.CellStream.states,
+  getPropertyValue: function(obj, state, property) {
+    if (jQuery.isArray(this.states[state][property])) {
+      for (var i = 0; i < this.items_qty; i++) {
+        if (jQuery(obj).hasClass('views-row-' + (i+1))) {
+          return this.states[state][property][i];
+        } 
+      }
+    }
+    else {
+      return this.states[state][property];
+    }
+    
+    return null;
+  },
+  getPropertyObj: function(obj, state) {
+    return {
+      width: this.getPropertyValue(obj, state, 'width'),
+      height: this.getPropertyValue(obj, state, 'height'),
+      left: this.getPropertyValue(obj, state, 'left'),
+      top: this.getPropertyValue(obj, state, 'top'),
+      opacity: this.getPropertyValue(obj, state, 'opacity')
+    };
+  },
+  start: function(selector) {
+    jQuery(selector).each(
+      function () {
+        jQuery(this).css(viewscellstream.getPropertyObj(this, 'init'));
+      }
+    );
+    jQuery(selector).hover(
+      function(){
+
+        jQuery(this).addClass('hover');
+        jQuery(this).animate(viewscellstream.getPropertyObj(this, 'hover'), 200, 'swing');
+      },
+      function(){
+        jQuery(this).removeClass('hover'); 
+        jQuery(this).stop().css(viewscellstream.getPropertyObj(this, 'init'));
+      }
+    );
+  }
+}
+
+Drupal.behaviors.viewscellstream = {
+  attach: function() {
+    viewscellstream.start('#block-views-photos-block .view-content ul li');
+  }
+};
+/*! jQuery Validation Plugin - v1.10.0 - 9/7/2012
+ * https://github.com/jzaefferer/jquery-validation
+ * Copyright (c) 2012 JÃƒÂ¶rn Zaefferer; Licensed MIT, GPL */
+
+( function($) {
+
+		$.extend($.fn, {
+			// http://docs.jquery.com/Plugins/Validation/validate
+			validate : function(options) {
+
+				// if nothing is selected, return nothing; can't chain anyway
+				if (!this.length) {
+					if (options && options.debug && window.console) {
+						console.warn("nothing selected, can't validate, returning nothing");
+					}
+					return;
+				}
+
+				// check if a validator for this form was already created
+				var validator = $.data(this[0], 'validator');
+				if (validator) {
+					return validator;
+				}
+
+				// Add novalidate tag if HTML5.
+				this.attr('novalidate', 'novalidate');
+
+				validator = new $.validator(options, this[0]);
+				$.data(this[0], 'validator', validator);
+
+				if (validator.settings.onsubmit) {
+
+					this.validateDelegate(":submit", "click", function(ev) {
+						if (validator.settings.submitHandler) {
+							validator.submitButton = ev.target;
+						}
+						// allow suppressing validation by adding a cancel class to the submit button
+						if ($(ev.target).hasClass('cancel')) {
+							validator.cancelSubmit = true;
+						}
+					});
+
+					// validate the form on submit
+					this.submit(function(event) {
+						if (validator.settings.debug) {
+							// prevent form submit to be able to see console output
+							event.preventDefault();
+						}
+						function handle() {
+							var hidden;
+							if (validator.settings.submitHandler) {
+								if (validator.submitButton) {
+									// insert a hidden input as a replacement for the missing submit button
+									hidden = $("<input type='hidden'/>").attr("name", validator.submitButton.name).val(validator.submitButton.value).appendTo(validator.currentForm);
+								}
+								validator.settings.submitHandler.call(validator, validator.currentForm, event);
+								if (validator.submitButton) {
+									// and clean up afterwards; thanks to no-block-scope, hidden can be referenced
+									hidden.remove();
+								}
+								return false;
+							}
+							return true;
+						}
+
+						// prevent submit for invalid forms or custom submit handlers
+						if (validator.cancelSubmit) {
+							validator.cancelSubmit = false;
+							return handle();
+						}
+						if (validator.form()) {
+							if (validator.pendingRequest) {
+								validator.formSubmitted = true;
+								return false;
+							}
+							return handle();
+						} else {
+							validator.focusInvalid();
+							return false;
+						}
+					});
+				}
+
+				return validator;
+			},
+			// http://docs.jquery.com/Plugins/Validation/valid
+			valid : function() {
+				if ($(this[0]).is('form')) {
+					return this.validate().form();
+				} else {
+					var valid = true;
+					var validator = $(this[0].form).validate();
+					this.each(function() {
+						valid &= validator.element(this);
+					});
+					return valid;
+				}
+			},
+			// attributes: space seperated list of attributes to retrieve and remove
+			removeAttrs : function(attributes) {
+				var result = {}, $element = this;
+				$.each(attributes.split(/\s/), function(index, value) {
+					result[value] = $element.attr(value);
+					$element.removeAttr(value);
+				});
+				return result;
+			},
+			// http://docs.jquery.com/Plugins/Validation/rules
+			rules : function(command, argument) {
+				var element = this[0];
+
+				if (command) {
+					var settings = $.data(element.form, 'validator').settings;
+					var staticRules = settings.rules;
+					var existingRules = $.validator.staticRules(element);
+					switch(command) {
+						case "add":
+							$.extend(existingRules, $.validator.normalizeRule(argument));
+							staticRules[element.name] = existingRules;
+							if (argument.messages) {
+								settings.messages[element.name] = $.extend(settings.messages[element.name], argument.messages);
+							}
+							break;
+						case "remove":
+							if (!argument) {
+								delete staticRules[element.name];
+								return existingRules;
+							}
+							var filtered = {};
+							$.each(argument.split(/\s/), function(index, method) {
+								filtered[method] = existingRules[method];
+								delete existingRules[method];
+							});
+							return filtered;
+					}
+				}
+
+				var data = $.validator.normalizeRules($.extend({}, $.validator.metadataRules(element), $.validator.classRules(element), $.validator.attributeRules(element), $.validator.staticRules(element)), element);
+
+				// make sure required is at front
+				if (data.required) {
+					var param = data.required;
+					delete data.required;
+					data = $.extend({
+						required : param
+					}, data);
+				}
+
+				return data;
+			}
+		});
+
+		// Custom selectors
+		$.extend($.expr[":"], {
+			// http://docs.jquery.com/Plugins/Validation/blank
+			blank : function(a) {
+				return !$.trim("" + a.value);
+			},
+			// http://docs.jquery.com/Plugins/Validation/filled
+			filled : function(a) {
+				return !!$.trim("" + a.value);
+			},
+			// http://docs.jquery.com/Plugins/Validation/unchecked
+			unchecked : function(a) {
+				return !a.checked;
+			}
+		});
+
+		// constructor for validator
+		$.validator = function(options, form) {
+			this.settings = $.extend(true, {}, $.validator.defaults, options);
+			this.currentForm = form;
+			this.init();
+		};
+
+		$.validator.format = function(source, params) {
+			if (arguments.length === 1) {
+				return function() {
+					var args = $.makeArray(arguments);
+					args.unshift(source);
+					return $.validator.format.apply(this, args);
+				};
+			}
+			if (arguments.length > 2 && params.constructor !== Array) {
+				params = $.makeArray(arguments).slice(1);
+			}
+			if (params.constructor !== Array) {
+				params = [params];
+			}
+			$.each(params, function(i, n) {
+				source = source.replace(new RegExp("\\{" + i + "\\}", "g"), n);
+			});
+			return source;
+		};
+
+		$.extend($.validator, {
+
+			defaults : {
+				messages : {},
+				groups : {},
+				rules : {},
+				errorClass : "error",
+				validClass : "valid",
+				errorElement : "label",
+				focusInvalid : true,
+				errorContainer : $([]),
+				errorLabelContainer : $([]),
+				onsubmit : true,
+				ignore : ":hidden",
+				ignoreTitle : false,
+				onfocusin : function(element, event) {
+					this.lastActive = element;
+
+					// hide error label and remove error class on focus if enabled
+					if (this.settings.focusCleanup && !this.blockFocusCleanup) {
+						if (this.settings.unhighlight) {
+							this.settings.unhighlight.call(this, element, this.settings.errorClass, this.settings.validClass);
+						}
+						this.addWrapper(this.errorsFor(element)).hide();
+					}
+				},
+				onfocusout : function(element, event) {
+					if (!this.checkable(element) && (element.name in this.submitted || !this.optional(element))) {
+						this.element(element);
+					}
+				},
+				onkeyup : function(element, event) {
+					if (event.which === 9 && this.elementValue(element) === '') {
+						return;
+					} else if (element.name in this.submitted || element === this.lastActive) {
+						this.element(element);
+					}
+				},
+				onclick : function(element, event) {
+					// click on selects, radiobuttons and checkboxes
+					if (element.name in this.submitted) {
+						this.element(element);
+					}
+					// or option elements, check parent select in that case
+					else if (element.parentNode.name in this.submitted) {
+						this.element(element.parentNode);
+					}
+				},
+				highlight : function(element, errorClass, validClass) {
+					if (element.type === 'radio') {
+						this.findByName(element.name).addClass(errorClass).removeClass(validClass);
+					} else {
+						$(element).addClass(errorClass).removeClass(validClass);
+					}
+				},
+				unhighlight : function(element, errorClass, validClass) {
+					if (element.type === 'radio') {
+						this.findByName(element.name).removeClass(errorClass).addClass(validClass);
+					} else {
+						$(element).removeClass(errorClass).addClass(validClass);
+					}
+				}
+			},
+
+			// http://docs.jquery.com/Plugins/Validation/Validator/setDefaults
+			setDefaults : function(settings) {
+				$.extend($.validator.defaults, settings);
+			},
+
+			messages : {
+				required : "This field is required.",
+				remote : "Please fix this field.",
+				email : "Please enter a valid email address.",
+				url : "Please enter a valid URL.",
+				date : "Please enter a valid date.",
+				dateISO : "Please enter a valid date (ISO).",
+				number : "Please enter a valid number.",
+				digits : "Please enter only digits.",
+				creditcard : "Please enter a valid credit card number.",
+				equalTo : "Please enter the same value again.",
+				maxlength : $.validator.format("Please enter no more than {0} characters."),
+				minlength : $.validator.format("Please enter at least {0} characters."),
+				rangelength : $.validator.format("Please enter a value between {0} and {1} characters long."),
+				range : $.validator.format("Please enter a value between {0} and {1}."),
+				max : $.validator.format("Please enter a value less than or equal to {0}."),
+				min : $.validator.format("Please enter a value greater than or equal to {0}.")
+			},
+
+			autoCreateRanges : false,
+
+			prototype : {
+
+				init : function() {
+					this.labelContainer = $(this.settings.errorLabelContainer);
+					this.errorContext = this.labelContainer.length && this.labelContainer || $(this.currentForm);
+					this.containers = $(this.settings.errorContainer).add(this.settings.errorLabelContainer);
+					this.submitted = {};
+					this.valueCache = {};
+					this.pendingRequest = 0;
+					this.pending = {};
+					this.invalid = {};
+					this.reset();
+
+					var groups = (this.groups = {});
+					$.each(this.settings.groups, function(key, value) {
+						$.each(value.split(/\s/), function(index, name) {
+							groups[name] = key;
+						});
+					});
+					var rules = this.settings.rules;
+					$.each(rules, function(key, value) {
+						rules[key] = $.validator.normalizeRule(value);
+					});
+
+					function delegate(event) {
+						var validator = $.data(this[0].form, "validator"), eventType = "on" + event.type.replace(/^validate/, "");
+						if (validator.settings[eventType]) {
+							validator.settings[eventType].call(validator, this[0], event);
+						}
+					}
+
+
+					$(this.currentForm).validateDelegate(":text, [type='password'], [type='file'], select, textarea, " + "[type='number'], [type='search'] ,[type='tel'], [type='url'], " + "[type='email'], [type='datetime'], [type='date'], [type='month'], " + "[type='week'], [type='time'], [type='datetime-local'], " + "[type='range'], [type='color'] ", "focusin focusout keyup", delegate).validateDelegate("[type='radio'], [type='checkbox'], select, option", "click", delegate);
+
+					if (this.settings.invalidHandler) {
+						$(this.currentForm).bind("invalid-form.validate", this.settings.invalidHandler);
+					}
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Validator/form
+				form : function() {
+					this.checkForm();
+					$.extend(this.submitted, this.errorMap);
+					this.invalid = $.extend({}, this.errorMap);
+					if (!this.valid()) {
+						$(this.currentForm).triggerHandler("invalid-form", [this]);
+					}
+					this.showErrors();
+					return this.valid();
+				},
+
+				checkForm : function() {
+					this.prepareForm();
+					for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
+						this.check(elements[i]);
+					}
+					return this.valid();
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Validator/element
+				element : function(element) {
+					element = this.validationTargetFor(this.clean(element));
+					this.lastElement = element;
+					this.prepareElement(element);
+					this.currentElements = $(element);
+					var result = this.check(element) !== false;
+					if (result) {
+						delete this.invalid[element.name];
+					} else {
+						this.invalid[element.name] = true;
+					}
+					if (!this.numberOfInvalids()) {
+						// Hide error containers on last error
+						this.toHide = this.toHide.add(this.containers);
+					}
+					this.showErrors();
+					return result;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Validator/showErrors
+				showErrors : function(errors) {
+					if (errors) {
+						// add items to error list and map
+						$.extend(this.errorMap, errors);
+						this.errorList = [];
+						for (var name in errors ) {
+							this.errorList.push({
+								message : errors[name],
+								element : this.findByName(name)[0]
+							});
+						}
+						// remove items from success list
+						this.successList = $.grep(this.successList, function(element) {
+							return !(element.name in errors);
+						});
+					}
+					if (this.settings.showErrors) {
+						this.settings.showErrors.call(this, this.errorMap, this.errorList);
+					} else {
+						this.defaultShowErrors();
+					}
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Validator/resetForm
+				resetForm : function() {
+					if ($.fn.resetForm) {
+						$(this.currentForm).resetForm();
+					}
+					this.submitted = {};
+					this.lastElement = null;
+					this.prepareForm();
+					this.hideErrors();
+					this.elements().removeClass(this.settings.errorClass).removeData("previousValue");
+				},
+
+				numberOfInvalids : function() {
+					return this.objectLength(this.invalid);
+				},
+
+				objectLength : function(obj) {
+					var count = 0;
+					for (var i in obj ) {
+						count++;
+					}
+					return count;
+				},
+
+				hideErrors : function() {
+					this.addWrapper(this.toHide).hide();
+				},
+
+				valid : function() {
+					return this.size() === 0;
+				},
+
+				size : function() {
+					return this.errorList.length;
+				},
+
+				focusInvalid : function() {
+					if (this.settings.focusInvalid) {
+						try {
+							$(this.findLastActive() || this.errorList.length && this.errorList[0].element || []).filter(":visible").focus()
+							// manually trigger focusin event; without it, focusin handler isn't called, findLastActive won't have anything to find
+							.trigger("focusin");
+						} catch(e) {
+							// ignore IE throwing errors when focusing hidden elements
+						}
+					}
+				},
+
+				findLastActive : function() {
+					var lastActive = this.lastActive;
+					return lastActive && $.grep(this.errorList, function(n) {
+						return n.element.name === lastActive.name;
+					}).length === 1 && lastActive;
+				},
+
+				elements : function() {
+					var validator = this, rulesCache = {};
+
+					// select all valid inputs inside the form (no submit or reset buttons)
+					return $(this.currentForm).find("input, select, textarea").not(":submit, :reset, :image, [disabled]").not(this.settings.ignore).filter(function() {
+						if (!this.name && validator.settings.debug && window.console) {
+							console.error("%o has no name assigned", this);
+						}
+
+						// select only the first element for each name, and only those with rules specified
+						if (this.name in rulesCache || !validator.objectLength($(this).rules())) {
+							return false;
+						}
+
+						rulesCache[this.name] = true;
+						return true;
+					});
+				},
+
+				clean : function(selector) {
+					return $( selector )[0];
+				},
+
+				errors : function() {
+					var errorClass = this.settings.errorClass.replace(' ', '.');
+					return $(this.settings.errorElement + "." + errorClass, this.errorContext);
+				},
+
+				reset : function() {
+					this.successList = [];
+					this.errorList = [];
+					this.errorMap = {};
+					this.toShow = $([]);
+					this.toHide = $([]);
+					this.currentElements = $([]);
+				},
+
+				prepareForm : function() {
+					this.reset();
+					this.toHide = this.errors().add(this.containers);
+				},
+
+				prepareElement : function(element) {
+					this.reset();
+					this.toHide = this.errorsFor(element);
+				},
+
+				elementValue : function(element) {
+					var type = $(element).attr('type'), val = $(element).val();
+
+					if (type === 'radio' || type === 'checkbox') {
+						return $('input[name="' + $(element).attr('name') + '"]:checked').val();
+					}
+
+					if ( typeof val === 'string') {
+						return val.replace(/\r/g, "");
+					}
+					return val;
+				},
+
+				check : function(element) {
+					element = this.validationTargetFor(this.clean(element));
+
+					var rules = $(element).rules();
+					var dependencyMismatch = false;
+					var val = this.elementValue(element);
+					var result;
+
+					for (var method in rules ) {
+						var rule = {
+							method : method,
+							parameters : rules[method]
+						};
+						try {
+
+							result = $.validator.methods[method].call(this, val, element, rule.parameters);
+
+							// if a method indicates that the field is optional and therefore valid,
+							// don't mark it as valid when there are no other rules
+							if (result === "dependency-mismatch") {
+								dependencyMismatch = true;
+								continue;
+							}
+							dependencyMismatch = false;
+
+							if (result === "pending") {
+								this.toHide = this.toHide.not(this.errorsFor(element));
+								return;
+							}
+
+							if (!result) {
+								this.formatAndAdd(element, rule);
+								return false;
+							}
+						} catch(e) {
+							if (this.settings.debug && window.console) {
+								console.log("exception occured when checking element " + element.id + ", check the '" + rule.method + "' method", e);
+							}
+							throw e;
+						}
+					}
+					if (dependencyMismatch) {
+						return;
+					}
+					if (this.objectLength(rules)) {
+						this.successList.push(element);
+					}
+					return true;
+				},
+
+				// return the custom message for the given element and validation method
+				// specified in the element's "messages" metadata
+				customMetaMessage : function(element, method) {
+					if (!$.metadata) {
+						return;
+					}
+					var meta = this.settings.meta ? $(element).metadata()[this.settings.meta] : $(element).metadata();
+					return meta && meta.messages && meta.messages[method];
+				},
+
+				// return the custom message for the given element and validation method
+				// specified in the element's HTML5 data attribute
+				customDataMessage : function(element, method) {
+					return $(element).data('msg-' + method.toLowerCase()) || (element.attributes && $(element).attr('data-msg-' + method.toLowerCase()));
+				},
+
+				// return the custom message for the given element name and validation method
+				customMessage : function(name, method) {
+					var m = this.settings.messages[name];
+					return m && (m.constructor === String ? m : m[method]);
+				},
+
+				// return the first defined argument, allowing empty strings
+				findDefined : function() {
+					for (var i = 0; i < arguments.length; i++) {
+						if (arguments[i] !== undefined) {
+							return arguments[i];
+						}
+					}
+					return undefined;
+				},
+
+				defaultMessage : function(element, method) {
+					return this.findDefined(this.customMessage(element.name, method), this.customDataMessage(element, method), this.customMetaMessage(element, method),
+					// title is never undefined, so handle empty string as undefined
+					!this.settings.ignoreTitle && element.title || undefined, $.validator.messages[method], "<strong>Warning: No message defined for " + element.name + "</strong>");
+				},
+
+				formatAndAdd : function(element, rule) {
+					var message = this.defaultMessage(element, rule.method), theregex = /\$?\{(\d+)\}/g;
+					if ( typeof message === "function") {
+						message = message.call(this, rule.parameters, element);
+					} else if (theregex.test(message)) {
+						message = $.validator.format(message.replace(theregex, '{$1}'), rule.parameters);
+					}
+					this.errorList.push({
+						message : message,
+						element : element
+					});
+
+					this.errorMap[element.name] = message;
+					this.submitted[element.name] = message;
+				},
+
+				addWrapper : function(toToggle) {
+					if (this.settings.wrapper) {
+						toToggle = toToggle.add(toToggle.parent(this.settings.wrapper));
+					}
+					return toToggle;
+				},
+
+				defaultShowErrors : function() {
+					var i, elements;
+					for ( i = 0; this.errorList[i]; i++) {
+						var error = this.errorList[i];
+						if (this.settings.highlight) {
+							this.settings.highlight.call(this, error.element, this.settings.errorClass, this.settings.validClass);
+						}
+						this.showLabel(error.element, error.message);
+					}
+					if (this.errorList.length) {
+						this.toShow = this.toShow.add(this.containers);
+					}
+					if (this.settings.success) {
+						for ( i = 0; this.successList[i]; i++) {
+							this.showLabel(this.successList[i]);
+						}
+					}
+					if (this.settings.unhighlight) {
+						for ( i = 0, elements = this.validElements(); elements[i]; i++) {
+							this.settings.unhighlight.call(this, elements[i], this.settings.errorClass, this.settings.validClass);
+						}
+					}
+					this.toHide = this.toHide.not(this.toShow);
+					this.hideErrors();
+					this.addWrapper(this.toShow).show();
+				},
+
+				validElements : function() {
+					return this.currentElements.not(this.invalidElements());
+				},
+
+				invalidElements : function() {
+					return $(this.errorList).map(function() {
+						return this.element;
+					});
+				},
+
+				showLabel : function(element, message) {
+					var label = this.errorsFor(element);
+					if (label.length) {
+						// refresh error/success class
+						label.removeClass(this.settings.validClass).addClass(this.settings.errorClass);
+
+						// check if we have a generated label, replace the message then
+						if (label.attr("generated")) {
+							label.html(message);
+						}
+					} else {
+						// create label
+						label = $("<" + this.settings.errorElement + "/>").attr({
+							"for" : this.idOrName(element),
+							generated : true
+						}).addClass(this.settings.errorClass).html(message || "");
+						if (this.settings.wrapper) {
+							// make sure the element is visible, even in IE
+							// actually showing the wrapped element is handled elsewhere
+							label = label.hide().show().wrap("<" + this.settings.wrapper + "/>").parent();
+						}
+						if (!this.labelContainer.append(label).length) {
+							if (this.settings.errorPlacement) {
+								this.settings.errorPlacement(label, $(element));
+							} else {
+								label.insertAfter(element);
+							}
+						}
+					}
+					if (!message && this.settings.success) {
+						label.text("");
+						if ( typeof this.settings.success === "string") {
+							label.addClass(this.settings.success);
+						} else {
+							this.settings.success(label, element);
+						}
+					}
+					this.toShow = this.toShow.add(label);
+				},
+
+				errorsFor : function(element) {
+					var name = this.idOrName(element);
+					return this.errors().filter(function() {
+						return $(this).attr('for') === name;
+					});
+				},
+
+				idOrName : function(element) {
+					return this.groups[element.name] || (this.checkable(element) ? element.name : element.id || element.name);
+				},
+
+				validationTargetFor : function(element) {
+					// if radio/checkbox, validate first element in group instead
+					if (this.checkable(element)) {
+						element = this.findByName( element.name ).not(this.settings.ignore)[0];
+					}
+					return element;
+				},
+
+				checkable : function(element) {
+					return (/radio|checkbox/i).test(element.type);
+				},
+
+				findByName : function(name) {
+					return $(this.currentForm).find('[name="' + name + '"]');
+				},
+
+				getLength : function(value, element) {
+					switch( element.nodeName.toLowerCase() ) {
+						case 'select':
+							return $("option:selected", element).length;
+						case 'input':
+							if (this.checkable(element)) {
+								return this.findByName(element.name).filter(':checked').length;
+							}
+					}
+					return value.length;
+				},
+
+				depend : function(param, element) {
+					return this.dependTypes[ typeof param] ? this.dependTypes[typeof param](param, element) : true;
+				},
+
+				dependTypes : {
+					"boolean" : function(param, element) {
+						return param;
+					},
+					"string" : function(param, element) {
+						return !!$(param, element.form).length;
+					},
+					"function" : function(param, element) {
+						return param(element);
+					}
+				},
+
+				optional : function(element) {
+					var val = this.elementValue(element);
+					return !$.validator.methods.required.call(this, val, element) && "dependency-mismatch";
+				},
+
+				startRequest : function(element) {
+					if (!this.pending[element.name]) {
+						this.pendingRequest++;
+						this.pending[element.name] = true;
+					}
+				},
+
+				stopRequest : function(element, valid) {
+					this.pendingRequest--;
+					// sometimes synchronization fails, make sure pendingRequest is never < 0
+					if (this.pendingRequest < 0) {
+						this.pendingRequest = 0;
+					}
+					delete this.pending[element.name];
+					if (valid && this.pendingRequest === 0 && this.formSubmitted && this.form()) {
+						$(this.currentForm).submit();
+						this.formSubmitted = false;
+					} else if (!valid && this.pendingRequest === 0 && this.formSubmitted) {
+						$(this.currentForm).triggerHandler("invalid-form", [this]);
+						this.formSubmitted = false;
+					}
+				},
+
+				previousValue : function(element) {
+					return $.data(element, "previousValue") || $.data(element, "previousValue", {
+						old : null,
+						valid : true,
+						message : this.defaultMessage(element, "remote")
+					});
+				}
+			},
+
+			classRuleSettings : {
+				required : {
+					required : true
+				},
+				email : {
+					email : true
+				},
+				url : {
+					url : true
+				},
+				date : {
+					date : true
+				},
+				dateISO : {
+					dateISO : true
+				},
+				number : {
+					number : true
+				},
+				digits : {
+					digits : true
+				},
+				creditcard : {
+					creditcard : true
+				}
+			},
+
+			addClassRules : function(className, rules) {
+				if (className.constructor === String) {
+					this.classRuleSettings[className] = rules;
+				} else {
+					$.extend(this.classRuleSettings, className);
+				}
+			},
+
+			classRules : function(element) {
+				var rules = {};
+				var classes = $(element).attr('class');
+				if (classes) {
+					$.each(classes.split(' '), function() {
+						if (this in $.validator.classRuleSettings) {
+							$.extend(rules, $.validator.classRuleSettings[this]);
+						}
+					});
+				}
+				return rules;
+			},
+
+			attributeRules : function(element) {
+				var rules = {};
+				var $element = $(element);
+
+				for (var method in $.validator.methods) {
+					var value;
+
+					// support for <input required> in both html5 and older browsers
+					if (method === 'required') {
+						value = $element.get(0).getAttribute(method);
+						// Some browsers return an empty string for the required attribute
+						// and non-HTML5 browsers might have required="" markup
+						if (value === "") {
+							value = true;
+						}
+						// force non-HTML5 browsers to return bool
+						value = !!value;
+					} else {
+						value = $element.attr(method);
+					}
+
+					if (value) {
+						rules[method] = value;
+					} else if ($element[0].getAttribute("type") === method) {
+						rules[method] = true;
+					}
+				}
+
+				// maxlength may be returned as -1, 2147483647 (IE) and 524288 (safari) for text inputs
+				if (rules.maxlength && /-1|2147483647|524288/.test(rules.maxlength)) {
+					delete rules.maxlength;
+				}
+
+				return rules;
+			},
+
+			metadataRules : function(element) {
+				if (!$.metadata) {
+					return {};
+				}
+
+				var meta = $.data(element.form, 'validator').settings.meta;
+				return meta ? $(element).metadata()[meta] : $(element).metadata();
+			},
+
+			staticRules : function(element) {
+				var rules = {};
+				var validator = $.data(element.form, 'validator');
+				if (validator.settings.rules) {
+					rules = $.validator.normalizeRule(validator.settings.rules[element.name]) || {};
+				}
+				return rules;
+			},
+
+			normalizeRules : function(rules, element) {
+				// handle dependency check
+				$.each(rules, function(prop, val) {
+					// ignore rule when param is explicitly false, eg. required:false
+					if (val === false) {
+						delete rules[prop];
+						return;
+					}
+					if (val.param || val.depends) {
+						var keepRule = true;
+						switch (typeof val.depends) {
+							case "string":
+								keepRule = !!$(val.depends, element.form).length;
+								break;
+							case "function":
+								keepRule = val.depends.call(element, element);
+								break;
+						}
+						if (keepRule) {
+							rules[prop] = val.param !== undefined ? val.param : true;
+						} else {
+							delete rules[prop];
+						}
+					}
+				});
+
+				// evaluate parameters
+				$.each(rules, function(rule, parameter) {
+					rules[rule] = $.isFunction(parameter) ? parameter(element) : parameter;
+				});
+
+				// clean number parameters
+				$.each(['minlength', 'maxlength', 'min', 'max'], function() {
+					if (rules[this]) {
+						rules[this] = Number(rules[this]);
+					}
+				});
+				$.each(['rangelength', 'range'], function() {
+					if (rules[this]) {
+						rules[this] = [Number(rules[this][0]), Number(rules[this][1])];
+					}
+				});
+
+				if ($.validator.autoCreateRanges) {
+					// auto-create ranges
+					if (rules.min && rules.max) {
+						rules.range = [rules.min, rules.max];
+						delete rules.min;
+						delete rules.max;
+					}
+					if (rules.minlength && rules.maxlength) {
+						rules.rangelength = [rules.minlength, rules.maxlength];
+						delete rules.minlength;
+						delete rules.maxlength;
+					}
+				}
+
+				// To support custom messages in metadata ignore rule methods titled "messages"
+				if (rules.messages) {
+					delete rules.messages;
+				}
+
+				return rules;
+			},
+
+			// Converts a simple string to a {string: true} rule, e.g., "required" to {required:true}
+			normalizeRule : function(data) {
+				if ( typeof data === "string") {
+					var transformed = {};
+					$.each(data.split(/\s/), function() {
+						transformed[this] = true;
+					});
+					data = transformed;
+				}
+				return data;
+			},
+
+			// http://docs.jquery.com/Plugins/Validation/Validator/addMethod
+			addMethod : function(name, method, message) {
+				$.validator.methods[name] = method;
+				$.validator.messages[name] = message !== undefined ? message : $.validator.messages[name];
+				if (method.length < 3) {
+					$.validator.addClassRules(name, $.validator.normalizeRule(name));
+				}
+			},
+
+			methods : {
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/required
+				required : function(value, element, param) {
+					// check if dependency is met
+					if (!this.depend(param, element)) {
+						return "dependency-mismatch";
+					}
+					if (element.nodeName.toLowerCase() === "select") {
+						// could be an array for select-multiple or a string, both are fine this way
+						var val = $(element).val();
+						return val && val.length > 0;
+					}
+					if (this.checkable(element)) {
+						return this.getLength(value, element) > 0;
+					}
+					return $.trim(value).length > 0;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/remote
+				remote : function(value, element, param) {
+					if (this.optional(element)) {
+						return "dependency-mismatch";
+					}
+
+					var previous = this.previousValue(element);
+					if (!this.settings.messages[element.name]) {
+						this.settings.messages[element.name] = {};
+					}
+					previous.originalMessage = this.settings.messages[element.name].remote;
+					this.settings.messages[element.name].remote = previous.message;
+
+					param = typeof param === "string" && {
+						url : param
+					} || param;
+
+					if (this.pending[element.name]) {
+						return "pending";
+					}
+					if (previous.old === value) {
+						return previous.valid;
+					}
+
+					previous.old = value;
+					var validator = this;
+					this.startRequest(element);
+					var data = {};
+					data[element.name] = value;
+					$.ajax($.extend(true, {
+						url : param,
+						mode : "abort",
+						port : "validate" + element.name,
+						dataType : "json",
+						data : data,
+						success : function(response) {
+							validator.settings.messages[element.name].remote = previous.originalMessage;
+							var valid = response === true || response === "true";
+							if (valid) {
+								var submitted = validator.formSubmitted;
+								validator.prepareElement(element);
+								validator.formSubmitted = submitted;
+								validator.successList.push(element);
+								delete validator.invalid[element.name];
+								validator.showErrors();
+							} else {
+								var errors = {};
+								var message = response || validator.defaultMessage(element, "remote");
+								errors[element.name] = previous.message = $.isFunction(message) ? message(value) : message;
+								validator.invalid[element.name] = true;
+								validator.showErrors(errors);
+							}
+							previous.valid = valid;
+							validator.stopRequest(element, valid);
+						}
+					}, param));
+					return "pending";
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/minlength
+				minlength : function(value, element, param) {
+					var length = $.isArray(value) ? value.length : this.getLength($.trim(value), element);
+					return this.optional(element) || length >= param;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/maxlength
+				maxlength : function(value, element, param) {
+					var length = $.isArray(value) ? value.length : this.getLength($.trim(value), element);
+					return this.optional(element) || length <= param;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/rangelength
+				rangelength : function(value, element, param) {
+					var length = $.isArray(value) ? value.length : this.getLength($.trim(value), element);
+					return this.optional(element) || (length >= param[0] && length <= param[1] );
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/min
+				min : function(value, element, param) {
+					return this.optional(element) || value >= param;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/max
+				max : function(value, element, param) {
+					return this.optional(element) || value <= param;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/range
+				range : function(value, element, param) {
+					return this.optional(element) || (value >= param[0] && value <= param[1] );
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/email
+				email : function(value, element) {
+					// contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
+					return this.optional(element) || /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i.test(value);
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/url
+				url : function(value, element) {
+					// contributed by Scott Gonzalez: http://projects.scottsplayground.com/iri/
+					return this.optional(element) || /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/date
+				date : function(value, element) {
+					return this.optional(element) || !/Invalid|NaN/.test(new Date(value));
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/dateISO
+				dateISO : function(value, element) {
+					return this.optional(element) || /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/.test(value);
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/number
+				number : function(value, element) {
+					return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(value);
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/digits
+				digits : function(value, element) {
+					return this.optional(element) || /^\d+$/.test(value);
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/creditcard
+				// based on http://en.wikipedia.org/wiki/Luhn
+				creditcard : function(value, element) {
+					if (this.optional(element)) {
+						return "dependency-mismatch";
+					}
+					// accept only spaces, digits and dashes
+					if (/[^0-9 \-]+/.test(value)) {
+						return false;
+					}
+					var nCheck = 0, nDigit = 0, bEven = false;
+
+					value = value.replace(/\D/g, "");
+
+					for (var n = value.length - 1; n >= 0; n--) {
+						var cDigit = value.charAt(n);
+						nDigit = parseInt(cDigit, 10);
+						if (bEven) {
+							if ((nDigit *= 2) > 9) {
+								nDigit -= 9;
+							}
+						}
+						nCheck += nDigit;
+						bEven = !bEven;
+					}
+
+					return (nCheck % 10) === 0;
+				},
+
+				// http://docs.jquery.com/Plugins/Validation/Methods/equalTo
+				equalTo : function(value, element, param) {
+					// bind to the blur event of the target in order to revalidate whenever the target field is updated
+					// TODO find a way to bind the event just once, avoiding the unbind-rebind overhead
+					var target = $(param);
+					if (this.settings.onfocusout) {
+						target.unbind(".validate-equalTo").bind("blur.validate-equalTo", function() {
+							$(element).valid();
+						});
+					}
+					return value === target.val();
+				}
+			}
+
+		});
+
+		// deprecated, use $.validator.format instead
+		$.format = $.validator.format;
+
+	}($jq18));
+
+// ajax mode: abort
+// usage: $.ajax({ mode: "abort"[, port: "uniqueport"]});
+// if mode:"abort" is used, the previous request on that port (port can be undefined) is aborted via XMLHttpRequest.abort()
+( function($) {
+		var pendingRequests = {};
+		// Use a prefilter if available (1.5+)
+		if ($.ajaxPrefilter) {
+			$.ajaxPrefilter(function(settings, _, xhr) {
+				var port = settings.port;
+				if (settings.mode === "abort") {
+					if (pendingRequests[port]) {
+						pendingRequests[port].abort();
+					}
+					pendingRequests[port] = xhr;
+				}
+			});
+		} else {
+			// Proxy ajax
+			var ajax = $.ajax;
+			$.ajax = function(settings) {
+				var mode = ("mode" in settings ? settings : $.ajaxSettings ).mode, port = ("port" in settings ? settings : $.ajaxSettings ).port;
+				if (mode === "abort") {
+					if (pendingRequests[port]) {
+						pendingRequests[port].abort();
+					}
+					return (pendingRequests[port] = ajax.apply(this, arguments));
+				}
+				return ajax.apply(this, arguments);
+			};
+		}
+	}($jq18));
+
+// provides cross-browser focusin and focusout events
+// IE has native support, in other browsers, use event caputuring (neither bubbles)
+
+// provides delegate(type: String, delegate: Selector, handler: Callback) plugin for easier event delegation
+// handler is only called when $(event.target).is(delegate), in the scope of the jquery-object for event.target
+( function($) {
+		// only implement if not provided by jQuery core (since 1.4)
+		// TODO verify if jQuery 1.4's implementation is compatible with older jQuery special-event APIs
+		if (!jQuery.event.special.focusin && !jQuery.event.special.focusout && document.addEventListener) {
+			$.each({
+				focus : 'focusin',
+				blur : 'focusout'
+			}, function(original, fix) {
+				$.event.special[fix] = {
+					setup : function() {
+						this.addEventListener(original, handler, true);
+					},
+					teardown : function() {
+						this.removeEventListener(original, handler, true);
+					},
+					handler : function(e) {
+						var args = arguments;
+						args[0] = $.event.fix(e);
+						args[0].type = fix;
+						return $.event.handle.apply(this, args);
+					}
+				};
+				function handler(e) {
+					e = $.event.fix(e);
+					e.type = fix;
+					return $.event.handle.call(this, e);
+				}
+
+			});
+		}
+		$.extend($.fn, {
+			validateDelegate : function(delegate, type, handler) {
+				return this.bind(type, function(event) {
+					var target = $(event.target);
+					if (target.is(delegate)) {
+						return handler.apply(target, arguments);
+					}
+				});
+			}
+		});
+	}($jq18)); ;
+var activeSignUpForm;
+/*Default callback function /*DO NOT DISTURB*/
+
+function signupFormCallback(data) {
+    activeSignUpForm.signupFormCallback(data);
+} (function ($) {
+
+    /* Mailing list plugin default configuration options*/
+    /* overwrite while 'init' the plugin if needed */
+    /* ensure the object properties are matched as below */
+
+    var defaults = {
+        containers: {
+            ajaxLoaderField: '#ajaxLoader',
+            serverErrorMessageField: '#serverError',
+            validationErrorMessageField: '#errorMsg',
+            labelcheckbox: '.secondary-list-values .global-list-checkbox',
+            thankYouMessageField: '#thankyouBlock',
+        },
+
+        exactTargetSignupUrl: "https://signup.wmg.com/register",
+
+        /*Exact target default values - All the hardcoded exact target values list here*/
+        newsLetterConfigValues: [{
+            "newsletterId": ''
+        }],
+
+        /*Validator plugin configurations*/
+        errorLabelContainer: "#errorMsg",
+
+        /*Callback functions*/
+        callBacks: {
+            onLoad: function () {
+                // Extend if needed
+            },
+            onSubmit: function () {
+                // Extend if needed
+            },
+            onSuccess: function () {
+                // Extend if needed
+            }
+        },
+        customPageName: "",
+        validatorSettings: {}
+    };
+
+    $.fn.wmgSignUpForm = function (options) {
+
+        var settings = {};
+
+        var customName = "";
+        if (typeof options !== 'undefined') {
+            if (typeof options.customPageName !== 'undefined') {
+                customName = options.customPageName;
+            }
+        }
+
+        /*omniture parameters*/
+        var omniConfig = {};
+        var validator;
+        var callbackCompleted = 0;
+        var $currentElement;
+        var joinbutton = false;
+        var userEmailId = "";
+
+
+        // Current webform
+        var $this = $(this);
+
+        // current instance of plugin
+        var self = this;
+        var $mainListFields = $this.find(".mlist-field:not(.contest-field)");
+        var $contestListFields = $this.find(".mlist-field.contest-field");
+        var hasTwoLayers;
+        var isInSecondLayer;
+
+        var hideLightbox = function () {
+            var $frontPage = jQuery('body.front #page');
+            jQuery(".splash_overall").fadeOut();
+            $frontPage.css('overflow', 'hidden');
+            $this.parents(".mlist-outer-wrapper").removeClass("lightboxActive");
+        };
+
+        var getListParameters = function (selectorClass) {
+            var listParameters = "";
+            var etValues = {};
+
+            if (selectorClass == ".secondary-list-values" || selectorClass == ".data-source-value") {
+                $currentElement = $this.closest(".mlist-outer-wrapper").find("#thankyouBlock");
+            } else {
+                $currentElement = $this;
+            }
+
+            $currentElement.find(selectorClass).each(function () {
+                $(this).find("input").each(function () {
+                    if ($(this).attr("type") == "checkbox" && $(this).is(':checked') == false) {
+                    } else {
+                        var exactTargetKey = $(this).attr("name");
+                        var exactTargetValue = $(this).val();
+
+                        if (exactTargetKey in etValues) {
+                            etValues[exactTargetKey] += ',' + exactTargetValue;
+                        } else {
+                            etValues[exactTargetKey] = exactTargetValue;
+                        }
+
+                        if (exactTargetKey == "email") {
+                            userEmailId = exactTargetValue;
+                        }
+                    }
+                });
+
+                $(this).find("select").each(function () {
+                    var exactTargetKey = $(this).attr("name");
+                    var exactTargetValue = $(this).val();
+                    etValues[exactTargetKey] = exactTargetValue;
+                });
+            });
+
+            $.each(etValues, function (key, value) {
+                // To check whether coppa cookie is added for this mail
+                if (key === "email") {
+                    //var coppaCookie = CryptoJS.MD5("coppa_lite_" + value).toString();
+                    if (jQuery.cookie('coppa_deny_all')) {
+                        signUpFailure();
+                        return;
+                    }
+                }
+                if (key === "postalcode") {
+                    value = encodeURIComponent(value);
+                }
+                listParameters += '&' + key + "=" + value;
+            });
+
+            return listParameters;
+        };
+        var submitRequest = function () {
+            var returnVal = onSubmit();
+            if (returnVal === false) {
+                return false;
+            }
+
+            activeSignUpForm = self;
+            sendExactTargetRequest();
+        };
+
+        var resetThankYouScreen = function () {
+            $this.parents(".mlist-wrapper").fadeOut(500, function () {
+                $this[0].reset();
+                $this.fadeIn();
+                $this.parents(".mlist-outer-wrapper").find('.mlist-join-wrap').show();
+                $this.parent().find("#thankyouBlock").hide();
+                if ($this.parent().find("#thankyouthankyouBlock .secondary-list-values").length > 0) {
+                    $this.parent().find("input.agree-checkbox").removeAttr('checked');
+                    $this.parent().find("#thankyoublock-innerwrapper").fadeIn();
+                    $this.parent().find(".secondarylist-thankyou").css("display", "none");
+                }
+            });
+        };
+
+        var reloadForm = function () {
+            var currentFocus = jQuery($currentElement[0]).attr("id");
+            var currentBlock = jQuery($currentElement[0]);
+            if ($this.parent().parent().find(".mlist-join-wrap").length > 0) {
+                joinbutton = true;
+            }
+            if (currentFocus == "thankyouBlock") {
+                if (currentBlock.find(".thankyou-message").hasClass("embed")) {
+                    jQuery("#thankyoublock-innerwrapper").fadeOut();
+                } else {
+                    resetThankYouScreen();
+                }
+            } else {
+                $this.find(settings.containers.serverErrorMessageField).fadeOut();
+                $this[0].reset();
+                $this.parent().find(settings.containers.thankYouMessageField).fadeOut(1000, function () {
+                    if (joinbutton) {
+                        $this.parents().find(".mlist-wrapper").fadeOut(500, function () {
+                            $this.fadeIn();
+                            $this.parents().find(".mlist-join-wrap").toggle();
+                        });
+                    } else {
+                        if ($this.find(".agreepopup").length > 0) {
+                            $this.find(".agreepopup").fadeOut();
+                        }
+                        $this.fadeIn();
+                    }
+                });
+            }
+        };
+
+        /* Getting omniture paramaters starts*/
+        var setOmniConfig = function () {
+            omniConfig.artist = digitalData.content.artist;
+            omniConfig.artisthost = digitalData.page.category.primaryCategory;
+        };
+        var getclosestregion = function () {
+            var classArray = $this.closest(".region").attr('class');
+            if (typeof classArray == 'undefined' || classArray == '') {
+                return "content";
+            } else {
+                return $this.closest(".region").attr('class').split(' ')[1];
+            }
+        };
+        var getLabelId = function () {
+            var labelID = $this.parent().find(settings.containers.thankYouMessageField).find(settings.containers.labelcheckbox).val();
+            return labelID;
+        };
+        var omniVarsConfig = function (event, screenNumber) {
+
+            setOmniConfig();
+            var mainListID = getMailingListID();
+            var closestreg = getclosestregion();
+            var artisthost = omniConfig.artisthost;
+            var omniVars = {};
+            var labelid;
+
+            if ($this.parent().find('#thankyouBlock .secondary-list-values').length > 0) {
+                hasTwoLayers = true;
+            }
+
+            if (hasTwoLayers === true) {
+                screenNumber = screenNumber + "/2" + ":";
+            } else {
+                screenNumber = "";
+            }
+
+            switch (event) {
+                case ('signupIntent'):
+                    omniVars.pageName = artisthost + ":" + "Mailing List " + closestreg + " " + screenNumber + mainListID;
+                    break;
+                case ('firstFormSubmit'):
+                    omniVars.pageName = artisthost + ":" + "Mailing List " + closestreg + " " + screenNumber + mainListID + ":Signup Success";
+                    omniVars.events = "event3";
+                    break;
+                case ('noLabelSubscription'):
+                    omniVars.pageName = artisthost + ":" + "Mailing List " + closestreg + " " + screenNumber + mainListID + ":Save Success";
+                    omniVars.events = "event3";
+                    break;
+                case ('labelSubscription'):
+                    labelid = getLabelId();
+                    omniVars.pageName = artisthost + ":" + "Mailing List " + closestreg + " " + screenNumber + mainListID + ":Label List " + labelid + ":Save Success";
+                    omniVars.events = "event3";
+                    break;
+                default:
+                    omniVars.pageName = artisthost + ":" + "Mailing List " + closestreg + " " + screenNumber + mainListID + ":Save Success";
+                    break;
+            }
+            if ($this.parents(".mlist-outer-wrapper").hasClass("customPageName")) {
+                if (event === "noLabelSubscription" || event === "labelSubscription") {
+                    omniVars.pageName = omniConfig.artist + ":" + customName + ":Save Success";
+                } else {
+                    omniVars.pageName = omniConfig.artist + ":" + customName + ":Signup Success";
+                }
+
+            } else if ($this.parents(".mlist-outer-wrapper").hasClass("tkOmniture")) {
+                if (event === "noLabelSubscription" || event === "labelSubscription") {
+                    omniVars.pageName = artisthost + ":" + settings.customPageName + ":Lightbox:Save Success";
+                } else {
+                    omniVars.pageName = artisthost + ":" + settings.customPageName + ":Lightbox:Signup Success";
+                }
+            }
+            s_dtm.t(omniVars);
+        };
+        /* Getting omniture paramaters ends*/
+
+        var $thisOuterWrapper = jQuery(this).closest(".mlist-outer-wrapper");
+        /*var requiredFieldModifier = function () {
+            if ($thisOuterWrapper.find("#country").val() === "" || $thisOuterWrapper.find("#country").val() === undefined) {
+                $thisOuterWrapper.find("#errorLabelContainer2").css("display", "block");
+                $thisOuterWrapper.find('#country').addClass("error");
+                return false;
+            } else {
+                $thisOuterWrapper.find("#errorLabelContainer2").css("display", "none");
+                $thisOuterWrapper.find('#country').removeClass("error");
+                return true;
+            }
+        };*/
+
+        if ($thisOuterWrapper.hasClass("country-detect")) {
+            //$thisOuterWrapper.find("#country").blur(requiredFieldModifier);
+            $thisOuterWrapper.find(".secondFormCloseWrap a").click(function () {
+                $thisOuterWrapper.find("#thankyouBlock").addClass("final-screen");
+                $thisOuterWrapper.find("#thankyoublock-innerwrapper").css("display", "none");
+                $thisOuterWrapper.find(".termsWrapper a").removeClass('showing');
+                $thisOuterWrapper.find(".termsWrapper").css("display", "none");
+                hideLightbox();
+            });
+
+            $thisOuterWrapper.find('.termsWrapper a.terms').click(function () {
+                jQuery(this).toggleClass('showing');
+                jQuery(this).parents('.termsWrapper').find('.termsContent').slideToggle();
+                //$thisOuterWrapper.find("#terms").slideToggle();
+            });
+        }
+
+        $thisOuterWrapper.find("#thankyouBlock .mlist-submit-new").click(function (e) {
+            isInSecondLayer = true;
+            if ($thisOuterWrapper.hasClass("country-detect")) {
+                // if (!$thisOuterWrapper.find("label.error").is(":visible")) {
+                    e.preventDefault();
+                    var signUpRequestUrlnew = settings.exactTargetSignupUrl;
+                    var signlabelURL = signUpRequestUrlnew + getListParameters(".mlist-field") + getListParameters(".secondary-list-values");
+                    if ($thisOuterWrapper.find(".secondary-list-values input.global-list-checkbox").is(":checked")) {
+                        omniVarsConfig('labelSubscription', 2);
+                        signlabelURL = signlabelURL + getListParameters(".data-source-value") + "&global_optin=TRUE";
+                    } else {
+
+                        omniVarsConfig('noLabelSubscription', 2);
+                    }
+
+                    signlabelURL = signlabelURL.replace(signlabelURL[signlabelURL.indexOf("&")], "?");
+                    sendRequest(signlabelURL);
+                // }
+
+            } else if ($thisOuterWrapper.find(".secondary-list-values input.agree-checkbox").is(":checked")) {
+                omniVarsConfig('labelSubscription', 2);
+                var signUpRequestUrlnew = settings.exactTargetSignupUrl;
+                var signlabelURL = signUpRequestUrlnew + getListParameters(".mlist-field") + getListParameters(".secondary-list-values");
+                if ($thisOuterWrapper.find(".secondary-list-values input.global-list-checkbox").is(":checked")) {
+                    signlabelURL = signlabelURL + getListParameters(".data-source-value") + "&global_optin=TRUE";
+                }
+
+                signlabelURL = signlabelURL.replace(signlabelURL[signlabelURL.indexOf("&")], "?");
+                sendRequest(signlabelURL);
+            } else {
+
+                omniVarsConfig('noLabelSubscription', 2);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        });
+
+        $thisOuterWrapper.find(".mlist-popup").click(function () {
+            $this.validate();
+            if ($this.valid() == true) {
+                $thisOuterWrapper.find(".agreepopup").show();
+            }
+        });
+
+        $thisOuterWrapper.find(".mlist-disagree").click(function () {
+            $thisOuterWrapper.find(".agreepopup").hide();
+        });
+
+        $thisOuterWrapper.find(".mlist-join").click(function () {
+            $thisOuterWrapper.find('.mlist-join-wrap').hide();
+            $thisOuterWrapper.find('.mlist-wrapper').slideToggle();
+            omniVarsConfig('signupIntent', 1);
+        });
+
+        $thisOuterWrapper.find(".mlist-close").click(function () {
+            $thisOuterWrapper.find('.mlist-wrapper').slideToggle();
+            resetThankYouScreen();
+        });
+
+        $thisOuterWrapper.find(".mlist-checks label[for='global-list']").click(function () {
+            var $checkbox = jQuery(this).parent().find('.global-list-checkbox');
+            if (!$checkbox.is(':checked')) {
+                $checkbox.attr('checked', 'checked');
+            } else {
+                $checkbox.removeAttr('checked');
+            }
+        });
+
+        var updateCurrentEmailAddress = function () {
+            if ($this.parents(".mlist-outer-wrapper").find('.emailAddress')) {
+                $this.parents(".mlist-outer-wrapper").find('.emailAddress').text(userEmailId.split('@')[0]);
+            }
+        };
+
+        var signUpSuccess = function (data) {
+            var tempElement = jQuery($currentElement[0]).attr("id");
+            if (tempElement == "thankyouBlock") {
+                if ($currentElement.find(".secondary-list-values").length > 0) {
+                    $currentElement.find("#thankyoublock-innerwrapper").fadeOut(1000, function () {
+                        //For flyout version
+                        if ($this.parents(".mlist-outer-wrapper").hasClass('lightbox')) {
+                            hideLightbox();
+                        }
+                        jQuery("#terms").fadeOut();
+                        $currentElement.find(".secondarylist-thankyou").fadeIn();
+                        $currentElement.addClass("final-screen");
+                    });
+                    setTimeout(reloadForm, 4000);
+                }
+            } else {
+                $this.fadeOut(500, function () {
+                    //lightbox variant
+                    if ($this.parents(".mlist-outer-wrapper").hasClass('lightbox')) {
+                        $this.parents(".mlist-outer-wrapper").addClass("lightboxActive");
+                        var parentWrapper = $this.parents(".mlist-outer-wrapper.lightboxActive");
+                        var parentWrapperWidth = 600;
+                        var parentWrapperHeight = 400;
+                        jQuery('body').append("<div class='splash_overall'></div>");
+                        jQuery('body.front #page').css('overflow', 'visible');
+                        jQuery(".splash_overall").fadeIn();
+                        var win_height = document.documentElement.clientHeight;
+                        var set_height = (win_height - parentWrapperHeight) / 2;
+                        var win_width = document.documentElement.clientWidth;
+                        var set_width = (win_width - parentWrapperWidth) / 2;
+                        parentWrapper.css('top', set_height + 'px');
+                        parentWrapper.css('left', set_width + 'px');
+                        jQuery(".splash_overall").click(function () {
+                            hideLightbox();
+                        });
+                    }
+                    //flyout variant
+                    if (jQuery("#" + tempElement).parents(".mlist-outer-wrapper").hasClass('flyout')) {
+                        $this.parents(".mlist-outer-wrapper").addClass("flyoutActive");
+                    }
+                    $this.find(settings.containers.serverErrorMessageField).fadeOut();
+                    $this.parent().find(settings.containers.thankYouMessageField).fadeIn(500);
+                    $this.parent().find("#thankyoublock-innerwrapper").show();
+                    $this.parent().find("#secondForm").validate();
+                    $this.parent().find('.agree-checkbox').removeAttr('checked');
+                    $this.parent().find(".secondarylist-thankyou").hide();
+                    if ($thisOuterWrapper.hasClass("country-detect")) {
+                        $this.parent().find("#terms").css("display", "none");
+                    }
+                    if ((data.geocountry !== undefined) && (data.geocountry !== "")) {
+                        $this.parent().find("#country").val(data.geocountry);
+                    } else {
+                        $this.parent().find("#country").val("");
+                    }
+                    /*if ((data.geozip !== undefined) && (data.geozip !== "")) {
+                     $this.parent().find("#postalcode").val(data.geozip)
+                     } else {
+                     $this.parent().find("#postalcode").val("");
+                     }*/
+                });
+            }
+        };
+
+        var signUpFailure = function () {
+            $this.find(settings.containers.serverErrorMessageField).fadeTo(1, 500);
+            setTimeout(function () {
+                reloadForm();
+            }, 5000);
+        };
+
+        var sendRequest = function (signUpListUrl) {
+            try {
+                signUpListUrl += "&jsoncallback=?";
+                $.getJSON(signUpListUrl, {
+                    jsonp: "signupFormCallback"
+                });
+            } catch (err) {
+                signUpFailure();
+            }
+        };
+        var getMailingListID = function () {
+            var mainListID;
+            var _country = $this.find("#country").val();
+            var mailingListObj = WMG.MailingList.EmailListIds;
+
+            if (_country in mailingListObj) {
+                mainListID = WMG.MailingList.EmailListIds[_country];
+            } else {
+                mainListID = WMG.MailingList.EmailListIds["United States"];
+            }
+            return mainListID;
+        };
+        var sendExactTargetRequest = function () {
+            var mainlistflag = "off";
+            var mainListID;
+            var signUpRequestUrl = settings.exactTargetSignupUrl;
+
+            var mainlist_signupURL;
+            var contestlist_signupURL;
+            mainListID = getMailingListID();
+
+            $this.find(".mainlist-hidden-options #mainListId").attr("value", mainListID);
+
+            if ($this.find(".agree-checkbox").is(":checked")) {
+                mainlistflag = "on";
+            }
+
+            primary_signupURL = signUpRequestUrl + "?geoip=true" + getListParameters(".mlist-field") + getListParameters(".primary-list-values");
+            if ($this.find(".primary-list-values input.global-list-checkbox").is(":checked")) {
+                primary_signupURL += "&global_optin=TRUE";
+            }
+            if ($this.find(".secondary-list-values").length > 0) {
+                secondary_signupURL = signUpRequestUrl + getListParameters(".mlist-field:not('.contest-field')") + getListParameters(".secondary-list-values");
+                secondary_signupURL.replace(secondary_signupURL[secondary_signupURL.indexOf("&")], "?")
+            }
+
+            updateCurrentEmailAddress();
+
+            if ($this.hasClass("contest-form")) {
+                if ($this.is(".secondary-list-required")) {
+                    sendRequest(primary_signupURL);
+                    sendRequest(secondary_signupURL);
+                } else if ($this.is(".secondary-list-optional")) {
+                    if (mainlistflag == "on") {
+                        sendRequest(secondary_signupURL);
+                        sendRequest(primary_signupURL);
+                    } else {
+                        sendRequest(primary_signupURL);
+                    }
+                } else {
+                    sendRequest(primary_signupURL);
+                }
+            } else {
+                sendRequest(primary_signupURL);
+            }
+        };
+
+        this.signupFormCallback = function (data) {
+
+            callbackCompleted++;
+
+            if (callbackCompleted == 1) {
+                $this.parent().find(settings.containers.ajaxLoaderField).fadeOut();
+
+                if (data.status == 'success') {
+                    onSuccess();
+                    signUpSuccess(data);
+                } else {// status== 'error'
+                    signUpFailure();
+                }
+            }
+
+            if ((settings.newsLetterConfigValues.length) == callbackCompleted) {
+                callbackCompleted = 0;
+            }
+
+        };
+
+        var init = function (options) {
+            if (options) {
+                settings = $.extend(defaults, options);
+            } else {
+                settings = defaults;
+            }
+
+            var validatorSettings;
+
+            if (Object.keys(settings.validatorSettings).length > 0) {
+                validatorSettings = settings.validatorSettings;
+            } else {
+                validatorSettings = {
+                    rules: {},
+                    messages: {}
+
+                };
+            }
+
+            function getValidatorRulesandMessages($this) {
+                var rulesKey = $this.attr("id");
+                var rulesClass = $this.attr('class');
+                if (rulesClass != undefined) {
+                    var rulesElement = rulesClass.split(/\s+/);
+                    validatorSettings.rules[rulesKey] = {};
+                    validatorSettings.messages[rulesKey] = {};
+                    $.each(rulesElement, function (index, item) {
+                        if (item.match('^m-')) {
+                            item = item.replace('m-', '');
+                            validatorSettings.rules[rulesKey][item] = true;
+                            validatorSettings.messages[rulesKey][item] = "";
+                        }
+                    });
+                }
+            }
+
+
+            $this.find(".mlist-field input").each(function () {
+                if (Object.keys(validatorSettings.rules).length == 0) {
+                    getValidatorRulesandMessages($(this));
+                }
+
+            });
+
+            $this.find(".mlist-field select").each(function () {
+                if (Object.keys(validatorSettings.rules).length == 0) {
+                    getValidatorRulesandMessages($(this));
+                }
+            });
+
+            $.validator.setDefaults({
+                rules: validatorSettings.rules,
+                messages: validatorSettings.messages,
+                submitHandler: function () {
+                    isInSecondLayer = false;
+                    /*On click of form1 sign up button */
+                    omniVarsConfig('firstFormSubmit', 1);
+                    submitRequest();
+                    return false;
+                }
+            });
+
+            validator = $this.validate({
+                onkeyup: false
+            });
+        };
+
+        var onLoad = function () {
+            settings.callBacks.onLoad();
+        };
+
+        var onSubmit = function () {
+            if (typeof settings.callBacks.onSubmit != "undefined") {
+                return settings.callBacks.onSubmit();
+            }
+        };
+
+        var onSuccess = function () {
+            if (typeof settings.callBacks.onSuccess != "undefined") {
+                settings.callBacks.onSuccess();
+            }
+        };
+
+        init(options);
+        return this.each(function () {
+            _this = this;
+        });
+    };
+
+}($jq18));
+;
+/*
+ * Silverpop, Omniture, DGAnalytics Integration
+ * version 1
+ *
+ */
+
+/* The starter site has already WMG declared in the 'Site Configuration'
+ * javascript block in the header, which defines static site specific
+ * configuration
+ */
+var WMG = WMG || {};
+
+/*
+ * Omniture  classes
+ */
+WMG.Omniture = function () {
+    var init = function () {
+
+    };
+    return {
+        init: init
+    };
+}();
+
+WMG.OmnitureHelper = function () {
+    var populate = function (DrupalObj, OmnitureObj) {
+
+    };
+    return {
+        populate: populate
+    };
+}();
+
+/*
+ *  Silverpop classes
+ */
+WMG.SilverPop = function () {
+    var config = {
+        server: "https://signup.wmg.com/register",
+        siteName: "",
+        siteId: "",
+        keywordId: "",
+        newsletterId: "",
+        Datasource: "",
+        autoreply: ""
+    };
+
+    var spObj = {
+        "email": "",
+        "sex": "",
+        "js": "true",
+        "newsletterId": "",
+        "keywordId": "",
+        "EosUserDisplayName": "",
+        "EosSiteAccountId": "",
+        "EosMasterAccountId": "",
+        "siteName": "",
+        "SiteId": "",
+        "postalcode": "",
+        "TwitterHandle": "",
+        "state": "",
+        "phone": "",
+        "lastname": "",
+        "firstname": "",
+        "dobYear": "",
+        "dobDay": "",
+        "dobMonth": "",
+        "city": "",
+        "age": "",
+        "country": "",
+        "address1": "",
+        "address2": "",
+        "address3": "",
+        "global_optin": "",
+    };
+
+    //controller for this class. Uses datapreparation method to prepar the data.
+    // Uses submitData to submit the data to the server.
+    var mergeSiteLevelVars = function (userData) {
+        if (typeof config.siteId !== "undefined") {
+            userData.siteId = config.siteId;
+        }
+        if (typeof config.siteName !== "undefined") {
+            userData.siteName = config.siteName;
+        }
+        if (typeof config.newsletterId !== "undefined") {
+            userData.newsletterId = config.newsletterId;
+        }
+        if (typeof config.keywordId !== "undefined") {
+            userData.keywordId = config.keywordId;
+        }
+        if (typeof config.Datasource !== "undefined") {
+            userData.Datasource = config.Datasource;
+        }
+        if (typeof config.autoreply !== "undefined") {
+            userData.autoreply = config.autoreply;
+        }
+        return userData;
+    };
+    var submit = function (userData) {
+        userData = mergeSiteLevelVars(userData);
+        var validate = validateObj(userData);
+        if (validate.status === true) {
+            ping(userData);
+            return true;
+        } else {
+            var errors = validate.errors;
+            return errors;
+        }
+    };
+
+    var validateObj = function (userData) {
+		/* List of thing to check before we can send the data.
+		 Essentially we check only the user input data, that can be corrected.*/
+        var emailFilter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        var mobileFilter = /^[.]{0}$|^\d{10,15}$/;
+        var mobileFilterUS = /^[.]{0}$|^\d{10}$/;
+        var mobileFilterOTHER = /^[.]{0}$|^\d{10,15}$/;
+        var retObj = {
+            status: true
+        };
+        var errors = {};
+        if (!emailFilter.test(userData.email)) {
+            errors.email = "Email Format is invalid";
+        }
+        if (typeof userData.mobile !== "undefined") {
+            if (userData.country === "United States") {
+                mobileFilter = mobileFilterUS;
+            }
+            if (!mobileFilter.test(userData.mobile)) {
+                errors.mobile = "Mobile Number is invalid";
+            }
+        }
+        var mobile = userData.mobile;
+        if (!jQuery.isEmptyObject(errors)) {
+            retObj.errors = errors;
+            retObj.status = false;
+        }
+        return retObj;
+    };
+
+    var getObj = function () {
+        var silverPopObj = spObj;
+        return silverPopObj;
+    };
+    var ping = function (userData) {
+        var qStr = "";
+        if (userData.global_optin === "true") {
+            userData.newsletterId = userData.newsletterId + "," + WMG.MailingList.labelListId;
+        }
+        jQuery.each(userData, function (key, value) {
+            if (value !== "" && typeof value !== "undefined") {
+                qStr += key + "=" + value + "&";
+            }
+        });
+        qStr = qStr.slice(0, -1);
+        jQuery.ajax({
+            url: config.server,
+            data: qStr,
+            dataType: "script",
+            success: function (data) {
+                /* Ignore this now */
+            }
+        });
+    };
+
+    var callback = function (a, b) {
+		/* Errors are supressed.
+		 * The problem is there is no way,
+		 * to report back to the calling function,
+		 * that there are errors.
+		 */
+    };
+
+    var init = function (userConfig) {
+        if (typeof userConfig !== "undefined") {
+            jQuery.extend(config, userConfig);
+        }
+    };
+
+    return {
+        init: init,
+        submit: submit,
+        callback: callback,
+        getObj: getObj
+    };
+}();
+if (typeof callback === "undefined") {
+    /* Variable hoisted intended */
+    callback = function (a, b) {
+        WMG.SilverPop.callback(a, b);
+    };
+};
+WMG.SilverPopHelper = function () {
+
+    var dateFormatter = function (dateString) {
+        var dateString = dateString.split(" ");
+        var regexDate = /^((?:19|20)\d\d)[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
+        var result = regexDate.exec(dateString[0]);
+        if (jQuery.isArray(result)) {
+            var output = {};
+            output.year = result[1];
+            output.month = result[2];
+            output.day = result[3];
+        } else {
+            output = false;
+        }
+        return output;
+    };
+    var genderFormatter = function (gender) {
+        var retGender = "";
+        if (typeof gender === "string") {
+            switch (jQuery.trim(gender.toLowerCase())) {
+                case "male":
+                    retGender = 2;
+                    break;
+                case "female":
+                    retGender = 1;
+                    break;
+            }
+        };
+        return retGender;
+    };
+    var populate = function (spObj, serverVars) {
+        /* Take care of newsletterID, signup Type */
+        if (serverVars.user_email !== null) {
+            spObj.email = serverVars.user_email;
+        }
+        if (serverVars.user_gender !== null) {
+            spObj.sex = genderFormatter(serverVars.user_gender);
+        }
+        if (serverVars.user_eos_wide_id !== null) {
+            spObj.EosMasterAccountId = serverVars.user_eos_wide_id;
+        }
+        if (serverVars.user_eos_site_id !== null) {
+            spObj.EosSiteAccountId = serverVars.user_eos_site_id;
+        }
+        if (serverVars.site_name !== null) {
+            spObj.siteName = serverVars.site_name;
+        }
+        if (serverVars.user_postal_code !== null) {
+            spObj.postalcode = serverVars.user_postal_code;
+        }
+        if (serverVars.user_twitter !== null) {
+            spObj.TwitterHandle = serverVars.user_twitter;
+        }
+        if (serverVars.user_state !== null) {
+            spObj.state = serverVars.user_state;
+        }
+        if (serverVars.user_eos_display_name !== null) {
+            spObj.EosUserDisplayName = serverVars.user_eos_display_name;
+        }
+        if (serverVars.user_birthdate !== null) {
+            var dateObj = dateFormatter(serverVars.user_birthdate);
+            if (dateObj !== false) {
+                spObj.dobYear = dateObj.year;
+                spObj.dobDay = dateObj.day;
+                spObj.dobMonth = dateObj.month;
+            }
+        }
+        if (serverVars.user_city !== null) {
+            spObj.city = serverVars.user_city;
+        }
+        if (serverVars.user_country !== null) {
+            spObj.country = serverVars.user_country;
+        }
+        if (serverVars.spUpdate === true) {
+            spObj.updateprofile = "yes";
+        };
+        if (serverVars.actuser_field_global_optin === 1) {
+            spObj.global_optin = "true";
+        }
+        return spObj;
+    };
+    return {
+        populate: populate
+    };
+}();
+
+WMG.AnalyticsController = function () {
+
+    var config = {
+        omniture: WMG.Omniture,
+        silverpop: WMG.SilverPop,
+        serverVars: ""
+    };
+
+    var sendToSilverPop = function () {
+        var spObj = WMG.SilverPop.getObj();
+        spObj = WMG.SilverPopHelper.populate(spObj, config.serverVars);
+        config.silverpop.submit(spObj);
+    };
+    var sendToOmniture = function () {
+
+    };
+    var processAnalytics = function () {
+        var verifiedEmail = false;
+        if (config.serverVars === "") {
+            return;
+        }
+        /* This is an update scenario. */
+        if (config.serverVars.action === "update" && config.serverVars.entity_type == "node") {
+            config.serverVars.spUpdate = true;
+            sendToSilverPop();
+        }
+
+        /*An user has been inserted in the database. But email need not be verified*/
+        if (config.serverVars.action == "insert" && config.serverVars.entity_type == "node") {
+
+            digitalData.page.pageInfo.pageName = digitalData.content.artist + ":Registration Email Sent" ; 
+			_satellite.track("register");
+
+        }
+        /*Email Verification step reached.*/
+        if (location.href.indexOf("pass-reset-token") !== -1) {
+            verifiedEmail = true;
+            digitalData.page.pageInfo.pageName = digitalData.content.artist + ":One-Time Login" ; 
+        }
+
+        if (verifiedEmail) {
+            config.serverVars.spUpdate = false;
+            sendToSilverPop();
+        }
+
+    };
+    var init = function (userConfig) {
+        /*Check for validity of serverVariable. If it does not come back. Just ignore it.*/
+        if (typeof userConfig !== "undefined") {
+            jQuery.extend(config, userConfig);
+            processAnalytics();
+        }
+    };
+
+    return {
+        init: init
+    };
+}();
+
+/* Invoking silverpop */
+WMG.SilverPop.init({
+    siteName: Drupal.settings.server_variables.site_name,
+    siteId: WMG.siteID, /*Legacy EOS IDS*/
+    keywordId: WMG.MailingList.MobileKeywordIds["United States"],
+    newsletterId: WMG.MailingList.EmailListIds["United States"],
+    Datasource: WMG.MailingList.Datasource,
+    autoreply: WMG.MailingList.autoreply
+});
+WMG.Omniture.init();
+if (typeof Drupal.settings.server_variables !== "undefined") {
+    /*Pass Omniture, MailingList class. So that this is configurable. We can truly configure our variables. */
+    WMG.AnalyticsController.init({
+        serverVars: Drupal.settings.server_variables,
+        omniture: WMG.Omniture,
+        silverpop: WMG.SilverPop
+    });
+};
+/*
+ * Social Links - Twitter and Facebook buttons
+ *
+ */
+/* Pager : Replace Next/Previous text and smooth scrolling to the top of the list */
+Drupal.behaviors.mettfunction = {
+	attach : function() {
+		if (!jQuery('#fb-root').length) {
+			jQuery('body').prepend('<div id="fb-root"></div>');
+		}
+		
+		/* added if condition to exclude pages where we don't need box_count for fb like buttons */
+        if(jQuery(".page-node-24231").length <= 0){
+			jQuery('.fb-like').each(function() {
+				jQuery(this).after('<fb:like href="' + jQuery(this).attr('data-href') + '" send="false" layout="box_count" width="' + (jQuery(this).attr('data-width') ? jQuery(this).attr('data-width') : 450) + '" show_faces="true"></fb:like>').remove();
+			});
+		}
+		jQuery('a.twitter-share-button').each(function() {
+			var startersiteDefaultURL = 'blinkemphaticrock.drupalgardens.com';
+			var href = jQuery(this).attr('data-url');
+			var result = href.replace(startersiteDefaultURL, WMG.basePath);
+			result = result.replace('wmgd2c_ss1', WMG.Twitter.handle);
+			jQuery(this).attr('data-url', result);
+			//add the via attribute if present in configuration
+			if (WMG.Twitter.via) {
+				jQuery(this).attr('data-via', WMG.Twitter.via);
+			}
+		});
+
+		try {
+			FB.XFBML.parse();
+		} catch (ex) {
+			_includeJS("//connect.facebook.net/en_US/all.js#xfbml=1");
+		}
+
+	}
+}; 
+
+! function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (!d.getElementById(id)) {
+		js = d.createElement(s);
+		js.id = id;
+		js.src = "//platform.twitter.com/widgets.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}
+}(document, "script", "twitter-wjs");;
+/*
+* Merch block Javascript
+* version 2
+* 1. Added the function testQueryStringPresence();
+* 2. Modified inclusion of intcmp with & or ? in line 71.
+*/
+
+jQuery.fn.makeLinksExternal=function(){return this.each(function(){var a=jQuery(this).attr("href");if(a.indexOf(location.host)==-1&&a.indexOf("/")!=0){jQuery(this).attr("target","_blank")}})};
+
+/* Functions for Merch Hover Card */
+function bringMerchHCOn(merchImg){
+  merchImg.showTimer = window.setTimeout(function(){
+    jQuery(merchImg).siblings(".merchHC").fadeIn(350);
+  },300);
+}
+
+function killMerchHC(merchImg){
+  if (merchImg.showTimer){
+    window.clearTimeout(merchImg.showTimer);
+  }
+}
+
+function testOmnitureStringPresence(omnitureString){
+  var omnitureStrRegex = /intcmp=(.*)(&.*|\/)$/;
+  var regExCapture = omnitureString.match(omnitureStrRegex);
+  return regExCapture; 
+}
+
+function getMerchToasterOmnitureArray(omnitureString){
+  var omnitureArrayLinks = new Array();
+  omnitureString = jQuery.trim(omnitureString);
+  if (omnitureString.charAt(omnitureString.length-1) != "/" ){omnitureString += "/";}
+  var regExCapture = testOmnitureStringPresence(omnitureString);
+  if (regExCapture!= null && regExCapture != ""){
+    var regularExpCapture = regExCapture[1]; 
+    omnitureString = omnitureString.replace(/\/$/,'');
+    omnitureArrayLinks["alert-title"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-alert-title');
+    omnitureArrayLinks["alert-thumb"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-alert-thumb');
+    omnitureArrayLinks["alert-button"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-alert-button');
+  }else {
+    omnitureArrayLinks["alert-title"] = omnitureString.replace(/\/$/,'?intcmp=-alert-title');
+    omnitureArrayLinks["alert-thumb"] = omnitureString.replace(/\/$/,'?intcmp=-alert-thumb');
+    omnitureArrayLinks["alert-button"] = omnitureString.replace(/\/$/,'?intcmp=-alert-button');
+  }
+  return omnitureArrayLinks;
+}
+  
+/*
+ * This function is used to tag store links with different omniture tags, 
+ * to track them. This will enable us to track which links the user clicked. 
+ * */
+function getMerchOmnitureArray(omnitureString){
+  var omnitureArrayLinks = new Array();
+  omnitureString = jQuery.trim(omnitureString);
+  if (omnitureString.charAt(omnitureString.length-1) != "/" ){omnitureString += "/";}
+  regExCapture = testOmnitureStringPresence(omnitureString);
+  if (regExCapture != null && regExCapture != ""){
+    var regularExpCapture = regExCapture[1]; 
+    omnitureString = omnitureString.replace(/\/$/,'');
+    omnitureArrayLinks["page-title"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-page-title');
+    omnitureArrayLinks["page-button"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-page-button');
+    omnitureArrayLinks["page-thumb"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-page-thumb');
+    omnitureArrayLinks["hovercard-title"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-hovercard-title');
+    omnitureArrayLinks["hovercard-thumb"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-hovercard-thumb');
+    omnitureArrayLinks["hovercard-button"] = omnitureString.replace(regularExpCapture,regularExpCapture+'-hovercard-button');
+  }else{
+    var intcmp = testQueryStringPresence(omnitureString) ? '&intcmp=' : '?intcmp=';
+    omnitureArrayLinks["page-title"] = omnitureString.replace(/\/$/,intcmp+'page-title');
+    omnitureArrayLinks["page-button"] = omnitureString.replace(/\/$/,intcmp+'page-button');
+    omnitureArrayLinks["page-thumb"] = omnitureString.replace(/\/$/,intcmp+'page-thumb');
+    omnitureArrayLinks["hovercard-title"] = omnitureString.replace(/\/$/,intcmp+'hovercard-title');
+    omnitureArrayLinks["hovercard-thumb"] = omnitureString.replace(/\/$/,intcmp+'hovercard-thumb');
+    omnitureArrayLinks["hovercard-button"] = omnitureString.replace(/\/$/,intcmp+'hovercard-button');
+    
+  }         
+  return omnitureArrayLinks;
+}
+
+function testQueryStringPresence(omnitureString){
+    var test = false;
+    if (omnitureString.indexOf("?") != -1) {
+        test = true;
+    }
+    return test;
+}
+
+/*
+ * 
+ * This function generates the structure of the merch module. 
+ * The structure is just a javascript variables interspersed with html. 
+ */ 
+function generateMerchStructure (){
+  var $merchData = jQuery("#merchData");
+  var $merchItem = $merchData.children(".merchItems")
+  var merchViewAllLink = $merchData.children(".merchViewAll").html();
+  var merchHoverCardPresenHtml = $merchData.children(".merchHoverCardPresent").html();
+  var merchHoverCardPresent = jQuery.trim(merchHoverCardPresenHtml);
+  merchHoverCardPresent = (merchHoverCardPresent === 'true') ? true : false;
+  
+  /* Code for the Merch Head */
+  var merchHead = '<div class="merchHead"><div class="visitStore"><a href="'+ merchViewAllLink +'" class="visitStoreLink"  >ALL</a></div></div>'
+  var visitStorehead = jQuery('#merchContainer').parent(".description").parent(".body").siblings(".head");
+        jQuery(merchHead).appendTo(visitStorehead);
+  jQuery(visitStorehead).find("a").makeLinksExternal();
+  /* End of Code for Merch Module */
+  
+  var merchBody='<ul class="merchItems">';
+  jQuery.each($merchItem.children(".merchItem"), function (i){      
+    var merchImage = jQuery(this).children(".merchImage").html();
+    var merchTitle = jQuery(this).children(".merchTitle").html();
+    var merchBuyNow = jQuery(this).children(".merchBuyNow").html();
+    var merchDesc = jQuery(this).children(".merchDesc").html();
+    var merchSizes = jQuery(this).children(".merchSizes").html();
+    var merchPrice = jQuery(this).children(".merchPrice").html();
+    var omnitureArrayLinks = getMerchOmnitureArray(merchBuyNow);
+ 
+    merchBody += '<li class="merch small item'+(i+1)+'">\
+      <div class="merchImg"><a href="'+ omnitureArrayLinks["page-thumb"] +'"><img src="'+ merchImage +'"/></a><div class="merchZoomIcon"></div></div>\
+      <div class="merchDetail">\
+        <div class="merchPriceWrapper"><div class="merchName"><a href="'+ omnitureArrayLinks["page-title"]+'" >'+ merchTitle +'</a></div></div>\
+        <div class="merchBuy"><div class="merchPrice">'+ merchPrice +'</div><a href="'+omnitureArrayLinks["page-button"]+'" class="merchBuyLink">Buy Now</a></div>\
+      </div>'
+      if (merchHoverCardPresent){
+      merchBody +='<div class="merchHC merchHC'+ (i + 1) +'">\
+              <div class="merchHCWrapper">\
+                <div class="merchHCInnerWrapper">\
+                  <div class="merchHCHead"><a href="'+ omnitureArrayLinks["hovercard-title"] +'">'+ merchTitle +'</a></div>\
+                  <div class="merchHCBody">\
+                    <div class="merchHCLeftCon"><a href="'+ omnitureArrayLinks ["hovercard-thumb"]+ '"><img src="'+merchImage+'" width="230px"/></a></div>\
+                    <div class="merchHCRightCon">\
+                      <h3 class="merchHCPrice">'+merchPrice+ '</h3>';
+                      if (merchDesc != "" && merchDesc != null){
+                        merchBody += '<h3>Description</h3><div>'+ merchDesc +'</div>';  
+                      }
+                      if (merchSizes !="" && merchSizes !=null){
+                        merchBody += '<h3>Sizes</h3><div>'+merchSizes+'</div>';  
+                      }
+                      
+                      merchBody += '<div class="merchHCBuyNowCon"><a class="merchHCBuyNow" href="'+ omnitureArrayLinks ["hovercard-button"] +'">Buy Now</a></div>\
+                    </div>\
+                    <div class="clear"></div>\
+                  </div>\
+                  <div class="merchHCFoot"></div>\
+                </div>\
+              </div>\
+            </div>';
+      }/* End of the Merch Hovercard Body */
+    merchBody += '</li>';
+  });
+  merchBody += '</ul><div class="clear"></div>';
+
+  var merchFoot = '<div class="clear"></div><div class="merchFoot"><div class="visitStore"><a href="'+ merchViewAllLink +'" class="visitStoreLink" >View ALL</a></div></div>';
+  var visitStoreFoot = jQuery('#merchContainer').parent(".description").parent(".body").siblings(".foot");
+        jQuery(merchFoot).appendTo(visitStoreFoot);
+  jQuery(visitStoreFoot).find("a").makeLinksExternal();    
+  return merchBody;
+}
+  
+/*These functions are used by the merch HC so that casual hovers less than 300 seconds
+ * are omitted. 
+ */
+function bringMerchHCOn(merchImg){
+  merchImg.showTimer = window.setTimeout(function(){
+    jQuery(merchImg).siblings(".merchHC").fadeIn(300);
+  },300);
+}
+
+function killMerchHC(merchImg){
+  if (merchImg.showTimer){
+    window.clearTimeout(merchImg.showTimer);
+  }
+}  
+
+/* Registereing the hover events */
+function registerMerchHoverEvents(){
+  jQuery(".merchImg").hover(function(){
+    bringMerchHCOn(this);
+  },function(){
+    killMerchHC(this);
+  });
+  jQuery(".merchHC").hover(function(){
+  },function(){
+    jQuery(this).fadeOut(300);
+  });
+}  
+
+/* The piece of code which generates the merch, adds the dom and registers the events. */
+jQuery(document).ready(function(){
+  if(jQuery('#merchData').length){     
+    jQuery("#merchContainer").html(generateMerchStructure());
+    jQuery("#merchData").empty();
+    registerMerchHoverEvents();
+    jQuery("#merchContainer a").makeLinksExternal();  
+  }    
+});
+;
+/*! matchMedia() polyfill - Test a CSS media type/query in JS. Authors & copyright (c) 2012: Scott Jehl, Paul Irish, Nicholas Zakas. Dual MIT/BSD license */
+/*! NOTE: If you're already including a window.matchMedia polyfill via Modernizr or otherwise, you don't need this part */
+window.matchMedia=window.matchMedia||function(a){"use strict";var c,d=a.documentElement,e=d.firstElementChild||d.firstChild,f=a.createElement("body"),g=a.createElement("div");return g.id="mq-test-1",g.style.cssText="position:absolute;top:-100em",f.style.background="none",f.appendChild(g),function(a){return g.innerHTML='&shy;<style media="'+a+'"> #mq-test-1 { width: 42px; }</style>',d.insertBefore(f,e),c=42===g.offsetWidth,d.removeChild(f),{matches:c,media:a}}}(document);
+
+/*! Respond.js v1.1.0: min/max-width media query polyfill. (c) Scott Jehl. MIT/GPLv2 Lic. j.mp/respondjs  */
+(function(a){"use strict";function x(){u(!0)}var b={};if(a.respond=b,b.update=function(){},b.mediaQueriesSupported=a.matchMedia&&a.matchMedia("only all").matches,!b.mediaQueriesSupported){var q,r,t,c=a.document,d=c.documentElement,e=[],f=[],g=[],h={},i=30,j=c.getElementsByTagName("head")[0]||d,k=c.getElementsByTagName("base")[0],l=j.getElementsByTagName("link"),m=[],n=function(){for(var b=0;l.length>b;b++){var c=l[b],d=c.href,e=c.media,f=c.rel&&"stylesheet"===c.rel.toLowerCase();d&&f&&!h[d]&&(c.styleSheet&&c.styleSheet.rawCssText?(p(c.styleSheet.rawCssText,d,e),h[d]=!0):(!/^([a-zA-Z:]*\/\/)/.test(d)&&!k||d.replace(RegExp.$1,"").split("/")[0]===a.location.host)&&m.push({href:d,media:e}))}o()},o=function(){if(m.length){var b=m.shift();v(b.href,function(c){p(c,b.href,b.media),h[b.href]=!0,a.setTimeout(function(){o()},0)})}},p=function(a,b,c){var d=a.match(/@media[^\{]+\{([^\{\}]*\{[^\}\{]*\})+/gi),g=d&&d.length||0;b=b.substring(0,b.lastIndexOf("/"));var h=function(a){return a.replace(/(url\()['"]?([^\/\)'"][^:\)'"]+)['"]?(\))/g,"$1"+b+"$2$3")},i=!g&&c;b.length&&(b+="/"),i&&(g=1);for(var j=0;g>j;j++){var k,l,m,n;i?(k=c,f.push(h(a))):(k=d[j].match(/@media *([^\{]+)\{([\S\s]+?)$/)&&RegExp.$1,f.push(RegExp.$2&&h(RegExp.$2))),m=k.split(","),n=m.length;for(var o=0;n>o;o++)l=m[o],e.push({media:l.split("(")[0].match(/(only\s+)?([a-zA-Z]+)\s?/)&&RegExp.$2||"all",rules:f.length-1,hasquery:l.indexOf("(")>-1,minw:l.match(/\(\s*min\-width\s*:\s*(\s*[0-9\.]+)(px|em)\s*\)/)&&parseFloat(RegExp.$1)+(RegExp.$2||""),maxw:l.match(/\(\s*max\-width\s*:\s*(\s*[0-9\.]+)(px|em)\s*\)/)&&parseFloat(RegExp.$1)+(RegExp.$2||"")})}u()},s=function(){var a,b=c.createElement("div"),e=c.body,f=!1;return b.style.cssText="position:absolute;font-size:1em;width:1em",e||(e=f=c.createElement("body"),e.style.background="none"),e.appendChild(b),d.insertBefore(e,d.firstChild),a=b.offsetWidth,f?d.removeChild(e):e.removeChild(b),a=t=parseFloat(a)},u=function(b){var h="clientWidth",k=d[h],m="CSS1Compat"===c.compatMode&&k||c.body[h]||k,n={},o=l[l.length-1],p=(new Date).getTime();if(b&&q&&i>p-q)return a.clearTimeout(r),r=a.setTimeout(u,i),void 0;q=p;for(var v in e)if(e.hasOwnProperty(v)){var w=e[v],x=w.minw,y=w.maxw,z=null===x,A=null===y,B="em";x&&(x=parseFloat(x)*(x.indexOf(B)>-1?t||s():1)),y&&(y=parseFloat(y)*(y.indexOf(B)>-1?t||s():1)),w.hasquery&&(z&&A||!(z||m>=x)||!(A||y>=m))||(n[w.media]||(n[w.media]=[]),n[w.media].push(f[w.rules]))}for(var C in g)g.hasOwnProperty(C)&&g[C]&&g[C].parentNode===j&&j.removeChild(g[C]);for(var D in n)if(n.hasOwnProperty(D)){var E=c.createElement("style"),F=n[D].join("\n");E.type="text/css",E.media=D,j.insertBefore(E,o.nextSibling),E.styleSheet?E.styleSheet.cssText=F:E.appendChild(c.createTextNode(F)),g.push(E)}},v=function(a,b){var c=w();c&&(c.open("GET",a,!0),c.onreadystatechange=function(){4!==c.readyState||200!==c.status&&304!==c.status||b(c.responseText)},4!==c.readyState&&c.send(null))},w=function(){var b=!1;try{b=new a.XMLHttpRequest}catch(c){b=new a.ActiveXObject("Microsoft.XMLHTTP")}return function(){return b}}();n(),b.update=n,a.addEventListener?a.addEventListener("resize",x,!1):a.attachEvent&&a.attachEvent("onresize",x)}})(this);
+;
+function TwitterDisplayV11(operation, criteria, resultsPerPage, containerId, callback, tagLabel) {
+    this.operation = jQuery.trim(operation);
+    this.criteria = jQuery.trim(criteria);
+    this.resultsPerPage = resultsPerPage;
+    this.containerId = containerId;
+    this.callback = callback;
+
+    if (tagLabel) {
+        this.tagLabel = tagLabel;
+    } else {
+        this.tagLabel = "Tag(s) : ";
+    }
+
+    this.requestURL = "http://www.weate.ch/common/lib/twitter/timeline/index.php";
+    this.requestData = {
+        query : this.criteria,
+        site : WMG.artistname.replace(/\s+/g, '-').toLowerCase(),
+        count : resultsPerPage
+    }
+}
+
+TwitterDisplayV11.prototype.displayNextPage = function() {
+    var requestURL = this.requestURL + "?rand=" + parseInt(Math.random() * 99999999) + "&callback=?";
+    jQuery.getJSON(requestURL, this.requestData, this.callback);
+    jQuery("#" + this.containerId).html("<div class='ajaxLoading'>Loading ...</div>");
+}
+
+TwitterDisplayV11.prototype.displayPrevPage = function() {
+if(this.prevPageUrlSuffix != "") {
+  this.currentPage = parseInt(this.currentPage) - 1;
+    var requestURL = this.requestURL + this.prevPageUrlSuffix + "&rand=" + parseInt(Math.random()*99999999) + "&callback=?" ;
+    jQuery.getJSON(requestURL, this.callback);
+    jQuery("#" + this.containerId).html("<div class='ajaxLoading'>Loading ...</div>");
+  }  
+}
+
+TwitterDisplayV11.prototype.displayTweets = function(json, status) {
+
+    var jsonRoot = json;
+    var container = jQuery("#" + this.containerId);
+    
+    if(json.error) {
+      container.html(json.error);
+      return;
+    }
+    if(json.results) {
+      json = json.results;
+    } else if(json[0].user && json[0].user.statuses_count) {
+      this.totalPages = Math.ceil(json[0].user.statuses_count/this.resultsPerPage);
+    }
+    container.html("");
+    var usedCriteria = unescape(this.criteria);
+    if(usedCriteria.indexOf("#") == 0) {
+      container.append("<div class='followTag'><span class='label'>" + this.tagLabel + "</span>" 
+      + unescape(this.criteria) + "</div>");
+    }
+    container.append("<ul class='tweetsHolder'></ul>");
+    
+    holder = jQuery("#" + this.containerId + " .tweetsHolder");
+    jQuery.each(json, function(i, item){
+    
+    var userId = item.user ? item.user.screen_name : item.from_user;
+    var userText = userId.toLowerCase();
+    var followText = "";
+    if(WMG.Twitter.TwitterMap[userId]) {
+        userObj = WMG.Twitter.TwitterMap[userId];
+        userText = '<a class="username"' + 'href="' + userObj.profileUrl + '">' +
+        userObj.name + '</a>';
+        
+        followText = '<div class="follow">' +
+        '<iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/follow_button.html?screen_name=' + userId + '&	show_count=false"></iframe></div>';
+      }   
+      
+      tweet = item.text.twitterize();
+      holder.append("<li class=\"tweets\">" + 
+
+      '<div class="userInfo">' + userText + '</div>' +
+      '<div class="message">' + tweet + '</div>' +
+      "<div class='created'" + ">... " + 
+      item.created_at.fixTwitterDateString() + "</div>" +
+      followText +
+      "</li>");
+    });
+    if (jsonRoot.previous_page) {
+      this.prevPageUrlSuffix = jsonRoot.previous_page;
+      this.setPrevNavigation(true);
+      
+    } else if(this.operation == 'statuses' && this.currentPage > 1) {
+      this.prevPageUrlSuffix = "?page=" + (this.currentPage - 1) + "&count=" + this.resultsPerPage;
+      this.setPrevNavigation(true);
+      
+    } else {
+      this.prevPageUrlSuffix = "";
+      this.setPrevNavigation(false);
+    }
+    
+    if (jsonRoot.next_page) {
+      this.nextPageUrlSuffix = jsonRoot.next_page;
+      this.setNextNavigation(true);
+      
+    } else if(this.operation == 'statuses' && this.currentPage < this.totalPages) {
+      this.nextPageUrlSuffix = "?page=" + (this.currentPage + 1) + "&count=" + this.resultsPerPage;
+      this.setNextNavigation(true);
+      
+    } else {
+      this.nextPageUrlSuffix = "";
+      this.setNextNavigation(false);
+    }
+    
+    /* Twitter Hovercard implementation start */
+    if(jQuery('body').attr("id") == 'home' || jQuery('body').attr("id") == 'twitter') {
+      twttr.anywhere(function (T) {
+          //T("#twitterContainer .message").hovercards({infer:true});
+          T("#twitterContainer .follow").hovercards({infer:true});
+        });
+    }
+    /* Twitter Hovercard implementation end */
+    
+}
+
+TwitterDisplayV11.prototype.setNextNavigation = function(enabled) {
+
+  var id = "#" + this.containerId + "Next";
+  if(enabled) {
+    jQuery(id).removeClass('tcNextDisabled');
+    jQuery(id).addClass('tcNextEnabled');
+    jQuery(id).attr('href', '#');
+  } else {
+    jQuery(id).removeClass('tcNextEnabled');
+    jQuery(id).addClass('tcNextDisabled');
+    jQuery(id).attr('href', 'javascript:void(0)');
+  }
+}
+
+
+TwitterDisplayV11.prototype.setPrevNavigation = function(enabled) {
+
+  var id = "#" + this.containerId + "Prev";
+  if(enabled) {
+    jQuery(id).removeClass('tcPreviousDisabled');
+    jQuery(id).addClass('tcPreviousEnabled');
+    jQuery(id).attr('href', '#');
+  } else {
+    jQuery(id).removeClass('tcPreviousEnabled');
+    jQuery(id).addClass('tcPreviousDisabled');
+    jQuery(id).attr('href', 'javascript:void(0)');
+  }
+}
+
+function delegateTwitterCallback(twitterDisplay, json, status) {
+    twitterDisplay.displayTweets(json, status);
+}
+
+String.prototype.twitterize = function() {
+
+    var tweet = this.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&\?\/.=]+/, function(str) {
+        return '<a class="extLink" target=_new href="' + str + '">' + str + '</a>';
+    });
+
+    tweet = tweet.replace(/([@])([\w]+)/g, '$1<a class="twitterLink" target=_new href="http://twitter.com/' + '$2'.toLowerCase() + '">$2</a>');
+
+    return tweet;
+};
+
+String.prototype.fixTwitterDateString = function() {
+
+    var dateArray = this.split(" ");
+    var tweetDateString;
+
+    if (parseInt(dateArray[1], 10) > 0) {
+        tweetDateString = dateArray[2] + " " + dateArray[1] + ", " + dateArray[3] + " " + dateArray[4];
+    } else {
+        tweetDateString = dateArray[1] + " " + dateArray[2] + ", " + dateArray[5] + " " + dateArray[3];
+    }
+
+    var tweetTime = Date.parse(tweetDateString);
+    var currDate = new Date();
+
+    var timeDiff = parseInt(currDate.getTime() - tweetTime) / 1000;
+    timeDiff = timeDiff + (currDate.getTimezoneOffset() * 60);
+
+    var formattedString = '';
+    if (timeDiff < 60) {
+        formattedString = 'a minute ago';
+    } else if (timeDiff < (45 * 60)) {
+        formattedString = Math.round(timeDiff / 60) + ' minutes ago';
+    } else if (timeDiff < (1.5 * 60 * 60)) {
+        formattedString = '1 hour ago';
+    } else if (timeDiff < (24 * 60 * 60)) {
+        formattedString = Math.round(timeDiff / (60 * 60)) + ' hours ago';
+    } else if (timeDiff < (1.5 * 24 * 60 * 60)) {
+        formattedString = '1 day ago';
+    } else if (timeDiff < (7 * 24 * 60 * 60)) {
+        formattedString = Math.round(timeDiff / (24 * 60 * 60)) + ' days ago';
+    } else if (timeDiff < (1.5 * 7 * 24 * 60 * 60)) {
+        formattedString = '1 week ago';
+    } else if (timeDiff < (4 * 7 * 24 * 60 * 60)) {
+        formattedString = Math.round(timeDiff / (7 * 24 * 60 * 60)) + ' weeks ago';
+    } else if (timeDiff < (1.5 * 4 * 7 * 24 * 60 * 60)) {
+        formattedString = '1 month ago';
+    } else if (timeDiff < (12 * 4 * 7 * 24 * 60 * 60)) {
+        formattedString = Math.round(timeDiff / (4 * 7 * 24 * 60 * 60)) + ' months ago';
+    } else if (timeDiff < (1.5 * 12 * 4 * 7 * 24 * 60 * 60)) {
+        formattedString = '1 year ago';
+    } else if (timeDiff > (1.5 * 12 * 4 * 7 * 24 * 60 * 60)) {
+        formattedString = Math.round(timeDiff / (12 * 4 * 7 * 24 * 60 * 60)) + ' years ago';
+    } else {
+        formattedString = tweetDateString;
+    }
+    return formattedString;
+};
+if (typeof (WMG.ChartBeat) === "undefined"){ WMG.ChartBeat = {} }
+if (typeof (WMG.ChartBeat.hostName) === "undefined") {
+	WMG.ChartBeat.hostName = (function() {
+		hn = window.location.hostname;
+		hna = hn.split(".");
+		hna.reverse();
+		hn = hna[1] + "." + hna[0]
+		return hn
+	})();
+}
+
+var _sf_async_config={uid:34204,domain:WMG.ChartBeat.hostName}; 
+(function(){ 
+  function loadChartbeat() { 
+    window._sf_endpt=(new Date()).getTime(); 
+    var e = document.createElement('script'); 
+    e.setAttribute('language', 'javascript'); 
+    e.setAttribute('type', 'text/javascript'); 
+    e.setAttribute('src', 
+       (("https:" == document.location.protocol) ? "https://a248.e.akamai.net/chartbeat.download.akamai.com/102508/" : "http://static.chartbeat.com/") + 
+       "js/chartbeat.js"); 
+    document.body.appendChild(e); 
+  } 
+  var oldonload = window.onload; 
+  window.onload = (typeof window.onload != 'function') ? 
+     loadChartbeat : function() { oldonload(); loadChartbeat(); }; 
+})();;
+WMG = WMG || {};
+WMG.namespace("TurnKey");
+WMG.TurnKey = (function () {
+	var closeFlag = 0;
+	var jsonOutput, parsedFile, timeout;
+	var wmgSignUpFormOptions = {
+		callBacks: {
+			onSuccess: function () {
+				if (!WMG.Utils.isUser("administrator") && !WMG.Utils.isUser("Reviewer")) {
+					closeFlag++;
+					if (closeFlag === 1) {
+						clearTimeout(timeout);
+					}
+					if (closeFlag === 2) {
+						setTimeout(hideToaster, 5000);
+						jQuery.cookie("turnkeyPassCookie", 1);
+					}
+				}
+			}
+		}
+	};
+	var pageNameOption = {};
+	function OmniPrep(omniVars, description) {
+		if (typeof omniVars === "string") {
+			s_dtm.linkTrackVars = 'events';
+			s_dtm.linkTrackEvents = omniVars;
+			s_dtm.events = omniVars;
+		}
+		else {
+			s_dtm.linkTrackVars = Object.keys(omniVars);
+			s_dtm = jQuery.extend(s_dtm, omniVars);
+		}
+		s_dtm.tl(this, 'o', description);
+	}
+	function hideToaster() {
+		jQuery("#lightBoxContent.lightBoxContent.tkt").removeClass('show_toaster').addClass('hide_toaster');
+	}
+
+	function sendOmnitureEvent() {
+		var omniVars = {};
+		omniVars.events = "event63";
+		omniVars.linkTrackEvents = "event63";
+		s_account = digitalData.settings.reportSuites;
+		var turnkeyLightboxDescription = s_dtm.pageName + ':Email Sign-up Form:Toaster';
+		OmniPrep(omniVars, turnkeyLightboxDescription);
+	}
+
+	var scrollHandler = function () {
+		var maxScroll = jQuery(document).height() - jQuery(window).height();
+		var scrollValue;
+		var timeOutval = parsedFile.field_toaster_timeout;
+		var toasterPos = parsedFile.field_toaster_position;
+		var displayrate = parsedFile.field_display_rates;
+		var tkeyHt = parsedFile.field_turnkey_height;
+		if (toasterPos == 'From Bottom') {
+			scrollValue = maxScroll - tkeyHt;
+		} else {
+			scrollValue = tkeyHt;
+		}
+		if (jQuery(this).scrollTop() >= scrollValue && (jQuery.cookie('turnkeyPassCookie') == null || jQuery.cookie('turnkeyPassCookie') == undefined)) {
+			jQuery("#lightBoxContent.lightBoxContent.tkt").removeClass('hidetoaster').addClass('show_toaster');
+
+			var turnkeyLightboxOmniVars = {};
+			turnkeyLightboxOmniVars.eVar52 = 'Toaster:Email Sign-up Form';
+			turnkeyLightboxOmniVars.events = "event62";
+			turnkeyLightboxOmniVars.linkTrackEvents = "event62";
+			s_account = digitalData.settings.reportSuites;
+			var turnkeyLightboxDescription = digitalData.page.pageInfo.pageName + ':Email Sign-up Form:Toaster';
+			OmniPrep(turnkeyLightboxOmniVars, turnkeyLightboxDescription);
+			jQuery("#tktContainer .lightBoxContent.tkt .submit").live("click", function () {
+				sendOmnitureEvent();
+			})
+
+			jQuery("#lightBoxContent.lightBoxContent.tkt .lightBoxClose.turnKeyClose a").click(function () {
+				hideToaster();
+				if (!WMG.Utils.isUser("administrator") && !WMG.Utils.isUser("Reviewer")) {
+					jQuery.cookie("turnkeyPassCookie", 1);
+				}
+			});
+
+			if (!WMG.Utils.isUser("administrator") && !WMG.Utils.isUser("Reviewer")) {
+				timeout = setTimeout(hideToaster, timeOutval);
+				var touchStart = ((document.ontouchstart !== null) ? 'click' : 'touchstart');
+
+				jQuery("#tktContainer .lightBoxContent").live({
+					mouseover: function () {
+						clearTimeout(timeout);
+					},
+					mouseout: function () {
+						timeout = setTimeout(hideToaster, timeOutval);
+					},
+					focus: function () {
+						clearTimeout(timeout);
+						jQuery("#tktContainer .lightBoxContent").die('mouseout');
+					},
+					blur: function () {
+						timeout = setTimeout(hideToaster, timeOutval);
+						jQuery("#tktContainer .lightBoxContent").live('mouseout', function () {
+							timeout = setTimeout(hideToaster, timeOutval);
+						});
+					}
+				});
+
+				jQuery(".lightBoxContent.tkt").live({
+					touchstart: function () {
+						clearTimeout(timeout);
+					},
+					touchcancel: function () {
+						timeout = setTimeout(hideToaster, timeOutval);
+					}
+				});
+			}
+			jQuery(window).unbind('scroll', scrollHandler);
+		}
+	};
+	var createToaster = function () {
+		var template;
+		jsonOutput = jQuery(".view-id-turnkey_lightbox_toaster.view-display-id-block_2 .view-content").html();
+		var initiateTkt = function () {
+			jQuery("body").addClass("toaster");
+			SplashLightbox.init('{"blockSelector" : "#tktContainer", "isLightBox":"lightbox","displayRate":"' + parsedFile.field_display_rates + '","cookieName":"turnkey-toaster-cookie","lboxHeight":"200","lboxWidth":"800"}');
+			$jq18('#tktContainer .lightBoxContent.tkt #lightBoxSignup').wmgSignUpForm(wmgSignUpFormOptions);
+			if (ONEPAGE.mq.tabletNarrower) {
+				$jq18('body > .lightBoxContent.tkt #lightBoxSignup').wmgSignUpForm(wmgSignUpFormOptions);
+			}
+		};
+		if (jsonOutput !== null && JSON.parse(jsonOutput.trim()).length > 0) {
+			jsonOutput = jsonOutput.trim();
+			parsedFile = JSON.parse(jsonOutput)[0].parent;
+			parsedFile.title = parsedFile.title.substring(0, 204);
+			if (parsedFile.field_newsletter_id !== "" && parsedFile.field_newsletter_id !== null) {
+				if (parsedFile.field_mailing_list_params_toast !== null && parsedFile.field_mailing_list_params_toast !== "" && parsedFile.field_mailing_list_params_toast !== undefined) {
+					var mlistArr = parsedFile.field_mailing_list_params_toast.split("&amp;");
+					var targetElement = jQuery('.turnKeyToaster .primary-list-values');
+					createMailinglistParams(mlistArr, targetElement);
+				}
+				if (parsedFile.field_mailing_list_params_se !== null && parsedFile.field_mailing_list_params_se !== "" && parsedFile.field_mailing_list_parameters_se !== undefined) {
+					var mlistArr = parsedFile.field_mailing_list_params_se.split("&amp;");
+					var targetElement = jQuery('.turnKeyToaster .secondary-list-values');
+					createMailinglistParams(mlistArr, targetElement);
+				}
+				template = jQuery('.turnKeyToaster').html();
+			}
+			var html = template.supplant(parsedFile);
+
+			jQuery('#tktContainer').append(html);
+			if (parsedFile.field_preview_mode.toLowerCase() === 'true') {
+				if (WMG.Utils.isUser("administrator") || WMG.Utils.isUser("Reviewer")) {
+					initiateTkt();
+					jQuery(window).scroll(scrollHandler);
+				}
+			} else {
+				initiateTkt();
+				jQuery(window).scroll(scrollHandler);
+			}
+		}
+	}
+
+	var createMailinglistParams = function (params, targetElement) {
+		if (params != "") {
+			params.shift();
+			var mlistObj = {};
+
+			jQuery.each(params, function (key, value) {
+				var listArr = value.split("=")
+				mlistObj[listArr[0]] = listArr[1];
+			});
+
+			jQuery.each(mlistObj, function (key, value) {
+				if (targetElement.find("input[name='" + key + "']").length > 0) {
+					targetElement.find("input[name='" + key + "']").attr("value", value);
+				} else {
+					targetElement.append('<input id="mailinglistParams" name="' + encodeURIComponent(key) + '" type="hidden" value="' + encodeURIComponent(value) + '">')
+				}
+			});
+		}
+
+	}
+
+	var createTurnKeyLightbox = function () {
+		var jsonOutput = jQuery(".view-id-turnkey_lightbox_toaster.view-display-id-block_1 .view-content").html();
+		if (jsonOutput !== null && JSON.parse(jsonOutput.trim()).length > 0) {
+			jQuery("body").addClass("tklightbox");
+			jsonOutput = jsonOutput.trim();
+			var parsedFile = JSON.parse(jsonOutput)[0].parent;
+			parsedFile.title = parsedFile.title.substring(0, 204);
+			turnkeyLightboxTitle = parsedFile.title.substring(0, 204);
+			var template;
+			var lightboxType = "";
+			function captureOmniture() {
+				var omniVars = {};
+				omniVars.eVar52 = "Lightbox:" + lightboxType;
+				omniVars.events = "event62";
+				omniVars.linkTrackEvents = "event62";
+				omniVars.description = digitalData.page.pageInfo.pageName + ":" + turnkeyLightboxTitle + ":Lightbox";
+				OmniPrep(omniVars, omniVars.description);
+
+				function sendLightboxEvent() {
+					var omniVars = {};
+					omniVars.events = "event63";
+					omniVars.linkTrackEvents = "event63";
+					s_account = digitalData.settings.reportSuites;
+					var turnkeyLightboxDescription = s_dtm.pageName + ':Email Sign-up Form:Lightbox';
+					OmniPrep(omniVars, turnkeyLightboxDescription);
+				}
+				jQuery("#tklbContainer .lightBoxContent.tklb .submit").live("click", function () {
+					sendLightboxEvent();
+				})
+				$jq18('.lightBoxContent.tklb .merchLink a').on("click", function () {
+					var description = digitalData.page.pageInfo.pageName + ":lightbox:" + turnkeyLightboxTitle + ":click";
+					OmniPrep(omniVars, description);
+				});
+				$jq18('.lightBoxContent.tklb .genericCTA a').on("click", function () {
+					var description = digitalData.page.pageInfo.pageName + ":lightbox:" + turnkeyLightboxTitle + ":click";
+					OmniPrep(omniVars, description);
+				});
+				$jq18('.lightBoxContent.tklb .lightBoxClose a').on("click", function () {
+					var description = digitalData.page.pageInfo.pageName + ":Lightbox: Close:Click";
+					OmniPrep(omniVars, description);
+				});
+			};
+			if (parsedFile.field_newsletter_id !== "" && parsedFile.field_newsletter_id !== null) {
+				if (parsedFile.field_mailing_list_parameters !== null && parsedFile.field_mailing_list_parameters !== "" && parsedFile.field_mailing_list_parameters !== undefined) {
+					var mlistArr = parsedFile.field_mailing_list_parameters.split("&amp;");
+					var targetElement = jQuery('#turnkeyLightbox .mlistTemplate .primary-list-values');
+					createMailinglistParams(mlistArr, targetElement);
+				}
+				if (parsedFile.field_mailing_list_parameters_se !== null && parsedFile.field_mailing_list_parameters_se !== "" && parsedFile.field_mailing_list_parameters_se !== undefined) {
+					var mlistArr = parsedFile.field_mailing_list_parameters_se.split("&amp;");
+					var targetElement = jQuery('#turnkeyLightbox .mlistTemplate .secondary-list-values');
+					createMailinglistParams(mlistArr, targetElement);
+				}
+				template = jQuery('#turnkeyLightbox .mlistTemplate').html();
+				lightboxType = "Newsletter";
+			} else if (parsedFile.field_merch_item_name !== "" && parsedFile.field_merch_item_name !== null) {
+				template = jQuery('#turnkeyLightbox .merchTemplate').html();
+				lightboxType = "Product Promotion";
+			} else {
+				var ctaObj = jQuery.parseJSON(parsedFile.field_cta_button_1);
+				var ctaDom = '';
+				for (var key in ctaObj) {
+					var ctaDiv = document.createElement('div');
+					ctaDiv.className = "genericCTA";
+					var ctaA = document.createElement('a');
+					ctaA.setAttribute("href", ctaObj[key]);
+					ctaA.setAttribute("target", "_blank");
+					ctaA.innerHTML = key;
+					ctaDiv.appendChild(ctaA);
+					jQuery('#turnkeyLightbox .genericDesc').append(ctaDiv);
+				}
+				template = jQuery('#turnkeyLightbox .genericTemplate').html();
+				lightboxType = "General";
+			}
+			var html = template.supplant(parsedFile);
+			jQuery('#tklbContainer').append(html);
+			if (parsedFile.field_trigger_id === "") {
+				jQuery('#tklbContainer #triggerId').remove();
+			}
+			if (parsedFile.field_data_ext === "") {
+				jQuery('#tklbContainer #dataext').remove();
+			}
+			var hideImage = {};
+			hideImage.callBacks = {
+				"onSuccess": function () {
+					jQuery(".turnKeyImageWrapper").hide();
+				}
+			};
+			var initiateTklb = function () {
+				SplashLightbox.init('{"blockSelector" : "#tklbContainer", "isLightBox":"lightbox","displayRate":"' + parsedFile.field_display_rate + '","cookieName":"turnkey-lightbox-cookie","lboxHeight":"400","lboxWidth":"800"}');
+				pageNameOption.customPageName = turnkeyLightboxTitle;
+				$jq18('#tklbContainer .lightBoxContent.tklb #lightBoxSignup').wmgSignUpForm(pageNameOption);
+				if (ONEPAGE.mq.tabletNarrower) {
+					$jq18('body > .lightBoxContent.tklb #lightBoxSignup').wmgSignUpForm(pageNameOption);
+				}
+				$jq18(window).on("load", function () {
+					captureOmniture();
+				})
+			}
+			if (parsedFile.field_preview_mode.toLowerCase() === 'true') {
+				if (WMG.Utils.isUser("administrator") || WMG.Utils.isUser("Reviewer")) {
+					initiateTklb();
+				}
+			} else {
+				initiateTklb();
+			}
+		}
+	};
+	var init = function (options) {
+		jQuery.extend(true, wmgSignUpFormOptions, options);
+		if (wmgSignUpFormOptions.option === "createToaster") {
+			if ((ONEPAGE.mq.tabletNarrower && !jQuery("body > .lightBoxContent").is(":visible")) || (ONEPAGE.mq.tabletWider)) {
+				createToaster();
+			}
+		} else {
+			jQuery.extend(true, pageNameOption, options);
+			createTurnKeyLightbox();
+		}
+	}
+	return {
+		init: init
+	}
+})();
+;
