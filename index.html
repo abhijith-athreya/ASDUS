@@ -1,37 +1,42 @@
 
 <h1> ASDUS </h1>
 
-Automatic Segment Detection using Unsupervised and Supervised Learning is a system which is designed to detect title and prose segments in HTML documents. The following sections contain more information on ASDUS. Our <a href="https://github.com/abhijith-athreya/ASDUS/raw/master/pdf/supervised-unsupervised-methods.pdf" target="_blank">paper<a/> featuring ASDUS has been selected for presentation at the <a href="http://emnlp2018.org/" target="_blank">EMNLP</a> (Empirical Methods in Natural Language Processing) 2018 conference.
+<p>Automatic Segment Detection using Unsupervised and Supervised Learning is a system which is designed to detect title and prose segments in HTML documents. The following sections contain more information on ASDUS. Our <a href="https://github.com/abhijith-athreya/ASDUS/raw/master/pdf/supervised-unsupervised-methods.pdf" target="_blank">paper<a/> featuring ASDUS has been selected for presentation at the <a href="http://emnlp2018.org/" target="_blank">EMNLP</a> (Empirical Methods in Natural Language Processing) 2018 conference. </p>
 
-## What is the need for ASDUS?
+<h2>What is the need for ASDUS? </h2>
 
-HTML documents are one of the most sought-after data sources by researchers working in different areas. HTML pages are often organized into different segments based on the topicality of the text. Each section/segment is generally started with a short text, which we term as title and followed by a relatively more substantial portion of text, which we call as prose. The below figure (retrieved from ) shows this typical organization. The text is mined from HTML pages in many different ways, but existing methods do not take advantage of this specific organization.
+<p>HTML documents are one of the most sought-after data sources by researchers working in different areas. HTML pages are often organized into different segments based on the topicality of the text. Each section/segment is generally started with a short text, which we term as title and followed by a relatively more substantial portion of text, which we call as prose. The below figure (retrieved from ) shows this typical organization. The text is mined from HTML pages in many different ways, but existing methods do not take advantage of this specific organization. </p>
 
 
 <img src="images/adobe_segments.png" alt="Organization of a typical web page" title="Organization of a web page into title and prose sections" width="959" height="701">
 
 
-HTML documents can be organized in many ways and creating a rule-based system to extract title and prose text will not yield good results. The segregation of title and prose text can be leveraged to improve:
-*   Closed domain QA
-*   Information retrieval
-*   Summarization of web documents
+<p>HTML documents can be organized in many ways and creating a rule-based system to extract title and prose text will not yield good results. The segregation of title and prose text can be leveraged to improve:
+<ul>
+  <li>Closed domain QA</li>
+  <li>Information retrieval</li>
+  <li>Summarization of web documents</li>
+</ul>
 
 
 
-## What does ASDUS do?
+<h2>What does ASDUS do?</h2>
 
-ASDUS uses natural language processing and machine learning techniques to automatically segregate a given web document into segments, which contain the corresponding title and prose text. The input for ASDUS is the raw HTML file, and it outputs a simplified version of the input HTML file, which contains all title text in "h2" tags and all prose text in "p" tags. This simple organization makes detection of title and prose text straightforward. Below is an image which has the original HTML file on the right and the output of ASDUS on the left. 
+<p>ASDUS uses natural language processing and machine learning techniques to automatically segregate a given web document into segments, which contain the corresponding title and prose text. The input for ASDUS is the raw HTML file, and it outputs a simplified version of the input HTML file, which contains all title text in "h2" tags and all prose text in "p" tags. This simple organization makes detection of title and prose text straightforward. Below is an image which has the original HTML file on the right and the output of ASDUS on the left. </p>
 
 ![Side by side comaprison of the original file and the output of ASDUS](images/original_output.png?raw=true "Side by side comaprison of the original file and the output of ASDUS")
 
 
-## How does ASDUS work?
+<h2>How does ASDUS work?</h2>
 
-ASDUS consists of two separate techniques:
-*   Domain-Independent Method: This is solely based on unsupervised learning and does not require any training data.
-*   Domain-Dependent Method: This uses supervised learning and requires prior labeled data for training.
+<p>ASDUS consists of two separate techniques:
+  <ul>
+    <li>Domain-Independent Method: This is solely based on unsupervised learning and does not require any training data.</li>
+    <li>Domain-Dependent Method: This uses supervised learning and requires prior labeled data for training.</li>
+</ul>
+</p>
 
-### Domain-Independent Method
+<h3>Domain-Independent Method</h3>
 
 The below diagram depicts the various stages of this approach. This method has been developed using both Java and Python.
 
@@ -39,15 +44,15 @@ The below diagram depicts the various stages of this approach. This method has b
 
 <img src="images/Flow_DI_Approach.png" alt="Flow of the domain-independent approach" title="Flow of the domain-independent approach" width="540" height="667">
 
-#### HTML file
+<h4> HTML file </h4>
 
 The input for the Java program is the raw HTML file. 
 
-#### Parsing & Text Collection
+<h4> Parsing & Text Collection </h4>
 
 The input is parsed using Jsoup (https://jsoup.org/). During parsing, empty tags are removed. The output of the parsing stage is an orderly collection of tuples with XPath as the key and the text embedding between the tags as the value. 
 
-#### Feature Extraction
+<h4> Feature Extraction </h4>
 
 To ensure segregation between title and prose text, a robust set of distinguishing features are required. The below features are extracted for each tuple:
 *   own text length
@@ -61,7 +66,7 @@ To ensure segregation between title and prose text, a robust set of distinguishi
 
 All the features are self explanatory. ASDUS uses Stanford Core NLP toolkit to extract discourse markers and named entity slots. 
 
-#### Clustering and Segment Identification
+<h4>Clustering and Segment Identification</h4>
 
 K-means clustering is performed over the features. Each data point corresponds to each tuple and two clusters are obtained (refer figure below). 
 
