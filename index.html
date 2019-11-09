@@ -52,16 +52,16 @@ The input is parsed using Jsoup (https://jsoup.org/). During parsing, empty tags
 <h4> Feature Extraction </h4>
 
 To ensure segregation between title and prose text, a robust set of distinguishing features are required. The below features are extracted for each tuple:
-*   own text length
-*   next text length
-*   number of punctuation symbols
-*   number of sentences
-*   number of stop words
-*   number of discourse markers
-*   number of named entity slots
-*   number of words with capitalized first letter
-
-All the features are self explanatory. ASDUS uses Stanford Core NLP toolkit to extract discourse markers and named entity slots. 
+<ul>
+  <li>own text length</li>
+<li>next text length</li>
+<li>number of punctuation symbols</li>
+<li>number of sentences</li>
+<li>number of stop words</li>
+<li>number of discourse markers</li>
+<li>number of named entity slots</li>
+<li>number of words with capitalized first letter</li>
+</ul> 
 
 <h4>Clustering and Segment Identification</h4>
 
@@ -71,11 +71,11 @@ K-means clustering is performed over the features. Each data point corresponds t
 
 The first cluster which is the title cluster is closer to the origin and the second cluster, called the prose cluster is farther from the origin. Each textual segment of the tuple is classified into a title or prose using the k-means model. For all potential titles, an overlap score is calculated by measuring the word overlap between its words and the words from the next text segment. Based on experiments on a dev set, the overlap threshold was set to 75%. Titles with overlap scores exceeding the threshold and their corresponding XPaths are added to the list of probable title candidates.
 
-#### Simple Version Generation
+<h4> Simple Version Generation </h4>
 
 Each element in the final title list is marked with a custom attribute in the original HTML. To generate the simple version, a top down parse of the HTML is performed, wherein nodes with custom attribute (titles) are enclosed in "h2" tags and the text between two consecutive titles (prose) is enclosed in "p" tags. For the last segment, the prose text immediately following the title is added. For subsequent prose sections, a unigram overlap score similar to the one in the previous step is performed to avoid the addition of unrelated text. Legitimate textual content appearing before the first title is included in the final output under an uncategorized title.
 
-### Domain-Dependent Method
+<h3> Domain-Dependent Method </h3>
 
 The below diagram depicts the various stages of this approach. This method has been developed using both Java and Python. 
 
@@ -83,26 +83,30 @@ The below diagram depicts the various stages of this approach. This method has b
 
 This method borrows the Parsing & Text Collection, Segment Identification, and Simple Version Generation stages from the domain-independent approach. Only the delta changes are explained below:
 
-#### Prepare Train Data
+<h4> Prepare Train Data </h4>
 
 To construct labeled data for training, we chose to use web privacy policies due to its lengthy nature, the presence of a reasonable number of segments, the presence of relatively similar content with varying HTML structure across websites and its importance to the general public. We annotated each HTML tag of 100 web privacy policies with one of the three labels: title, prose and unrelated.
 
-#### Feature Extraction & Training
+<h4> Feature Extraction & Training </h4>
 
 We built two word embedding models (using gensim), one using text from the titles and the other using prose texts. Then for text embedded in each HTML tag, we extracted these three features: 
-*   t-score: Semantic relatedness score between title embedding and text in the tag
-*   p-score: Semantic relatedness score between prose embedding and text in the tag
-*   length
+<ul>
+  <li>t-score: Semantic relatedness score between title embedding and text in the tag</li>
+  <li>p-score: Semantic relatedness score between prose embedding and text in the tag</li>
+  <li>length</li>
+</ul>
 
 We used a feed forward neural network(h1=24, h2=48) with ReLu activation units and adagrad optimizer to train. 
 
 
-## How well does it perform?
+<h2> How well does it perform? </h2>
 
 ASDUS is tested on a corpus of 303 web documents. This corpus is also available for download. The corpus consists of three different categories of web documents:
-*   Privacy policies
-*   Terms of service documents
-*   Miscellaneous documents
+<ul>
+  <li>Privacy policies</li>
+  <li>Terms of service documents</li>
+  <li>Miscellaneous documents</li>
+</ul>
 
 Please refer the dataset documentation for more details. The domain-independent approach is tested on all the documents and the domain-dependent method is tested only on privacy policies. Below are the performance figures.
 
