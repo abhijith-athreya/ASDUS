@@ -24,7 +24,7 @@
 
 <p>ASDUS uses natural language processing and machine learning techniques to automatically segregate a given web document into segments, which contain the corresponding title and prose text. The input for ASDUS is the raw HTML file, and it outputs a simplified version of the input HTML file, which contains all title text in "h2" tags and all prose text in "p" tags. This simple organization makes detection of title and prose text straightforward. Below is an image which has the original HTML file on the right and the output of ASDUS on the left. </p>
 
-<img src="images/original_output.png"  title="Side by side comaprison of the original file and the output of ASDUS">
+<center><img src="images/original_output.png"  title="Side by side comaprison of the original file and the output of ASDUS"  width="959" height="701"> </center>
 
 <h2>How does ASDUS work?</h2>
 
@@ -67,7 +67,7 @@ To ensure segregation between title and prose text, a robust set of distinguishi
 
 K-means clustering is performed over the features. Each data point corresponds to each tuple and two clusters are obtained (refer figure below). 
 
-<img src="images/clustering.png" alt="Formation of two clusters" title="Formation of two clusters" width="469" height="404">
+<center><img src="images/clustering.png" alt="Formation of two clusters" title="Formation of two clusters" width="469" height="404"></center>
 
 The first cluster which is the title cluster is closer to the origin and the second cluster, called the prose cluster is farther from the origin. Each textual segment of the tuple is classified into a title or prose using the k-means model. For all potential titles, an overlap score is calculated by measuring the word overlap between its words and the words from the next text segment. Based on experiments on a dev set, the overlap threshold was set to 75%. Titles with overlap scores exceeding the threshold and their corresponding XPaths are added to the list of probable title candidates.
 
@@ -77,9 +77,9 @@ Each element in the final title list is marked with a custom attribute in the or
 
 <h3> Domain-Dependent Method </h3>
 
-The below diagram depicts the various stages of this approach. This method has been developed using both Java and Python. 
+<p>The below diagram depicts the various stages of this approach. This method has been developed using both Java and Python. </p>
 
-<img src="images/DD_Approach.png" alt="Flow of the domain-dependent approach" title="Flow of the domain-dependent approach" width="550" height="720">
+<center><img src="images/DD_Approach.png" alt="Flow of the domain-dependent approach" title="Flow of the domain-dependent approach" width="550" height="720"></center>
 
 This method borrows the Parsing & Text Collection, Segment Identification, and Simple Version Generation stages from the domain-independent approach. Only the delta changes are explained below:
 
