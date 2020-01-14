@@ -112,4 +112,7 @@ Please refer the dataset documentation for more details. The domain-independent 
 <img src="images//results_DD.PNG" alt="Results of the domain-dependent approach" title="Results of the domain-dependent approach" width="500" height="76">
 
 
+## Acknowledgement
+
+ASDUS was built as part of the <a href="https://usableprivacy.org/">Usable Privacy Policy Project</a> and funded by the National Science Foundation under grant CNS-1330596.
 
