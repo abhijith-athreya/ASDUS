@@ -48,7 +48,6 @@ public class DomainIndependentModel {
 
 	static Set<String> setSkipTags = new HashSet<String>();
 
-	static Set<String> setDiscourseMarkers = new HashSet<String>();
 
 	static StringBuffer uncategorizedText = new StringBuffer();
 
@@ -59,10 +58,7 @@ public class DomainIndependentModel {
 	 */
 	static String strTemp_File_Features = "features.csv";
 
-	/**
-	 * A set of discourse markers given in a file.
-	 */
-	static String strFile_Discourse_Markers = "discourse.csv";
+	
 
 	static int int_header_label = -1;
 
@@ -78,7 +74,7 @@ public class DomainIndependentModel {
 	static {
 
 		loadSkipTags();
-		loadDiscourseMarkers();
+		
 	}
 
 	/**
@@ -130,26 +126,7 @@ public class DomainIndependentModel {
 
 	}
 
-	/**
-	 * Loads the Discourse Markers stored in the file.
-	 */
-	public static void loadDiscourseMarkers() {
-		// TODO Auto-generated method stub
-
-		try {
-			String contents = new String(Files.readAllBytes(Paths.get(strFile_Discourse_Markers)),
-					StandardCharsets.UTF_8);
-
-			for (String eachmarker : contents.split(",")) {
-
-				setDiscourseMarkers.add(eachmarker);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	
 
 	/**
 	 * Use this method to generate the simple version by directly passing the
@@ -244,7 +221,7 @@ public class DomainIndependentModel {
 		String htmlHeader = "<html><head><title> " + websiteName + "</title></head>";
 		bufferedWriter.write(htmlHeader);
 
-		String htmlBody = "<body style=’background-color:#ccc’><h1><center><u>" + websiteName + "</u></center></h1>";
+		String htmlBody = "<body style=â€™background-color:#cccâ€™><h1><center><u>" + websiteName + "</u></center></h1>";
 		bufferedWriter.write(htmlBody);
 
 		Elements elements_all = doc.body().select("*");
@@ -621,14 +598,12 @@ public class DomainIndependentModel {
 
 		int int_number_of_sentences = (int) ownText.codePoints().filter(ch -> ch == '.').count();
 
-		int int_discourse_markers = getDiscourseMarkers(ownText);
 
 		int int_ner_slots = getNERSlots(ownText);
 
 		int int_init_caps_to_words = getInitCaps(ownText);
 
-		return int_special_chars + int_words + int_stop_words + int_number_of_sentences + int_discourse_markers
-				+ int_ner_slots + int_init_caps_to_words;
+		return int_special_chars + int_words + int_stop_words + int_number_of_sentences + int_ner_slots + int_init_caps_to_words;
 
 	}
 
@@ -690,27 +665,7 @@ public class DomainIndependentModel {
 		return count;
 	}
 
-	/**
-	 * This method returns the count of the discourse markers present in the
-	 * text.
-	 * 
-	 * @param ownText
-	 * @return
-	 */
-	public static int getDiscourseMarkers(String ownText) {
-		// TODO Auto-generated method stub
-		int count = 0;
-
-		ownText = ownText.toLowerCase();
-
-		for (String marker : setDiscourseMarkers) {
-
-			if (ownText.contains(marker))
-				count++;
-		}
-
-		return count;
-	}
+	
 
 	/**
 	 * This method returns the count of the stop words in the given text.
